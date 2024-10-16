@@ -29,7 +29,7 @@ class Profile extends StatelessWidget {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
+                      backgroundColor: Colors.white,
                       fixedSize: Size(120, 40),
                     ),
                   ),
@@ -45,7 +45,7 @@ class Profile extends StatelessWidget {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
+                      backgroundColor: Colors.white,
                       fixedSize: Size(120, 40),
                     ),
                   ),
@@ -247,7 +247,7 @@ class Profile extends StatelessWidget {
                       style: TextStyle(fontSize: 9),
                     ),
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
+                      backgroundColor: Colors.blue,
                       fixedSize: Size(75, 45),
                     ),
                   ),

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'ApiService.dart';
+import 'GlobalClass.dart';
 import 'LeaderBoard.dart';
 import 'HomePage.dart';
+import 'Models/RangeCategoryModel.dart';
 import 'OnBoarding.dart';
 import 'Profile.dart';
 import 'Collection.dart';
+import 'DATABASE/DatabaseHelper.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,6 +28,7 @@ class Fragments extends StatefulWidget {
 
 class _FragmentsState extends State<Fragments> {
   int _selectedIndex = 0;
+  dynamic managerList; // Variable to store the response object
 
   final List<Widget> _widgetOptions = <Widget>[
     HomePage(),
@@ -34,6 +40,14 @@ class _FragmentsState extends State<Fragments> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      RangeCategory(context);
     });
   }
 
@@ -71,11 +85,12 @@ class _FragmentsState extends State<Fragments> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => OnBoarding()),
+            MaterialPageRoute(
+              builder: (context) => OnBoarding(), // Pass the response object
+            ),
           );
         },
         backgroundColor: Colors.red,
@@ -84,7 +99,41 @@ class _FragmentsState extends State<Fragments> {
           borderRadius: BorderRadius.circular(50.0), // Make the FAB circular
         ),
       ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  Future<void> RangeCategory(BuildContext context) async {
+    final api2 = Provider.of<ApiService>(context, listen: false);
+    final dbHelper = DatabaseHelper();
+
+    // Check if data already exists in the database
+    bool dataExists = await dbHelper.isRangeCategoryDataExists();
+
+    if (!dataExists) {
+      // If data does not exist, make the API call
+      final response = await api2.RangeCategory(GlobalClass.token, GlobalClass.dbName);
+
+      if (response.statuscode == 200) {
+
+        RangeCategoryModel rangeCategoryModel = response;
+
+        await dbHelper.clearRangeCategoryTable();
+
+        // Insert new data into SQLite
+        for (var datum in rangeCategoryModel.data) {
+          await dbHelper.insertRangeCategory(datum);
+        }
+
+        // Handle successful data update
+        GlobalClass().showSuccessAlert(context);
+      } else {
+        // Handle failed data update
+        GlobalClass().showUnsuccessfulAlert(context);
+      }
+    } else {
+      // If data exists, no need to make the API call
+      print('Data already exists in the database.');
+    }
   }
 }

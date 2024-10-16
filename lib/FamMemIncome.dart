@@ -1,297 +1,330 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sourcing_app/FamMemIncomeItem.dart';
+import 'package:provider/provider.dart';
 
-class FamMemIncome extends StatelessWidget {
+import 'ApiService.dart';
+import 'DATABASE/DatabaseHelper.dart';
+import 'GlobalClass.dart';
+import 'Models/BorrowerListModel.dart';
+import 'Models/RangeCategoryModel.dart';
+
+class FamMemIncome extends StatefulWidget {
+
+
+  final BorrowerListDataModel borrower;
+  FamMemIncome({required this.borrower});
+
+  @override
+  _FamMemIncomeState createState() => _FamMemIncomeState();
+}
+
+class _FamMemIncomeState extends State<FamMemIncome> {
+
+  List<RangeCategoryDataModel> relationship = [];
+  List<RangeCategoryDataModel> aadhar_gender = [];
+  List<RangeCategoryDataModel> health = [];
+  List<RangeCategoryDataModel> education = [];
+  List<RangeCategoryDataModel> school_type = [];
+  List<RangeCategoryDataModel> business_Type = [];
+  List<RangeCategoryDataModel> income_type = [];
+
+  String? selectedOption = GlobalClass.storeValues[0];
+
+  final TextEditingController _businessController = TextEditingController();
+  final TextEditingController _incomeController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+
+  String? relationshipType;
+  String? gender;
+  String? healthType;
+  String? educationType;
+  String? school;
+  String? businessType;
+  String? incomeType;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData(); // Fetch states using the required cat_key
+  }
+
+  Future<void> fetchData() async {
+    relationship = await DatabaseHelper().selectRangeCatData("relationship"); // Call your SQLite method
+    aadhar_gender = await DatabaseHelper().selectRangeCatData("gender"); // Call your SQLite method
+    health = await DatabaseHelper().selectRangeCatData("health"); // Call your SQLite method
+    education = await DatabaseHelper().selectRangeCatData("education"); // Call your SQLite method
+    school_type = await DatabaseHelper().selectRangeCatData("school-type"); // Call your SQLite method
+    business_Type = await DatabaseHelper().selectRangeCatData("business-type"); // Call your SQLite method
+    income_type = await DatabaseHelper().selectRangeCatData("income-type"); // Call your SQLite method
+
+    setState(() {}); // Refresh the UI
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // RecyclerView equivalent
-          ListView.builder(
-            itemCount: 1, // Replace with your actual data count
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: FamMemIncomeItem(), // Use the custom widget here
-              );
-            },
-          ),
-          // Button at the bottom
-          Positioned(
-            bottom: 10,
-            left: 10,
-            right: 10,
-            child: ElevatedButton(
-              onPressed: () {
-                // Add your button action here
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red, // Set your preferred color
-              ),
-              child: Text('Add Family Member Income'),
-            ),
-          ),
-          // Floating Action Button
-          Positioned(
-            bottom: 60,
-            right: 16,
-            child: FloatingActionButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      contentPadding: EdgeInsets.all(12),
-                      content: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("Family Member Name", style: TextStyle(color: Colors.red)),
-                            Card(
-                              elevation: 2,
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: "Family Member Name",
-                                  contentPadding: EdgeInsets.all(8),
-                                ),
+      appBar: AppBar(
+        title: Text('Family Member Income'),
+        backgroundColor: Colors.red,
+      ),
+      backgroundColor: Color(0xFFd32f2f), // Equivalent to @color/white
+      body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Family Member Name',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Card(
+                  elevation: 2,
+                  margin: EdgeInsets.all(2.0),
+                  child: TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      hintText: 'Family Member Name',
+                      border: OutlineInputBorder(),
+                    ),
+                    textCapitalization: TextCapitalization.characters,
+                  ),
+                ),
+                SizedBox(height: 5.0),
+                buildCardField(
+                  context,
+                  'RelationShip',
+                  relationship, // Replace with actual values
+                      (value) => relationshipType = value?.descriptionEn,
+                ),
+                SizedBox(height: 5.0),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Aadhar Age',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Card(
+                            elevation: 2,
+                            margin: EdgeInsets.all(2.0),
+                            child: TextFormField(
+                              controller: _ageController,
+                              decoration: InputDecoration(
+                                hintText: 'Age',
+                                border: OutlineInputBorder(),
                               ),
+                              keyboardType: TextInputType.number,
                             ),
-                            SizedBox(height: 8),
-                            Text("Relationship", style: TextStyle(color: Colors.red)),
-                            Card(
-                              elevation: 2,
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(8),
-                                  border: InputBorder.none,
-                                ),
-                                items: ["Option 1", "Option 2"].map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (newValue) {},
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: buildCardField(
+                        context,
+                        'Gender',
+                        aadhar_gender, // Replace with actual values
+                            (value) => gender = value?.descriptionEn,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 5.0),
+                buildCardField(
+                  context,
+                  'Health',
+                  health, // Replace with actual values
+                      (value) => healthType = value?.descriptionEn,
+                ),
+                SizedBox(height: 5.0),
+                buildCardField(
+                  context,
+                  'Education',
+                  education, // Replace with actual values
+                      (value) => educationType = value?.descriptionEn,
+                ),
+                SizedBox(height: 5.0),
+                buildCardField(
+                  context,
+                  'School Type',
+                  school_type, // Replace with actual values
+                      (value) => school = value?.descriptionEn,
+                ),
+                SizedBox(height: 5.0),
+                Text(
+                  'Business',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Card(
+                  elevation: 2,
+                  margin: EdgeInsets.all(2.0),
+                  child: TextFormField(
+                    controller: _businessController,
+                    decoration: InputDecoration(
+                      hintText: 'Business',
+                      border: OutlineInputBorder(),
+                    ),
+                    textCapitalization: TextCapitalization.characters,
+                  ),
+                ),
+                SizedBox(height: 5.0),
+                buildCardField(
+                  context,
+                  'Business Type',
+                  business_Type, // Replace with actual values
+                      (value) => businessType = value?.descriptionEn,
+                ),
+                SizedBox(height: 5.0),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Income',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Card(
+                            elevation: 2,
+                            margin: EdgeInsets.all(2.0),
+                            child: TextFormField(
+                              controller: _incomeController,
+                              decoration: InputDecoration(
+                                hintText: 'Rs.',
+                                border: OutlineInputBorder(),
                               ),
+                              keyboardType: TextInputType.number,
                             ),
-                            SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Aadhar Age", style: TextStyle(color: Colors.red)),
-                                      Card(
-                                        elevation: 2,
-                                        child: TextField(
-                                          decoration: InputDecoration(
-                                            hintText: "Age",
-                                            contentPadding: EdgeInsets.all(8),
-                                            border: InputBorder.none,
-                                          ),
-                                          keyboardType: TextInputType.number,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Aadhar Gender", style: TextStyle(color: Colors.red)),
-                                      Card(
-                                        elevation: 2,
-                                        child: DropdownButtonFormField<String>(
-                                          decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.all(8),
-                                            border: InputBorder.none,
-                                          ),
-                                          items: ["Male", "Female"].map((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                          onChanged: (newValue) {},
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 8),
-                            Text("Health", style: TextStyle(color: Colors.red)),
-                            Card(
-                              elevation: 2,
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(8),
-                                  border: InputBorder.none,
-                                ),
-                                items: ["Healthy", "Unhealthy"].map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (newValue) {},
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text("Education", style: TextStyle(color: Colors.red)),
-                            Card(
-                              elevation: 2,
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(8),
-                                  border: InputBorder.none,
-                                ),
-                                items: ["Primary", "Secondary"].map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (newValue) {},
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text("School Type", style: TextStyle(color: Colors.red)),
-                            Card(
-                              elevation: 2,
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(8),
-                                  border: InputBorder.none,
-                                ),
-                                items: ["Public", "Private"].map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (newValue) {},
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text("Business", style: TextStyle(color: Colors.red)),
-                            Card(
-                              elevation: 2,
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: "Business",
-                                  contentPadding: EdgeInsets.all(8),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text("Business Type", style: TextStyle(color: Colors.red)),
-                            Card(
-                              elevation: 2,
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(8),
-                                  border: InputBorder.none,
-                                ),
-                                items: ["Small", "Large"].map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (newValue) {},
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Income", style: TextStyle(color: Colors.red)),
-                                      Card(
-                                        elevation: 2,
-                                        child: TextField(
-                                          decoration: InputDecoration(
-                                            hintText: "123",
-                                            contentPadding: EdgeInsets.all(8),
-                                            border: InputBorder.none,
-                                          ),
-                                          keyboardType: TextInputType.number,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Income Type", style: TextStyle(color: Colors.red)),
-                                      Card(
-                                        elevation: 2,
-                                        child: DropdownButtonFormField<String>(
-                                          decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.all(8),
-                                            border: InputBorder.none,
-                                          ),
-                                          items: ["Salary", "Business"].map((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                          onChanged: (newValue) {},
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: buildCardField(
+                        context,
+                        'Income Type',
+                        income_type, // Replace with actual values
+                            (value) => incomeType = value?.descriptionEn,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 5.0),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          updateFamMemIncome(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                        ),
+                        child: Text(
+                          'Add/Update',
+                          style: TextStyle(fontSize: 10.0),
                         ),
                       ),
-                      actions: <Widget>[
-                        ElevatedButton(
-                          onPressed: () {
-                            // Add or Update logic
-                          },
-                          child: Text('Add/Update'),
-                          style: ElevatedButton.styleFrom(primary: Colors.red),
+                    ),
+                    SizedBox(width: 2.0),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Delete logic
-                          },
-                          child: Text('Delete'),
-                          style: ElevatedButton.styleFrom(primary: Colors.red),
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(fontSize: 10.0),
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('Cancel'),
-                          style: ElevatedButton.styleFrom(primary: Colors.red),
-                        ),
-                      ],
-                    );
-                  },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+  }
+
+  Widget buildCardField(BuildContext context, String label, List<RangeCategoryDataModel> items, ValueChanged<RangeCategoryDataModel?> onChanged) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontFamily: 'VisbyCFRegular',
+            ),
+          ),
+          SizedBox(height: 8),
+          Card(
+            elevation: 4,
+            margin: EdgeInsets.zero,
+            child: DropdownButtonFormField<RangeCategoryDataModel>(
+              items: items.map((RangeCategoryDataModel value) {
+                return DropdownMenuItem<RangeCategoryDataModel>(
+                  value: value,
+                  child: Text(value.descriptionEn),
                 );
+              }).toList(),
+              onChanged: onChanged,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+              ),
+              validator: (value) {
+                if (value == null) {
+                  return 'Please select $label';
+                }
+                return null;
               },
-              backgroundColor: Colors.red, // Set your preferred color
-              child: Icon(Icons.add),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> updateFamMemIncome(BuildContext context) async {
+    Map<String, dynamic> requestBody = {
+      "fiCode": widget.borrower.code,
+      "creator": widget.borrower.creator,
+      "tag": "RTAG",
+      "famMemName":_nameController.text,
+      "relationship":relationshipType,
+      "age":_ageController.text,
+      "gender":gender,
+      "health":healthType,
+      "education":educationType,
+      "schoolType":school,
+      "business":_businessController.text,
+      "businessType":businessType,
+      "income":_incomeController.text,
+      "incomeType":incomeType,
+      "autoID":0
+    };
+    final api2 = Provider.of<ApiService>(context, listen: false);
+
+    // Update the personal details using the API
+    final response = await api2.updateFamMemIncome(GlobalClass.token, GlobalClass.dbName, requestBody);
+
+    if (response.statusCode == 200) {
+      // Handle successful update
+      GlobalClass().showSuccessAlert(context);
+    } else {
+      // Handle failed update
+      GlobalClass().showUnsuccessfulAlert(context);
+    }
   }
 }

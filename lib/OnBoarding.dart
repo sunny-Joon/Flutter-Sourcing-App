@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-// Import the KYC page
 import 'kyc.dart';
-import 'manager_list_page.dart';
+import 'Branch_List_Page.dart';
 
 class OnBoarding extends StatelessWidget {
   @override
@@ -28,73 +27,71 @@ class OnBoarding extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Image.asset(
-                'assets/onboard_background.png',
-                fit: BoxFit.fitWidth,
-              ),
-            ),
             SizedBox(height: 46),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 45.0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(38.0),
-                ),
-                elevation: 15.0,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    children: [
-                      _buildCardItem(context, 'KYC', 'assets/Images/right_button.png', () {
-                        // Navigate to Manager List page with 'Kyc' string
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ManagerListPage(data: 'KYC'),
-                          ),
-                        );
-                      }),
-                      Divider(color: Color(0xFFF6F6F6)),
-                      _buildCardItem(context, 'E SIGN', 'assets/Images/right_button.png', () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ManagerListPage(data: 'E SIGN'),
-                          ),
-                        );
-                      }),
-                      Divider(color: Color(0xFFF6F6F6)),
-                      _buildCardItem(context, 'APPLICATION FORM', 'assets/Images/right_button.png', () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ManagerListPage(data: 'APPLICATION FORM'),
-                          ),
-                        );
-                      }),
-                      Divider(color: Color(0xFFF6F6F6)),
-                      _buildCardItem(context, 'HOUSE VISIT', 'assets/Images/right_button.png', () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ManagerListPage(data: 'HOUSE VISIT'),
-                          ),
-                        );
-                      }),
-                      Divider(color: Color(0xFFF6F6F6)),
-                      _buildCardItem(context, 'Visit Report', 'assets/Images/right_button.png', () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ManagerListPage(data: 'Visit Report'),
-                          ),
-                        );
-                      }),
-                    ],
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/Images/curvedBackground.png',
+                    fit: BoxFit.fill,
+                    width: double.infinity,
+                    height: 500, // Adjust the height as needed
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.all(35.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildCardItem(context, 'KYC', 'assets/Images/righ_arrow.png', () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BranchListPage(intentFrom: 'KYC'),
+                            ),
+                          );
+                        }),
+                        Divider(color: Color(0xFFF6F6F6)),
+                        _buildCardItem(context, 'E SIGN', 'assets/Images/righ_arrow.png', () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BranchListPage(intentFrom: 'E SIGN'),
+                            ),
+                          );
+                        }),
+                        Divider(color: Color(0xFFF6F6F6)),
+                        _buildCardItem(context, 'APPLICATION FORM', 'assets/Images/righ_arrow.png', () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BranchListPage(intentFrom: 'APPLICATION FORM'),
+                            ),
+                          );
+                        }),
+                        Divider(color: Color(0xFFF6F6F6)),
+                        _buildCardItem(context, 'HOUSE VISIT', 'assets/Images/righ_arrow.png', () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BranchListPage(intentFrom: 'HOUSE VISIT'),
+                            ),
+                          );
+                        }),
+                        Divider(color: Color(0xFFF6F6F6)),
+                        _buildCardItem(context, 'Visit Report', 'assets/Images/righ_arrow.png', () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BranchListPage(intentFrom: 'Visit Report'),
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
