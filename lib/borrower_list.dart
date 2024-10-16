@@ -1,20 +1,76 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'ApiService.dart';
 import 'BorrowerListItem.dart';
-import 'ApplicationForm.dart'; // Import the ApplicationForm page
+import 'GlobalClass.dart';
+import 'ApplicationForm.dart';
+import 'Models/BorrowerListModel.dart'; // Import your ApplicationForm
 
-class BorrowerList extends StatelessWidget {
+class BorrowerList extends StatefulWidget {
   final String data;
+  final String areaCd;
+  final String foCode;
 
-  BorrowerList({required this.data});
+  BorrowerList({
+    required this.data,
+    required this.areaCd,
+    required this.foCode,
+  });
+
+  @override
+  _BorrowerListState createState() => _BorrowerListState();
+}
+
+class _BorrowerListState extends State<BorrowerList> {
+  List<BorrowerListDataModel> _borrowerItems = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchBorrowerList();
+  }
+
+  Future<void> _fetchBorrowerList() async {
+    final apiService = Provider.of<ApiService>(context, listen: false);
+
+    try {
+      final response = await apiService.BorrowerList(
+        GlobalClass.token,
+        GlobalClass.dbName,
+        GlobalClass.imei,
+        widget.foCode,
+        widget.areaCd,
+        GlobalClass.creator,
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          _borrowerItems = response.data;
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Borrower List'),
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFFD42D3F),
       ),
-      body: Column(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Column(
         children: [
           Card(
             margin: EdgeInsets.all(10),
@@ -32,24 +88,28 @@ class BorrowerList extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: 2, // Number of items
-              itemBuilder: (context, index) => GestureDetector(
-                onTap: () {
-                  // Navigate based on the data value
-                  if (data == 'APPLICATION FORM') {
+              itemCount: _borrowerItems.length,
+              itemBuilder: (context, index) {
+                final item = _borrowerItems[index];
+                return BorrowerListItem(
+                  name: item.fname,
+                  fatherOrSpouse: item.fFname,
+                  fiCode: item.code,
+                  mobile: item.pPh3,
+                  creator: item.creator,
+                  address: item.addr,
+                  onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ApplicationForm()),
+                      MaterialPageRoute(
+                        builder: (context) => ApplicationForm(
+                          borrower: item, // Pass the item object
+                        ),
+                      ),
                     );
-                  } else if (data == 'HouseVisit') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ApplicationForm()),
-                    );
-                  }
-                },
-                child: BorrowerListItem(),
-              ),
+                  },
+                );
+              },
             ),
           ),
         ],

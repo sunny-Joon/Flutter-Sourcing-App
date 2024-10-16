@@ -5,113 +5,128 @@ import 'package:flutter_sourcing_app/FinancialInfoPage.dart';
 import 'package:flutter_sourcing_app/GuarantorsPage.dart';
 import 'package:flutter_sourcing_app/PersonalData.dart';
 import 'FamilyBorrowings.dart';
+import 'Models/BorrowerListModel.dart';
 
 class ApplicationForm extends StatelessWidget {
+
+  final BorrowerListDataModel borrower;
+
+  ApplicationForm({required this.borrower});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF00796B), // teal_700 equivalent
+      backgroundColor: Color(0xFFD42D3F), // Background color
       body: Padding(
         padding: const EdgeInsets.all(0.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 40.0),
+              padding: const EdgeInsets.only(bottom: 20.0),
               child: Text(
-                'Application Form', // Corresponds to @string/application_form
+                'Application Form', // Header text
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'VisbyCFRegular', // Corresponds to @font/visbycfregular
+                  fontFamily: 'VisbyCFRegular',
                   color: Colors.white,
-                  fontSize: 24, // Corresponds to @dimen/bigheading
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            Image.asset(
-              'assets/onboard_background.png', // Corresponds to @drawable/onboard_background
-              fit: BoxFit.fitWidth,
-              width: double.infinity,
-            ),
-            SizedBox(height: 46),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 45.0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(38.0), // Corresponds to app:cardCornerRadius
-                ),
-                elevation: 15.0, // Corresponds to app:cardElevation
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    children: [
-                      buildCardItem(
-                        context,
-                        'Aadhaar Data',
-                            () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => AdhaarData()),
-                        ),
-                      ),
-                      Divider(color: Color(0xFFF6F6F6)),
-                      buildCardItem(
-                        context,
-                        'Personal Details',
-                            () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => PersonalData()),
-                        ),
-                      ),
-                      Divider(color: Color(0xFFF6F6F6)),
-                      buildCardItem(
-                        context,
-                        'Financial Info',
-                            () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => FinancialInfoPage()),
-                        ),
-                      ),
-                      Divider(color: Color(0xFFF6F6F6)),
-                      buildCardItem(
-                        context,
-                        'Family Income',
-                            () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => FamMemIncome()),
-                        ),
-                      ),
-                      Divider(color: Color(0xFFF6F6F6)),
-                      buildCardItem(
-                        context,
-                        'Family Borrowings',
-                            () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => FamilyBorrowings()),
-                        ),
-                      ),
-                      Divider(color: Color(0xFFF6F6F6)),
-                      buildCardItem(
-                        context,
-                        'Guarantors',
-                            () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => GuarantorsPage()),
-                        ),
-                      ),
-                      Divider(color: Color(0xFFF6F6F6)),
-                      buildCardItem(
-                        context,
-                        'KYC Scanning',
-                            () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => KYCScanningPage()),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                Image.asset(
+                'assets/Images/curvedBackground.png',
+                fit: BoxFit.fill,
+                width: double.infinity,
+                height: 700, // Adjust the height as needed
               ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          children: [
+                            Column(
+                              children: [
+                                buildListItem(
+                                  context,
+                                  'Aadhaar Data',
+                                      () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => AdhaarData(
+                                      borrower: borrower
+                                    )),
+                                  ),
+                                ),
+                                buildListItem(
+                                  context,
+                                  'Personal Details',
+                                      () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => PersonalData(
+                                      borrower: borrower
+                                    )),
+                                  ),
+                                ),
+                                buildListItem(
+                                  context,
+                                  'Financial Info',
+                                      () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => FinancialInfoPage(
+                                      borrower: borrower
+                                    )),
+                                  ),
+                                ),
+                                buildListItem(
+                                  context,
+                                  'Family Income',
+                                      () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => FamMemIncome(
+                                      borrower: borrower
+                                    )),
+                                  ),
+                                ),
+                                buildListItem(
+                                  context,
+                                  'Family Borrowings',
+                                      () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => FamilyBorrowings(
+                                      borrower: borrower,
+                                    )),
+                                  ),
+                                ),
+                                buildListItem(
+                                  context,
+                                  'Guarantors',
+                                      () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => GuarantorsPage(
+                                      borrower: borrower,
+                                    )),
+                                  ),
+                                ),
+                                buildListItem(
+                                  context,
+                                  'KYC Scanning',
+                                      () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => KYCScanningPage()),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+              ],
+                    ),
             ),
           ],
         ),
@@ -119,11 +134,16 @@ class ApplicationForm extends StatelessWidget {
     );
   }
 
-  Widget buildCardItem(BuildContext context, String title, VoidCallback onTap) {
+  Widget buildListItem(BuildContext context, String title, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 45, // Height of each card item
+        margin: EdgeInsets.symmetric(vertical: 8.0),
+        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.8), // Semi-transparent background for readability
+          borderRadius: BorderRadius.circular(10.0), // Rounded corners
+        ),
         child: Row(
           children: [
             Expanded(
@@ -131,8 +151,8 @@ class ApplicationForm extends StatelessWidget {
               child: Text(
                 title,
                 style: TextStyle(
-                  fontFamily: 'VisbyCFBold', // Corresponds to @font/visbycfbold
-                  fontSize: 16, // Corresponds to @dimen/subheading
+                  fontFamily: 'VisbyCFBold',
+                  fontSize: 16,
                   color: Colors.black,
                 ),
                 textAlign: TextAlign.start,
