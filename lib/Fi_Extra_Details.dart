@@ -6,22 +6,24 @@ import 'GlobalClass.dart';
 import 'Models/BorrowerListModel.dart';
 import 'Models/RangeCategoryModel.dart';
 
-class PersonalData extends StatefulWidget {
+class Fi_Extra_Details extends StatefulWidget {
+  const Fi_Extra_Details({super.key});
 
-
-  final BorrowerListDataModel borrower;
-  PersonalData({required this.borrower});
+  /*final BorrowerListDataModel borrower;
+  Fi_Extra_Details({required this.borrower});*/
 
   @override
-  _PersonalDataState createState() => _PersonalDataState();
+  _Fi_Extra_DetailsState createState() => _Fi_Extra_DetailsState();
 }
 
-class _PersonalDataState extends State<PersonalData> {
+class _Fi_Extra_DetailsState extends State<Fi_Extra_Details> {
 
   List<RangeCategoryDataModel> religion = [];
   List<RangeCategoryDataModel> land_owner = [];
-  List<RangeCategoryDataModel> caste = [];
+  List<RangeCategoryDataModel> loanduration = [];
   List<RangeCategoryDataModel> education = [];
+
+
 
   String? selectedOption = GlobalClass.storeValues[0];
 
@@ -35,7 +37,7 @@ class _PersonalDataState extends State<PersonalData> {
   Future<void> fetchData() async {
     religion = await DatabaseHelper().selectRangeCatData("religion"); // Call your SQLite method
     land_owner = await DatabaseHelper().selectRangeCatData("land_owner"); // Call your SQLite method
-    caste = await DatabaseHelper().selectRangeCatData("caste"); // Call your SQLite method
+    loanduration = await DatabaseHelper().selectRangeCatData("caste"); // Call your SQLite method
     education = await DatabaseHelper().selectRangeCatData("education"); // Call your SQLite method
 
     setState(() {}); // Refresh the UI
@@ -45,6 +47,7 @@ class _PersonalDataState extends State<PersonalData> {
 
   // Controllers for text fields
   final emailIdController = TextEditingController();
+  final loanamountcontroller= TextEditingController();
   final placeOfBirthController = TextEditingController();
 
   // Variables for dropdown fields
@@ -66,6 +69,7 @@ class _PersonalDataState extends State<PersonalData> {
     // Dispose controllers
     emailIdController.dispose();
     placeOfBirthController.dispose();
+    loanamountcontroller.dispose();
     super.dispose();
 
   }
@@ -92,11 +96,11 @@ class _PersonalDataState extends State<PersonalData> {
                   TextInputType.emailAddress,
                   emailIdController,
                 ),
-                buildCardField(
+                buildTextField(
                   context,
-                  'Caste',
-                  caste, // Replace with actual values
-                      (value) => selectedCaste = value?.descriptionEn,
+                  'Loan Amount',
+                  TextInputType.number,
+                  loanamountcontroller,
                 ),
                 buildCardField(
                   context,
@@ -330,11 +334,12 @@ class _PersonalDataState extends State<PersonalData> {
   Future<void> updatePersonalDetails(BuildContext context) async {
 
     Map<String, dynamic> requestBody = {
-      "fiCode": widget.borrower.code,
-      "creator": widget.borrower.creator,
+      // "fiCode": widget.borrower.code,
+      // "creator": widget.borrower.creator,
       "tag": "RTAG",
       "emailId": emailIdController.text,
-      "caste": selectedCaste,
+      "loan_amount": loanamountcontroller.text,
+     // "caste": selectedCaste,
       "religion": selectedReligion,
       "placeOfBirth": placeOfBirthController.text,
       "presentHouseOwner": selectedPresentHouseOwner,

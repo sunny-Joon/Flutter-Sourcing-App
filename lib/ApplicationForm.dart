@@ -3,7 +3,7 @@ import 'package:flutter_sourcing_app/AdhaarData.dart';
 import 'package:flutter_sourcing_app/FamMemIncome.dart';
 import 'package:flutter_sourcing_app/FinancialInfoPage.dart';
 import 'package:flutter_sourcing_app/GuarantorsPage.dart';
-import 'package:flutter_sourcing_app/PersonalData.dart';
+import 'package:flutter_sourcing_app/Fi_Extra_Details.dart';
 import 'FamilyBorrowings.dart';
 import 'Models/BorrowerListModel.dart';
 
@@ -58,7 +58,7 @@ class ApplicationForm extends StatelessWidget {
                                       () => Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => AdhaarData(
-                                      borrower: borrower
+                                      //borrower: borrower
                                     )),
                                   ),
                                 ),
@@ -67,9 +67,10 @@ class ApplicationForm extends StatelessWidget {
                                   'Personal Details',
                                       () => Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => PersonalData(
+                                    MaterialPageRoute(builder: (context) => Fi_Extra_Details()),
+                                        /*MaterialPageRoute(builder: (context) => Fi_Extra_Details(
                                       borrower: borrower
-                                    )),
+                                    )),*/
                                   ),
                                 ),
                                 buildListItem(
