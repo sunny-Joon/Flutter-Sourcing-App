@@ -7,8 +7,10 @@ import 'Models/BorrowerListModel.dart';
 import 'Models/RangeCategoryModel.dart';
 
 class FamilyBorrowings extends StatefulWidget {
-  final BorrowerListDataModel borrower;
-  FamilyBorrowings({required this.borrower});
+  const FamilyBorrowings({super.key});
+
+  /*final BorrowerListDataModel borrower;
+  FamilyBorrowings({required this.borrower});*/
 
   @override
   _FamilyBorrowingsState createState() => _FamilyBorrowingsState();
@@ -316,8 +318,8 @@ class _FamilyBorrowingsState extends State<FamilyBorrowings> {
   Future<void> UpdateFIFamLoans(BuildContext context) async {
 
     Map<String, dynamic> requestBody = {
-    "fiCode": widget.borrower.code,
-    "creator": widget.borrower.creator,
+    /*"fiCode": widget.borrower.code,
+    "creator": widget.borrower.creator,*/
     "tag": "RTAG",
     "lenderName":_lendernameController.text,
     "lenderType":SelectedlenderType,

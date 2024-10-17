@@ -8,8 +8,10 @@ import 'Models/BorrowerListModel.dart';
 import 'Models/RangeCategoryModel.dart';
 
 class FinancialInfoPage extends StatefulWidget {
-  final BorrowerListDataModel borrower;
-  FinancialInfoPage({required this.borrower});
+  const FinancialInfoPage({super.key});
+
+ /* final BorrowerListDataModel borrower;
+  FinancialInfoPage({required this.borrower});*/
 
   @override
   _FinancialInfoPageState createState() => _FinancialInfoPageState();
@@ -497,8 +499,8 @@ class _FinancialInfoPageState extends State<FinancialInfoPage> {
 
   Future<void> updateFinance(BuildContext context) async {
     Map<String, dynamic> requestBody = {
-      "fiCode": widget.borrower.code,
-      "creator": widget.borrower.creator,
+      /*"fiCode": widget.borrower.code,
+      "creator": widget.borrower.creator,*/
       "tag": "RTAG",
       "bankAccountType": selectedBankAccType,
       "bankAccNumber": _accountNumberController.text,

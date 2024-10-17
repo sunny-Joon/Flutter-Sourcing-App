@@ -8,10 +8,12 @@ import 'FamilyBorrowings.dart';
 import 'Models/BorrowerListModel.dart';
 
 class ApplicationForm extends StatelessWidget {
+  const ApplicationForm({super.key});
 
-  final BorrowerListDataModel borrower;
 
-  ApplicationForm({required this.borrower});
+  /*final BorrowerListDataModel borrower;
+
+  ApplicationForm({required this.borrower});*/
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +60,7 @@ class ApplicationForm extends StatelessWidget {
                                       () => Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => AdhaarData(
-                                      borrower: borrower
+                                    //  borrower: borrower
                                     )),
                                   ),
                                 ),
@@ -68,7 +70,7 @@ class ApplicationForm extends StatelessWidget {
                                       () => Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => PersonalData(
-                                      borrower: borrower
+                                    //  borrower: borrower
                                     )),
                                   ),
                                 ),
@@ -78,7 +80,7 @@ class ApplicationForm extends StatelessWidget {
                                       () => Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => FinancialInfoPage(
-                                      borrower: borrower
+                                   //   borrower: borrower
                                     )),
                                   ),
                                 ),
@@ -88,7 +90,7 @@ class ApplicationForm extends StatelessWidget {
                                       () => Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => FamMemIncome(
-                                      borrower: borrower
+                                  //    borrower: borrower
                                     )),
                                   ),
                                 ),
@@ -98,7 +100,7 @@ class ApplicationForm extends StatelessWidget {
                                       () => Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => FamilyBorrowings(
-                                      borrower: borrower,
+                                   //   borrower: borrower,
                                     )),
                                   ),
                                 ),
@@ -108,7 +110,7 @@ class ApplicationForm extends StatelessWidget {
                                       () => Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => GuarantorsPage(
-                                      borrower: borrower,
+                              //        borrower: borrower,
                                     )),
                                   ),
                                 ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/KYCModel.dart';
@@ -44,47 +45,46 @@ abstract class ApiService {
       @Body() Map<String, dynamic> body,
       );
 
-  @GET("FiSourcing/InsertFiSourcedata")
+  @POST("FiSourcing/InsertFiSourcedata")
+  @MultiPart()
   Future <KycModel> saveFi(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Field("aadhar_no") String aadharNo,
-      @Field("title") String title,
-      @Field("f_Name") String fName,
-      @Field("m_Name") String mName,
-      @Field("l_Name") String lName,
-      @Field("dob") String dob,
-      @Field("gender") String gender,
-      @Field("p_Phone") String pPhone,
-      @Field("fatheR_FIRST_NAME") String fatherFirstName,
-      @Field("fatheR_MIDDLE_NAME") String fatherMiddleName,
-      @Field("fatheR_LAST_NAME") String fatherLastName,
-      @Field("spousE_FIRST_NAME") String spouseFirstName,
-      @Field("spousE_MIDDLE_NAME") String spouseMiddleName,
-      @Field("spousE_LAST_NAME") String spouseLastName,
-      @Field("creator") String creator,
-      @Field("expense") int expense,
-      @Field("income") int income,
-      @Field("latitude") double latitude,
-      @Field("longitude") double longitude,
-      @Field("current_Address1") String currentAddress1,
-      @Field("current_Address2") String currentAddress2,
-      @Field("current_Address3") String currentAddress3,
-      @Field("current_City") String currentCity,
-      @Field("current_Pincode") String currentPincode,
-      @Field("current_State") String currentState,
-      @Field("IsMarried") bool isMarried,
-      @Field("GroupCode") String groupCode,
-      @Field("BranchCode") String branchCode,
-      @Field("Picture") String Picture);
+      @Part(name: "aadhar_no") String aadharNo,
+      @Part( name:"title") String title,
+      @Part( name:"f_Name") String fName,
+      @Part( name:"m_Name") String mName,
+      @Part( name:"l_Name") String lName,
+      @Part( name:"dob") String dob,
+      @Part( name:"gender") String gender,
+      @Part( name:"p_Phone") String pPhone,
+      @Part( name:"fatheR_FIRST_NAME") String fatherFirstName,
+      @Part( name:"fatheR_MIDDLE_NAME") String fatherMiddleName,
+      @Part( name:"fatheR_LAST_NAME") String fatherLastName,
+      @Part( name:"spousE_FIRST_NAME") String spouseFirstName,
+      @Part( name:"spousE_MIDDLE_NAME") String spouseMiddleName,
+      @Part( name:"spousE_LAST_NAME") String spouseLastName,
+      @Part( name:"creator") String creator,
+      @Part( name:"expense") int expense,
+      @Part( name:"income") int income,
+      @Part( name:"latitude") double latitude,
+      @Part( name:"longitude") double longitude,
+      @Part( name:"current_Address1") String currentAddress1,
+      @Part( name:"current_Address2") String currentAddress2,
+      @Part( name:"current_Address3") String currentAddress3,
+      @Part( name:"current_City") String currentCity,
+      @Part( name:"current_Pincode") String currentPincode,
+      @Part( name:"current_State") String currentState,
+      @Part( name:"IsMarried") bool isMarried,
+      @Part( name:"GroupCode") String groupCode,
+      @Part( name:"BranchCode") String branchCode,
+      @Part( name: "Picture") File Picture);
 
-  @GET("LiveTrack/GetCSOMothlyTarget")
-  Future <TargetResponseModel> getTarget(
+  @POST("FiSourcing/AddFiIDs")
+  Future <GlobalModel> addFiIds(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Query("KO_ID") String KO_ID,
-      @Query("Month") String Month,
-      @Query("Year") String Year);
+      @Body() Map<String, dynamic> body);
 
   @POST("LiveTrack/InsertMonthTargetCSO")
   Future <TargetResponseModel> setTarget(

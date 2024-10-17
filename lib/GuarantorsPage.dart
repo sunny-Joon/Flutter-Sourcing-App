@@ -9,9 +9,9 @@ import 'Models/BorrowerListModel.dart';
 import 'Models/RangeCategoryModel.dart';
 
 class GuarantorsPage extends StatefulWidget {
-  final BorrowerListDataModel borrower;
+  /*final BorrowerListDataModel borrower;
 
-  GuarantorsPage({required this.borrower});
+  GuarantorsPage({required this.borrower});*/
 
   @override
   _GuarantorsPageState createState() => _GuarantorsPageState();
@@ -243,7 +243,7 @@ class _GuarantorsPageState extends State<GuarantorsPage> {
           ),
         ),
         SizedBox(width: 8),
-        GestureDetector(
+/*        GestureDetector(
           onTap: () async {
             _imagePath = await GlobalClass().pickImage();
             print('Image clicked'+_imagePath.toString());
@@ -270,7 +270,7 @@ class _GuarantorsPageState extends State<GuarantorsPage> {
                   width: 50,
                   height: 50,
                 ),
-        ),
+        ),*/
       ],
     );
   }
@@ -506,10 +506,10 @@ class _GuarantorsPageState extends State<GuarantorsPage> {
   Future<void> updateGaurantors(BuildContext context) async {
 
     Map<String, dynamic> requestBody= {
-      "creator": widget.borrower.creator,
+      /*"creator": widget.borrower.creator,
       "code": widget.borrower.code,
       "tag": "RTAG",
-      "fi_Code": widget.borrower.code,
+      "fi_Code": widget.borrower.code,*/
       "grNo": 1,
       "aadharID": aadhaarController,
       "name": nameController,

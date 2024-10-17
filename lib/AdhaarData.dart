@@ -7,9 +7,11 @@ import 'Models/BorrowerListModel.dart';
 import 'Models/RangeCategoryModel.dart';
 
 class AdhaarData extends StatefulWidget {
-  final BorrowerListDataModel borrower;
+  const AdhaarData({super.key});
 
-  AdhaarData({required this.borrower});
+  /*final BorrowerListDataModel borrower;
+
+  AdhaarData({required this.borrower});*/
 
   @override
   _AdhaarDataState createState() => _AdhaarDataState();
@@ -250,8 +252,8 @@ class _AdhaarDataState extends State<AdhaarData> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState?.validate() ?? false) {
-                      updateAddress(
-                          widget.borrower); // Function to handle address update
+                     /* updateAddress(
+                          widget.borrower); */// Function to handle address update
                     }
                   },
                   child: Text(

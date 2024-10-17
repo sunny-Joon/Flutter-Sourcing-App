@@ -9,9 +9,9 @@ import 'Models/RangeCategoryModel.dart';
 
 class FamMemIncome extends StatefulWidget {
 
-
+/*
   final BorrowerListDataModel borrower;
-  FamMemIncome({required this.borrower});
+  FamMemIncome({required this.borrower});*/
 
   @override
   _FamMemIncomeState createState() => _FamMemIncomeState();
@@ -298,8 +298,8 @@ class _FamMemIncomeState extends State<FamMemIncome> {
 
   Future<void> updateFamMemIncome(BuildContext context) async {
     Map<String, dynamic> requestBody = {
-      "fiCode": widget.borrower.code,
-      "creator": widget.borrower.creator,
+     /* "fiCode": widget.borrower.code,
+      "creator": widget.borrower.creator,*/
       "tag": "RTAG",
       "famMemName":_nameController.text,
       "relationship":relationshipType,
