@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:archive/archive.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
@@ -30,8 +32,12 @@ class _KYCPageState extends State<KYCPage> {
   List<RangeCategoryDataModel> bank = [];
 
   List<String> titleList = ["Select", "Mr.", "Mrs.", "Miss"];
-   String titleselected="Select";
+  String titleselected = "Select";
   String selectedTitle = "Select";
+  String expense = "";
+  String income = "";
+  String lati = "";
+  String longi = "";
 
   bool isMarried = false;
   String stateselected = 'select';
@@ -52,29 +58,36 @@ class _KYCPageState extends State<KYCPage> {
     relation = await DatabaseHelper().selectRangeCatData("relationship");
     reasonForLoan = await DatabaseHelper().selectRangeCatData("loan_purpose");
     aadhar_gender = await DatabaseHelper().selectRangeCatData("gender");
-    business_Type = await DatabaseHelper().selectRangeCatData("business-type"); // Call your SQLite method
-    income_type = await DatabaseHelper().selectRangeCatData("income-type"); // Call your SQLite method
-    bank = await DatabaseHelper().selectRangeCatData("banks"); // Call your SQLite method
+    business_Type = await DatabaseHelper()
+        .selectRangeCatData("business-type"); // Call your SQLite method
+    income_type = await DatabaseHelper()
+        .selectRangeCatData("income-type"); // Call your SQLite method
+    bank = await DatabaseHelper()
+        .selectRangeCatData("banks"); // Call your SQLite method
 
     setState(() {
-      states.insert(0, RangeCategoryDataModel(
-        catKey: 'Select',
-        groupDescriptionEn: 'select',
-        groupDescriptionHi: 'select',
-        descriptionEn: 'Select', // Display text
-        descriptionHi: 'select',
-        sortOrder: 0,
-        code: 'select', // Value of the placeholder
-      ));
-      aadhar_gender.insert(0, RangeCategoryDataModel(
-        catKey: 'Select',
-        groupDescriptionEn: 'select',
-        groupDescriptionHi: 'select',
-        descriptionEn: 'Select', // Display text
-        descriptionHi: 'select',
-        sortOrder: 0,
-        code: 'select', // Value of the placeholder
-      ));
+      states.insert(
+          0,
+          RangeCategoryDataModel(
+            catKey: 'Select',
+            groupDescriptionEn: 'select',
+            groupDescriptionHi: 'select',
+            descriptionEn: 'Select', // Display text
+            descriptionHi: 'select',
+            sortOrder: 0,
+            code: 'select', // Value of the placeholder
+          ));
+      aadhar_gender.insert(
+          0,
+          RangeCategoryDataModel(
+            catKey: 'Select',
+            groupDescriptionEn: 'select',
+            groupDescriptionHi: 'select',
+            descriptionEn: 'Select', // Display text
+            descriptionHi: 'select',
+            sortOrder: 0,
+            code: 'select', // Value of the placeholder
+          ));
     }); // Refresh the UI
   }
 
@@ -111,6 +124,7 @@ class _KYCPageState extends State<KYCPage> {
   final _branchCodeController = TextEditingController();
 
   final _voterIdController = TextEditingController();
+  final _passportController = TextEditingController();
   final _panNoController = TextEditingController();
   final _drivingLicenseController = TextEditingController();
   final _districtController = TextEditingController();
@@ -142,11 +156,20 @@ class _KYCPageState extends State<KYCPage> {
   String? selectedOccupation;
   String? selectedLoanDuration;
   String? selectedBank;
-  String qrResult="";
+  String? Fi_Id;
+  String qrResult = "";
+  File? _imageFile;
 
+  void _pickImage() async {
+    File? pickedImage = await GlobalClass().pickImage();
+    if (pickedImage != null) {
+      setState(() {
+        _imageFile = pickedImage;
+      });
+    }
+  }
 
   Future<void> _selectDate(BuildContext context) async {
-
     DateTime now = DateTime.now();
     DateTime initialDate = _selectedDate ?? now;
 
@@ -160,7 +183,8 @@ class _KYCPageState extends State<KYCPage> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _dobController.text = DateFormat('MM/dd/yyyy').format(picked);
+        _dobController.text = DateFormat('yyyy/MM/dd').format(picked);
+        print(_dobController.text);
       });
       _calculateAge();
     }
@@ -185,7 +209,6 @@ class _KYCPageState extends State<KYCPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text('KYC'),
@@ -204,30 +227,33 @@ class _KYCPageState extends State<KYCPage> {
           ),
           child: Padding(
             padding: EdgeInsets.only(left: 10, right: 10, top: 30, bottom: 80),
-            child:  Stepper(
+            child: Stepper(
               type: StepperType.horizontal,
               currentStep: _currentStep,
               onStepContinue: () {
+                // Validate the current step's form before proceeding
                 if (_formKeys[_currentStep].currentState?.validate() ?? false) {
-                  if (_currentStep == 1) saveFiMethod(context);
-                  if (_currentStep == 2) saveAddressMethod();
-                  if (_currentStep == 3) savePersonalDetailsMethod();
-                  if (_currentStep == 4) saveDataMethod();
-                  if (_currentStep < 4) {
-                    setState(() {
-                      _currentStep += 1;
-                    });
+                  // Call the save method based on the current step
+                  if (_currentStep == 0) {
+                    saveFiMethod(context); // Call save method for step 0
+                  } else if (_currentStep == 1) {
+                    saveIDsMethod(context);
+                  } else if (_currentStep == 2) {
+                    savePersonalDetailsMethod();
+                  } else if (_currentStep == 3) {
+                    saveDataMethod();
                   }
+                  /*if (_currentStep < 3) {
+                      setState(() {
+                        _currentStep += 1;
+                      });
+                    }*/
                 }
               },
               onStepCancel: () {
                 if (_currentStep > 0) {
                   setState(() {
                     _currentStep -= 1;
-                  });
-                } else {
-                  setState(() {
-                    _currentStep = 0;
                   });
                 }
               },
@@ -236,22 +262,23 @@ class _KYCPageState extends State<KYCPage> {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                  SizedBox(
-                  width: 150,
-                  child: TextButton(
-                      onPressed: controls.onStepContinue,
-                      child: Text(
-                        'Next',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: TextButton.styleFrom(
-                        backgroundColor: Color(0xFFD42D3F),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.elliptical(5, 5)), // Set border radius to zero for sharp corners
+                    SizedBox(
+                      width: 150,
+                      child: TextButton(
+                        onPressed: controls.onStepContinue,
+                        child: Text(
+                          'Next',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFFD42D3F),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.elliptical(5,
+                                5)), // Set border radius to zero for sharp corners
+                          ),
                         ),
                       ),
                     ),
-                  )
                   ],
                 );
               },
@@ -263,16 +290,12 @@ class _KYCPageState extends State<KYCPage> {
                     key: _formKeys[0],
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-
                       children: [
-
                         Row(
                           children: [
                             Expanded(
-                              child:
-                                  _buildTextField(
-                                      'Aadhaar Id', _aadharIdController)
-                            ),
+                                child: _buildTextField(
+                                    'Aadhaar Id', _aadharIdController)),
                             GestureDetector(
                               onTap: () => _showPopup(context, (String result) {
                                 setState(() {
@@ -300,7 +323,8 @@ class _KYCPageState extends State<KYCPage> {
                                   Container(
                                     width: 150, // Adjust the width as needed
                                     height: 35, // Fixed height
-                                    padding: EdgeInsets.symmetric(horizontal: 12),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 12),
                                     decoration: BoxDecoration(
                                       border: Border.all(color: Colors.grey),
                                       borderRadius: BorderRadius.circular(5),
@@ -311,10 +335,12 @@ class _KYCPageState extends State<KYCPage> {
                                       icon: Icon(Icons.arrow_downward),
                                       iconSize: 24,
                                       elevation: 16,
-                                      style: TextStyle(color: Colors.black, fontSize: 16),
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16),
                                       underline: Container(
                                         height: 2,
-                                        color: Colors.transparent, // Set to transparent to remove default underline
+                                        color: Colors
+                                            .transparent, // Set to transparent to remove default underline
                                       ),
                                       onChanged: (String? newValue) {
                                         setState(() {
@@ -333,25 +359,36 @@ class _KYCPageState extends State<KYCPage> {
                               ),
                             ),
                             GestureDetector(
-                              // onTap: () => _showPopup(context, qrResult!),
-                              child: Icon(
-                                Icons.person,
-                                size: 50.0, // Set the size of the icon
-                                color: Colors.blue, // Set the color of the icon
-                              ),
+                              onTap: _pickImage,
+                              child: _imageFile == null
+                                  ? Icon(
+                                      Icons.person,
+                                      size: 50.0,
+                                      color: Colors.blue,
+                                    )
+                                  : Image.file(
+                                      File(_imageFile!.path),
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
                           ],
                         ),
-
                         _buildTextField('Name', _nameController),
                         Row(
                           children: [
-                            Expanded(child: _buildTextField('Middle Name', _nameMController)),
-                            SizedBox(width: 16), // Add spacing between the text fields if needed
-                            Expanded(child: _buildTextField('Last Name', _nameLController)),
+                            Expanded(
+                                child: _buildTextField(
+                                    'Middle Name', _nameMController)),
+                            SizedBox(
+                                width:
+                                    16), // Add spacing between the text fields if needed
+                            Expanded(
+                                child: _buildTextField(
+                                    'Last Name', _nameLController)),
                           ],
                         ),
-
                         Text(
                           'Gender',
                           style: TextStyle(fontSize: 20),
@@ -373,16 +410,19 @@ class _KYCPageState extends State<KYCPage> {
                             style: TextStyle(color: Colors.black, fontSize: 16),
                             underline: Container(
                               height: 2,
-                              color: Colors.transparent, // Set to transparent to remove default underline
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
                             ),
                             onChanged: (String? newValue) {
                               if (newValue != null) {
                                 setState(() {
-                                  genderselected = newValue; // Update the selected value
+                                  genderselected =
+                                      newValue; // Update the selected value
                                 });
                               }
                             },
-                            items: aadhar_gender.map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
+                            items: aadhar_gender.map<DropdownMenuItem<String>>(
+                                (RangeCategoryDataModel state) {
                               return DropdownMenuItem<String>(
                                 value: state.code,
                                 child: Text(state.descriptionEn),
@@ -390,7 +430,6 @@ class _KYCPageState extends State<KYCPage> {
                             }).toList(),
                           ),
                         ),
-
                         _buildTextField('Mobile no', _mobileNoController),
                         Row(
                           children: [
@@ -448,18 +487,22 @@ class _KYCPageState extends State<KYCPage> {
                             ),
                           ],
                         ),
-
                         _buildTextField(
                             'Father First Name', _fatherFirstNameController),
                         Row(
                           children: [
-                            Expanded(child: _buildTextField('Father Middle Name', _fatherMiddleNameController),),
-                            SizedBox(width: 8), // Add spacing between the text fields if needed
-                            Expanded(child: _buildTextField(
-                                'Father Last Name', _fatherLastNameController)),
+                            Expanded(
+                              child: _buildTextField('Father Middle Name',
+                                  _fatherMiddleNameController),
+                            ),
+                            SizedBox(
+                                width:
+                                    8), // Add spacing between the text fields if needed
+                            Expanded(
+                                child: _buildTextField('Father Last Name',
+                                    _fatherLastNameController)),
                           ],
                         ),
-
                         CheckboxListTile(
                           title: Text('IsMarried'),
                           value: isMarried,
@@ -473,29 +516,41 @@ class _KYCPageState extends State<KYCPage> {
                             'Spouse First Name', _spouseFirstNameController),
                         Row(
                           children: [
-                            Expanded(child: _buildTextField(
-                                'Spouse Middle Name', _spouseMiddleNameController)),
-                            SizedBox(width: 8), // Add spacing between the text fields if needed
-                            Expanded(child: _buildTextField(
-                                'Spouse Last Name', _spouseLastNameController)),
+                            Expanded(
+                                child: _buildTextField('Spouse Middle Name',
+                                    _spouseMiddleNameController)),
+                            SizedBox(
+                                width:
+                                    8), // Add spacing between the text fields if needed
+                            Expanded(
+                                child: _buildTextField('Spouse Last Name',
+                                    _spouseLastNameController)),
                           ],
                         ),
                         Row(
                           children: [
-                            Expanded(child: _buildTextField(
-                                'Monthly Expense', _incomeController)),
-                            SizedBox(width: 8), // Add spacing between the text fields if needed
-                            Expanded(child: _buildTextField(
-                                'Monthly Income', _expenseController)),
+                            Expanded(
+                                child: _buildTextField(
+                                    'Monthly Expense', _incomeController)),
+                            SizedBox(
+                                width:
+                                    8), // Add spacing between the text fields if needed
+                            Expanded(
+                                child: _buildTextField(
+                                    'Monthly Income', _expenseController)),
                           ],
                         ),
                         Row(
                           children: [
-                            Expanded(child: _buildTextField(
-                                'Latitude', _latitudeController)),
-                            SizedBox(width: 8), // Add spacing between the text fields if needed
-                            Expanded(child: _buildTextField(
-                                'Longitude', _longitudeController)),
+                            Expanded(
+                                child: _buildTextField(
+                                    'Latitude', _latitudeController)),
+                            SizedBox(
+                                width:
+                                    8), // Add spacing between the text fields if needed
+                            Expanded(
+                                child: _buildTextField(
+                                    'Longitude', _longitudeController)),
                           ],
                         ),
                         _buildTextField('Address1', _address1Controller),
@@ -504,10 +559,12 @@ class _KYCPageState extends State<KYCPage> {
                         Row(
                           children: [
                             Expanded(
-                                child: _buildTextField('City', _cityController)),
+                                child:
+                                    _buildTextField('City', _cityController)),
                             SizedBox(width: 16),
                             Expanded(
-                                child: _buildTextField('Pincode', _pincodeController)),
+                                child: _buildTextField(
+                                    'Pincode', _pincodeController)),
                           ],
                         ),
                         Text(
@@ -531,16 +588,19 @@ class _KYCPageState extends State<KYCPage> {
                             style: TextStyle(color: Colors.black, fontSize: 16),
                             underline: Container(
                               height: 2,
-                              color: Colors.transparent, // Set to transparent to remove default underline
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
                             ),
                             onChanged: (String? newValue) {
                               if (newValue != null) {
                                 setState(() {
-                                  stateselected = newValue; // Update the selected value
+                                  stateselected =
+                                      newValue; // Update the selected value
                                 });
                               }
                             },
-                            items: states.map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
+                            items: states.map<DropdownMenuItem<String>>(
+                                (RangeCategoryDataModel state) {
                               return DropdownMenuItem<String>(
                                 value: state.code,
                                 child: Text(state.descriptionEn),
@@ -548,14 +608,15 @@ class _KYCPageState extends State<KYCPage> {
                             }).toList(),
                           ),
                         ),
-
                         Row(
                           children: [
                             Expanded(
-                                child: _buildTextField('Group Code', _groupCodeController)),
+                                child: _buildTextField(
+                                    'Group Code', _groupCodeController)),
                             SizedBox(width: 16),
                             Expanded(
-                                child: _buildTextField('Branch Code', _branchCodeController)),
+                                child: _buildTextField(
+                                    'Branch Code', _branchCodeController)),
                           ],
                         ),
                       ],
@@ -570,33 +631,12 @@ class _KYCPageState extends State<KYCPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildTextField('Voter Id', _voterIdController),
                         _buildTextField(
                             'Permanent Account PAN No', _panNoController),
                         _buildTextField(
                             'Driving License', _drivingLicenseController),
-                        Row(
-                          children: [
-                            Expanded(
-                                child:
-                                    _buildTextField('City', _cityController)),
-                            SizedBox(width: 16),
-                            Expanded(
-                                child: _buildTextField(
-                                    'District', _districtController)),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: _buildTextField(
-                                    'Sub District', _subDistrictController)),
-                            SizedBox(width: 16),
-                            Expanded(
-                                child: _buildTextField(
-                                    'Village', _villageController)),
-                          ],
-                        ),
+                        _buildTextField('Voter Id', _voterIdController),
+                        _buildTextField('Passport', _passportController),
                       ],
                     ),
                   ),
@@ -615,7 +655,6 @@ class _KYCPageState extends State<KYCPage> {
                             'Mother Middle Name', _motherMiddleNameController),
                         _buildTextField(
                             'Mother Last Name', _motherLastNameController),
-
                       ],
                     ),
                   ),
@@ -682,30 +721,28 @@ class _KYCPageState extends State<KYCPage> {
           ),
           SizedBox(height: 1),
           Container(
-            width: double.infinity, // Set the desired width
-            height: 45, // Set the desired height
-            child: Center(
-              child: TextFormField(
-                controller: controller,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+              width: double.infinity, // Set the desired width
+              height: 45, // Set the desired height
+              child: Center(
+                child: TextFormField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter $label';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter $label';
-                  }
-                  return null;
-                },
-              ),
-            )
-          ),
+              )),
         ],
       ),
     );
   }
 
-
- /* Future<void> updateAddress(BorrowerListDataModel borrower) async {
+  /* Future<void> updateAddress(BorrowerListDataModel borrower) async {
     Map<String, dynamic> requestBody = {
       "groupCode": borrower.groupCode,
       "AadharID": _aadharIdController.text,
@@ -776,48 +813,120 @@ class _KYCPageState extends State<KYCPage> {
     };
   }*/
 
-    Future<void> saveFiMethod( BuildContext context) async {
-    String adhaarid =  _aadharIdController.toString();
-    String title =  titleselected;
-    String name =  _nameController.toString();
-    String middlename =  _nameMController.toString();
-    String lastname =  _nameLController.toString();
-    String dob =  _dobController.toString();
-    String gendre =  genderselected;
-    String mobile =  _mobileNoController.toString();
-    String fatherF =  _fatherFirstNameController.toString();
-    String fatherM =  _fatherMiddleNameController.toString();
-    String fatherL =  _fatherLastNameController.toString();
-    String spouseF =  _spouseFirstNameController.toString();
-    String spouseM =  _spouseMiddleNameController.toString();
-    String spouseL =  _spouseLastNameController.toString();
-    int expense = int.parse(_expenseController.text);
-    int income = int.parse(_incomeController.text);
-    double latitude = double.parse(_latitudeController.text);
-    double longitude = double.parse(_longitudeController.text);;
-    String add1 =  _address1Controller.toString();
-    String add2 =  _address2Controller.toString();
-    String add3 =  _address3Controller.toString();
-    String city =  _cityController.toString();
-    String pin =  _pincodeController.toString();
-    String state =  stateselected;
+  Future<void> saveFiMethod(BuildContext context) async {
+    print("object");
+    String adhaarid = _aadharIdController.text.toString();
+    String title = titleselected;
+    String name = _nameController.text.toString();
+    String middlename = _nameMController.text.toString();
+    String lastname = _nameLController.text.toString();
+    String dob = _dobController.text.toString();
+    String gendre = genderselected;
+    String mobile = _mobileNoController.text.toString();
+    String fatherF = _fatherFirstNameController.text.toString();
+    String fatherM = _fatherMiddleNameController.text.toString();
+    String fatherL = _fatherLastNameController.text.toString();
+    String spouseF = _spouseFirstNameController.text.toString();
+    String spouseM = _spouseMiddleNameController.text.toString();
+    String spouseL = _spouseLastNameController.text.toString();
+    expense = _expenseController.text;
+    income = _expenseController.text;
+    lati = _latitudeController.text;
+    longi = _longitudeController.text;
+    int Expense = int.parse(expense);
+    int Income = int.parse(income);
+    double latitude = double.parse(lati);
+    double longitude = double.parse(longi);
+    String add1 = _address1Controller.text.toString();
+    String add2 = _address2Controller.text.toString();
+    String add3 = _address3Controller.text.toString();
+    String city = _cityController.text.toString();
+    String pin = _pincodeController.text.toString();
+    String state = stateselected;
     bool ismarried = isMarried;
-    String gCode =  _groupCodeController.toString();
-    String bCode =  _branchCodeController.toString();
+    String gCode = _groupCodeController.text.toString();
+    String bCode = _branchCodeController.text.toString();
+    print("add 3 $add3");
 
-      final api = Provider.of<ApiService>(context, listen: false);
+    final api = Provider.of<ApiService>(context, listen: false);
 
-      return await api.saveFi(GlobalClass.token, GlobalClass.dbName,adhaarid,title,name,middlename,lastname,dob,gendre,mobile,fatherF,fatherM,fatherL,spouseF,spouseM,spouseL,"creator",expense,income,latitude,longitude,add1,add2,add3,city,pin,state,ismarried,gCode,bCode,"picture")
-          .then((value) async {
-        if (value.statuscode == 200) {
+    return await api
+        .saveFi(
+            GlobalClass.token,
+            GlobalClass.dbName,
+            adhaarid,
+            title,
+            name,
+            middlename,
+            lastname,
+            dob,
+            gendre,
+            mobile,
+            fatherF,
+            fatherM,
+            fatherL,
+            spouseF,
+            spouseM,
+            spouseL,
+            "creator",
+            Expense,
+            Income,
+            latitude,
+            longitude,
+            add1,
+            add2,
+            add2,
+            city,
+            pin,
+            state,
+            ismarried,
+            gCode,
+            bCode,
+            _imageFile!)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          _currentStep += 1;
+          Fi_Id = value.data[0].fiId.toString();
+        });
+      } else {}
+    });
+  }
 
-        } else {
-        }
+  Future<void> saveIDsMethod(BuildContext context) async {
+    print("object");
+    String fiid = Fi_Id.toString();
+    String pan_no = _panNoController.text.toString();
+    String dl = _drivingLicenseController.text.toString();
+    String voter_id = _voterIdController.text.toString();
+    String passport = _passportController.text.toString();
+    int isAadharVerified = 1;
+    int is_phnno_verified = 1;
+    int isNameVerify = 1;
 
-      });
-    }
+    final api = Provider.of<ApiService>(context, listen: false);
 
-  void saveAddressMethod() {}
+    Map<String, dynamic> requestBody = {
+      "Fi_ID": fiid,
+      "pan_no": pan_no,
+      "dl": dl,
+      "voter_id": voter_id,
+      "passport": passport,
+      "isAadharVerified": isAadharVerified,
+      "is_phnno_verified": is_phnno_verified,
+      "isNameVerify": isNameVerify
+    };
+
+    return await api
+        .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          _currentStep += 1;
+        });
+      } else {}
+    });
+  }
 
   void savePersonalDetailsMethod() {}
 
@@ -848,7 +957,8 @@ void _showPopup(BuildContext context, Function(String) onResult) {
                   style: TextButton.styleFrom(
                     backgroundColor: Color(0xFFD42D3F),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5), // Adjust as needed
+                      borderRadius:
+                          BorderRadius.circular(5), // Adjust as needed
                     ),
                   ),
                 ),
@@ -868,7 +978,8 @@ void _showPopup(BuildContext context, Function(String) onResult) {
                   style: TextButton.styleFrom(
                     backgroundColor: Color(0xFFD42D3F),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5), // Adjust as needed
+                      borderRadius:
+                          BorderRadius.circular(5), // Adjust as needed
                     ),
                   ),
                 ),
@@ -888,8 +999,10 @@ void _showPopup(BuildContext context, Function(String) onResult) {
                       BigInt bigIntScanData = BigInt.parse(result);
                       List<int> byteScanData = bigIntToBytes(bigIntScanData);
 
-                      List<int> decompByteScanData = decompressData(byteScanData);
-                      List<List<int>> parts = separateData(decompByteScanData, 255, 15);
+                      List<int> decompByteScanData =
+                          decompressData(byteScanData);
+                      List<List<int>> parts =
+                          separateData(decompByteScanData, 255, 15);
                       String qrResult = decodeData(parts);
 
                       onResult(qrResult);
@@ -904,7 +1017,8 @@ void _showPopup(BuildContext context, Function(String) onResult) {
                   style: TextButton.styleFrom(
                     backgroundColor: Color(0xFFD42D3F),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5), // Adjust as needed
+                      borderRadius:
+                          BorderRadius.circular(5), // Adjust as needed
                     ),
                   ),
                 ),
@@ -917,7 +1031,6 @@ void _showPopup(BuildContext context, Function(String) onResult) {
   );
 }
 
-
 List<int> bigIntToBytes(BigInt bigInt) {
   // Convert BigInt to a byte array (List<int>)
   List<int> byteArray = [];
@@ -929,7 +1042,6 @@ List<int> bigIntToBytes(BigInt bigInt) {
 }
 
 List<int> decompressData(List<int> byteScanData) {
-
   try {
     // Decompress the GZIP data
     List<int> decompressedData = GZipDecoder().decodeBytes(byteScanData);
@@ -942,7 +1054,8 @@ List<int> decompressData(List<int> byteScanData) {
   }
 }
 
-List<List<int>> separateData(List<int> source, int separatorByte, int vtcIndex) {
+List<List<int>> separateData(
+    List<int> source, int separatorByte, int vtcIndex) {
   int imageStartIndex = 0;
 
   List<List<int>> separatedParts = [];
@@ -970,21 +1083,16 @@ List<List<int>> separateData(List<int> source, int separatorByte, int vtcIndex) 
 }
 
 String decodeData(List<List<int>> encodedData) {
-  String test="";
+  String test = "";
   List<String> decodedData = [];
 
   for (var byteArray in encodedData) {
     // Decode using ISO-8859-1
-    String decodedString = utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
+    String decodedString =
+        utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
     decodedData.add(decodedString);
-    test+=decodedString;
+    test += decodedString;
   }
 
   return test;
 }
-
-
-
-
-
-

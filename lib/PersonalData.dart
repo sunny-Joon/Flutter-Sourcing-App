@@ -7,10 +7,12 @@ import 'Models/BorrowerListModel.dart';
 import 'Models/RangeCategoryModel.dart';
 
 class PersonalData extends StatefulWidget {
+  const PersonalData({super.key});
 
 
-  final BorrowerListDataModel borrower;
-  PersonalData({required this.borrower});
+
+  /*final BorrowerListDataModel borrower;
+  PersonalData({required this.borrower});*/
 
   @override
   _PersonalDataState createState() => _PersonalDataState();
@@ -330,8 +332,8 @@ class _PersonalDataState extends State<PersonalData> {
   Future<void> updatePersonalDetails(BuildContext context) async {
 
     Map<String, dynamic> requestBody = {
-      "fiCode": widget.borrower.code,
-      "creator": widget.borrower.creator,
+     /* "fiCode": widget.borrower.code,
+      "creator": widget.borrower.creator,*/
       "tag": "RTAG",
       "emailId": emailIdController.text,
       "caste": selectedCaste,

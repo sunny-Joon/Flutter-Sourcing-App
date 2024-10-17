@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -96,14 +98,11 @@ class GlobalClass {
     return age;
   }
 
-  Future<String?> pickImage() async {
+  Future<File?> pickImage() async {
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: ImageSource.camera);
-
-    if (pickedImage != null) {
-      return pickedImage.path;
-    }
-    return null;
+    return pickedImage != null ? File(pickedImage.path) : null;
   }
+
 
 }

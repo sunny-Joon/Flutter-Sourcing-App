@@ -103,7 +103,7 @@ class _BorrowerListState extends State<BorrowerList> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ApplicationForm(
-                          borrower: item, // Pass the item object
+                      //    borrower: item, // Pass the item object
                         ),
                       ),
                     );

@@ -450,12 +450,12 @@ Future<void> _saveMappingReq(
   };
 
   return await api.getImeiMappingReq(GlobalClass.dbName, requestBody).then((value) async {
-    if (value.statusCode == 200) {
+    if (value.statuscode == 200) {
         PopupDialog.showPopup(
-            context, value.statusCode.toString(), value.message);
+            context, value.statuscode.toString(), value.message);
 
     } else {
-      PopupDialog.showPopup(context, value.statusCode.toString(), value.message);
+      PopupDialog.showPopup(context, value.statuscode.toString(), value.message);
 
     }
   });

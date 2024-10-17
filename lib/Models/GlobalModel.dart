@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final globalModel = globalModelFromJson(jsonString);
-
 import 'dart:convert';
 
 GlobalModel globalModelFromJson(String str) => GlobalModel.fromJson(json.decode(str));
@@ -9,25 +5,49 @@ GlobalModel globalModelFromJson(String str) => GlobalModel.fromJson(json.decode(
 String globalModelToJson(GlobalModel data) => json.encode(data.toJson());
 
 class GlobalModel {
-  int statusCode;
+  int statuscode;
   String message;
-  int data;
+  List<GlobalDataModel> data;
 
   GlobalModel({
-    required this.statusCode,
+    required this.statuscode,
     required this.message,
     required this.data,
   });
 
   factory GlobalModel.fromJson(Map<String, dynamic> json) => GlobalModel(
-    statusCode: json["statusCode"],
+    statuscode: json["statuscode"],
     message: json["message"],
-    data: json["data"],
+    data: List<GlobalDataModel>.from(json["data"].map((x) => GlobalDataModel.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "statusCode": statusCode,
+    "statuscode": statuscode,
     "message": message,
-    "data": data,
+    "data": List<dynamic>.from(data.map((x) => x.toJson())),
+  };
+}
+
+class GlobalDataModel {
+  int fiId;
+  String errormsg;
+  bool isvalide;
+
+  GlobalDataModel({
+    required this.fiId,
+    required this.errormsg,
+    required this.isvalide,
+  });
+
+  factory GlobalDataModel.fromJson(Map<String, dynamic> json) => GlobalDataModel(
+    fiId: json["fi_Id"],
+    errormsg: json["errormsg"],
+    isvalide: json["isvalide"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "fi_Id": fiId,
+    "errormsg": errormsg,
+    "isvalide": isvalide,
   };
 }

@@ -385,23 +385,3 @@ class LoginPage extends StatelessWidget {
     });
   }
 }
-
-void _showErrorDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Login Failed"),
-        content: Text("Incorrect username or password."),
-        actions: <Widget>[
-          TextButton(
-            child: Text("OK"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
