@@ -5,8 +5,6 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'ApiService.dart';
 import 'LoginPage.dart';
-import 'QRDATA.dart';
-import 'QRScanPage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +50,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home: LoginPage(),
+         // home:LoginPage(),
           home:LoginPage(),
       ),
     );

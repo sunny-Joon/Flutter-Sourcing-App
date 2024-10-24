@@ -338,7 +338,7 @@ class _HomePageState extends State<HomePage> {
       // "targetObj": someValue
     };
 
-    try {
+    /*try {
       final response = await api2.setTarget(GlobalClass.token, GlobalClass.dbName, requestBody);
       if (response.statusCode == 200) {
         print('PASS to Save Target');
@@ -347,7 +347,7 @@ class _HomePageState extends State<HomePage> {
       }
     } catch (e) {
       print('Error: $e');
-    }
+    }*/
   }
 }
 

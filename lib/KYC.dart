@@ -102,7 +102,6 @@ class _KYCPageState extends State<KYCPage> {
   final _nameLController = TextEditingController();
   final _ageController = TextEditingController();
   final _dobController = TextEditingController();
-  final _genderController = TextEditingController();
   final _mobileNoController = TextEditingController();
   final _fatherFirstNameController = TextEditingController();
   final _fatherMiddleNameController = TextEditingController();
@@ -119,7 +118,6 @@ class _KYCPageState extends State<KYCPage> {
   final _address3Controller = TextEditingController();
   final _cityController = TextEditingController();
   final _pincodeController = TextEditingController();
-  final _stateNameController = TextEditingController();
   final _groupCodeController = TextEditingController();
   final _branchCodeController = TextEditingController();
 
@@ -127,35 +125,14 @@ class _KYCPageState extends State<KYCPage> {
   final _passportController = TextEditingController();
   final _panNoController = TextEditingController();
   final _drivingLicenseController = TextEditingController();
-  final _districtController = TextEditingController();
-  final _subDistrictController = TextEditingController();
-  final _villageController = TextEditingController();
-  final _motherFirstNameController = TextEditingController();
-  final _motherMiddleNameController = TextEditingController();
-  final _motherLastNameController = TextEditingController();
-  final _monthlyIncomeController = TextEditingController();
-  final _monthlyExpenseController = TextEditingController();
-  final _futureIncomeController = TextEditingController();
-  final _agricultureIncomeController = TextEditingController();
-  final _pensionIncomeController = TextEditingController();
-  final _interestIncomeController = TextEditingController();
-  final _otherIncomeController = TextEditingController();
-  final _earningMemberIncomeController = TextEditingController();
-  final _earningMemberTypeController = TextEditingController();
-  final _loanAmtController = TextEditingController();
-  final _businessDetailController = TextEditingController();
-  final _loanReasonController = TextEditingController();
-  final _OccupationController = TextEditingController();
-  final _loanDurationController = TextEditingController();
-  final _selectBankController = TextEditingController();
 
-  String? selectedState;
+/*  String? selectedState;
   String? selectedEarningMemberType;
   String? selectedBusinessDetail;
   String? selectedLoanPurpose;
   String? selectedOccupation;
   String? selectedLoanDuration;
-  String? selectedBank;
+  String? selectedBank;*/
   String? Fi_Id;
   String qrResult = "";
   File? _imageFile;
@@ -218,15 +195,12 @@ class _KYCPageState extends State<KYCPage> {
       body: Center(
         child: Container(
           height: MediaQuery.of(context).size.height - 100,
-          width: MediaQuery.of(context).size.width - 50,
+          width: MediaQuery.of(context).size.width - 24,
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/Images/curvedBackground.png'),
-              fit: BoxFit.fill,
-            ),
+            color: Colors.white
           ),
           child: Padding(
-            padding: EdgeInsets.only(left: 10, right: 10, top: 30, bottom: 80),
+            padding: EdgeInsets.only(left: 0, right: 0, top: 30, bottom: 10),
             child: Stepper(
               type: StepperType.horizontal,
               currentStep: _currentStep,
@@ -238,10 +212,6 @@ class _KYCPageState extends State<KYCPage> {
                     saveFiMethod(context); // Call save method for step 0
                   } else if (_currentStep == 1) {
                     saveIDsMethod(context);
-                  } else if (_currentStep == 2) {
-                    savePersonalDetailsMethod();
-                  } else if (_currentStep == 3) {
-                    saveDataMethod();
                   }
                   /*if (_currentStep < 3) {
                       setState(() {
@@ -318,7 +288,7 @@ class _KYCPageState extends State<KYCPage> {
                                 children: [
                                   Text(
                                     'Title',
-                                    style: TextStyle(fontSize: 20),
+                                    style: TextStyle(fontSize: 16),
                                   ),
                                   Container(
                                     width: 150, // Adjust the width as needed
@@ -391,7 +361,7 @@ class _KYCPageState extends State<KYCPage> {
                         ),
                         Text(
                           'Gender',
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 16),
                         ),
                         Container(
                           width: 150, // Adjust the width as needed
@@ -569,10 +539,10 @@ class _KYCPageState extends State<KYCPage> {
                         ),
                         Text(
                           'State Name',
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 16),
                         ),
                         Container(
-                          width: 150, // Adjust the width as needed
+                          width: double.infinity, // Adjust the width as needed
                           height: 35, // Fixed height
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
@@ -641,61 +611,6 @@ class _KYCPageState extends State<KYCPage> {
                     ),
                   ),
                 ),
-                Step(
-                  title: Text('3'),
-                  isActive: _currentStep >= 2,
-                  content: Form(
-                    key: _formKeys[2],
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildTextField(
-                            'Mother First Name', _motherFirstNameController),
-                        _buildTextField(
-                            'Mother Middle Name', _motherMiddleNameController),
-                        _buildTextField(
-                            'Mother Last Name', _motherLastNameController),
-                      ],
-                    ),
-                  ),
-                ),
-                Step(
-                  title: Text('4'),
-                  isActive: _currentStep >= 3,
-                  content: Form(
-                    key: _formKeys[3],
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildTextField(
-                            'Monthly Income', _monthlyIncomeController),
-                        _buildTextField(
-                            'Monthly Expense', _monthlyExpenseController),
-                        _buildTextField(
-                            'Future Income', _futureIncomeController),
-                        _buildTextField(
-                            'Agriculture Income', _agricultureIncomeController),
-                        _buildTextField(
-                            'Pension Income', _pensionIncomeController),
-                        _buildTextField(
-                            'Interest Income', _interestIncomeController),
-                        _buildTextField('Other Income', _otherIncomeController),
-                        _buildTextField('Earning Member Type',
-                            _earningMemberTypeController),
-                        _buildTextField('Earning Member Income',
-                            _earningMemberIncomeController),
-                        _buildTextField('Loan Amount', _loanAmtController),
-                        _buildTextField(
-                            'Business Detail', _businessDetailController),
-                        _buildTextField('Loan Reason', _loanReasonController),
-                        _buildTextField('Occupation', _OccupationController),
-                        _buildTextField(
-                            'Loan Duration', _loanDurationController),
-                        _buildTextField('Select Bank', _selectBankController),
-                      ],
-                    ),
-                  ),
-                ),
               ],
               stepIconHeight: 25,
             ),
@@ -741,77 +656,6 @@ class _KYCPageState extends State<KYCPage> {
       ),
     );
   }
-
-  /* Future<void> updateAddress(BorrowerListDataModel borrower) async {
-    Map<String, dynamic> requestBody = {
-      "groupCode": borrower.groupCode,
-      "AadharID": _aadharIdController.text,
-      "Age": int.parse(_ageController.text),
-      "Fname": _nameController.text, //have to split
-      "Mname": _nameController.text, //have to split
-      "Lname": _nameController.text, //have to split
-      "DOB": _dobController.text,
-      "P_Add1": _address1Controller.text,
-      "P_Add2": _address2Controller.text,
-      "P_Add3": _address3Controller.text,
-      "P_City": _cityController.text,
-      "P_Pin": int.parse(_pincodeController.text),
-      "P_Ph3": _mobileNoController.text, //doubt
-      "isMarried": isMarried,
-      "Gender": _genderController.text,
-      "P_State": selectedState,
-      "guardianRelatnWithBorrower": _relationshipController.text,
-
-      "voterId": _voterIdController.text,
-      "PanNO": _panNoController.text,
-      "DrivingLic": _drivingLicenseController.text,
-
-      "Loan_Amt": int.parse(_loanAmtController.text),
-      "Loan_Duration": selectedLoanDuration,
-      "Business_Detail": selectedBusinessDetail,
-      "Loan_Reason": selectedLoanPurpose,
-
-      "BankName": selectedBank,
-      "Expense": int.parse(_monthlyExpenseController.text),
-      "CityCode": _cityController.text,
-      "Creator": borrower.creator,
-      "UserID": GlobalClass.id,
-      "IsNameVerify": 'y',
-      "Latitude": 165.1515,
-      "Longitude": 165156.5154,
-      "T_Ph3": selectedBank,
-
-      "Cast": '',
-      "Code": 0,
-      "FAmily_member": 0,
-      "Loan_EMi": selectedLoanDuration,
-      "Area_Of_House": 0,
-      "T_Pin": 0,
-      "Tag": GlobalClass.tag,
-
-      "fiExtra": {
-        "motherName": _motherFirstNameController.text,
-        "motherMiddleName": _motherMiddleNameController.text,
-        "motherLastName": _motherLastNameController.text,
-        "fatherName": _motherFirstNameController.text,
-        "fatherMiddleName": _motherMiddleNameController.text,
-        "fatherLastName": _motherLastNameController.text,
-        "spouseFirstName": _spouseFirstNameController.text,
-        "spouseMiddleName": _spouseMiddleNameController.text,
-        "spouseLastName": _spouseLastNameController.text,
-        "monthlyIncome": int.parse(_monthlyIncomeController.text),
-        "futureIncome": int.parse(_futureIncomeController.text),
-        "agriculture_Income": int.parse(_agricultureIncomeController.text),
-        "pension_Income": int.parse(_pensionIncomeController.text),
-        "interest_Income": int.parse(_interestIncomeController.text),
-        "otherIncome": int.parse(_otherIncomeController.text),
-        "isBorrowerHandicap": 'N',
-        "earningMemberIncome": int.parse(_earningMemberIncomeController.text),
-        "earningMemberType": selectedEarningMemberType,
-        "occupation": selectedOccupation,
-      }
-    };
-  }*/
 
   Future<void> saveFiMethod(BuildContext context) async {
     print("object");
@@ -884,7 +728,7 @@ class _KYCPageState extends State<KYCPage> {
             bCode,
             _imageFile!)
         .then((value) async {
-      if (value.statuscode == 200) {
+      if (value.statuscode == 160) {
         setState(() {
           _currentStep += 1;
           Fi_Id = value.data[0].fiId.toString();
@@ -920,7 +764,7 @@ class _KYCPageState extends State<KYCPage> {
     return await api
         .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
-      if (value.statuscode == 200) {
+      if (value.statuscode == 160) {
         setState(() {
           _currentStep += 1;
         });

@@ -135,10 +135,10 @@ class TokenDetails {
   String imeino;
   String deviceSrNo;
   dynamic password;
-  String validaty;
+  String validity;
   dynamic refreshToken;
   dynamic role;
-  int guidId;
+  int guId;
   DateTime expiredTime;
 
   TokenDetails({
@@ -148,10 +148,10 @@ class TokenDetails {
     required this.imeino,
     required this.deviceSrNo,
     this.password,
-    required this.validaty,
+    required this.validity,
     this.refreshToken,
     this.role,
-    required this.guidId,
+    required this.guId,
     required this.expiredTime,
   });
 
@@ -162,10 +162,10 @@ class TokenDetails {
     imeino: json["imeino"],
     deviceSrNo: json["deviceSrNo"],
     password: json["password"],
-    validaty: json["validaty"],
+    validity: json["validity"],
     refreshToken: json["refreshToken"],
     role: json["role"],
-    guidId: json["guidId"],
+    guId: json["guId"],
     expiredTime: DateTime.parse(json["expiredTime"]),
   );
 
@@ -176,10 +176,10 @@ class TokenDetails {
     "imeino": imeino,
     "deviceSrNo": deviceSrNo,
     "password": password,
-    "validaty": validaty,
+    "validity": validity,
     "refreshToken": refreshToken,
     "role": role,
-    "guidId": guidId,
+    "guId": guId,
     "expiredTime": expiredTime.toIso8601String(),
   };
 }
