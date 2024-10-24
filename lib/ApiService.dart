@@ -2,17 +2,14 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
-import 'package:flutter_sourcing_app/Models/KYCModel.dart';
 import 'package:flutter_sourcing_app/Models/target_response_model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
-
 import 'Models/BorrowerListModel.dart';
 import 'Models/CreatorListModel.dart';
 import 'Models/GlobalModel.dart';
 import 'Models/KycUpdateModel.dart';
-import 'Models/BranchListModel.dart';
 import 'Models/RangeCategoryModel.dart';
 import 'Models/branch_model.dart';
 import 'Models/login_model.dart';
@@ -47,7 +44,7 @@ abstract class ApiService {
 
   @POST("FiSourcing/InsertFiSourcedata")
   @MultiPart()
-  Future <KycModel> saveFi(
+  Future <GlobalModel> saveFi(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Part(name: "aadhar_no") String aadharNo,
@@ -86,12 +83,54 @@ abstract class ApiService {
       @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body);
 
-  @POST("LiveTrack/InsertMonthTargetCSO")
-  Future <TargetResponseModel> setTarget(
+  @POST("FiSourcing/AddFiFamilyDetail")
+  Future <GlobalModel> FiFamilyDetail(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body);
 
+  @POST("FiSourcing/AddFiIncomeAndExpense")
+  Future <GlobalModel> AddFiIncomeAndExpense(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body);
+
+  @POST("FiSourcing/AddFinancialInfo")
+  Future <GlobalModel> AddFinancialInfo(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body);
+
+  @POST("FiSourcing/AddFiGaurantor")
+  @MultiPart()
+  Future <GlobalModel> saveGurrantor(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Part( name:"fi_ID") String fi_ID,
+      @Part( name:"gr_Sno") String gr_Sno,
+      @Part( name:"title") String title,
+      @Part( name:"fname") String fname,
+      @Part( name:"mname") String mname,
+      @Part( name:"lname") String lname,
+      @Part( name:"relation_with_Borrower") String relation_with_Borrower,
+      @Part( name:"p_Address1") String p_Address1,
+      @Part( name:"p_Address2") String p_Address2,
+      @Part( name:"p_Address3") String p_Address3,
+      @Part( name:"p_City") String p_City,
+      @Part( name:"p_State") String p_State,
+      @Part( name:"pincode") String pincode,
+      @Part( name:"dob") String dob,
+      @Part( name:"age") String age,
+      @Part( name:"phone") String phone,
+      @Part( name:"pan") String pan,
+      @Part( name:"dl") String dl,
+      @Part( name:"voter") String voter,
+      @Part( name:"aadharId") String aadharId,
+      @Part( name:"gender") String gender,
+      @Part( name:"religion") String religion,
+      @Part( name:"esign_Succeed") bool esign_Succeed,
+      @Part( name:"esign_UUID") String esign_UUID,
+      @Part( name: "Picture") File Picture);
 
   @GET("Masters/GetAllCreators")
   Future<CreatorListModel> getCreatorList(
@@ -114,156 +153,90 @@ abstract class ApiService {
       @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body);
 
-
-  @GET("POSFI/getFiListEditing")
-  Future<BorrowerListModel> BorrowerList(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Query("IMEINO") String IMEINO,
-      @Query("FOCode") String FOCode,
-      @Query("AreaCd") String AreaCd,
-      @Query("Creator") String Creator);
-
-  @POST("POSFI/UpdateFIAddress")
-  Future<KycUpdateModel> updateAddress(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
-
-  @POST("POSFI/UpdateFIPersonalDetails")
-  Future<KycUpdateModel> updatePersonalDetails(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
-
   @GET("Masters/GetRangeCategories")
   Future<RangeCategoryModel> RangeCategory(
       @Header("Authorization") String token,
       @Header("dbname") String dbName);
 
-  @POST("POSFI/UpdateFIFamLoans")
-  Future<KycUpdateModel> updateFamLoans(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
 
-  @POST("POSFI/UpdateFIFamMemIncome")
-  Future<KycUpdateModel> updateFamMemIncome(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
-
-  @POST("POSFI/UpdateFIFinance")
-  Future<KycUpdateModel> updateFinance(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
-
-  @POST("POSFI/UpdateFIGaurantors")
-  Future<KycUpdateModel> updateGaurantors(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
-
-
-
-/*
-
-  @POST("BCTransaction/InsertMonthTargetCSP")
-  Future<CommonResponseModel> setTarget(@Header("Authorization") String bearerToken,@Field("CspCode") String cspCode,@Field("TargetCommAmount") String targetCommAmount,@Field("Month") String month,@Field("Year") String year);
-
-
-
-  @GET("BCTransaction/CSPMothlyTarget")
-  Future<GetTargetModel> getTarget(@Query("KO_ID") String KO_ID,@Query("Month") String Month,@Query("Year") String Year);
-
-
-  @GET("BCTransaction/GetBcTransactions")
-  Future<TransHistoryResponse> getTransHistory(@Query("CspCode") String cspCode,@Query("fromdate") String fromdate,@Query("todate") String todate);
-
-
-  @POST("BCTransaction/UpdateGSMId")
-  Future<CommonResponseModelInt> updateGsmid(@Header("Authorization") String bearerToken,
-      @Field("KO_Id") String cspCode,@Field("GSMId") String gsmid);
-
-  @POST("BCWithdrawl/InsertWithdrawlRequests")
-  Future<CommonResponseModelInt> uploadWithDrawalData(@Header("Authorization") String bearerToken,@Field("cspCode") String cspCode,@Field("amount") String amount,@Field("reqType") String reqType,@Field("isApproved") String isApproved,@Field("approvedBy") String approvedBy);
-
-  @POST("BCWithdrawl/InsertWithdrawlRequestsReceipt")
+  @POST("Tracklocations/CreateHomeVisit")
   @MultiPart()
-  Future<CommonResponseModel> uploadDepositeData(@Part(name: "CspName") String CspName,@Part(name: "CspCode") String cspCode,@Part(name: "Amount") String amount,@Part(name: "ReqType") String reqType,@Part(name: "IsApproved") String isApproved,@Part(name: "ApprovedBy") String approvedBy,  @Part(name: "Receipt") File file);
-
-
-  @GET("BCWithdrawl/GetWithdrawlRequests")
-  Future<WithdrawalAndDepsitModel> getWithdrawalAndDepositHistory( @Header("Authorization") String bearerToken ,@Query("CspCode") String CspCode);
-
-
-
-  @GET("BCTransaction/GetAllSlabDetails")
-  Future<SlabListModel> getAllSlabList();
-
-
-
-  @GET("BCWithdrawl/GetBannerPosting")
-  Future<BannerDataModel> getBannerImageUrl(@Query("AppType") String AppType);
-
-
-  @GET("BCTransaction/GetCSPAppCommission")
-  Future<ServiceListModel> getServiceList();
-
-
-
-  @GET("BCTransaction/GetMonthlyCommissionDetails")
-  Future<CspAnnualReport> getCSPAnnualReport(@Query("CspCode") String cspCode,@Query("month") String month,@Query("year") String year);
-
-
-
-  @GET("BCTransaction/GetTopCommissions")
-  Future<LeaderBoardDataResponse> getLeaderBoardData();
-
-
-  @GET("BCTransaction/GetCommissionCount")
-  Future<CommisionDetailsResponse> getCommsionDetails(@Query("fromDate") String fromdate,@Query("todate") String todate,@Query("koId") String koId,@Query("areaType") String areaType,@Query("isLive") String isLive);
-
-
-
-  @GET("BCTransaction/GetTaskSlabDetails")
-  Future<GetTaskSlabDetailsResponse> getTaskSlabDetails();
-
-  @POST("BCTransaction/InsertCspKycDocument")
-  @MultiPart()
-  Future<CommonResponseModel> insertCspKycDocument(
-      @Part(name:'CspId') String cspId,
-      @Part(name:'DocType') String docType,
-      @Part(name:'IsDelete') bool isDelete,
-      @Part(name: "file") File file);
-
-  @GET("BCTransaction/GetWeeklyCommission")
-  Future<CspWeeklyLazerResponse> getCSPWeeklyCommision(@Query("KOId") String kOId);
-
-
-
-  @GET("BCTransaction/GetCspMonthlyLazer")
-  Future<CspMonthlyLazerResponse> getCSPMonthlyCommision(@Query("cspcode") String kOId);
-
-
-  @GET("BCTransaction/GetTargetStatus")
-  Future<MonthlyTaskStatus> getTargetStatus(@Query("koid") String kOId,@Query("Month") String month,@Query("Year") String year);
-
-
-  @GET("BCTransaction/GetCSPKYCdocument")
-  Future<CspkycDocumentModel> getCSPKYCdocument(@Query("CspId") String CspId );
-
-  @GET("BCTransaction/GetCSPAppTransactionDetails")
-  Future<GetCspAppTransactionDetails> getCspAppTransactionDetails();
-
-  @GET("BCTransaction/GetTransactionDetailsByCode")
-  Future<TransactionDetailsByCodeModel> getTransactionDetailsByCodeModel(@Query("cspcode") String kOId,@Query("month") String month,@Query("year") String year);
-
-  @POST("User/BcuserInsertTracking")
-  Future<CommonResponseModel> getBcUserInsertTracking(@Query("cspcode") String cspcode,@Query("activity") String activity,@Query("latitude") String latitude,@Query("longitude") String longitude);
-*/
-
-
-
+  Future <GlobalModel> saveHouseVisit(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Part(name: "FICode") String FICode,
+      @Part( name:"Creator") String Creator,
+      @Part( name:"BranchName") String BranchName,
+      @Part( name:"AreaCode") String AreaCode,
+      @Part( name:"AreaName") String AreaName,
+      @Part( name:"Center") String Center,
+      @Part( name:"GroupCode") String GroupCode,
+      @Part( name:"GroupName") String GroupName,
+      @Part( name:"HouseType") String HouseType,
+      @Part( name:"IsvalidLocation") String IsvalidLocation,
+      @Part( name:"CPFlifeStyle") String CPFlifeStyle,
+      @Part( name:"CpfPOAddressVerify") String CpfPOAddressVerify,
+      @Part( name:"PhotoIdVerification") String PhotoIdVerification,
+      @Part( name:"CurrentAddressprof") String CurrentAddressprof,
+      @Part(name: "HasbandWifeAgeverificaton") String HasbandWifeAgeverificaton,
+      @Part( name:"ParmanentAddressPincode") String ParmanentAddressPincode,
+      @Part( name:"StampOnPhotocopy") String StampOnPhotocopy,
+      @Part( name:"LastLoanVerification") String LastLoanVerification,
+      @Part( name:"LoanUsagePercentage") String LoanUsagePercentage,
+      @Part( name:"AbsentReasonInCentermeeting") String AbsentReasonInCentermeeting,
+      @Part( name:"RepaymentFault") String RepaymentFault,
+      @Part( name:"LoanreasonVerification") String LoanreasonVerification,
+      @Part( name:"IsAppliedAmountAppropriate") String IsAppliedAmountAppropriate,
+      @Part( name:"FamilyAwarenessaboutloan") String FamilyAwarenessaboutloan,
+      @Part( name:"IsloanAppropriateforBusiness") String IsloanAppropriateforBusiness,
+      @Part( name:"Businessaffectedourrelation") String Businessaffectedourrelation,
+      @Part( name:"Repayeligiblity") String Repayeligiblity,
+      @Part( name:"Cashflowoffamily") String Cashflowoffamily,
+      @Part( name:"IncomeMatchedwithprofile") String IncomeMatchedwithprofile,
+      @Part( name:"BorrowersupportedGroup") String BorrowersupportedGroup,
+      @Part( name:"ComissionDemand") String ComissionDemand,
+      @Part( name:"GroupReadyToVilay") String GroupReadyToVilay,
+      @Part( name:"GroupHasBloodRelation") String GroupHasBloodRelation,
+      @Part( name:"VerifyExternalLoan") String VerifyExternalLoan,
+      @Part( name:"UnderstandsFaultPolicy") String UnderstandsFaultPolicy,
+      @Part( name:"OverlimitLoan_borrowfromgroup") String OverlimitLoan_borrowfromgroup,
+      @Part( name:"toatlDebtUnderLimit") String toatlDebtUnderLimit,
+      @Part( name:"workingPlaceVerification") String workingPlaceVerification,
+      @Part( name:"IsWorkingPlaceValid") String IsWorkingPlaceValid,
+      @Part( name:"workingPlacedescription") String workingPlacedescription,
+      @Part( name:"workExperience") String workExperience,
+      @Part( name:"SeasonDependency") String SeasonDependency,
+      @Part( name:"StockVerification") String StockVerification,
+      @Part( name:"monthlyIncome") int monthlyIncome,
+      @Part(name: "monthlySales") int monthlySales,
+      @Part( name:"loansufficientwithdebt") String loansufficientwithdebt,
+      @Part( name:"NameofInterviewed") String NameofInterviewed,
+      @Part( name:"AgeofInterviewed") String AgeofInterviewed,
+      @Part( name:"RelationofInterviewer") String RelationofInterviewer,
+      @Part( name:"Applicant_Status") String Applicant_Status,
+      @Part( name:"Residing_with") String Residing_with,
+      @Part( name:"FamilymemberfromPaisalo") String FamilymemberfromPaisalo,
+      @Part( name:"HouseMonthlyRent") int HouseMonthlyRent,
+      @Part( name:"Residence_Type") String Residence_Type,
+      @Part( name:"Residential_Stability") String Residential_Stability,
+      @Part( name:"Distancetobranch") String Distancetobranch,
+      @Part( name:"Timetoreachbranch") String Timetoreachbranch,
+      @Part( name:"TotalExperienceOccupation") String TotalExperienceOccupation,
+      @Part( name:"Totalmonthlyexpensesofoccupation") int Totalmonthlyexpensesofoccupation,
+      @Part( name:"Netmonthlyincome_afterproposedloan") int Netmonthlyincome_afterproposedloan,
+      @Part( name:"Totalmonthlyhouseholdexpenses") int Totalmonthlyhouseholdexpenses,
+      @Part( name:"Netmonthlyincomeotherfamilymembers") int Netmonthlyincomeotherfamilymembers,
+      @Part( name:"Relationearningmember") String Relationearningmember,
+      @Part( name:"Namereferenceperson1") String Namereferenceperson1,
+      @Part( name:"Mobilereferenceperson1") String Mobilereferenceperson1,
+      @Part( name:"Namereferenceperson2") String Namereferenceperson2,
+      @Part( name:"Mobilereferenceperson2") String Mobilereferenceperson2,
+      @Part( name:"feedbacknearbyresident") String feedbacknearbyresident,
+      @Part( name:"UnderstandInsaurancePolicy") String UnderstandInsaurancePolicy,
+      @Part( name:"BusinessVerification") String BusinessVerification,
+      @Part( name:"Latitude") double Latitude,
+      @Part( name:"Longitude") double Longitude,
+      @Part( name:"EmpCode") String EmpCode,
+      @Part( name:"Address") String Address,
+      @Part( name: "Image") File Picture );
 }

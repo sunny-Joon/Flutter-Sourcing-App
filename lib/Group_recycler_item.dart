@@ -16,30 +16,39 @@ class GroupRecyclerItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              GlobalClass.creator,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Container(
-            color: Colors.red,
-            padding: EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Branch Name / Code',
-                  style: TextStyle(color: Colors.white),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        '${item.groupCode}',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  '${item.groupCodeName} / ${item.groupCode}',
-                  style: TextStyle(color: Colors.white),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  color: Color(0x86AD0808),
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        '${item.groupCodeName}',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

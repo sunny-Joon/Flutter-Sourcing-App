@@ -75,7 +75,7 @@ class OnBoarding extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BranchListPage(intentFrom: 'HOUSE VISIT'),
+                              builder: (context) => BranchListPage(intentFrom: 'House Visit'),
                             ),
                           );
                         }),
