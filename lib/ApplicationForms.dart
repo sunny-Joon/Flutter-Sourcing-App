@@ -28,6 +28,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
   List<RangeCategoryDataModel> income_type = [];
   List<RangeCategoryDataModel> bank = [];
 
+  //fiextra
+  List<RangeCategoryDataModel> religionextra = [];
+  List<RangeCategoryDataModel> landOwner = [];
+  List<RangeCategoryDataModel> education = [];
+  List<RangeCategoryDataModel> stateextra = [];
+  List<RangeCategoryDataModel> cast = [];
+
   List<String> titleList = ["Select", "Mr.", "Mrs.", "Miss"];
   String titleselected = "Select";
   String selectedTitle = "Select";
@@ -36,20 +43,55 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String lati = "";
   String longi = "";
 
+  //fiextra
+  List<String> loanDuration = ['Select', '12', '24', '36', '48'];
+  List<String> residing = [
+    'Select',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9'
+  ];
+  List<String> specialAbility = ['Select', 'Yes', 'No'];
+  List<String> SpecialSocialCategory = ['Select', 'YES', 'NO'];
+
   String stateselected = 'select';
   String relationselected = 'select';
   String genderselected = 'select';
   String religionselected = 'select';
 
+  //fiextra
+  String? selectedLoanDuration;
+  String? selectedReligion;
+  String? selectedPresentHouseOwner;
+  String? selectedStateextra;
+  String? selectedCast;
+  String? selectedResiding;
+  String? selectedspecialAbility;
+  String? selectedSpecialSocialCategory;
+
   @override
   void initState() {
     fetchData();
     super.initState();
-     _dobController.addListener(() {
+    _dobController.addListener(() {
       _calculateAge();
+
+      fetchData(); // Fetch initial data
+      selectedResiding = residing.isNotEmpty ? residing[0] : null;
+      selectedspecialAbility = specialAbility.isNotEmpty ? residing[0] : null;
+      selectedSpecialSocialCategory =
+          SpecialSocialCategory.isNotEmpty ? residing[0] : null;
     });
 // Fetch states using the required cat_key
   }
+
+  bool isSpecialSocialCategoryVisible = false;
 
   Future<void> fetchData() async {
     states = await DatabaseHelper().selectRangeCatData("state");
@@ -63,6 +105,27 @@ class _ApplicationPageState extends State<ApplicationPage> {
         .selectRangeCatData("income-type"); // Call your SQLite method
     bank = await DatabaseHelper()
         .selectRangeCatData("banks"); // Call your SQLite method
+
+    //fiextra
+    religionextra = await DatabaseHelper().selectRangeCatData("religion");
+    landOwner = await DatabaseHelper().selectRangeCatData("land_owner");
+    education = await DatabaseHelper().selectRangeCatData("education");
+    stateextra = await DatabaseHelper().selectRangeCatData("state");
+    cast = await DatabaseHelper().selectRangeCatData("caste");
+
+    @override
+    void dispose() {
+      // Dispose controllers
+      emailIdController.dispose();
+      loanAmountController.dispose();
+      placeOfBirthController.dispose();
+      address1Controller.dispose();
+      address2Controller.dispose();
+      address3Controller.dispose();
+      cityController.dispose();
+      pincodeController.dispose();
+      super.dispose();
+    }
 
     setState(() {
       states.insert(
@@ -101,7 +164,70 @@ class _ApplicationPageState extends State<ApplicationPage> {
             sortOrder: 0,
             code: 'select', // Value of the placeholder
           ));
-      aadhar_gender.insert(
+      landOwner.insert(
+          0,
+          RangeCategoryDataModel(
+            catKey: 'Select',
+            groupDescriptionEn: 'select',
+            groupDescriptionHi: 'select',
+            descriptionEn: 'Select',
+            // Display text
+            descriptionHi: 'select',
+            sortOrder: 0,
+            code: 'select', // Value of the placeholder
+          ));
+      education.insert(
+          0,
+          RangeCategoryDataModel(
+            catKey: 'Select',
+            groupDescriptionEn: 'select',
+            groupDescriptionHi: 'select',
+            descriptionEn: 'Select',
+            // Display text
+            descriptionHi: 'select',
+            sortOrder: 0,
+            code: 'select', // Value of the placeholder
+          ));
+      stateextra.insert(
+          0,
+          RangeCategoryDataModel(
+            catKey: 'Select',
+            groupDescriptionEn: 'select',
+            groupDescriptionHi: 'select',
+            descriptionEn: 'Select',
+            // Display text
+            descriptionHi: 'select',
+            sortOrder: 0,
+            code: 'select', // Value of the placeholder
+          ));
+      education.insert(
+          0,
+          RangeCategoryDataModel(
+            catKey: 'Select',
+            groupDescriptionEn: 'select',
+            groupDescriptionHi: 'select',
+            descriptionEn: 'Select',
+            // Display text
+            descriptionHi: 'select',
+            sortOrder: 0,
+            code: 'select', // Value of the placeholder
+          ));
+
+      //fiextra
+
+      religionextra.insert(
+          0,
+          RangeCategoryDataModel(
+            catKey: 'Select',
+            groupDescriptionEn: 'select',
+            groupDescriptionHi: 'select',
+            descriptionEn: 'Select',
+            // Display text
+            descriptionHi: 'select',
+            sortOrder: 0,
+            code: 'select', // Value of the placeholder
+          ));
+      cast.insert(
           0,
           RangeCategoryDataModel(
             catKey: 'Select',
@@ -117,7 +243,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   int _currentStep = 0;
-  final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
+  final _formKeys = List.generate(5, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
 
   // TextEditingControllers for all input fields
@@ -176,17 +302,25 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final _dlController = TextEditingController();
   final _voterController = TextEditingController();
   final _aadharIdController = TextEditingController();
-  final _genderController = TextEditingController();
-  final _religionController = TextEditingController();
-  final _esign_SucceedController = TextEditingController();
-  final _esign_UUIDController = TextEditingController();
+
+
+  // fiextra
+  final emailIdController = TextEditingController();
+  final loanAmountController = TextEditingController();
+  final placeOfBirthController = TextEditingController();
+  final address1Controller = TextEditingController();
+  final address2Controller = TextEditingController();
+  final address3Controller = TextEditingController();
+  final cityController = TextEditingController();
+  final pincodeController = TextEditingController();
 
   String? selectedState;
   String? selectedEarningMemberType;
   String? selectedBusinessDetail;
   String? selectedLoanPurpose;
   String? selectedOccupation;
-  String? selectedLoanDuration;
+
+  //String? selectedLoanDuration;
   String? selectedBank;
   String? Fi_Id;
   String qrResult = "";
@@ -201,7 +335,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context,String type) async {
+  Future<void> _selectDate(BuildContext context, String type) async {
     DateTime now = DateTime.now();
     DateTime initialDate = _selectedDate ?? now;
 
@@ -215,12 +349,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        if(type.contains("open")){
-          _bankOpeningDateController.text = DateFormat('yyyy-MM-dd').format(picked);
-
-        }else {
-          _dobController.text =
+        if (type.contains("open")) {
+          _bankOpeningDateController.text =
               DateFormat('yyyy-MM-dd').format(picked);
+        } else {
+          _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
         }
       });
     }
@@ -271,12 +404,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 if (_formKeys[_currentStep].currentState?.validate() ?? false) {
                   // Call the save method based on the current step
                   if (_currentStep == 0) {
-                    AddFiFamilyDetail(context); // Call save method for step 0
+                    updatePersonalDetails(context);
                   } else if (_currentStep == 1) {
-                    AddFiIncomeAndExpense(context);
+                    AddFiFamilyDetail(context);
                   } else if (_currentStep == 2) {
-                    AddFinancialInfo(context);
+                    AddFiIncomeAndExpense(context);
                   } else if (_currentStep == 3) {
+                    AddFinancialInfo(context);
+                  } else if (_currentStep == 4) {
                     saveGuarantorMethod(context);
                   }
                 }
@@ -314,11 +449,339 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 );
               },
               steps: [
+                //addextra
+
                 Step(
-                  title: Text(''),
+                  title: Text('1'),
                   isActive: _currentStep >= 0,
                   content: Form(
                     key: _formKeys[0],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildTextField('Email ID', emailIdController),
+                        Text(
+                          'Cast',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Container(
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 35,
+                          // Fixed height
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: selectedCast,
+                            isExpanded: true,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                            underline: Container(
+                              height: 2,
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
+                            ),
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  selectedCast =
+                                      newValue; // Update the selected value
+                                });
+                              }
+                            },
+                            items: cast.map<DropdownMenuItem<String>>(
+                                (RangeCategoryDataModel state) {
+                              return DropdownMenuItem<String>(
+                                value: state.code,
+                                child: Text(state.descriptionEn),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        Text(
+                          'Residing for (Years)',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Container(
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 35,
+                          // Fixed height
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: selectedResiding,
+                            isExpanded: true,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                            underline: Container(
+                              height: 2,
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
+                            ),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedResiding = newValue!;
+                              });
+                            },
+                            items: residing.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        Text(
+                          'Applicant Religion',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Container(
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 35,
+                          // Fixed height
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: selectedReligion,
+                            isExpanded: true,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                            underline: Container(
+                              height: 2,
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
+                            ),
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  selectedReligion =
+                                      newValue; // Update the selected value
+                                });
+                              }
+                            },
+                            items: religionextra.map<DropdownMenuItem<String>>(
+                                (RangeCategoryDataModel state) {
+                              return DropdownMenuItem<String>(
+                                value: state.code,
+                                child: Text(state.descriptionEn),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        _buildTextField(
+                            'Place of Birth', placeOfBirthController),
+                        Text(
+                          'Present House Owner',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Container(
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 35,
+                          // Fixed height
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: selectedPresentHouseOwner,
+                            isExpanded: true,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                            underline: Container(
+                              height: 2,
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
+                            ),
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  selectedPresentHouseOwner =
+                                      newValue; // Update the selected value
+                                });
+                              }
+                            },
+                            items: landOwner.map<DropdownMenuItem<String>>(
+                                (RangeCategoryDataModel state) {
+                              return DropdownMenuItem<String>(
+                                value: state.code,
+                                child: Text(state.descriptionEn),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        Text(
+                          'Special Ability',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Container(
+                          width: 150,
+                          height: 35,
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: selectedspecialAbility,
+                            isExpanded: true,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                            underline: Container(
+                              height: 2,
+                              color: Colors.transparent,
+                            ),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedspecialAbility = newValue!;
+                                isSpecialSocialCategoryVisible =
+                                    (newValue == 'Yes'); // Update visibility
+                              });
+                            },
+                            items: specialAbility.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+
+                        if (isSpecialSocialCategoryVisible)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Special Social Category',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Container(
+                                width: 150,
+                                height: 35,
+                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: DropdownButton<String>(
+                                  value: selectedSpecialSocialCategory,
+                                  isExpanded: true,
+                                  icon: Icon(Icons.arrow_downward),
+                                  iconSize: 24,
+                                  elevation: 16,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 16),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors.transparent,
+                                  ),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedSpecialSocialCategory = newValue!;
+                                    });
+                                  },
+                                  items:
+                                      SpecialSocialCategory.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        _buildTextField('Address Line 1', address1Controller),
+                        _buildTextField('Address Line 2', address2Controller),
+                        _buildTextField('Address Line 3', address3Controller),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: _buildTextField('City', cityController)),
+                            SizedBox(width: 16),
+                            // Add spacing between the text fields if needed
+                            Expanded(
+                                child: _buildTextField2('PinCode',
+                                    pincodeController, TextInputType.number)),
+                          ],
+                        ),
+                        Text(
+                          'State Name',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Container(
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 35,
+                          // Fixed height
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: selectedStateextra,
+                            isExpanded: true,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                            underline: Container(
+                              height: 2,
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
+                            ),
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  selectedStateextra =
+                                      newValue; // Update the selected value
+                                });
+                              }
+                            },
+                            items: stateextra.map<DropdownMenuItem<String>>(
+                                (RangeCategoryDataModel state) {
+                              return DropdownMenuItem<String>(
+                                value: state.code,
+                                child: Text(state.descriptionEn),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                ////////////////////
+
+                Step(
+                  title: Text('2'),
+                  isActive: _currentStep >= 1,
+                  content: Form(
+                    key: _formKeys[1],
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -346,42 +809,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ),
                 ),
                 Step(
-                  title: Text('2'),
-                  isActive: _currentStep >= 1,
-                  content: Form(
-                    key: _formKeys[1],
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildTextField('Occupation', _occupationController),
-                        _buildTextField('Business Detail', _business_DetailController),
-                        _buildTextField2('Any Current EMI', _any_current_EMIController, TextInputType.number),
-                        _buildTextField2('Future Income', _future_IncomeController,TextInputType.number),
-                        _buildTextField2('Agriculture Income', _agriculture_incomeController,TextInputType.number),
-                        _buildTextField2('Earning Members (count)', _earning_mem_countController,TextInputType.number),
-                        _buildTextField2('Other_Income', _other_IncomeController,TextInputType.number),
-                        _buildTextField2('AnnuaL INCOME', _annuaL_INCOMEController,TextInputType.number),
-                        _buildTextField2('Expense On Children', _spendOnChildrenController,TextInputType.number),
-                        _buildTextField2('Not AGRICULTURAL INCOME', _otheR_THAN_AGRICULTURAL_INCOMEController,TextInputType.number),
-                        _buildTextField2('Business Experience', _years_in_businessController,TextInputType.number),
-                        _buildTextField2('Pension Income', _pensionIncomeController,TextInputType.number),
-                        _buildTextField2('Rental Income', _any_RentalIncomeController,TextInputType.number),
-                        _buildTextField2('Rent', _rentController,TextInputType.number),
-                        _buildTextField2('Food', _foodingController,TextInputType.number),
-                        _buildTextField2('Education', _educationController,TextInputType.number),
-                        _buildTextField2('Health', _healthController,TextInputType.number),
-                        _buildTextField2('Travelling', _travellingController,TextInputType.number),
-                        _buildTextField2('Entertainment', _entertainmentController,TextInputType.number),
-                        _buildTextField2('Others', _othersController,TextInputType.number),
-                        _buildTextField('Home Type', _homeTypeController),
-                        _buildTextField('Roof Type', _homeRoofTypeController),
-                        _buildTextField('Toilet Type', _toiletTypeController),
-                        _buildTextField('Living With Spouse', _livingSpouseController)
-                      ],
-                    ),
-                  ),
-                ),
-                Step(
                   title: Text('3'),
                   isActive: _currentStep >= 2,
                   content: Form(
@@ -389,41 +816,100 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildTextField('bankType', _bankTypeController),
-                        _buildTextField('bank_Ac', _bank_AcController),
-                        _buildTextField('bank_name', _bank_nameController),
-                        _buildTextField('bank_IFCS', _bank_IFCSController),
-                        _buildTextField('bank_address', _bank_addressController),
-
-                            Text(
-                              'Bank Opening Date',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            SizedBox(height: 8),
-                            Container(
-                              color: Colors.white,
-                              child: TextField(
-                                controller: _bankOpeningDateController,
-                                decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                    icon: Icon(Icons.calendar_today),
-                                    onPressed: () => _selectDate(context,"open"),
-                                  ),
-                                  border: OutlineInputBorder(),
-                                ),
-                                readOnly: true,
-                              ),
-                            ),
-
+                        _buildTextField('Occupation', _occupationController),
+                        _buildTextField(
+                            'Business Detail', _business_DetailController),
+                        _buildTextField2('Any Current EMI',
+                            _any_current_EMIController, TextInputType.number),
+                        _buildTextField2('Future Income',
+                            _future_IncomeController, TextInputType.number),
+                        _buildTextField2(
+                            'Agriculture Income',
+                            _agriculture_incomeController,
+                            TextInputType.number),
+                        _buildTextField2('Earning Members (count)',
+                            _earning_mem_countController, TextInputType.number),
+                        _buildTextField2('Other_Income',
+                            _other_IncomeController, TextInputType.number),
+                        _buildTextField2('AnnuaL INCOME',
+                            _annuaL_INCOMEController, TextInputType.number),
+                        _buildTextField2('Expense On Children',
+                            _spendOnChildrenController, TextInputType.number),
+                        _buildTextField2(
+                            'Not AGRICULTURAL INCOME',
+                            _otheR_THAN_AGRICULTURAL_INCOMEController,
+                            TextInputType.number),
+                        _buildTextField2('Business Experience',
+                            _years_in_businessController, TextInputType.number),
+                        _buildTextField2('Pension Income',
+                            _pensionIncomeController, TextInputType.number),
+                        _buildTextField2('Rental Income',
+                            _any_RentalIncomeController, TextInputType.number),
+                        _buildTextField2(
+                            'Rent', _rentController, TextInputType.number),
+                        _buildTextField2(
+                            'Food', _foodingController, TextInputType.number),
+                        _buildTextField2('Education', _educationController,
+                            TextInputType.number),
+                        _buildTextField2(
+                            'Health', _healthController, TextInputType.number),
+                        _buildTextField2('Travelling', _travellingController,
+                            TextInputType.number),
+                        _buildTextField2('Entertainment',
+                            _entertainmentController, TextInputType.number),
+                        _buildTextField2(
+                            'Others', _othersController, TextInputType.number),
+                        _buildTextField('Home Type', _homeTypeController),
+                        _buildTextField('Roof Type', _homeRoofTypeController),
+                        _buildTextField('Toilet Type', _toiletTypeController),
+                        _buildTextField(
+                            'Living With Spouse', _livingSpouseController)
                       ],
                     ),
                   ),
                 ),
                 Step(
-                  title: Text(''),
+                  title: Text('4'),
                   isActive: _currentStep >= 3,
                   content: Form(
                     key: _formKeys[3],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildTextField('bankType', _bankTypeController),
+                        _buildTextField('bank_Ac', _bank_AcController),
+                        _buildTextField('bank_name', _bank_nameController),
+                        _buildTextField('bank_IFCS', _bank_IFCSController),
+                        _buildTextField(
+                            'bank_address', _bank_addressController),
+                        Text(
+                          'Bank Opening Date',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        SizedBox(height: 8),
+                        Container(
+                          color: Colors.white,
+                          child: TextField(
+                            controller: _bankOpeningDateController,
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.calendar_today),
+                                onPressed: () => _selectDate(context, "open"),
+                              ),
+                              border: OutlineInputBorder(),
+                            ),
+                            readOnly: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Step(
+                  title: Text('5'),
+                  isActive: _currentStep >= 4,
+                  content: Form(
+                    key: _formKeys[4],
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -457,10 +943,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                     style: TextStyle(fontSize: 20),
                                   ),
                                   Container(
-                                    width: 150, // Adjust the width as needed
-                                    height: 35, // Fixed height
+                                    width: 150,
+                                    // Adjust the width as needed
+                                    height: 35,
+                                    // Fixed height
                                     padding:
-                                    EdgeInsets.symmetric(horizontal: 12),
+                                        EdgeInsets.symmetric(horizontal: 12),
                                     decoration: BoxDecoration(
                                       border: Border.all(color: Colors.grey),
                                       borderRadius: BorderRadius.circular(5),
@@ -498,16 +986,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               onTap: _pickImage,
                               child: _imageFile == null
                                   ? Icon(
-                                Icons.person,
-                                size: 50.0,
-                                color: Colors.blue,
-                              )
+                                      Icons.person,
+                                      size: 50.0,
+                                      color: Colors.blue,
+                                    )
                                   : Image.file(
-                                File(_imageFile!.path),
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ),
+                                      File(_imageFile!.path),
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
                           ],
                         ),
@@ -517,9 +1005,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             Expanded(
                                 child: _buildTextField(
                                     'Middle Name', _mnameController)),
-                            SizedBox(
-                                width:
-                                16), // Add spacing between the text fields if needed
+                            SizedBox(width: 16),
+                            // Add spacing between the text fields if needed
                             Expanded(
                                 child: _buildTextField(
                                     'Last Name', _lnameController)),
@@ -529,7 +1016,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           'Gender',
                           style: TextStyle(fontSize: 20),
                         ),
-                        Container(
+
+                        /*Container(
                           width: 150, // Adjust the width as needed
                           height: 35, // Fixed height
                           padding: EdgeInsets.symmetric(horizontal: 12),
@@ -565,15 +1053,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                   );
                                 }).toList(),
                           ),
-                        ),
+                        ),*/
 
                         Text(
                           'Religion',
                           style: TextStyle(fontSize: 20),
                         ),
                         Container(
-                          width: 150, // Adjust the width as needed
-                          height: 35, // Fixed height
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 35,
+                          // Fixed height
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
@@ -600,12 +1090,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               }
                             },
                             items: religion.map<DropdownMenuItem<String>>(
-                                    (RangeCategoryDataModel state) {
-                                  return DropdownMenuItem<String>(
-                                    value: state.code,
-                                    child: Text(state.descriptionEn),
-                                  );
-                                }).toList(),
+                                (RangeCategoryDataModel state) {
+                              return DropdownMenuItem<String>(
+                                value: state.code,
+                                child: Text(state.descriptionEn),
+                              );
+                            }).toList(),
                           ),
                         ),
                         Text(
@@ -613,8 +1103,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           style: TextStyle(fontSize: 20),
                         ),
                         Container(
-                          width: 150, // Adjust the width as needed
-                          height: 35, // Fixed height
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 35,
+                          // Fixed height
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
@@ -641,12 +1133,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               }
                             },
                             items: relation.map<DropdownMenuItem<String>>(
-                                    (RangeCategoryDataModel state) {
-                                  return DropdownMenuItem<String>(
-                                    value: state.code,
-                                    child: Text(state.descriptionEn),
-                                  );
-                                }).toList(),
+                                (RangeCategoryDataModel state) {
+                              return DropdownMenuItem<String>(
+                                value: state.code,
+                                child: Text(state.descriptionEn),
+                              );
+                            }).toList(),
                           ),
                         ),
                         _buildTextField('Mobile no', _phoneController),
@@ -694,7 +1186,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                       decoration: InputDecoration(
                                         suffixIcon: IconButton(
                                           icon: Icon(Icons.calendar_today),
-                                          onPressed: () => _selectDate(context,"DOB"),
+                                          onPressed: () =>
+                                              _selectDate(context, "DOB"),
                                         ),
                                         border: OutlineInputBorder(),
                                       ),
@@ -707,7 +1200,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           ],
                         ),
                         _buildTextField('Pan', _p_Address1Controller),
-                        _buildTextField('Driving License', _p_Address1Controller),
+                        _buildTextField(
+                            'Driving License', _p_Address1Controller),
                         _buildTextField('Voter Id', _p_Address1Controller),
                         _buildTextField('Address1', _p_Address1Controller),
                         _buildTextField('Address2', _p_Address2Controller),
@@ -716,7 +1210,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           children: [
                             Expanded(
                                 child:
-                                _buildTextField('City', _p_CityController)),
+                                    _buildTextField('City', _p_CityController)),
                             SizedBox(width: 16),
                             Expanded(
                                 child: _buildTextField(
@@ -728,8 +1222,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           style: TextStyle(fontSize: 20),
                         ),
                         Container(
-                          width: 150, // Adjust the width as needed
-                          height: 35, // Fixed height
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 35,
+                          // Fixed height
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
@@ -756,12 +1252,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               }
                             },
                             items: states.map<DropdownMenuItem<String>>(
-                                    (RangeCategoryDataModel state) {
-                                  return DropdownMenuItem<String>(
-                                    value: state.code,
-                                    child: Text(state.descriptionEn),
-                                  );
-                                }).toList(),
+                                (RangeCategoryDataModel state) {
+                              return DropdownMenuItem<String>(
+                                value: state.code,
+                                child: Text(state.descriptionEn),
+                              );
+                            }).toList(),
                           ),
                         ),
                       ],
@@ -813,7 +1309,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
       ),
     );
   }
-  Widget _buildTextField2(String label, TextEditingController controller, TextInputType inputType) {
+
+  Widget _buildTextField2(
+      String label, TextEditingController controller, TextInputType inputType) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -885,6 +1383,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       } else {}
     });
   }
+
   Future<void> AddFinancialInfo(BuildContext context) async {
     String Fi_ID = "139";
     String bankType = _bankTypeController.text.toString();
@@ -923,15 +1422,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String business_Detail = _business_DetailController.text.toString();
     int any_current_EMI = int.parse(_any_current_EMIController.text.toString());
     int future_Income = int.parse(_future_IncomeController.text.toString());
-    int agriculture_income = int.parse(_agriculture_incomeController.text.toString());
-    int earning_mem_count = int.parse(_earning_mem_countController.text.toString());
+    int agriculture_income =
+        int.parse(_agriculture_incomeController.text.toString());
+    int earning_mem_count =
+        int.parse(_earning_mem_countController.text.toString());
     int other_Income = int.parse(_other_IncomeController.text.toString());
     int annuaL_INCOME = int.parse(_annuaL_INCOMEController.text.toString());
     int spendOnChildren = int.parse(_spendOnChildrenController.text.toString());
-    int otheR_THAN_AGRICULTURAL_INCOME = int.parse(_otheR_THAN_AGRICULTURAL_INCOMEController.text.toString());
-    int years_in_business = int.parse(_years_in_businessController.text.toString());
+    int otheR_THAN_AGRICULTURAL_INCOME =
+        int.parse(_otheR_THAN_AGRICULTURAL_INCOMEController.text.toString());
+    int years_in_business =
+        int.parse(_years_in_businessController.text.toString());
     int pensionIncome = int.parse(_pensionIncomeController.text.toString());
-    int any_RentalIncome = int.parse(_any_RentalIncomeController.text.toString());
+    int any_RentalIncome =
+        int.parse(_any_RentalIncomeController.text.toString());
     int rent = int.parse(_rentController.text.toString());
     int fooding = int.parse(_foodingController.text.toString());
     int education = int.parse(_educationController.text.toString());
@@ -1014,38 +1518,37 @@ class _ApplicationPageState extends State<ApplicationPage> {
     bool esign_Succeed = true;
     String esign_UUID = "1654";
 
-
     final api = Provider.of<ApiService>(context, listen: false);
 
     return await api
         .saveGurrantor(
-        GlobalClass.token,
-        GlobalClass.dbName,
-        fi_ID,
-        gr_Sno,
-        title,
-        fname,
-        mname,
-        lname,
-        relation_with_Borrower,
-        p_Address1,
-        p_Address2,
-        p_Address3,
-        p_City,
-        p_State,
-        pincode,
-        dob,
-        age,
-        phone,
-        pan,
-        dl,
-        voter,
-        aadharId,
-        gender,
-        religion,
-        esign_Succeed,
-        esign_UUID,
-        _imageFile!)
+            GlobalClass.token,
+            GlobalClass.dbName,
+            fi_ID,
+            gr_Sno,
+            title,
+            fname,
+            mname,
+            lname,
+            relation_with_Borrower,
+            p_Address1,
+            p_Address2,
+            p_Address3,
+            p_City,
+            p_State,
+            pincode,
+            dob,
+            age,
+            phone,
+            pan,
+            dl,
+            voter,
+            aadharId,
+            gender,
+            religion,
+            esign_Succeed,
+            esign_UUID,
+            _imageFile!)
         .then((value) async {
       if (value.statuscode == 200) {
         setState(() {
@@ -1055,7 +1558,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
       } else {}
     });
   }
-
 
   void _showPopup(BuildContext context, Function(String) onResult) {
     showDialog(
@@ -1221,5 +1723,57 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
 
     return test;
+  }
+
+  Future<void> updatePersonalDetails(BuildContext context) async {
+    // EasyLoading.show(status: 'Loading...',);
+
+    int A = selectedspecialAbility == 'Yes' ? 1 : 0;
+
+    final api = Provider.of<ApiService>(context, listen: false);
+    Map<String, dynamic> requestBody = {
+      "fi_Id": "139",
+      "is_house_rental": 20,
+      "depedent_Person": "1",
+      "religion": selectedReligion,
+      "property_area": "ABC",
+      "email_Id": emailIdController.text.toString(),
+      "isHandicap": A,
+      "handicap_type": selectedSpecialSocialCategory?.toString() ?? "",
+      "place_Of_Birth": placeOfBirthController.text.toString(),
+      "reservatioN_CATEGORY": "",
+      "p_Address1": address1Controller.text.toString(),
+      "p_Address2": address2Controller.text.toString(),
+      "p_Address3": address3Controller.text.toString(),
+      "p_City": cityController.text.toString(),
+      "p_State": selectedStateextra,
+      "p_Pincode": pincodeController.text.toString(),
+      "current_Address1": "Noida",
+      "current_Address2": "Noida",
+      "current_Address3": "",
+      "current_City": "Noida",
+      "current_State": "UP",
+      "current_Pincode": "533456",
+      "current_Phone": "987567348",
+      "district": "Noida",
+      "sub_District": "Noida",
+      "village": "",
+      "Cast": selectedCast,
+      "Resident_for_years": selectedResiding,
+      "Present_House_Owner": selectedPresentHouseOwner
+    };
+
+    return await api
+        .updatePersonalDetails(
+            GlobalClass.dbName, GlobalClass.token, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          _currentStep += 1;
+          Fi_Id = value.data[0].fiId.toString();
+        });      } else {
+        // Handle failure
+      }
+    });
   }
 }

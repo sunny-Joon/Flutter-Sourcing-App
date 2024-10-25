@@ -158,6 +158,13 @@ abstract class ApiService {
       @Header("Authorization") String token,
       @Header("dbname") String dbName);
 
+  @POST("FiSourcing/AddFiExtraDetail")
+  Future<GlobalModel> updatePersonalDetails(
+      @Header("dbname") String dbname,
+      @Header("Authorization") String token,
+      @Body() Map<String, dynamic> body);
+
+
 
   @POST("Tracklocations/CreateHomeVisit")
   @MultiPart()
