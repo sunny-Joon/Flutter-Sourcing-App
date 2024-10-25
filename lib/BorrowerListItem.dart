@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class BorrowerListItem extends StatelessWidget {
   final String name;
-  final String fatherOrSpouse;
   final String fiCode;
   final String mobile;
   final String creator;
@@ -11,7 +10,6 @@ class BorrowerListItem extends StatelessWidget {
 
   BorrowerListItem({
     required this.name,
-    required this.fatherOrSpouse,
     required this.fiCode,
     required this.mobile,
     required this.creator,
@@ -39,29 +37,12 @@ class BorrowerListItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    backgroundImage: AssetImage('assets/profileimage.png'),
+                    backgroundImage: AssetImage('assets/Images/profileimage.png'),
                   ),
                   SizedBox(width: 10),
                   Text(
                     name,
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Father/Spouse:',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  Expanded(
-                    child: Text(
-                      fatherOrSpouse,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                      overflow: TextOverflow.ellipsis,
-                    ),
                   ),
                 ],
               ),

@@ -187,10 +187,6 @@ class _KYCPageState extends State<KYCPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('KYC'),
-        backgroundColor: Color(0xFFD42D3F),
-      ),
       backgroundColor: Color(0xFFD42D3F),
       body: Center(
         child: Container(

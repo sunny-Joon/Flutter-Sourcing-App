@@ -13,10 +13,10 @@ import 'borrower_list.dart';
 
 
 class GroupListPage extends StatefulWidget {
-  final BranchDataModel data;
+  final BranchDataModel Branchdata;
   final String intentFrom; // Add this line
 
-  GroupListPage({required this.data, required this.intentFrom});
+  GroupListPage({required this.Branchdata, required this.intentFrom});
 
   @override
   _GroupListPageState createState() => _GroupListPageState();
@@ -41,7 +41,7 @@ class _GroupListPageState extends State<GroupListPage> {
         GlobalClass.token,
         GlobalClass.dbName,
         GlobalClass.creator,
-        widget.data.branchCode
+        widget.Branchdata.branchCode
       );
       if (response.statuscode == 200) {
         setState(() {
@@ -70,17 +70,13 @@ class _GroupListPageState extends State<GroupListPage> {
     }).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Group List'),
-        backgroundColor: Colors.red,
-      ),
       backgroundColor: Colors.red,
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.only(bottom: 10,top: 50,left: 10,right: 10),
             child: Card(
               elevation: 8,
               child: TextField(
@@ -108,7 +104,7 @@ class _GroupListPageState extends State<GroupListPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => KYCPage(data: widget.data),
+                            builder: (context) => KYCPage(data: widget.Branchdata),
                           ),
                         );
                         break;
@@ -116,12 +112,12 @@ class _GroupListPageState extends State<GroupListPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ApplicationPage(),
-                            /*builder: (context) => BorrowerList(
-                              data: "widget.data",
-                              areaCd: selectedItem.groupCode,
-                              foCode: selectedItem.groupCodeName,
-                            ),*/
+                            //builder: (context) => ApplicationPage(),
+                            builder: (context) => BorrowerList(
+                              BranchData: widget.Branchdata,
+                              GroupData: selectedItem,
+                              page:"APPLICATION FORM"
+                            ),
                           ),
                         );
                         break;
@@ -141,7 +137,18 @@ class _GroupListPageState extends State<GroupListPage> {
                       case 'Visit Report':
                         break;
                       case 'E SIGN':
-                        _showEsignPopup(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            //builder: (context) => ApplicationPage(),
+                            builder: (context) => BorrowerList(
+                                BranchData: widget.Branchdata,
+                                GroupData: selectedItem,
+                                page:"E SIGN"
+                            ),
+                          ),
+                        );
+                        //_showEsignPopup(context);
                         break;
                     }
                   },

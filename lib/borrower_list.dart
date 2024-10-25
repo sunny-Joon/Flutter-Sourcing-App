@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sourcing_app/Models/GroupModel.dart';
+import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
 import 'BorrowerListItem.dart';
+import 'FirstEsign.dart';
 import 'GlobalClass.dart';
 import 'ApplicationForms.dart';
-import 'Models/BorrowerListModel.dart'; // Import your ApplicationForm
+import 'Models/BorrowerListModel.dart';
 
 class BorrowerList extends StatefulWidget {
-  final String data;
-  final String areaCd;
-  final String foCode;
+  final BranchDataModel BranchData;
+  final GroupDataModel GroupData;
+  final String page;
 
   BorrowerList({
-    required this.data,
-    required this.areaCd,
-    required this.foCode,
+    required this.BranchData,
+    required this.GroupData,
+    required this.page,
   });
 
   @override
@@ -32,19 +35,15 @@ class _BorrowerListState extends State<BorrowerList> {
   }
 
   Future<void> _fetchBorrowerList() async {
-    /*final apiService = Provider.of<ApiService>(context, listen: false);
+    final apiService = Provider.of<ApiService>(context, listen: false);
 
-    try {
-      final response = await apiService.BorrowerList(
-        GlobalClass.token,
-        GlobalClass.dbName,
-        GlobalClass.imei,
-        widget.foCode,
-        widget.areaCd,
-        GlobalClass.creator,
-      );
-
-      if (response.statusCode == 200) {
+    await apiService.BorrowerList(
+      GlobalClass.token,
+      GlobalClass.dbName,
+      "groupCode",
+      "branchCode",
+    ).then((response) {
+      if (response.statuscode == 200) {
         setState(() {
           _borrowerItems = response.data;
           _isLoading = false;
@@ -54,26 +53,18 @@ class _BorrowerListState extends State<BorrowerList> {
           _isLoading = false;
         });
       }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-    }*/
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Borrower List'),
-        backgroundColor: Color(0xFFD42D3F),
-      ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : Column(
         children: [
           Card(
-            margin: EdgeInsets.all(10),
+            margin: EdgeInsets.only(bottom: 10, top: 50, left: 10, right: 10),
             elevation: 8,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -92,21 +83,37 @@ class _BorrowerListState extends State<BorrowerList> {
               itemBuilder: (context, index) {
                 final item = _borrowerItems[index];
                 return BorrowerListItem(
-                  name: item.fname,
-                  fatherOrSpouse: item.fFname,
-                  fiCode: item.code,
-                  mobile: item.pPh3,
+                  name: item.fullName,
+                  fiCode: item.id.toString(),
+                  mobile: item.pPhone,
                   creator: item.creator,
-                  address: item.addr,
+                  address: item.currentAddress,
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ApplicationPage(
-                      //    borrower: item, // Pass the item object
-                        ),
-                      ),
-                    );
+                    switch (widget.page) {
+                      case 'APPLICATION FORM':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ApplicationPage(
+                              BranchData: widget.BranchData,
+                              GroupData: widget.GroupData,
+                            ),
+                          ),
+                        );
+                        break;
+                      case 'E SIGN':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FirstEsign(
+                              BranchData: widget.BranchData,
+                              GroupData: widget.GroupData,
+                              selectedData: item,
+                            ),
+                          ),
+                        );
+                        break;
+                    }
                   },
                 );
               },

@@ -56,6 +56,7 @@ dependencies:
   archive: ^3.6.1
   geolocator: ^13.0.1
   horizontal_stepper_flutter: ^1.0.3
+  flutter_pdfview: ^1.3.4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
