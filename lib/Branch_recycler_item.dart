@@ -31,65 +31,12 @@ class BranchRecyclerItem extends StatelessWidget {
             ),
           ),
           Container(
-
-
             child:  Center(
               child: Text("${item.branchName}",style: TextStyle(fontSize: 17,color: Colors.black,fontWeight: FontWeight.bold),),
             ),
           ),
-
-
-
         ],
       ),
     ),);
   }
 }
-
-// Padding(
-// padding: EdgeInsets.all(8.0), // Add padding around the Card
-// child: Card(
-// margin: EdgeInsets.zero, // Remove extra margin if only padding is needed
-// child: Column(
-// crossAxisAlignment: CrossAxisAlignment.center,
-// children: [
-// Container(
-// child: Row(
-// children: [
-// Expanded(
-// flex: 1,
-// child: Container(
-// color: Colors.white,
-// padding: EdgeInsets.all(8.0),
-// child: Column(
-// children: [
-// Text(
-// '${item.branchCode}',
-// style: TextStyle(color: Colors.red),
-// ),
-// ],
-// ),
-// ),
-// ),
-// Expanded(
-// flex: 2,
-// child: Container(
-// color: Color(0x86AD0808),
-// padding: EdgeInsets.all(8.0),
-// child: Column(
-// children: [
-// Text(
-// '${item.branchName}',
-// style: TextStyle(color: Colors.white),
-// ),
-// ],
-// ),
-// ),
-// ),
-// ],
-// ),
-// ),
-// ],
-// ),
-// ),
-// );

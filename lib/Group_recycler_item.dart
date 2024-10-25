@@ -10,48 +10,36 @@ class GroupRecyclerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 6,
-      margin: EdgeInsets.symmetric(vertical: 6, horizontal: 24),
-      child: Column(
+    return Padding(padding: EdgeInsets.all(4),child: Card(
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+
+      color: Colors.white,
+      elevation: 5,
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        '${item.groupCode}',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ],
-                  ),
-                ),
+          Card(
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            elevation: 0,
+            child:  Container(
+              height: 45,
+              width: MediaQuery.of(context).size.width/4,
+              color: Color(0xFFD42D3F),
+              child:   Center(
+                child: Text('${item.groupCode}',style: TextStyle(fontSize: 20,color: Colors.white,fontWeight: FontWeight.w400),),
               ),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  color: Color(0x86AD0808),
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        '${item.groupCodeName}',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            ),
+          ),
+          Container(
+            child:  Center(
+              child: Text('${item.groupCodeName}',style: TextStyle(fontSize: 17,color: Colors.black,fontWeight: FontWeight.bold),),
+            ),
           ),
         ],
       ),
-    );
+    ),);
   }
+
 }
