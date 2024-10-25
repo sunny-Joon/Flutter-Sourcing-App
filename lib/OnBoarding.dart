@@ -7,10 +7,6 @@ class OnBoarding extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-      appBar: AppBar(
-        title: Text('OnBoarding'),
-        backgroundColor: Colors.red,
-      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

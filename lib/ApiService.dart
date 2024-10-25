@@ -246,4 +246,11 @@ abstract class ApiService {
       @Part( name:"EmpCode") String EmpCode,
       @Part( name:"Address") String Address,
       @Part( name: "Image") File Picture );
+
+  @GET("FiSourcing/GetDataForFirstEsign")
+  Future<BorrowerListModel> BorrowerList(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("Group_code") String Group_code,
+      @Query("Branch_code") String Branch_code);
 }

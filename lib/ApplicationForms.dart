@@ -8,11 +8,20 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
 import 'DATABASE/DatabaseHelper.dart';
+import 'Models/GroupModel.dart';
 import 'Models/RangeCategoryModel.dart';
+import 'Models/branch_model.dart';
 import 'QRScanPage.dart';
 
 class ApplicationPage extends StatefulWidget {
-  const ApplicationPage({super.key});
+  final BranchDataModel BranchData;
+  final GroupDataModel GroupData;
+
+  const ApplicationPage({
+    super.key,
+  required this.BranchData,
+  required this.GroupData,
+  });
 
   @override
   _ApplicationPageState createState() => _ApplicationPageState();
@@ -379,10 +388,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Application Form'),
-        backgroundColor: Color(0xFFD42D3F),
-      ),
       backgroundColor: Color(0xFFD42D3F),
       body: Center(
         child: Container(

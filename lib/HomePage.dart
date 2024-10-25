@@ -98,8 +98,8 @@ class _HomePageState extends State<HomePage> {
                           });
                         },
                         onChangeEnd: (value) async{
-                          _setTarget(context,value.toInt());
-                          Navigator.of(context).pop(value);
+                          await _setTarget(context, value.toInt());
+                          Navigator.of(context).pop(value.toInt());
                         },
                       ),
                     ),
@@ -127,14 +127,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-      appBar: AppBar(
-        title: Text('HomePage'),
-        backgroundColor: Colors.red,
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 20), // Add some space at the top
+            SizedBox(height: 80), // Add some space at the top
             Container(
               height: MediaQuery.of(context).size.height / 2.2,
               padding: EdgeInsets.all(30.0),

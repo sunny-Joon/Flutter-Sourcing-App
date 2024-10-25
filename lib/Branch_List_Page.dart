@@ -31,29 +31,20 @@ class _BranchListPageState extends State<BranchListPage> {
   Future<void> _fetchBranchList() async {
     final apiService = Provider.of<ApiService>(context, listen: false);
 
-    try {
-      final response = await apiService.getBranchList(
-        GlobalClass.dbName,
-        GlobalClass.creator
-      );
-      if (response.statuscode == 200) {
-        setState(() {
-          _items = response.data; // Store the response data
-          _isLoading = false;
-        });
-        print('Branch List retrieved successfully');
-      } else {
-        print('Failed to retrieve branch list');
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      print('Error: $e');
-      setState(() {
-        _isLoading = false;
+      await apiService.getBranchList(GlobalClass.dbName, GlobalClass.creator).then((response){
+        if (response.statuscode == 200) {
+          setState(() {
+            _items = response.data; // Store the response data
+            _isLoading = false;
+          });
+          print('Branch List retrieved successfully');
+        } else {
+          print('Failed to retrieve branch list');
+          setState(() {
+            _isLoading = false;
+          });
+        }
       });
-    }
   }
 
   @override
@@ -63,18 +54,16 @@ class _BranchListPageState extends State<BranchListPage> {
     }).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Branch List'),
-        backgroundColor: Colors.red,
-      ),
+
       backgroundColor: Colors.red,
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.only(bottom: 10,top: 50,left: 10,right: 10),
             child: Card(
+              color: Colors.white,
               elevation: 8,
               child: TextField(
                 decoration: InputDecoration(
@@ -101,12 +90,12 @@ class _BranchListPageState extends State<BranchListPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => GroupListPage(
-                                data: selectedItem,
+                                Branchdata: selectedItem,
                                 intentFrom:widget.intentFrom),
                           ),
                         );
                   },
-                  child: branchRecyclerItem(item: filteredItems[index]),
+                  child: BranchRecyclerItem(item: filteredItems[index]),
                 );
               },
             ),
