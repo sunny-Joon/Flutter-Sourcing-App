@@ -4,6 +4,7 @@ import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
+import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
@@ -28,6 +29,9 @@ class ApplicationPage extends StatefulWidget {
 }
 
 class _ApplicationPageState extends State<ApplicationPage> {
+  late KycScanningModel getData;
+  bool _isPageLoading=false;
+
   List<RangeCategoryDataModel> states = [];
   List<RangeCategoryDataModel> relation = [];
   List<RangeCategoryDataModel> religion = [];
@@ -85,7 +89,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? selectedSpecialSocialCategory;
 
   @override
-  void initState() {
+  Future<void> initState() async {
     fetchData();
     super.initState();
     _dobController.addListener(() {
@@ -95,8 +99,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
       selectedResiding = residing.isNotEmpty ? residing[0] : null;
       selectedspecialAbility = specialAbility.isNotEmpty ? residing[0] : null;
       selectedSpecialSocialCategory =
-          SpecialSocialCategory.isNotEmpty ? residing[0] : null;
+      SpecialSocialCategory.isNotEmpty ? residing[0] : null;
     });
+
+     GetDocs(context);
+    _isPageLoading=true;
+
 // Fetch states using the required cat_key
   }
 
@@ -295,7 +303,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final _bank_addressController = TextEditingController();
   final _bankOpeningDateController = TextEditingController();
 
-  final _titleController = TextEditingController();
   final _fnameController = TextEditingController();
   final _mnameController = TextEditingController();
   final _lnameController = TextEditingController();
@@ -311,7 +318,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final _dlController = TextEditingController();
   final _voterController = TextEditingController();
   final _aadharIdController = TextEditingController();
-
 
   // fiextra
   final emailIdController = TextEditingController();
@@ -329,7 +335,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? selectedLoanPurpose;
   String? selectedOccupation;
 
-  //String? selectedLoanDuration;
   String? selectedBank;
   String? Fi_Id;
   String qrResult = "";
@@ -391,13 +396,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
       backgroundColor: Color(0xFFD42D3F),
       body: Center(
         child: Container(
-          height: MediaQuery.of(context).size.height - 100,
-          width: MediaQuery.of(context).size.width - 50,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height - 100,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width - 24,
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/Images/curvedBackground.png'),
-              fit: BoxFit.fill,
-            ),
+              color: Colors.white
           ),
           child: Padding(
             padding: EdgeInsets.only(left: 10, right: 10, top: 30, bottom: 80),
@@ -410,7 +418,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   // Call the save method based on the current step
                   if (_currentStep == 0) {
                     updatePersonalDetails(context);
-                  } else if (_currentStep == 1) {
+                  } /*else if (_currentStep == 1) {
                     AddFiFamilyDetail(context);
                   } else if (_currentStep == 2) {
                     AddFiIncomeAndExpense(context);
@@ -418,7 +426,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     AddFinancialInfo(context);
                   } else if (_currentStep == 4) {
                     saveGuarantorMethod(context);
-                  }
+                  }*/
                 }
               },
               onStepCancel: () {
@@ -454,9 +462,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 );
               },
               steps: [
-                //addextra
-
                 Step(
+                  title: Text('1'),
+                  isActive: _currentStep >= 0,
+                  content: Form(
+                    key: _formKeys[0],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                       children: _buildKycDocumentList(), // Call the function here
+                    ),
+                  ),
+                ),
+                /* Step(
                   title: Text('1'),
                   isActive: _currentStep >= 0,
                   content: Form(
@@ -779,9 +796,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     ),
                   ),
                 ),
-
-                ////////////////////
-
                 Step(
                   title: Text('2'),
                   isActive: _currentStep >= 1,
@@ -1022,7 +1036,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           style: TextStyle(fontSize: 20),
                         ),
 
-                        /*Container(
+                        */
+                /*Container(
                           width: 150, // Adjust the width as needed
                           height: 35, // Fixed height
                           padding: EdgeInsets.symmetric(horizontal: 12),
@@ -1059,6 +1074,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                 }).toList(),
                           ),
                         ),*/
+                /*
 
                         Text(
                           'Religion',
@@ -1268,7 +1284,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       ],
                     ),
                   ),
-                ),
+                ),*/
               ],
               stepIconHeight: 25,
             ),
@@ -1315,8 +1331,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-  Widget _buildTextField2(
-      String label, TextEditingController controller, TextInputType inputType) {
+  Widget _buildTextField2(String label, TextEditingController controller,
+      TextInputType inputType) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -1379,7 +1395,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     };
 
     return await api.FiFamilyDetail(
-            GlobalClass.token, GlobalClass.dbName, requestBody)
+        GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
         setState(() {
@@ -1411,7 +1427,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     };
 
     return await api.AddFinancialInfo(
-            GlobalClass.token, GlobalClass.dbName, requestBody)
+        GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
         setState(() {
@@ -1428,19 +1444,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
     int any_current_EMI = int.parse(_any_current_EMIController.text.toString());
     int future_Income = int.parse(_future_IncomeController.text.toString());
     int agriculture_income =
-        int.parse(_agriculture_incomeController.text.toString());
+    int.parse(_agriculture_incomeController.text.toString());
     int earning_mem_count =
-        int.parse(_earning_mem_countController.text.toString());
+    int.parse(_earning_mem_countController.text.toString());
     int other_Income = int.parse(_other_IncomeController.text.toString());
     int annuaL_INCOME = int.parse(_annuaL_INCOMEController.text.toString());
     int spendOnChildren = int.parse(_spendOnChildrenController.text.toString());
     int otheR_THAN_AGRICULTURAL_INCOME =
-        int.parse(_otheR_THAN_AGRICULTURAL_INCOMEController.text.toString());
+    int.parse(_otheR_THAN_AGRICULTURAL_INCOMEController.text.toString());
     int years_in_business =
-        int.parse(_years_in_businessController.text.toString());
+    int.parse(_years_in_businessController.text.toString());
     int pensionIncome = int.parse(_pensionIncomeController.text.toString());
     int any_RentalIncome =
-        int.parse(_any_RentalIncomeController.text.toString());
+    int.parse(_any_RentalIncomeController.text.toString());
     int rent = int.parse(_rentController.text.toString());
     int fooding = int.parse(_foodingController.text.toString());
     int education = int.parse(_educationController.text.toString());
@@ -1486,7 +1502,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     };
 
     return await api.AddFiIncomeAndExpense(
-            GlobalClass.token, GlobalClass.dbName, requestBody)
+        GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
         setState(() {
@@ -1527,33 +1543,33 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     return await api
         .saveGurrantor(
-            GlobalClass.token,
-            GlobalClass.dbName,
-            fi_ID,
-            gr_Sno,
-            title,
-            fname,
-            mname,
-            lname,
-            relation_with_Borrower,
-            p_Address1,
-            p_Address2,
-            p_Address3,
-            p_City,
-            p_State,
-            pincode,
-            dob,
-            age,
-            phone,
-            pan,
-            dl,
-            voter,
-            aadharId,
-            gender,
-            religion,
-            esign_Succeed,
-            esign_UUID,
-            _imageFile!)
+        GlobalClass.token,
+        GlobalClass.dbName,
+        fi_ID,
+        gr_Sno,
+        title,
+        fname,
+        mname,
+        lname,
+        relation_with_Borrower,
+        p_Address1,
+        p_Address2,
+        p_Address3,
+        p_City,
+        p_State,
+        pincode,
+        dob,
+        age,
+        phone,
+        pan,
+        dl,
+        voter,
+        aadharId,
+        gender,
+        religion,
+        esign_Succeed,
+        esign_UUID,
+        _imageFile!)
         .then((value) async {
       if (value.statuscode == 200) {
         setState(() {
@@ -1590,7 +1606,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(5), // Adjust as needed
+                        BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1611,7 +1627,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(5), // Adjust as needed
+                        BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1633,9 +1649,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         List<int> byteScanData = bigIntToBytes(bigIntScanData);
 
                         List<int> decompByteScanData =
-                            decompressData(byteScanData);
+                        decompressData(byteScanData);
                         List<List<int>> parts =
-                            separateData(decompByteScanData, 255, 15);
+                        separateData(decompByteScanData, 255, 15);
                         String qrResult = decodeData(parts);
 
                         onResult(qrResult);
@@ -1651,7 +1667,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(5), // Adjust as needed
+                        BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1687,8 +1703,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  List<List<int>> separateData(
-      List<int> source, int separatorByte, int vtcIndex) {
+  List<List<int>> separateData(List<int> source, int separatorByte,
+      int vtcIndex) {
     int imageStartIndex = 0;
 
     List<List<int>> separatedParts = [];
@@ -1722,7 +1738,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     for (var byteArray in encodedData) {
       // Decode using ISO-8859-1
       String decodedString =
-          utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
+      utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
       decodedData.add(decodedString);
       test += decodedString;
     }
@@ -1770,15 +1786,104 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     return await api
         .updatePersonalDetails(
-            GlobalClass.dbName, GlobalClass.token, requestBody)
+        GlobalClass.dbName, GlobalClass.token, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
           Fi_Id = value.data[0].fiId.toString();
-        });      } else {
+        });
+      } else {
         // Handle failure
       }
     });
   }
+
+  Future<void> GetDocs(BuildContext context) async {
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .KycScanning(
+        GlobalClass.dbName, GlobalClass.token, '139').then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          getData = value;
+          _isPageLoading = true;
+        });
+
+        } else {
+      }
+    });
+  }
+
+  Widget _buildListItem({required String title, String? path1, String? path2}) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            // Image or Placeholder
+            Image.asset(
+              'assets/doc_icon.png',
+              // Replace with actual image asset path or network image
+              width: 40,
+              height: 40,
+            ),
+            SizedBox(width: 10),
+            // Texts for paths
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+                  if (path1 != null) Text("Path 1: $path1"),
+                  if (path2 != null) Text("Path 2: $path2"),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+ List<Widget> _buildKycDocumentList() {
+     List<Widget> listItems = [];
+
+     if(_isPageLoading){
+       for (var doc in getData.data.grDocs) {
+         // Check and add Aadhar if it exists
+         if (doc.addharExists == true) {
+           listItems.add(_buildListItem(
+             title: "Aadhar Document",
+             path1: doc.aadharPath,
+             path2: doc.aadharBPath,
+           ));
+         }
+       }
+     }
+
+       // Check and add Aadhar if it exists
+
+       return listItems;
+     }
+
+       /*     if (getData.addharExists == true) {
+         listItems.add(_buildListItem(
+           title: "Aadhar Document",
+           path1: getData.aadharPath,
+           path2: getData.aadharBPath,
+         ));
+       }
+       if (getData.addharExists == true) {
+         listItems.add(_buildListItem(
+           title: "Aadhar Document",
+           path1: getData.aadharPath,
+           path2: getData.aadharBPath,
+         ));
+       }
+
+
+   */
 }
