@@ -104,7 +104,9 @@ class _GroupListPageState extends State<GroupListPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => KYCPage(data: widget.Branchdata),
+                            builder: (context) => KYCPage(
+                                GroupData: selectedItem,
+                                data: widget.Branchdata),
                           ),
                         );
                         break;

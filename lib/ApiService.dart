@@ -54,6 +54,7 @@ abstract class ApiService {
       @Part( name:"m_Name") String mName,
       @Part( name:"l_Name") String lName,
       @Part( name:"dob") String dob,
+      @Part( name:"Age") String age,
       @Part( name:"gender") String gender,
       @Part( name:"p_Phone") String pPhone,
       @Part( name:"fatheR_FIRST_NAME") String fatherFirstName,
@@ -76,6 +77,15 @@ abstract class ApiService {
       @Part( name:"IsMarried") bool isMarried,
       @Part( name:"GroupCode") String groupCode,
       @Part( name:"BranchCode") String branchCode,
+
+      @Part( name:"Relation_with_Borrower") String relation_with_Borrower,
+      @Part( name:"Bank_name") String bank_name,
+      @Part( name:"Loan_Duration") String loan_Duration,
+      @Part( name:"Loan_amount") String loan_amount,
+
+
+
+
       @Part( name: "Picture") File Picture);
 
   @POST("FiSourcing/AddFiIDs")
