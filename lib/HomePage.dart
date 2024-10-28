@@ -133,8 +133,9 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 80), // Add some space at the top
             Container(
               height: MediaQuery.of(context).size.height / 2.2,
+              width: MediaQuery.of(context).size.width-30,
+              margin: EdgeInsets.symmetric(horizontal: 5.0), // 5dp margin on left and right
               padding: EdgeInsets.all(30.0),
-              margin: EdgeInsets.symmetric(horizontal: 18.0),
               decoration: BoxDecoration(
                 color: Color(0xFFD42D3F),
                 borderRadius: BorderRadius.circular(18),
@@ -163,58 +164,66 @@ class _HomePageState extends State<HomePage> {
                   ),
                   // Monthly text with top margin
                   Padding(
-                    padding: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(top: 5),
                     child: Text(
                       'Monthly',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         color: Color(0xFF6D6D6D), // dark grey color
                       ),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   // Disbursement Target text with top margin
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      'Disbursement Target',
+                  Text(
+                      'Comission Target',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         color: Color(0xFF6D6D6D),
                       ),
                       textAlign: TextAlign.center,
                     ),
-                  ),
                   // Container with margin from top and bottom
-                  GestureDetector(
-                    onTap: () async {
-                      final selectedValue = await _showAlertDialog(context); // Await the dialog result
+                  SizedBox(height: 10),
+                  Text(
+                      '₹ ${_displayValue.toStringAsFixed(0)}',
+                      style: TextStyle(
+                        fontSize: 28,
+                        color: Color(0xFF000000),
+                        fontWeight: FontWeight.bold, // Bold text
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFD42D3F), // Button background color
+                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0), // Button padding
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero, // Rectangular corners
+                      ),
+                    ),
+                    onPressed: () async {
+                      final selectedValue = await _showAlertDialog(context); // Same functionality
                       if (selectedValue != null) {
                         setState(() {
                           _displayValue = selectedValue * 1000; // Convert to the actual value
                         });
                       }
                     },
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      margin: EdgeInsets.only(top: 10, bottom: 10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.red),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      child: Text(
-                        '₹ ${_displayValue.toStringAsFixed(0)}',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Color(0xFF6D6D6D),
-                        ),
-                        textAlign: TextAlign.center,
+                    child: Text(
+                      'Reset target',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
+
             SizedBox(height: 20), // Add space between sections
             // Bottom section with cards
             GestureDetector(
@@ -225,10 +234,10 @@ class _HomePageState extends State<HomePage> {
                 );
               },
               child: Text(
-                'Tap to Calculate Incentive',
+                'TAP To KNOW YOUR PROGRESS >>>',
                 style: TextStyle(
                   fontSize: 18,
-                  color: Colors.white,
+                  color: Color(0xFFC5C3C3),
                   shadows: [
                     Shadow(
                       blurRadius: 10.0,
@@ -255,19 +264,46 @@ class _HomePageState extends State<HomePage> {
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
-                          child: Text(
-                            'People Earn More Incentive',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Color(0xFF6D6D6D),
-                            ),
-                            textAlign: TextAlign.center,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Current Earning',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Color(0xFF6D6D6D),
+                                ),
+                              ),
+
+                              // Dynamic text with controller
+                              TextField(
+                                controller: TextEditingController(text: '\$8000'),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Color(0xFF6D6D6D),
+                                ),
+                                textAlign: TextAlign.center,
+                                readOnly: true, // Make it read-only
+                                decoration: InputDecoration(
+                                  border: InputBorder.none, // Remove underline
+                                ),
+                              ),
+                              Text(
+                                '10 People are earning more commission',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0xFF6D6D6D),
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
+
                 Expanded(
                   child: Container(
                     height: MediaQuery.of(context).size.height / 4,
@@ -285,7 +321,7 @@ class _HomePageState extends State<HomePage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                'Earn More Incentive',
+                                'Earn Maximum Comission',
                                 style: TextStyle(
                                   fontSize: 20,
                                   color: Colors.white,
@@ -294,10 +330,20 @@ class _HomePageState extends State<HomePage> {
                               ),
                               SizedBox(height: 10),
                               Text(
-                                'Ab Rukna Nahi',
+                                'AB RUKNA NAHI',
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),SizedBox(height: 10),
+                              Text(
+                                '-->>',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign.center,
                               ),

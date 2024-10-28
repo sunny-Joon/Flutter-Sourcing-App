@@ -18,8 +18,9 @@ class LoginPage extends StatelessWidget {
     // Define your custom color
     const Color customColor = Color(0xFFD42D3F);
     TextEditingController passwordControllerlogin = TextEditingController();
-    final TextEditingController mobileControllerlogin = TextEditingController(text: 'GRST002064');
-    String deviceId ='';
+    final TextEditingController mobileControllerlogin =
+        TextEditingController(text: 'GRST002064');
+    String deviceId = '';
 
     // Check and request permissions
     _checkAndRequestPermissions(context);
@@ -32,11 +33,11 @@ class LoginPage extends StatelessWidget {
           // Align all text to the left
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 30),
+                  SizedBox(height: 80),
                   Image.asset(
                     'assets/Images/paisa_logo.png', // Adjust the image path
                     width: double.infinity,
@@ -51,14 +52,14 @@ class LoginPage extends StatelessWidget {
                   SizedBox(height: 20),
                   Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    elevation: 4,
-                    color: Colors.grey[300],
+                      side: BorderSide(color: Colors.grey.shade400), // Grey border
+                    ),elevation: 0,
+                    color: Colors.white, // White background
                     child: Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.only(left: 15.0),
                       child: DropdownButton<String>(
                         isExpanded: true,
+                        underline: SizedBox(), // Removes the underline
                         items: [
                           DropdownMenuItem<String>(
                             value: "Database1",
@@ -74,20 +75,21 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   SizedBox(height: 20),
                   Text(
-                    'Enter User ID',
+                    'User ID',
                     style: TextStyle(
                       color: customColor,
-                      fontSize: 15,
+                      fontSize: 20,
                     ),
                   ),
-                  SizedBox(height: 10),
                   Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.0),
+                      side: BorderSide(color: Colors.grey.shade400), // Grey border
                     ),
-                    elevation: 8,
+                    elevation: 0, // Remove elevation
+                    color: Colors.white, // Set background color to white
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child: TextField(
@@ -95,11 +97,14 @@ class LoginPage extends StatelessWidget {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'GRST000223',
+                          hintStyle: TextStyle(color: Colors.grey.shade400), // Hint color grey
                         ),
                         style: TextStyle(fontSize: 18),
                       ),
                     ),
                   ),
+
+
                   SizedBox(height: 5),
                   Text(
                     'User Name must be at least 10 characters',
@@ -108,20 +113,21 @@ class LoginPage extends StatelessWidget {
                       fontSize: 12,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
+
                   Text(
-                    'Enter Password',
+                    'Password',
                     style: TextStyle(
                       color: customColor,
-                      fontSize: 15,
+                      fontSize: 20,
                     ),
                   ),
-                  SizedBox(height: 10),
                   Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.0),
+                      side: BorderSide(color: Colors.grey.shade400), // Grey border
                     ),
-                    elevation: 8,
+                    elevation: 0,
+                    color: Colors.white, // Set background color to white
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child: Row(
@@ -132,6 +138,7 @@ class LoginPage extends StatelessWidget {
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: '*****',
+                                hintStyle: TextStyle(color: Colors.grey.shade400), // Hint color greyS
                               ),
                               obscureText: true,
                               style: TextStyle(fontSize: 18),
@@ -152,28 +159,25 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 50),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ElevatedButton(
+                //  Padding(
+                  //  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  ElevatedButton(
                       onPressed: () async {
-                     //   if (await _checkPermissions()) {
-                          _getLogin(mobileControllerlogin.text,
-                              passwordControllerlogin.text, context);
-                    //    } else {
-                          // Show message or handle the case where permissions are not granted
-                    //    }
+                        _getLogin(mobileControllerlogin.text, passwordControllerlogin.text, context);
                       },
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: customColor,
-                        // Set text color to white
-                        minimumSize: Size(double.infinity, 65),
+                        foregroundColor: Colors.white, // Text color
+                        backgroundColor: customColor, // Background color
+                        minimumSize: Size(double.infinity, 45), // Full width with a height of 65
                         textStyle: TextStyle(fontSize: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0), // Rectangular corners
+                        ),
                       ),
-                      child: Text('Login'),
+                      child: Text('LOGIN'),
                     ),
-                  ),
-                  SizedBox(height: 10),
+              //    ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -186,11 +190,13 @@ class LoginPage extends StatelessWidget {
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: const Text('Error'),
-                                  content: const Text('UserId cannot be blank.'),
+                                  content:
+                                      const Text('UserId cannot be blank.'),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        Navigator.of(context).pop(); // Close the dialog
+                                        Navigator.of(context)
+                                            .pop(); // Close the dialog
                                       },
                                       child: const Text('OK'),
                                     ),
@@ -200,7 +206,8 @@ class LoginPage extends StatelessWidget {
                             );
                           } else {
                             // Fetch deviceId and navigate only if successful
-                            String? deviceId = await generateDeviceId(mobileControllerlogin.text) as String?;
+                            String? deviceId = await generateDeviceId(
+                                mobileControllerlogin.text) as String?;
                             if (deviceId != null && deviceId.isNotEmpty) {
                               Navigator.push(
                                 context,
@@ -218,11 +225,13 @@ class LoginPage extends StatelessWidget {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: const Text('Error'),
-                                    content: const Text('Failed to generate Device ID.'),
+                                    content: const Text(
+                                        'Failed to generate Device ID.'),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.of(context).pop(); // Close the dialog
+                                          Navigator.of(context)
+                                              .pop(); // Close the dialog
                                         },
                                         child: const Text('OK'),
                                       ),
@@ -237,13 +246,10 @@ class LoginPage extends StatelessWidget {
                           'Share Device Id',
                           style: TextStyle(
                             color: customColor,
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
                           ),
                         ),
                       ),
-
-
                       TextButton(
                         onPressed: () {
                           Navigator.push(
@@ -256,8 +262,7 @@ class LoginPage extends StatelessWidget {
                           'Terms & Conditions',
                           style: TextStyle(
                             color: customColor,
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
                           ),
                         ),
                       ),
@@ -272,7 +277,8 @@ class LoginPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: Colors.white,
-        child: Icon(Icons.support_agent), // Placeholder for customer support icon
+        child:
+            Icon(Icons.support_agent), // Placeholder for customer support icon
       ),
     );
   }
@@ -297,7 +303,8 @@ class LoginPage extends StatelessWidget {
         barrierDismissible: false,
         builder: (context) => AlertDialog(
           title: Text('Permissions Required'),
-          content: Text('This app requires certain permissions to function correctly. Please grant the necessary permissions.'),
+          content: Text(
+              'This app requires certain permissions to function correctly. Please grant the necessary permissions.'),
           actions: [
             TextButton(
               onPressed: () async {
@@ -340,12 +347,14 @@ class LoginPage extends StatelessWidget {
       Permission.notification,
     ];
 
-    final statuses = await Future.wait(permissions.map((perm) => perm.request()));
+    final statuses =
+        await Future.wait(permissions.map((perm) => perm.request()));
 
     return statuses.every((status) => status.isGranted);
   }
 
-  Future<void> _getLogin(String userName, String userPassword, BuildContext context) async {
+  Future<void> _getLogin(
+      String userName, String userPassword, BuildContext context) async {
     // EasyLoading.show(status: 'Loading...',);
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
@@ -375,13 +384,12 @@ class LoginPage extends StatelessWidget {
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => Fragments()));
           }
-
         }
       } else {
-        PopupDialog.showPopup(context, value.statuscode.toString(), value.message);
-      //  _showErrorDialog(context);
+        PopupDialog.showPopup(
+            context, value.statuscode.toString(), value.message);
+        //  _showErrorDialog(context);
       }
-
     });
   }
 }
