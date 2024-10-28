@@ -11,6 +11,7 @@ class OnBoarding extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(height: 115),
             Padding(
               padding: const EdgeInsets.only(bottom: 40.0),
               child: Text(
@@ -23,7 +24,7 @@ class OnBoarding extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 46),
+            SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Stack(
@@ -36,7 +37,7 @@ class OnBoarding extends StatelessWidget {
                     height: 500, // Adjust the height as needed
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(35.0),
+                    padding: const EdgeInsets.all(10.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -48,7 +49,7 @@ class OnBoarding extends StatelessWidget {
                             ),
                           );
                         }),
-                        Divider(color: Color(0xFFF6F6F6)),
+                        Divider(color: Color(0xFFC0B8B8)),
                         _buildCardItem(context, 'E SIGN', 'assets/Images/righ_arrow.png', () {
                           Navigator.push(
                             context,
@@ -57,7 +58,7 @@ class OnBoarding extends StatelessWidget {
                             ),
                           );
                         }),
-                        Divider(color: Color(0xFFF6F6F6)),
+                        Divider(color: Color(0xFFC0B8B8)),
                         _buildCardItem(context, 'APPLICATION FORM', 'assets/Images/righ_arrow.png', () {
                           Navigator.push(
                             context,
@@ -66,7 +67,7 @@ class OnBoarding extends StatelessWidget {
                             ),
                           );
                         }),
-                        Divider(color: Color(0xFFF6F6F6)),
+                        Divider(color: Color(0xFFC0B8B8)),
                         _buildCardItem(context, 'HOUSE VISIT', 'assets/Images/righ_arrow.png', () {
                           Navigator.push(
                             context,
@@ -75,7 +76,7 @@ class OnBoarding extends StatelessWidget {
                             ),
                           );
                         }),
-                        Divider(color: Color(0xFFF6F6F6)),
+                        Divider(color: Color(0xFFC0B8B8)),
                         _buildCardItem(context, 'Visit Report', 'assets/Images/righ_arrow.png', () {
                           Navigator.push(
                             context,
@@ -100,11 +101,11 @@ class OnBoarding extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 5.0,horizontal: 24),
         child: Row(
           children: [
             Expanded(
-              flex: 5,
+              flex: 4,
               child: Text(
                 title,
                 style: TextStyle(
@@ -116,7 +117,7 @@ class OnBoarding extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(4.0),
                 child: Image.asset(asset),
               ),
             ),

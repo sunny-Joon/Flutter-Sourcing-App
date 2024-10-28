@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
+import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
 import 'package:flutter_sourcing_app/Models/target_response_model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/http.dart';
@@ -253,4 +254,10 @@ abstract class ApiService {
       @Header("dbname") String dbName,
       @Query("Group_code") String Group_code,
       @Query("Branch_code") String Branch_code);
+
+  @GET("FiSourcing/GetDataForFirstEsign")
+  Future<KycScanningModel> KycScanning(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("Fi_Id") String Fi_Id);
 }
