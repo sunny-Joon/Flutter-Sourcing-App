@@ -4,7 +4,9 @@ import 'package:archive/archive.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
+import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
@@ -15,8 +17,12 @@ import 'QRScanPage.dart';
 
 class KYCPage extends StatefulWidget {
   final BranchDataModel data;
+  final GroupDataModel GroupData;
 
-  KYCPage({required this.data});
+  KYCPage({
+    required this.data,
+    required this.GroupData
+  });
 
   @override
   _KYCPageState createState() => _KYCPageState();
@@ -30,6 +36,10 @@ class _KYCPageState extends State<KYCPage> {
   List<RangeCategoryDataModel> business_Type = [];
   List<RangeCategoryDataModel> income_type = [];
   List<RangeCategoryDataModel> bank = [];
+  List<RangeCategoryDataModel> relationwithBorrower = [];
+
+  List<String> loanDuration = ['12', '24', '36', '48'];
+
 
   List<String> titleList = ["Select", "Mr.", "Mrs.", "Miss"];
   String titleselected = "Select";
@@ -39,19 +49,32 @@ class _KYCPageState extends State<KYCPage> {
   String lati = "";
   String longi = "";
 
+
   bool isMarried = false;
   String stateselected = 'select';
   String genderselected = 'select';
+  String relationwithBorrowerselected = 'select';
+  String bankselected = 'select';
+
+  String? selectedloanDuration;
+  String? _locationMessage;
+  Position? position;
 
   @override
   void initState() {
     fetchData();
+    selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
+
+
     super.initState();
     _dobController.addListener(() {
       _calculateAge();
+
+      geolocator();
     });
 // Fetch states using the required cat_key
   }
+
 
   Future<void> fetchData() async {
     states = await DatabaseHelper().selectRangeCatData("state");
@@ -64,6 +87,8 @@ class _KYCPageState extends State<KYCPage> {
         .selectRangeCatData("income-type"); // Call your SQLite method
     bank = await DatabaseHelper()
         .selectRangeCatData("banks"); // Call your SQLite method
+    relationwithBorrower = await DatabaseHelper()
+        .selectRangeCatData("relationship"); // Call your SQLite method
 
     setState(() {
       states.insert(
@@ -72,7 +97,32 @@ class _KYCPageState extends State<KYCPage> {
             catKey: 'Select',
             groupDescriptionEn: 'select',
             groupDescriptionHi: 'select',
-            descriptionEn: 'Select', // Display text
+            descriptionEn: 'Select',
+            // Display text
+            descriptionHi: 'select',
+            sortOrder: 0,
+            code: 'select', // Value of the placeholder
+          ));
+      bank.insert(
+          0,
+          RangeCategoryDataModel(
+            catKey: 'Select',
+            groupDescriptionEn: 'select',
+            groupDescriptionHi: 'select',
+            descriptionEn: 'Select',
+            // Display text
+            descriptionHi: 'select',
+            sortOrder: 0,
+            code: 'select', // Value of the placeholder
+          ));
+      relationwithBorrower.insert(
+          0,
+          RangeCategoryDataModel(
+            catKey: 'Select',
+            groupDescriptionEn: 'select',
+            groupDescriptionHi: 'select',
+            descriptionEn: 'Select',
+            // Display text
             descriptionHi: 'select',
             sortOrder: 0,
             code: 'select', // Value of the placeholder
@@ -83,7 +133,8 @@ class _KYCPageState extends State<KYCPage> {
             catKey: 'Select',
             groupDescriptionEn: 'select',
             groupDescriptionHi: 'select',
-            descriptionEn: 'Select', // Display text
+            descriptionEn: 'Select',
+            // Display text
             descriptionHi: 'select',
             sortOrder: 0,
             code: 'select', // Value of the placeholder
@@ -120,6 +171,8 @@ class _KYCPageState extends State<KYCPage> {
   final _pincodeController = TextEditingController();
   final _groupCodeController = TextEditingController();
   final _branchCodeController = TextEditingController();
+  final _loan_amountController = TextEditingController();
+
 
   final _voterIdController = TextEditingController();
   final _passportController = TextEditingController();
@@ -136,6 +189,8 @@ class _KYCPageState extends State<KYCPage> {
   String? Fi_Id;
   String qrResult = "";
   File? _imageFile;
+
+  get isChecked => null;
 
   void _pickImage() async {
     File? pickedImage = await GlobalClass().pickImage();
@@ -190,10 +245,16 @@ class _KYCPageState extends State<KYCPage> {
       backgroundColor: Color(0xFFD42D3F),
       body: Center(
         child: Container(
-          height: MediaQuery.of(context).size.height - 100,
-          width: MediaQuery.of(context).size.width - 24,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height - 100,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width - 24,
           decoration: BoxDecoration(
-            color: Colors.white
+              color: Colors.white
           ),
           child: Padding(
             padding: EdgeInsets.only(left: 0, right: 0, top: 30, bottom: 10),
@@ -223,15 +284,29 @@ class _KYCPageState extends State<KYCPage> {
                   });
                 }
               },
-              controlsBuilder:
-                  (BuildContext context, ControlsDetails controls) {
+              controlsBuilder: (BuildContext context,
+                  ControlsDetails controls) {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
                       width: 150,
                       child: TextButton(
-                        onPressed: controls.onStepContinue,
+                        onPressed: () {
+                          // Check if either latitude or longitude is empty or '0'
+                          if ((_latitudeController.text.isEmpty ||
+                              _latitudeController.text == '0') ||
+                              (_longitudeController.text.isEmpty ||
+                                  _longitudeController.text == '0')) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(
+                                  "Please click the refresh button first to update location")),
+                            );
+                          } else {
+                            // Proceed to the next step if latitude and longitude are valid
+                            controls.onStepContinue?.call();
+                          }
+                        },
                         child: Text(
                           'Next',
                           style: TextStyle(color: Colors.white),
@@ -239,8 +314,8 @@ class _KYCPageState extends State<KYCPage> {
                         style: TextButton.styleFrom(
                           backgroundColor: Color(0xFFD42D3F),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.elliptical(5,
-                                5)), // Set border radius to zero for sharp corners
+                            borderRadius: BorderRadius.all(
+                                Radius.elliptical(5, 5)),
                           ),
                         ),
                       ),
@@ -248,6 +323,7 @@ class _KYCPageState extends State<KYCPage> {
                   ],
                 );
               },
+
               steps: [
                 Step(
                   title: Text(''),
@@ -263,11 +339,12 @@ class _KYCPageState extends State<KYCPage> {
                                 child: _buildTextField(
                                     'Aadhaar Id', _aadharIdController)),
                             GestureDetector(
-                              onTap: () => _showPopup(context, (String result) {
-                                setState(() {
-                                  qrResult = result;
-                                });
-                              }), // Show popup on image click
+                              onTap: () =>
+                                  _showPopup(context, (String result) {
+                                    setState(() {
+                                      qrResult = result;
+                                    });
+                                  }), // Show popup on image click
                               child: Icon(
                                 Icons.qr_code_scanner,
                                 size: 50.0, // Set the size of the icon
@@ -287,10 +364,12 @@ class _KYCPageState extends State<KYCPage> {
                                     style: TextStyle(fontSize: 16),
                                   ),
                                   Container(
-                                    width: 150, // Adjust the width as needed
-                                    height: 35, // Fixed height
+                                    width: 150,
+                                    // Adjust the width as needed
+                                    height: 35,
+                                    // Fixed height
                                     padding:
-                                        EdgeInsets.symmetric(horizontal: 12),
+                                    EdgeInsets.symmetric(horizontal: 12),
                                     decoration: BoxDecoration(
                                       border: Border.all(color: Colors.grey),
                                       borderRadius: BorderRadius.circular(5),
@@ -328,16 +407,16 @@ class _KYCPageState extends State<KYCPage> {
                               onTap: _pickImage,
                               child: _imageFile == null
                                   ? Icon(
-                                      Icons.person,
-                                      size: 50.0,
-                                      color: Colors.blue,
-                                    )
+                                Icons.person,
+                                size: 50.0,
+                                color: Colors.blue,
+                              )
                                   : Image.file(
-                                      File(_imageFile!.path),
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover,
-                                    ),
+                                File(_imageFile!.path),
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ],
                         ),
@@ -349,7 +428,8 @@ class _KYCPageState extends State<KYCPage> {
                                     'Middle Name', _nameMController)),
                             SizedBox(
                                 width:
-                                    16), // Add spacing between the text fields if needed
+                                16),
+                            // Add spacing between the text fields if needed
                             Expanded(
                                 child: _buildTextField(
                                     'Last Name', _nameLController)),
@@ -360,8 +440,10 @@ class _KYCPageState extends State<KYCPage> {
                           style: TextStyle(fontSize: 16),
                         ),
                         Container(
-                          width: 150, // Adjust the width as needed
-                          height: 35, // Fixed height
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 35,
+                          // Fixed height
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
@@ -388,12 +470,57 @@ class _KYCPageState extends State<KYCPage> {
                               }
                             },
                             items: aadhar_gender.map<DropdownMenuItem<String>>(
-                                (RangeCategoryDataModel state) {
-                              return DropdownMenuItem<String>(
-                                value: state.code,
-                                child: Text(state.descriptionEn),
-                              );
-                            }).toList(),
+                                    (RangeCategoryDataModel state) {
+                                  return DropdownMenuItem<String>(
+                                    value: state.code,
+                                    child: Text(state.descriptionEn),
+                                  );
+                                }).toList(),
+                          ),
+                        ),
+
+                        Text(
+                          'Relationship with Borrower',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Container(
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 35,
+                          // Fixed height
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: relationwithBorrowerselected,
+                            isExpanded: true,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                            underline: Container(
+                              height: 2,
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
+                            ),
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  relationwithBorrowerselected =
+                                      newValue; // Update the selected value
+                                });
+                              }
+                            },
+                            items: relationwithBorrower.map<
+                                DropdownMenuItem<String>>(
+                                    (RangeCategoryDataModel state) {
+                                  return DropdownMenuItem<String>(
+                                    value: state.code,
+                                    child: Text(state.descriptionEn),
+                                  );
+                                }).toList(),
                           ),
                         ),
                         _buildTextField('Mobile no', _mobileNoController),
@@ -463,7 +590,8 @@ class _KYCPageState extends State<KYCPage> {
                             ),
                             SizedBox(
                                 width:
-                                    8), // Add spacing between the text fields if needed
+                                8),
+                            // Add spacing between the text fields if needed
                             Expanded(
                                 child: _buildTextField('Father Last Name',
                                     _fatherLastNameController)),
@@ -478,21 +606,27 @@ class _KYCPageState extends State<KYCPage> {
                             });
                           },
                         ),
-                        _buildTextField(
-                            'Spouse First Name', _spouseFirstNameController),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: _buildTextField('Spouse Middle Name',
-                                    _spouseMiddleNameController)),
-                            SizedBox(
-                                width:
-                                    8), // Add spacing between the text fields if needed
-                            Expanded(
-                                child: _buildTextField('Spouse Last Name',
-                                    _spouseLastNameController)),
-                          ],
-                        ),
+                        // Conditionally show the spouse fields only when isMarried is true
+                        if (isMarried)
+                          Column(
+                            children: [
+                              _buildTextField('Spouse First Name',
+                                  _spouseFirstNameController),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildTextField('Spouse Middle Name',
+                                        _spouseMiddleNameController),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                    child: _buildTextField('Spouse Last Name',
+                                        _spouseLastNameController),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         Row(
                           children: [
                             Expanded(
@@ -500,7 +634,8 @@ class _KYCPageState extends State<KYCPage> {
                                     'Monthly Expense', _incomeController)),
                             SizedBox(
                                 width:
-                                    8), // Add spacing between the text fields if needed
+                                8),
+                            // Add spacing between the text fields if needed
                             Expanded(
                                 child: _buildTextField(
                                     'Monthly Income', _expenseController)),
@@ -509,16 +644,48 @@ class _KYCPageState extends State<KYCPage> {
                         Row(
                           children: [
                             Expanded(
-                                child: _buildTextField(
-                                    'Latitude', _latitudeController)),
-                            SizedBox(
-                                width:
-                                    8), // Add spacing between the text fields if needed
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildTextField(
+                                        'Latitude', _latitudeController),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 8),
                             Expanded(
-                                child: _buildTextField(
-                                    'Longitude', _longitudeController)),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildTextField(
+                                        'Longitude', _longitudeController),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            SizedBox(
+                              height: 40, // Smaller height for compact button
+                              width: 40, // Smaller width for compact button
+                              child: ElevatedButton(
+                                onPressed: geolocator,
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.all(0),
+                                  // Remove padding for smaller size
+                                  minimumSize: Size(
+                                      40, 40), // Ensure button remains compact
+                                ),
+                                child: Icon(
+                                  Icons.refresh,
+                                  size: 18, // Smaller icon size for compact look
+                                ),
+                              ),
+                            ),
                           ],
                         ),
+
+
                         _buildTextField('Address1', _address1Controller),
                         _buildTextField('Address2', _address2Controller),
                         _buildTextField('Address3', _address3Controller),
@@ -526,7 +693,7 @@ class _KYCPageState extends State<KYCPage> {
                           children: [
                             Expanded(
                                 child:
-                                    _buildTextField('City', _cityController)),
+                                _buildTextField('City', _cityController)),
                             SizedBox(width: 16),
                             Expanded(
                                 child: _buildTextField(
@@ -538,8 +705,10 @@ class _KYCPageState extends State<KYCPage> {
                           style: TextStyle(fontSize: 16),
                         ),
                         Container(
-                          width: double.infinity, // Adjust the width as needed
-                          height: 35, // Fixed height
+                          width: double.infinity,
+                          // Adjust the width as needed
+                          height: 35,
+                          // Fixed height
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
@@ -566,15 +735,126 @@ class _KYCPageState extends State<KYCPage> {
                               }
                             },
                             items: states.map<DropdownMenuItem<String>>(
-                                (RangeCategoryDataModel state) {
-                              return DropdownMenuItem<String>(
-                                value: state.code,
-                                child: Text(state.descriptionEn),
-                              );
-                            }).toList(),
+                                    (RangeCategoryDataModel state) {
+                                  return DropdownMenuItem<String>(
+                                    value: state.code,
+                                    child: Text(state.descriptionEn),
+                                  );
+                                }).toList(),
                           ),
                         ),
+                        _buildTextField2('Loan Amount',
+                            _loan_amountController, TextInputType.number),
+
+
                         Row(
+                          children: [
+                            // Special Ability Dropdown
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Loan Duraction',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Container(
+                                    width: 150,
+                                    // Adjust the width as needed
+                                    height: 35,
+                                    // Fixed height
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: DropdownButton<String>(
+                                      value: selectedloanDuration,
+                                      isExpanded: true,
+                                      icon: Icon(Icons.arrow_downward),
+                                      iconSize: 24,
+                                      elevation: 16,
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16),
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors
+                                            .transparent, // Set to transparent to remove default underline
+                                      ),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedloanDuration = newValue!;
+                                        });
+                                      },
+                                      items: loanDuration.map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 16), // Space between dropdowns
+                            // State Name Dropdown
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Bank Name',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Container(
+                                    height: 35,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: DropdownButton<String>(
+                                      value: bankselected,
+                                      isExpanded: true,
+                                      icon: Icon(Icons.arrow_downward),
+                                      iconSize: 24,
+                                      elevation: 16,
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16),
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors.transparent,
+                                      ),
+                                      onChanged: (String? newValue) {
+                                        if (newValue != null) {
+                                          setState(() {
+                                            bankselected = newValue;
+                                          });
+                                        }
+                                      },
+                                      items: bank.map<
+                                          DropdownMenuItem<String>>((
+                                          RangeCategoryDataModel state) {
+                                        return DropdownMenuItem<String>(
+                                          value: state.code,
+                                          child: Text(state.descriptionEn),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+
+
+                        /*    Row(
                           children: [
                             Expanded(
                                 child: _buildTextField(
@@ -584,7 +864,7 @@ class _KYCPageState extends State<KYCPage> {
                                 child: _buildTextField(
                                     'Branch Code', _branchCodeController)),
                           ],
-                        ),
+                        ),*/
                       ],
                     ),
                   ),
@@ -597,8 +877,25 @@ class _KYCPageState extends State<KYCPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildTextField(
-                            'Permanent Account PAN No', _panNoController),
+
+                      /*  Row(
+                          children: [
+                            Expanded(
+                                child: _buildTextField('Permanent Account PAN No', _panNoController)   ),
+                            SizedBox(width: 16),
+                            Checkbox(
+                              value: isChecked, // Replace with a variable to track the checkbox state
+                              onChanged: (bool? value) {
+                                setState(() {
+                               //   isChecked = value!; // Update the checkbox state
+                                });
+                              },
+                            ),
+                          ],
+                       ), */
+
+
+                        _buildTextField('Permanent Account PAN No', _panNoController),
                         _buildTextField(
                             'Driving License', _drivingLicenseController),
                         _buildTextField('Voter Id', _voterIdController),
@@ -661,6 +958,7 @@ class _KYCPageState extends State<KYCPage> {
     String middlename = _nameMController.text.toString();
     String lastname = _nameLController.text.toString();
     String dob = _dobController.text.toString();
+    String age = _ageController.text.toString();
     String gendre = genderselected;
     String mobile = _mobileNoController.text.toString();
     String fatherF = _fatherFirstNameController.text.toString();
@@ -684,47 +982,61 @@ class _KYCPageState extends State<KYCPage> {
     String pin = _pincodeController.text.toString();
     String state = stateselected;
     bool ismarried = isMarried;
-    String gCode = _groupCodeController.text.toString();
-    String bCode = _branchCodeController.text.toString();
+    String gCode = widget.GroupData.groupCode;
+    String bCode = widget.data.branchCode.toString();
+
+    String relation_with_Borrower = relationwithBorrowerselected;
+
+    String bank_name = bankselected;
+    String loan_Duration = selectedloanDuration!;
+    String loan_amount = _loan_amountController.text.toString();
+
     print("add 3 $add3");
 
     final api = Provider.of<ApiService>(context, listen: false);
 
     return await api
         .saveFi(
-            GlobalClass.token,
-            GlobalClass.dbName,
-            adhaarid,
-            title,
-            name,
-            middlename,
-            lastname,
-            dob,
-            gendre,
-            mobile,
-            fatherF,
-            fatherM,
-            fatherL,
-            spouseF,
-            spouseM,
-            spouseL,
-            "creator",
-            Expense,
-            Income,
-            latitude,
-            longitude,
-            add1,
-            add2,
-            add2,
-            city,
-            pin,
-            state,
-            ismarried,
-            gCode,
-            bCode,
-            _imageFile!)
+        GlobalClass.token,
+        GlobalClass.dbName,
+        adhaarid,
+        title,
+        name,
+        middlename,
+        lastname,
+        dob,
+        age,
+        gendre,
+        mobile,
+        fatherF,
+        fatherM,
+        fatherL,
+        spouseF,
+        spouseM,
+        spouseL,
+        "creator",
+        Expense,
+        Income,
+        latitude,
+        longitude,
+        add1,
+        add2,
+        add2,
+        city,
+        pin,
+        state,
+        ismarried,
+        gCode,
+        bCode,
+
+        relation_with_Borrower,
+        bank_name,
+        loan_Duration!,
+        loan_amount,
+
+        _imageFile!)
         .then((value) async {
-      if (value.statuscode == 160) {
+      if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
           Fi_Id = value.data[0].fiId.toString();
@@ -760,7 +1072,7 @@ class _KYCPageState extends State<KYCPage> {
     return await api
         .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
-      if (value.statuscode == 160) {
+      if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
         });
@@ -771,168 +1083,262 @@ class _KYCPageState extends State<KYCPage> {
   void savePersonalDetailsMethod() {}
 
   void saveDataMethod() {}
-}
 
-void _showPopup(BuildContext context, Function(String) onResult) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        content: Padding(
-          padding: const EdgeInsets.all(16.0), // Add padding around the content
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Adhaar Front Button
-              SizedBox(
-                width: double.infinity, // Match the width of the dialog
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'Adhaar Front',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: TextButton.styleFrom(
-                    backgroundColor: Color(0xFFD42D3F),
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(5), // Adjust as needed
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10), // Space between buttons
-              // Adhaar Back Button
-              SizedBox(
-                width: double.infinity, // Match the width of the dialog
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Optional: close the dialog
-                  },
-                  child: Text(
-                    'Adhaar Back',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: TextButton.styleFrom(
-                    backgroundColor: Color(0xFFD42D3F),
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(5), // Adjust as needed
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10), // Space between buttons
-              // Adhaar QR Button
-              SizedBox(
-                width: double.infinity, // Match the width of the dialog
-                child: TextButton(
-                  onPressed: () async {
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => QRViewExample()),
-                    );
-
-                    if (result != null) {
-                      BigInt bigIntScanData = BigInt.parse(result);
-                      List<int> byteScanData = bigIntToBytes(bigIntScanData);
-
-                      List<int> decompByteScanData =
-                          decompressData(byteScanData);
-                      List<List<int>> parts =
-                          separateData(decompByteScanData, 255, 15);
-                      String qrResult = decodeData(parts);
-
-                      onResult(qrResult);
-                    }
-
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'Adhaar QR',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: TextButton.styleFrom(
-                    backgroundColor: Color(0xFFD42D3F),
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(5), // Adjust as needed
-                    ),
-                  ),
-                ),
-              ),
-            ],
+  Widget _buildTextField2(String label, TextEditingController controller,
+      TextInputType inputType) {
+    return Container(
+      color: Colors.white,
+      margin: EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.all(4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 16,
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
-
-List<int> bigIntToBytes(BigInt bigInt) {
-  // Convert BigInt to a byte array (List<int>)
-  List<int> byteArray = [];
-  while (bigInt > BigInt.zero) {
-    byteArray.add((bigInt & BigInt.from(0xFF)).toInt());
-    bigInt = bigInt >> 8; // Shift right by 8 bits
+          SizedBox(height: 1),
+          Container(
+            width: double.infinity, // Set the desired width
+            height: 45, // Set the desired height
+            child: Center(
+              child: TextFormField(
+                controller: controller,
+                keyboardType: inputType, // Set the input type
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter $label';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
-  return byteArray.reversed.toList(); // Reverse to maintain byte order
-}
 
-List<int> decompressData(List<int> byteScanData) {
-  try {
-    // Decompress the GZIP data
-    List<int> decompressedData = GZipDecoder().decodeBytes(byteScanData);
+  void _showPopup(BuildContext context, Function(String) onResult) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Padding(
+            padding: const EdgeInsets.all(16.0),
+            // Add padding around the content
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Adhaar Front Button
+                SizedBox(
+                  width: double.infinity, // Match the width of the dialog
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Adhaar Front',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Color(0xFFD42D3F),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius.circular(5), // Adjust as needed
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10), // Space between buttons
+                // Adhaar Back Button
+                SizedBox(
+                  width: double.infinity, // Match the width of the dialog
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Optional: close the dialog
+                    },
+                    child: Text(
+                      'Adhaar Back',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Color(0xFFD42D3F),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius.circular(5), // Adjust as needed
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10), // Space between buttons
+                // Adhaar QR Button
+                SizedBox(
+                  width: double.infinity, // Match the width of the dialog
+                  child: TextButton(
+                    onPressed: () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            QRViewExample()),
+                      );
 
-    return decompressedData; // Return decompressed data as List<int>
-  } catch (e) {
-    print('Exception: Decompressing QRcode failed: $e');
-    // Handle error appropriately (e.g., throw a custom exception)
-    return []; // Returning an empty List<int> on error
+                      if (result != null) {
+                        BigInt bigIntScanData = BigInt.parse(result);
+                        List<int> byteScanData = bigIntToBytes(bigIntScanData);
+
+                        List<int> decompByteScanData =
+                        decompressData(byteScanData);
+                        List<List<int>> parts =
+                        separateData(decompByteScanData, 255, 15);
+                        String qrResult = decodeData(parts);
+
+                        onResult(qrResult);
+                      }
+
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Adhaar QR',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Color(0xFFD42D3F),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius.circular(5), // Adjust as needed
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
-}
 
-List<List<int>> separateData(
-    List<int> source, int separatorByte, int vtcIndex) {
-  int imageStartIndex = 0;
+  List<int> bigIntToBytes(BigInt bigInt) {
+    // Convert BigInt to a byte array (List<int>)
+    List<int> byteArray = [];
+    while (bigInt > BigInt.zero) {
+      byteArray.add((bigInt & BigInt.from(0xFF)).toInt());
+      bigInt = bigInt >> 8; // Shift right by 8 bits
+    }
+    return byteArray.reversed.toList(); // Reverse to maintain byte order
+  }
 
-  List<List<int>> separatedParts = [];
-  int begin = 0;
+  List<int> decompressData(List<int> byteScanData) {
+    try {
+      // Decompress the GZIP data
+      List<int> decompressedData = GZipDecoder().decodeBytes(byteScanData);
 
-  for (int i = 0; i < source.length; i++) {
-    if (source[i] == separatorByte) {
-      // Skip if first or last byte is a separator
-      if (i != 0 && i != (source.length - 1)) {
-        // Copy the range from 'begin' to 'i' (exclusive)
-        separatedParts.add(source.sublist(begin, i));
-      }
-      begin = i + 1;
-
-      // Check if we have got all the parts of text data
-      if (separatedParts.length == (vtcIndex + 1)) {
-        // This is required to extract image data
-        // Assuming imageStartIndex is a global variable
-        imageStartIndex = begin;
-        break;
-      }
+      return decompressedData; // Return decompressed data as List<int>
+    } catch (e) {
+      print('Exception: Decompressing QRcode failed: $e');
+      // Handle error appropriately (e.g., throw a custom exception)
+      return []; // Returning an empty List<int> on error
     }
   }
-  return separatedParts;
-}
 
-String decodeData(List<List<int>> encodedData) {
-  String test = "";
-  List<String> decodedData = [];
+  List<List<int>> separateData(List<int> source, int separatorByte,
+      int vtcIndex) {
+    int imageStartIndex = 0;
 
-  for (var byteArray in encodedData) {
-    // Decode using ISO-8859-1
-    String decodedString =
-        utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
-    decodedData.add(decodedString);
-    test += decodedString;
+    List<List<int>> separatedParts = [];
+    int begin = 0;
+
+    for (int i = 0; i < source.length; i++) {
+      if (source[i] == separatorByte) {
+        // Skip if first or last byte is a separator
+        if (i != 0 && i != (source.length - 1)) {
+          // Copy the range from 'begin' to 'i' (exclusive)
+          separatedParts.add(source.sublist(begin, i));
+        }
+        begin = i + 1;
+
+        // Check if we have got all the parts of text data
+        if (separatedParts.length == (vtcIndex + 1)) {
+          // This is required to extract image data
+          // Assuming imageStartIndex is a global variable
+          imageStartIndex = begin;
+          break;
+        }
+      }
+    }
+    return separatedParts;
   }
 
-  return test;
+  String decodeData(List<List<int>> encodedData) {
+    String test = "";
+    List<String> decodedData = [];
+
+    for (var byteArray in encodedData) {
+      // Decode using ISO-8859-1
+      String decodedString =
+      utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
+      decodedData.add(decodedString);
+      test += decodedString;
+    }
+
+    return test;
+  }
+
+  Future<void> geolocator() async {
+    try {
+      position = await _getCurrentPosition();
+      setState(() {
+        if (position != null) {
+          _locationMessage =
+          "Latitude: ${position!.latitude}, Longitude: ${position!.longitude}";
+          print("Geolocation: $_locationMessage");
+          _latitudeController.text = position!.latitude.toString();
+          _longitudeController.text = position!.longitude.toString();
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _locationMessage = e.toString();
+      });
+      print("Geolocation Error: $_locationMessage");
+      _latitudeController.clear();
+      _longitudeController.clear();
+    }
+  }
+
+  Future<Position> _getCurrentPosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied.');
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+  void _onRefreshButtonClick() async {
+    await geolocator(); // Call to get location and update fields
+  }
 }
+
+

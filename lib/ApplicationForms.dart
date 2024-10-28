@@ -37,6 +37,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   List<RangeCategoryDataModel> income_type = [];
   List<RangeCategoryDataModel> bank = [];
 
+
+
   //fiextra
   List<RangeCategoryDataModel> religionextra = [];
   List<RangeCategoryDataModel> landOwner = [];
@@ -53,7 +55,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String longi = "";
 
   //fiextra
-  List<String> loanDuration = ['Select', '12', '24', '36', '48'];
+  List<String> loanDuration = ['12', '24', '36', '48'];
   List<String> residing = [
     'Select',
     '1',
@@ -93,9 +95,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
       fetchData(); // Fetch initial data
       selectedResiding = residing.isNotEmpty ? residing[0] : null;
-      selectedspecialAbility = specialAbility.isNotEmpty ? residing[0] : null;
+      selectedspecialAbility = specialAbility.isNotEmpty ? specialAbility[0] : null;
       selectedSpecialSocialCategory =
-          SpecialSocialCategory.isNotEmpty ? residing[0] : null;
+          SpecialSocialCategory.isNotEmpty ? SpecialSocialCategory[0] : null;
     });
 // Fetch states using the required cat_key
   }
@@ -1738,8 +1740,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
       "fi_Id": "139",
-      "is_house_rental": 20,
-      "depedent_Person": "1",
+      "is_house_rental": 0,
+      "depedent_Person": "",
       "religion": selectedReligion,
       "property_area": "ABC",
       "email_Id": emailIdController.text.toString(),
@@ -1753,15 +1755,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "p_City": cityController.text.toString(),
       "p_State": selectedStateextra,
       "p_Pincode": pincodeController.text.toString(),
-      "current_Address1": "Noida",
-      "current_Address2": "Noida",
+      "current_Address1": "",
+      "current_Address2": "",
       "current_Address3": "",
-      "current_City": "Noida",
-      "current_State": "UP",
-      "current_Pincode": "533456",
-      "current_Phone": "987567348",
-      "district": "Noida",
-      "sub_District": "Noida",
+      "current_City": "",
+      "current_State": "",
+      "current_Pincode": "",
+      "current_Phone": "",
+      "district": "",
+      "sub_District": "",
       "village": "",
       "Cast": selectedCast,
       "Resident_for_years": selectedResiding,
