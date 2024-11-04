@@ -271,7 +271,7 @@ abstract class ApiService {
       @Query("Group_code") String Group_code,
       @Query("Branch_code") String Branch_code);
 
-  @GET("FiSourcing/GetDataForFirstEsign")
+  @GET("FiSourcing/GetFiUploadedDocuments")
   Future<KycScanningModel> KycScanning(
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
