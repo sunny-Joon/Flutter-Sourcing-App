@@ -16,6 +16,8 @@ import 'Models/RangeCategoryModel.dart';
 import 'QRScanPage.dart';
 
 class KYCPage extends StatefulWidget {
+
+
   final BranchDataModel data;
   final GroupDataModel GroupData;
 
@@ -29,6 +31,8 @@ class KYCPage extends StatefulWidget {
 }
 
 class _KYCPageState extends State<KYCPage> {
+
+
   List<RangeCategoryDataModel> states = [];
   List<RangeCategoryDataModel> relation = [];
   List<RangeCategoryDataModel> reasonForLoan = [];
@@ -62,15 +66,19 @@ class _KYCPageState extends State<KYCPage> {
 
   @override
   void initState() {
+    // IDVerification('LAMPS2172L', 'pancard', '', '');
+    // print(IDVerification('LAMPS2172L', 'pancard', '', ''));
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
-
 
     super.initState();
     _dobController.addListener(() {
       _calculateAge();
 
+
+
       geolocator();
+
     });
 // Fetch states using the required cat_key
   }
@@ -142,6 +150,7 @@ class _KYCPageState extends State<KYCPage> {
     }); // Refresh the UI
   }
 
+
   int _currentStep = 0;
   final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
@@ -190,7 +199,9 @@ class _KYCPageState extends State<KYCPage> {
   String qrResult = "";
   File? _imageFile;
 
-  get isChecked => null;
+  get isChecked => false;
+
+  get http => null;
 
   void _pickImage() async {
     File? pickedImage = await GlobalClass().pickImage();
@@ -336,8 +347,8 @@ class _KYCPageState extends State<KYCPage> {
                         Row(
                           children: [
                             Expanded(
-                                child: _buildTextField(
-                                    'Aadhaar Id', _aadharIdController)),
+                                child: _buildTextField2(
+                                    'Aadhaar Id', _aadharIdController,TextInputType.number,12)),
                             GestureDetector(
                               onTap: () =>
                                   _showPopup(context, (String result) {
@@ -420,19 +431,19 @@ class _KYCPageState extends State<KYCPage> {
                             ),
                           ],
                         ),
-                        _buildTextField('Name', _nameController),
+                        _buildTextField('Name', _nameController,10),
                         Row(
                           children: [
                             Expanded(
                                 child: _buildTextField(
-                                    'Middle Name', _nameMController)),
+                                    'Middle Name', _nameMController,10)),
                             SizedBox(
                                 width:
                                 16),
                             // Add spacing between the text fields if needed
                             Expanded(
                                 child: _buildTextField(
-                                    'Last Name', _nameLController)),
+                                    'Last Name', _nameLController,10)),
                           ],
                         ),
                         Text(
@@ -523,7 +534,8 @@ class _KYCPageState extends State<KYCPage> {
                                 }).toList(),
                           ),
                         ),
-                        _buildTextField('Mobile no', _mobileNoController),
+                        _buildTextField2('Mobile no', _mobileNoController, TextInputType.number, 10),
+
                         Row(
                           children: [
                             // Age Box
@@ -581,12 +593,12 @@ class _KYCPageState extends State<KYCPage> {
                           ],
                         ),
                         _buildTextField(
-                            'Father First Name', _fatherFirstNameController),
+                            'Father First Name', _fatherFirstNameController,10),
                         Row(
                           children: [
                             Expanded(
                               child: _buildTextField('Father Middle Name',
-                                  _fatherMiddleNameController),
+                                  _fatherMiddleNameController,10),
                             ),
                             SizedBox(
                                 width:
@@ -594,7 +606,7 @@ class _KYCPageState extends State<KYCPage> {
                             // Add spacing between the text fields if needed
                             Expanded(
                                 child: _buildTextField('Father Last Name',
-                                    _fatherLastNameController)),
+                                    _fatherLastNameController,10)),
                           ],
                         ),
                         CheckboxListTile(
@@ -611,17 +623,17 @@ class _KYCPageState extends State<KYCPage> {
                           Column(
                             children: [
                               _buildTextField('Spouse First Name',
-                                  _spouseFirstNameController),
+                                  _spouseFirstNameController,10),
                               Row(
                                 children: [
                                   Expanded(
                                     child: _buildTextField('Spouse Middle Name',
-                                        _spouseMiddleNameController),
+                                        _spouseMiddleNameController,10),
                                   ),
                                   SizedBox(width: 8),
                                   Expanded(
                                     child: _buildTextField('Spouse Last Name',
-                                        _spouseLastNameController),
+                                        _spouseLastNameController,10),
                                   ),
                                 ],
                               ),
@@ -630,15 +642,15 @@ class _KYCPageState extends State<KYCPage> {
                         Row(
                           children: [
                             Expanded(
-                                child: _buildTextField(
-                                    'Monthly Expense', _incomeController)),
+                                child: _buildTextField2(
+                                    'Monthly Expense', _incomeController,TextInputType.number,6)),
                             SizedBox(
                                 width:
                                 8),
                             // Add spacing between the text fields if needed
                             Expanded(
-                                child: _buildTextField(
-                                    'Monthly Income', _expenseController)),
+                                child: _buildTextField2(
+                                    'Monthly Income', _expenseController,TextInputType.number,6)),
                           ],
                         ),
                         Row(
@@ -648,7 +660,7 @@ class _KYCPageState extends State<KYCPage> {
                                 children: [
                                   Expanded(
                                     child: _buildTextField(
-                                        'Latitude', _latitudeController),
+                                        'Latitude', _latitudeController,12),
                                   ),
                                 ],
                               ),
@@ -659,7 +671,7 @@ class _KYCPageState extends State<KYCPage> {
                                 children: [
                                   Expanded(
                                     child: _buildTextField(
-                                        'Longitude', _longitudeController),
+                                        'Longitude', _longitudeController,12),
                                   ),
                                 ],
                               ),
@@ -686,18 +698,18 @@ class _KYCPageState extends State<KYCPage> {
                         ),
 
 
-                        _buildTextField('Address1', _address1Controller),
-                        _buildTextField('Address2', _address2Controller),
-                        _buildTextField('Address3', _address3Controller),
+                        _buildTextField('Address1', _address1Controller,25),
+                        _buildTextField('Address2', _address2Controller,25),
+                        _buildTextField('Address3', _address3Controller,25),
                         Row(
                           children: [
                             Expanded(
                                 child:
-                                _buildTextField('City', _cityController)),
+                                _buildTextField('City', _cityController,15)),
                             SizedBox(width: 16),
                             Expanded(
-                                child: _buildTextField(
-                                    'Pincode', _pincodeController)),
+                                child: _buildTextField2(
+                                    'Pincode', _pincodeController,TextInputType.number,6)),
                           ],
                         ),
                         Text(
@@ -744,7 +756,7 @@ class _KYCPageState extends State<KYCPage> {
                           ),
                         ),
                         _buildTextField2('Loan Amount',
-                            _loan_amountController, TextInputType.number),
+                            _loan_amountController, TextInputType.number,6),
 
 
                         Row(
@@ -878,10 +890,10 @@ class _KYCPageState extends State<KYCPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
 
-                      /*  Row(
+                        Row(
                           children: [
                             Expanded(
-                                child: _buildTextField('Permanent Account PAN No', _panNoController)   ),
+                                child: _buildTextField('Permanent Account PAN No', _panNoController,10)   ),
                             SizedBox(width: 16),
                             Checkbox(
                               value: isChecked, // Replace with a variable to track the checkbox state
@@ -892,14 +904,14 @@ class _KYCPageState extends State<KYCPage> {
                               },
                             ),
                           ],
-                       ), */
+                       ),
 
 
-                        _buildTextField('Permanent Account PAN No', _panNoController),
+                        _buildTextField('Permanent Account PAN No', _panNoController,10),
                         _buildTextField(
-                            'Driving License', _drivingLicenseController),
-                        _buildTextField('Voter Id', _voterIdController),
-                        _buildTextField('Passport', _passportController),
+                            'Driving License', _drivingLicenseController,16),
+                        _buildTextField('Voter Id', _voterIdController,16),
+                        _buildTextField('Passport', _passportController,16),
                       ],
                     ),
                   ),
@@ -913,7 +925,7 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
+  Widget _buildTextField(String label, TextEditingController controller, int maxLength, {TextInputType inputType = TextInputType.text}) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -927,24 +939,26 @@ class _KYCPageState extends State<KYCPage> {
               fontSize: 16,
             ),
           ),
-          SizedBox(height: 1),
+          SizedBox(height: 8), // Increased spacing for better layout
           Container(
-              width: double.infinity, // Set the desired width
-              height: 45, // Set the desired height
-              child: Center(
-                child: TextFormField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter $label';
-                    }
-                    return null;
-                  },
-                ),
-              )),
+            width: double.infinity, // Set the desired width
+            height: 45, // Set the desired height
+            child: TextFormField(
+              controller: controller,
+              keyboardType: inputType, // Set the keyboard type
+              maxLength: maxLength, // Set max length
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                counterText: '', // Hide character counter if not needed
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter $label';
+                }
+                return null; // Valid input
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -1069,6 +1083,7 @@ class _KYCPageState extends State<KYCPage> {
       "isNameVerify": isNameVerify
     };
 
+
     return await api
         .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
@@ -1080,12 +1095,54 @@ class _KYCPageState extends State<KYCPage> {
     });
   }
 
+
+  //////////////////////////
+
+ /* Future<void> IDVerification(String id, String type, String bankIfsc, String dob) async {
+    final response = await http.post(
+      Uri.parse('https://agra.paisalo.in:8462/creditmatrix/api/IdentityVerification/Get'), // Complete API URL with endpoint
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "type": type,
+        "txtnumber": id,
+        "ifsc": bankIfsc,
+        "userdob": dob,
+        "key": "1"
+      }),
+    );
+
+    String name="";
+    String errorMessage="";
+    if (response.statusCode == 200) {
+      // Parse the response JSON
+      final data = json.decode(response.body);
+      if (data['data'] != null) {
+        setState(() {
+          name = data['data']['name'] ?? 'Not Found'; // Set name if found
+          errorMessage = ''; // Clear any previous error message
+        });
+      } else {
+        setState(() {
+          name = 'Not Found'; // If no data returned
+        });
+      }
+    } else {
+      setState(() {
+        errorMessage = 'Failed to verify ID: ${response.reasonPhrase}';
+        name = '';
+      });
+    }
+  }
+
+*/
+
   void savePersonalDetailsMethod() {}
 
   void saveDataMethod() {}
 
-  Widget _buildTextField2(String label, TextEditingController controller,
-      TextInputType inputType) {
+  Widget _buildTextField2(String label, TextEditingController controller, TextInputType inputType, int maxLength) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -1099,30 +1156,31 @@ class _KYCPageState extends State<KYCPage> {
               fontSize: 16,
             ),
           ),
-          SizedBox(height: 1),
+          SizedBox(height: 8), // Use a larger size for spacing
           Container(
             width: double.infinity, // Set the desired width
             height: 45, // Set the desired height
-            child: Center(
-              child: TextFormField(
-                controller: controller,
-                keyboardType: inputType, // Set the input type
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter $label';
-                  }
-                  return null;
-                },
+            child: TextFormField(
+              controller: controller,
+              keyboardType: inputType, // Set the input type
+              maxLength: maxLength, // Apply max length
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                counterText: '', // Hide the character counter if desired
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter $label';
+                }
+                return null; // Valid input
+              },
             ),
           ),
         ],
       ),
     );
   }
+
 
   void _showPopup(BuildContext context, Function(String) onResult) {
     showDialog(
