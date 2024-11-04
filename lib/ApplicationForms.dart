@@ -91,10 +91,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? selectedSpecialSocialCategory;
 
   @override
-  Future<void> initState() async {
-    fetchData();
+  void initState() {
     super.initState();
-    _dobController.addListener(() {
+    initializeData(); // Fetch initial data
+  }
+
+  Future<void> initializeData() async {
+   // fetchData();
+    super.initState();
+   /* _dobController.addListener(() {
       _calculateAge();
 
       fetchData(); // Fetch initial data
@@ -103,10 +108,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
       selectedSpecialSocialCategory =
           SpecialSocialCategory.isNotEmpty ? SpecialSocialCategory[0] : null;
 
-    });
+    });*/
 
      GetDocs(context);
-    _isPageLoading=true;
+  //  _isPageLoading=true;
 
 // Fetch states using the required cat_key
   }
@@ -1759,19 +1764,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "fi_Id": "139",
       "is_house_rental": 0,
       "depedent_Person": "",
-      "religion": selectedReligion,
+      "religion": selectedReligion ?? "",
       "property_area": "ABC",
-      "email_Id": emailIdController.text.toString(),
-      "isHandicap": A,
+      "email_Id": emailIdController.text,
+      "isHandicap": A ?? 0,
       "handicap_type": selectedSpecialSocialCategory?.toString() ?? "",
-      "place_Of_Birth": placeOfBirthController.text.toString(),
+      "place_Of_Birth": placeOfBirthController.text,
       "reservatioN_CATEGORY": "",
-      "p_Address1": address1Controller.text.toString(),
-      "p_Address2": address2Controller.text.toString(),
-      "p_Address3": address3Controller.text.toString(),
-      "p_City": cityController.text.toString(),
-      "p_State": selectedStateextra,
-      "p_Pincode": pincodeController.text.toString(),
+      "p_Address1": address1Controller.text,
+      "p_Address2": address2Controller.text,
+      "p_Address3": address3Controller.text,
+      "p_City": cityController.text,
+      "p_State": selectedStateextra ?? "",
+      "p_Pincode": pincodeController.text,
       "current_Address1": "",
       "current_Address2": "",
       "current_Address3": "",
@@ -1782,10 +1787,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "district": "",
       "sub_District": "",
       "village": "",
-      "Cast": selectedCast,
-      "Resident_for_years": selectedResiding,
-      "Present_House_Owner": selectedPresentHouseOwner
+      "Cast": selectedCast ?? "",
+      "Resident_for_years": selectedResiding ?? "",
+      "Present_House_Owner": selectedPresentHouseOwner ?? ""
     };
+
 
     return await api
         .updatePersonalDetails(
@@ -1807,86 +1813,126 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     return await api
         .KycScanning(
-        GlobalClass.dbName, GlobalClass.token, '139').then((value) async {
+         GlobalClass.token,GlobalClass.dbName, '18').then((value) async {
       if (value.statuscode == 200) {
         setState(() {
           getData = value;
           _isPageLoading = true;
         });
-
         } else {
       }
     });
   }
 
-  Widget _buildListItem({required String title, String? path1, String? path2}) {
+  Widget _buildListItem({required String title, String? path}) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+      margin: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
             // Image or Placeholder
-            Image.asset(
-              'assets/doc_icon.png',
-              // Replace with actual image asset path or network image
-              width: 40,
-              height: 40,
-            ),
-            SizedBox(width: 10),
-            // Texts for paths
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-                  if (path1 != null) Text("Path 1: $path1"),
-                  if (path2 != null) Text("Path 2: $path2"),
+                 // if (path != null) Text("Path: $path"),
                 ],
               ),
             ),
+            SizedBox(width: 10),
+            path != null
+                ? Image.asset(
+              path,
+              width: 50,
+              height: 50,
+            )
+                : Image.asset(
+              'assets/Images/rupees.png',
+              width: 50,
+              height: 50,
+            ),
+            // Texts for paths
           ],
         ),
       ),
     );
   }
 
- List<Widget> _buildKycDocumentList() {
-     List<Widget> listItems = [];
+  List<Widget> _buildKycDocumentList() {
+    List<Widget> listItems = [];
 
-     if(_isPageLoading){
-       for (var doc in getData.data.grDocs) {
-         // Check and add Aadhar if it exists
-         if (doc.addharExists == true) {
-           listItems.add(_buildListItem(
-             title: "Aadhar Document",
-             path1: doc.aadharPath,
-             path2: doc.aadharBPath,
-           ));
-         }
-       }
-     }
+    if (_isPageLoading) {
+      KycScanningDataModel doc = getData.data;
 
-       // Check and add Aadhar if it exists
+      // Add Borrower Docs title
+      listItems.add(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "Borrower Docs",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
 
-       return listItems;
-     }
+      if (doc.addharExists == true) {
+        listItems.add(_buildListItem(title: "Aadhar Front", path: doc.aadharPath));
+        listItems.add(_buildListItem(title: "Aadhar Back", path: doc.aadharBPath));
+      }
 
-       /*     if (getData.addharExists == true) {
-         listItems.add(_buildListItem(
-           title: "Aadhar Document",
-           path1: getData.aadharPath,
-           path2: getData.aadharBPath,
-         ));
-       }
-       if (getData.addharExists == true) {
-         listItems.add(_buildListItem(
-           title: "Aadhar Document",
-           path1: getData.aadharPath,
-           path2: getData.aadharBPath,
-         ));
-       }
+      if (doc.voterExists == true) {
+        listItems.add(_buildListItem(title: "Voter Front", path: doc.voterPath));
+        listItems.add(_buildListItem(title: "Voter Back", path: doc.voterBPath));
+      }
 
+      if (doc.panExists == true) {
+        listItems.add(_buildListItem(title: "Pan Front", path: doc.panPath));
+      }
 
-   */
+      if (doc.drivingExists == true) {
+        listItems.add(_buildListItem(title: "DL Front", path: doc.drivingPath));
+      }
+
+      if (doc.passBookExists == true) {
+        listItems.add(_buildListItem(title: "Passbook Front", path: doc.passBookPath));
+        listItems.add(_buildListItem(title: "Passbook Back", path: doc.passBookBPath));
+      }
+
+      for (var grDoc in doc.grDocs) {
+        // Add Guarantor Docs title
+        listItems.add(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Guarantor "+ grDoc.grSno+ " Docs",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+        );
+
+        if (grDoc.addharExists == true) {
+          listItems.add(_buildListItem(title: "Aadhar Front", path: grDoc.aadharPath));
+          listItems.add(_buildListItem(title: "Aadhar Back", path: grDoc.aadharBPath));
+        }
+
+        if (grDoc.voterExists == true) {
+          listItems.add(_buildListItem(title: "Voter Front", path: grDoc.voterPath));
+          listItems.add(_buildListItem(title: "Voter Back", path: grDoc.voterBPath));
+        }
+
+        if (grDoc.panExists == true) {
+          listItems.add(_buildListItem(title: "Pan Front", path: grDoc.panPath));
+        }
+
+        if (grDoc.drivingExists == true) {
+          listItems.add(_buildListItem(title: "DL Front", path: grDoc.drivingPath));
+        }
+      }
+    }
+
+    return listItems;
+  }
+
 }
