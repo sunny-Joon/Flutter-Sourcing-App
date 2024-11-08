@@ -13,7 +13,13 @@ import 'ApiService.dart';
 import 'DATABASE/DatabaseHelper.dart';
 import 'Models/BorrowerListModel.dart';
 import 'Models/RangeCategoryModel.dart';
+import 'package:http/http.dart' as http;
+
 import 'QRScanPage.dart';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class KYCPage extends StatefulWidget {
 
@@ -41,7 +47,6 @@ class _KYCPageState extends State<KYCPage> {
   List<RangeCategoryDataModel> income_type = [];
   List<RangeCategoryDataModel> bank = [];
   List<RangeCategoryDataModel> relationwithBorrower = [];
-
   List<String> loanDuration = ['12', '24', '36', '48'];
 
 
@@ -1099,44 +1104,41 @@ class _KYCPageState extends State<KYCPage> {
   //////////////////////////
 
  /* Future<void> IDVerification(String id, String type, String bankIfsc, String dob) async {
-    final response = await http.post(
-      Uri.parse('https://agra.paisalo.in:8462/creditmatrix/api/IdentityVerification/Get'), // Complete API URL with endpoint
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        "type": type,
-        "txtnumber": id,
-        "ifsc": bankIfsc,
-        "userdob": dob,
-        "key": "1"
-      }),
-    );
+    // Create an instance of the http Client
+    var client = http.Client();
 
-    String name="";
-    String errorMessage="";
-    if (response.statusCode == 200) {
-      // Parse the response JSON
-      final data = json.decode(response.body);
-      if (data['data'] != null) {
-        setState(() {
-          name = data['data']['name'] ?? 'Not Found'; // Set name if found
-          errorMessage = ''; // Clear any previous error message
-        });
+    try {
+      final response = await client.post(
+        Uri.parse('https://agra.paisalo.in:8462/creditmatrix/api/IdentityVerification/Get'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "type": type,
+          "txtnumber": id,
+          "ifsc": bankIfsc,
+          "userdob": dob,
+          "key": "1"
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        try {
+          final data = json.decode(response.body);
+          print("Data received: $data");
+        } catch (e) {
+          print("Error parsing response JSON: $e");
+        }
       } else {
-        setState(() {
-          name = 'Not Found'; // If no data returned
-        });
+        print('Request failed with status: ${response.statusCode}. Response: ${response.body}');
       }
-    } else {
-      setState(() {
-        errorMessage = 'Failed to verify ID: ${response.reasonPhrase}';
-        name = '';
-      });
+    } catch (e) {
+      print("Request error: $e");
+    } finally {
+      // Close the client to prevent memory leaks
+      client.close();
     }
-  }
-
-*/
+  }*/
 
   void savePersonalDetailsMethod() {}
 
