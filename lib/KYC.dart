@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:archive/archive.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
 import 'DATABASE/DatabaseHelper.dart';
-import 'Models/BorrowerListModel.dart';
 import 'Models/RangeCategoryModel.dart';
 import 'QRScanPage.dart';
 
@@ -19,17 +18,18 @@ class KYCPage extends StatefulWidget {
   final BranchDataModel data;
   final GroupDataModel GroupData;
 
-  KYCPage({
-    required this.data,
-    required this.GroupData
-  });
+  KYCPage({required this.data, required this.GroupData});
 
   @override
   _KYCPageState createState() => _KYCPageState();
 }
 
 class _KYCPageState extends State<KYCPage> {
+  int _currentStep = 0;
+  final _formKey = GlobalKey<FormState>();
+
   List<RangeCategoryDataModel> states = [];
+  List<RangeCategoryDataModel> marrital_status = [];
   List<RangeCategoryDataModel> relation = [];
   List<RangeCategoryDataModel> reasonForLoan = [];
   List<RangeCategoryDataModel> aadhar_gender = [];
@@ -40,7 +40,6 @@ class _KYCPageState extends State<KYCPage> {
 
   List<String> loanDuration = ['12', '24', '36', '48'];
 
-
   List<String> titleList = ["Select", "Mr.", "Mrs.", "Miss"];
   String titleselected = "Select";
   String selectedTitle = "Select";
@@ -48,9 +47,8 @@ class _KYCPageState extends State<KYCPage> {
   String income = "";
   String lati = "";
   String longi = "";
+  String? selectedMarritalStatus;
 
-
-  bool isMarried = false;
   String stateselected = 'select';
   String genderselected = 'select';
   String relationwithBorrowerselected = 'select';
@@ -65,7 +63,6 @@ class _KYCPageState extends State<KYCPage> {
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
 
-
     super.initState();
     _dobController.addListener(() {
       _calculateAge();
@@ -75,9 +72,10 @@ class _KYCPageState extends State<KYCPage> {
 // Fetch states using the required cat_key
   }
 
-
   Future<void> fetchData() async {
     states = await DatabaseHelper().selectRangeCatData("state");
+    marrital_status =
+    await DatabaseHelper().selectRangeCatData("marrital_status");
     relation = await DatabaseHelper().selectRangeCatData("relationship");
     reasonForLoan = await DatabaseHelper().selectRangeCatData("loan_purpose");
     aadhar_gender = await DatabaseHelper().selectRangeCatData("gender");
@@ -104,6 +102,18 @@ class _KYCPageState extends State<KYCPage> {
             code: 'select', // Value of the placeholder
           ));
       bank.insert(
+          0,
+          RangeCategoryDataModel(
+            catKey: 'Select',
+            groupDescriptionEn: 'select',
+            groupDescriptionHi: 'select',
+            descriptionEn: 'Select',
+            // Display text
+            descriptionHi: 'select',
+            sortOrder: 0,
+            code: 'select', // Value of the placeholder
+          ));
+      marrital_status.insert(
           0,
           RangeCategoryDataModel(
             catKey: 'Select',
@@ -142,7 +152,6 @@ class _KYCPageState extends State<KYCPage> {
     }); // Refresh the UI
   }
 
-  int _currentStep = 0;
   final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
 
@@ -172,7 +181,6 @@ class _KYCPageState extends State<KYCPage> {
   final _groupCodeController = TextEditingController();
   final _branchCodeController = TextEditingController();
   final _loan_amountController = TextEditingController();
-
 
   final _voterIdController = TextEditingController();
   final _passportController = TextEditingController();
@@ -239,7 +247,7 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  @override
+  /*@override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
@@ -270,11 +278,13 @@ class _KYCPageState extends State<KYCPage> {
                   } else if (_currentStep == 1) {
                     saveIDsMethod(context);
                   }
-                  /*if (_currentStep < 3) {
+                  */
+  /*if (_currentStep < 3) {
                       setState(() {
                         _currentStep += 1;
                       });
                     }*/
+  /*
                 }
               },
               onStepCancel: () {
@@ -366,7 +376,7 @@ class _KYCPageState extends State<KYCPage> {
                                   Container(
                                     width: 150,
                                     // Adjust the width as needed
-                                    height: 35,
+                                    height:  45,
                                     // Fixed height
                                     padding:
                                     EdgeInsets.symmetric(horizontal: 12),
@@ -377,7 +387,7 @@ class _KYCPageState extends State<KYCPage> {
                                     child: DropdownButton<String>(
                                       value: selectedTitle,
                                       isExpanded: true,
-                                      icon: Icon(Icons.arrow_downward),
+
                                       iconSize: 24,
                                       elevation: 16,
                                       style: TextStyle(
@@ -442,7 +452,7 @@ class _KYCPageState extends State<KYCPage> {
                         Container(
                           width: 150,
                           // Adjust the width as needed
-                          height: 35,
+                          height:  45,
                           // Fixed height
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
@@ -452,7 +462,7 @@ class _KYCPageState extends State<KYCPage> {
                           child: DropdownButton<String>(
                             value: genderselected,
                             isExpanded: true,
-                            icon: Icon(Icons.arrow_downward),
+
                             iconSize: 24,
                             elevation: 16,
                             style: TextStyle(color: Colors.black, fontSize: 16),
@@ -486,7 +496,7 @@ class _KYCPageState extends State<KYCPage> {
                         Container(
                           width: 150,
                           // Adjust the width as needed
-                          height: 35,
+                          height:  45,
                           // Fixed height
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
@@ -496,7 +506,7 @@ class _KYCPageState extends State<KYCPage> {
                           child: DropdownButton<String>(
                             value: relationwithBorrowerselected,
                             isExpanded: true,
-                            icon: Icon(Icons.arrow_downward),
+
                             iconSize: 24,
                             elevation: 16,
                             style: TextStyle(color: Colors.black, fontSize: 16),
@@ -707,7 +717,7 @@ class _KYCPageState extends State<KYCPage> {
                         Container(
                           width: double.infinity,
                           // Adjust the width as needed
-                          height: 35,
+                          height:  45,
                           // Fixed height
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
@@ -717,7 +727,7 @@ class _KYCPageState extends State<KYCPage> {
                           child: DropdownButton<String>(
                             value: stateselected,
                             isExpanded: true,
-                            icon: Icon(Icons.arrow_downward),
+
                             iconSize: 24,
                             elevation: 16,
                             style: TextStyle(color: Colors.black, fontSize: 16),
@@ -762,7 +772,7 @@ class _KYCPageState extends State<KYCPage> {
                                   Container(
                                     width: 150,
                                     // Adjust the width as needed
-                                    height: 35,
+                                    height:  45,
                                     // Fixed height
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 12),
@@ -773,7 +783,7 @@ class _KYCPageState extends State<KYCPage> {
                                     child: DropdownButton<String>(
                                       value: selectedloanDuration,
                                       isExpanded: true,
-                                      icon: Icon(Icons.arrow_downward),
+
                                       iconSize: 24,
                                       elevation: 16,
                                       style: TextStyle(
@@ -811,7 +821,7 @@ class _KYCPageState extends State<KYCPage> {
                                   ),
                                   SizedBox(height: 5),
                                   Container(
-                                    height: 35,
+                                    height:  45,
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 12),
                                     decoration: BoxDecoration(
@@ -821,7 +831,7 @@ class _KYCPageState extends State<KYCPage> {
                                     child: DropdownButton<String>(
                                       value: bankselected,
                                       isExpanded: true,
-                                      icon: Icon(Icons.arrow_downward),
+
                                       iconSize: 24,
                                       elevation: 16,
                                       style: TextStyle(
@@ -854,7 +864,8 @@ class _KYCPageState extends State<KYCPage> {
                         ),
 
 
-                        /*    Row(
+                        */
+  /*    Row(
                           children: [
                             Expanded(
                                 child: _buildTextField(
@@ -865,6 +876,7 @@ class _KYCPageState extends State<KYCPage> {
                                     'Branch Code', _branchCodeController)),
                           ],
                         ),*/
+  /*
                       ],
                     ),
                   ),
@@ -878,7 +890,8 @@ class _KYCPageState extends State<KYCPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
 
-                      /*  Row(
+                      */
+  /*  Row(
                           children: [
                             Expanded(
                                 child: _buildTextField('Permanent Account PAN No', _panNoController)   ),
@@ -893,6 +906,7 @@ class _KYCPageState extends State<KYCPage> {
                             ),
                           ],
                        ), */
+  /*
 
 
                         _buildTextField('Permanent Account PAN No', _panNoController),
@@ -906,6 +920,125 @@ class _KYCPageState extends State<KYCPage> {
                 ),
               ],
               stepIconHeight: 25,
+            ),
+          ),
+        ),
+      ),
+    );
+  }*/
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFFD42D3F),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding:
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                                width: 1, color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                          ),
+                          height: 40,
+                          width: 40,
+                          alignment: Alignment.center,
+                          child: Center(
+                            child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      Center(
+                        child: Image.asset(
+                          'assets/Images/paisa_logo.png',
+                          // Replace with your logo asset path
+                          height: 50,
+                        ),
+                      ),
+                      Container(
+                        height: 40,
+                        width: 40,
+                        alignment: Alignment.center,
+                      ),
+                    ],
+                  ),
+                ),
+                //  _buildProgressIndicator(),
+                SizedBox(height: 40),
+                Expanded(
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade300,
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: Form(
+                          key: _formKey,
+                          child: _getStepContent(context),
+                        ),
+                      ),
+                      Positioned(
+                        top: -45, // Adjust the position as needed
+                        left: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: _pickImage,
+                          child: Center(
+                            child: _imageFile == null
+                                ? ClipOval(
+                              child: Container(
+                                width: 70,
+                                height: 70,
+                                color: Colors.blue,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 50.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                                : ClipOval(
+                              child: Image.file(
+                                File(_imageFile!.path),
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 20),
+                _buildNextButton(context),
+              ],
             ),
           ),
         ),
@@ -981,7 +1114,7 @@ class _KYCPageState extends State<KYCPage> {
     String city = _cityController.text.toString();
     String pin = _pincodeController.text.toString();
     String state = stateselected;
-    bool ismarried = isMarried;
+    bool ismarried = selectedMarritalStatus.toString() == 'Married';
     String gCode = widget.GroupData.groupCode;
     String bCode = widget.data.branchCode.toString();
 
@@ -1028,12 +1161,10 @@ class _KYCPageState extends State<KYCPage> {
         ismarried,
         gCode,
         bCode,
-
         relation_with_Borrower,
         bank_name,
         loan_Duration!,
         loan_amount,
-
         _imageFile!)
         .then((value) async {
       if (value.statuscode == 200) {
@@ -1184,8 +1315,8 @@ class _KYCPageState extends State<KYCPage> {
                     onPressed: () async {
                       final result = await Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>
-                            QRViewExample()),
+                        MaterialPageRoute(
+                            builder: (context) => QRViewExample()),
                       );
 
                       if (result != null) {
@@ -1339,6 +1470,689 @@ class _KYCPageState extends State<KYCPage> {
   void _onRefreshButtonClick() async {
     await geolocator(); // Call to get location and update fields
   }
+
+  /*Widget _buildProgressIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _stepIndicator(0),
+        _lineIndicator(),
+        _stepIndicator(1),
+      ],
+    );
+  }*/
+
+  /* Widget _stepIndicator(int step) {
+    bool isActive = _currentStep == step;
+    bool isCompleted = _currentStep > step;
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isCompleted
+            ? Colors.greenAccent
+            : (isActive ? Colors.green : Colors.grey.shade300),
+      ),
+      child: CircleAvatar(
+        radius: 12,
+        backgroundColor: isCompleted ? Colors.green : Colors.white,
+        child: Text(
+          (step + 1).toString(),
+          style: TextStyle(
+              color: isCompleted
+                  ? Colors.white
+                  : (isActive ? Colors.red : Colors.grey)),
+        ),
+      ),
+    );
+  }
+
+  Widget _lineIndicator() {
+    return Container(
+      width: 20,
+      height: 2,
+      color: Colors.grey.shade300,
+    );
+  }*/
+
+  Widget _getStepContent(BuildContext context) {
+    switch (_currentStep) {
+      case 0:
+        return _buildStepOne(context);
+      case 1:
+        return _buildStepTwo();
+      default:
+        return _buildStepOne(context);
+    }
+  }
+
+  Widget _buildStepOne(BuildContext context) {
+    return SingleChildScrollView(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(child: _buildTextField('Aadhaar Id', _aadharIdController)),
+            Padding(
+              padding: EdgeInsets.only(top: 20), // Add 10px padding from above
+              child: GestureDetector(
+                onTap: () => _showPopup(context, (String result) {
+                  setState(() {
+                    qrResult = result;
+                  });
+                }), // Show popup on image click
+                child: Icon(
+                  Icons.qr_code_2_sharp,
+                  size: 50.0, // Set the size of the icon
+                  color: Colors.grey, // Set the color of the icon
+                ),
+              ),
+            )
+          ],
+        ),
+        Row(
+          children: [
+            SizedBox(
+              width: 95, // Fixed width for the Title dropdown
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Title',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Container(
+                    height: 45, // Fixed height
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedTitle,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      underline: Container(
+                        height: 2,
+                        color: Colors
+                            .transparent, // Set to transparent to remove default underline
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedTitle = newValue!;
+                        });
+                      },
+                      items: titleList.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+                width:
+                    10), // Add spacing between Title dropdown and Name field if needed
+            Expanded(
+              child: _buildTextField('Name', _nameController),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(child: _buildTextField('Middle Name', _nameMController)),
+            SizedBox(width: 10),
+            // Add spacing between the text fields if needed
+            Expanded(child: _buildTextField('Last Name', _nameLController)),
+          ],
+        ),
+        Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Gender',
+                  style: TextStyle(fontSize: 16),
+                ),
+                Container(
+                  width: 150,
+                  // Adjust the width as needed
+                  height: 45,
+                  // Fixed height
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: DropdownButton<String>(
+                    value: genderselected,
+                    isExpanded: true,
+                    iconSize: 24,
+                    elevation: 16,
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                    underline: Container(
+                      height: 2,
+                      color: Colors
+                          .transparent, // Set to transparent to remove default underline
+                    ),
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setState(() {
+                          genderselected =
+                              newValue; // Update the selected value
+                        });
+                      }
+                    },
+                    items: aadhar_gender.map<DropdownMenuItem<String>>(
+                        (RangeCategoryDataModel state) {
+                      return DropdownMenuItem<String>(
+                        value: state.code,
+                        child: Text(state.descriptionEn),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Relationship',
+                  style: TextStyle(fontSize: 16),
+                ),
+                Container(
+                  width: 150,
+                  // Adjust the width as needed
+                  height: 45,
+                  // Fixed height
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: DropdownButton<String>(
+                    value: relationwithBorrowerselected,
+                    isExpanded: true,
+                    iconSize: 24,
+                    elevation: 16,
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                    underline: Container(
+                      height: 2,
+                      color: Colors
+                          .transparent, // Set to transparent to remove default underline
+                    ),
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setState(() {
+                          relationwithBorrowerselected =
+                              newValue; // Update the selected value
+                        });
+                      }
+                    },
+                    items: relationwithBorrower.map<DropdownMenuItem<String>>(
+                        (RangeCategoryDataModel state) {
+                      return DropdownMenuItem<String>(
+                        value: state.code,
+                        child: Text(state.descriptionEn),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+
+        Row(
+          children: [
+            Expanded(
+              child: _buildTextField('Mobile no', _mobileNoController),
+            ),
+            SizedBox(
+                width: 10), // Add spacing between the text field and the button
+            Padding(
+              padding: EdgeInsets.only(top: 20), // Add 10px padding from above
+              child: ElevatedButton(
+                onPressed: () {
+                  // Implement OTP verification logic here
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFA60A19), // Button color
+                  minimumSize: Size(100, 45), // Fixed size for the button
+                ),
+                child: Text(
+                  'Verify',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            // Age Box
+            SizedBox(
+              width: 80, // Set a fixed width for the age box
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Age',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    color: Colors.white,
+                    child: TextField(
+                      controller: _ageController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                      readOnly: true,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 16),
+            // Date of Birth Box
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Date of Birth',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    color: Colors.white,
+                    child: TextField(
+                      controller: _dobController,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.calendar_today),
+                          onPressed: () => _selectDate(context),
+                        ),
+                        border: OutlineInputBorder(),
+                      ),
+                      readOnly: true,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        _buildTextField('Father First Name', _fatherFirstNameController),
+        Row(
+          children: [
+            Expanded(
+              child:
+                  _buildTextField('Middle Name', _fatherMiddleNameController),
+            ),
+            SizedBox(width: 8),
+            // Add spacing between the text fields if needed
+            Expanded(
+                child: _buildTextField('Last Name', _fatherLastNameController)),
+          ],
+        ),
+        Text(
+          'Marital Status',
+          style: TextStyle(fontSize: 16),
+        ),
+        Container(
+          width: double.infinity,
+          // Adjust the width as needed
+          height: 45,
+          // Fixed height
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: DropdownButton<String>(
+            value: selectedMarritalStatus,
+            isExpanded: true,
+            iconSize: 24,
+            elevation: 16,
+            style: TextStyle(color: Colors.black, fontSize: 16),
+            underline: Container(
+              height: 2,
+              color: Colors
+                  .transparent, // Set to transparent to remove default underline
+            ),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  selectedMarritalStatus = newValue; // Update the selected value
+                });
+              }
+            },
+            items: marrital_status
+                .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
+              return DropdownMenuItem<String>(
+                value: state.code,
+                child: Text(state.descriptionEn),
+              );
+            }).toList(),
+          ),
+        ),
+        // Conditionally show the spouse fields only when isMarried is true
+        if (equals(selectedMarritalStatus.toString(), 'Married'))
+          Column(
+            children: [
+              _buildTextField('Spouse First Name', _spouseFirstNameController),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildTextField(
+                        'Middle Name', _spouseMiddleNameController),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child:
+                        _buildTextField('Last Name', _spouseLastNameController),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        Row(
+          children: [
+            Expanded(
+                child: _buildTextField('Monthly Expense', _incomeController)),
+            SizedBox(width: 8),
+            // Add spacing between the text fields if needed
+            Expanded(
+                child: _buildTextField('Monthly Income', _expenseController)),
+          ],
+        ),
+        _buildTextField('Address1', _address1Controller),
+        _buildTextField('Address2', _address2Controller),
+        _buildTextField('Address3', _address3Controller),
+        Row(
+          children: [
+            Expanded(child: _buildTextField('City', _cityController)),
+            SizedBox(width: 16),
+            Expanded(child: _buildTextField('Pincode', _pincodeController)),
+          ],
+        ),
+        Text(
+          'State Name',
+          style: TextStyle(fontSize: 16),
+        ),
+        Container(
+          width: double.infinity,
+          // Adjust the width as needed
+          height: 45,
+          // Fixed height
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: DropdownButton<String>(
+            value: stateselected,
+            isExpanded: true,
+            iconSize: 24,
+            elevation: 16,
+            style: TextStyle(color: Colors.black, fontSize: 16),
+            underline: Container(
+              height: 2,
+              color: Colors
+                  .transparent, // Set to transparent to remove default underline
+            ),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  stateselected = newValue; // Update the selected value
+                });
+              }
+            },
+            items: states
+                .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
+              return DropdownMenuItem<String>(
+                value: state.code,
+                child: Text(state.descriptionEn),
+              );
+            }).toList(),
+          ),
+        ),
+        _buildTextField2(
+            'Loan Amount', _loan_amountController, TextInputType.number),
+
+        Row(
+          children: [
+            // Special Ability Dropdown
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Loan Duraction',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 5),
+                  Container(
+                    width: 150,
+                    // Adjust the width as needed
+                    height: 45,
+                    // Fixed height
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedloanDuration,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      underline: Container(
+                        height: 2,
+                        color: Colors
+                            .transparent, // Set to transparent to remove default underline
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedloanDuration = newValue!;
+                        });
+                      },
+                      items: loanDuration.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 16), // Space between dropdowns
+            // State Name Dropdown
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Bank Name',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 5),
+                  Container(
+                    height: 45,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: bankselected,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.transparent,
+                      ),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            bankselected = newValue;
+                          });
+                        }
+                      },
+                      items: bank.map<DropdownMenuItem<String>>(
+                          (RangeCategoryDataModel state) {
+                        return DropdownMenuItem<String>(
+                          value: state.code,
+                          child: Text(state.descriptionEn),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _buildTextField('Latitude', _latitudeController),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 8),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _buildTextField('Longitude', _longitudeController),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 8),
+            Padding(
+              padding: EdgeInsets.only(top: 20), // Add 10px padding from above
+              child: SizedBox(
+                height: 40, // Smaller height for compact button
+                width: 40, // Smaller width for compact button
+                child: ElevatedButton(
+                  onPressed: geolocator,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(0),
+                    // Remove padding for smaller size
+                    minimumSize: Size(40, 40), // Ensure button remains compact
+                  ),
+                  child: Icon(
+                    Icons.refresh,
+                    size: 18, // Smaller icon size for compact look
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ],
+    ));
+  }
+
+  Widget _buildStepTwo() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                  child: _buildTextField(
+                      'Permanent Account PAN No', _panNoController)),
+              SizedBox(width: 16),
+              Checkbox(
+                value:
+                    isChecked, // Replace with a variable to track the checkbox state
+                onChanged: (bool? value) {
+                  setState(() {
+                    //   isChecked = value!; // Update the checkbox state
+                  });
+                },
+              ),
+            ],
+          ),
+          _buildTextField('Permanent Account PAN No', _panNoController),
+          _buildTextField('Driving License', _drivingLicenseController),
+          _buildTextField('Voter Id', _voterIdController),
+          _buildTextField('Passport', _passportController),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNextButton(BuildContext context) {
+    return Container(
+      height: 45,
+      width: MediaQuery.of(context).size.width - 100,
+      margin: EdgeInsets.symmetric(horizontal: 10),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFFA60A19),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 6),
+        ),
+        onPressed: () {
+          if (_currentStep < 2) {
+            setState(() {
+              _currentStep += 1;
+            });
+          } else if (_formKey.currentState?.validate() ?? false) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Form submitted successfully")),
+            );
+          }
+        },
+        /*onPressed: () {
+        if (_currentStep == 0) {
+          AddFiExtraDetail(context);
+        } else if (_currentStep == 1) {
+          AddFiFamilyDetail(context);
+        }
+
+        if (_currentStep < 2) {
+          setState(() {
+            _currentStep += 1;
+          });
+        } else if (_currentStep == 2) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Form submitted successfully")),
+          );
+        }
+      },*/
+        child: Text(
+          "SUBMIT",
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+      ),
+    );
+  }
 }
-
-

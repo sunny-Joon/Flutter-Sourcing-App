@@ -17,7 +17,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Define your custom color
     const Color customColor = Color(0xFFD42D3F);
-    TextEditingController passwordControllerlogin = TextEditingController();
+    TextEditingController passwordControllerlogin = TextEditingController(text: '12345');
     final TextEditingController mobileControllerlogin =
         TextEditingController(text: 'GRST002064');
     String deviceId = '';
@@ -381,6 +381,7 @@ class LoginPage extends StatelessWidget {
             print('object');
             GlobalClass.target = value.data.foImei[0].targetCommAmt;
             //GlobalClass.creator = folist[0].creator ?? '';
+            GlobalClass.creator='HOAGRA';
 
           }else{
             PopupDialog.showPopup(
