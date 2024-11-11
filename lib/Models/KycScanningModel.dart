@@ -17,7 +17,7 @@ class KycScanningModel {
 
   factory KycScanningModel.fromJson(Map<String, dynamic> json) => KycScanningModel(
     statuscode: json["statuscode"],
-    message: json["message"],
+    message: json["message"] ?? '', // Provide default empty string if null
     data: KycScanningDataModel.fromJson(json["data"]),
   );
 
@@ -30,23 +30,23 @@ class KycScanningModel {
 
 class KycScanningDataModel {
   int fiId;
-  dynamic docname;
+  String? docname;
   bool addharExists;
-  dynamic aadharPath;
-  dynamic aadharBPath;
+  String? aadharPath;
+  String? aadharBPath;
   bool voterExists;
-  dynamic voterPath;
-  dynamic voterBPath;
+  String? voterPath;
+  String? voterBPath;
   bool panExists;
-  dynamic panPath;
+  String? panPath;
   bool drivingExists;
-  dynamic drivingPath;
+  String? drivingPath;
   bool passBookExists;
-  dynamic passBookPath;
-  dynamic passBookBPath;
+  String? passBookPath;
+  String? passBookBPath;
   List<GrDoc> grDocs;
-  dynamic errormsg;
-  dynamic isvalide;
+  String? errormsg;
+  String? isvalide;
 
   KycScanningDataModel({
     required this.fiId,
@@ -70,24 +70,24 @@ class KycScanningDataModel {
   });
 
   factory KycScanningDataModel.fromJson(Map<String, dynamic> json) => KycScanningDataModel(
-    fiId: json["fi_Id"],
-    docname: json["docname"],
-    addharExists: json["addharExists"],
-    aadharPath: json["aadharPath"],
-    aadharBPath: json["aadharBPath"],
-    voterExists: json["voterExists"],
-    voterPath: json["voterPath"],
-    voterBPath: json["voterBPath"],
-    panExists: json["panExists"],
-    panPath: json["panPath"],
-    drivingExists: json["drivingExists"],
-    drivingPath: json["drivingPath"],
-    passBookExists: json["passBookExists"],
-    passBookPath: json["passBookPath"],
-    passBookBPath: json["passBookBPath"],
-    grDocs: List<GrDoc>.from(json["grDocs"].map((x) => GrDoc.fromJson(x))),
-    errormsg: json["errormsg"],
-    isvalide: json["isvalide"],
+    fiId: json["fi_Id"] ?? 0,
+    docname: json["docname"] ?? null,
+    addharExists: json["addharExists"] ?? false,
+    aadharPath: json["aadharPath"] ?? null,
+    aadharBPath: json["aadharBPath"] ?? null,
+    voterExists: json["voterExists"] ?? false,
+    voterPath: json["voterPath"] ?? null,
+    voterBPath: json["voterBPath"] ?? null,
+    panExists: json["panExists"] ?? false,
+    panPath: json["panPath"] ?? null,
+    drivingExists: json["drivingExists"] ?? false,
+    drivingPath: json["drivingPath"] ?? null,
+    passBookExists: json["passBookExists"] ?? false,
+    passBookPath: json["passBookPath"] ?? null,
+    passBookBPath: json["passBookBPath"] ?? null,
+    grDocs: List<GrDoc>.from(json["grDocs"]?.map((x) => GrDoc.fromJson(x)) ?? []),
+    errormsg: json["errormsg"] ?? null,
+    isvalide: json["isvalide"] ?? null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -114,11 +114,11 @@ class KycScanningDataModel {
 
 class GrDoc {
   bool addharExists;
-  dynamic aadharPath;
-  dynamic aadharBPath;
+  String? aadharPath;
+  String? aadharBPath;
   bool voterExists;
-  dynamic voterPath;
-  dynamic voterBPath;
+  String? voterPath;
+  String? voterBPath;
   bool panExists;
   String panPath;
   bool drivingExists;
@@ -140,17 +140,17 @@ class GrDoc {
   });
 
   factory GrDoc.fromJson(Map<String, dynamic> json) => GrDoc(
-    addharExists: json["addharExists"],
-    aadharPath: json["aadharPath"],
-    aadharBPath: json["aadharBPath"],
-    voterExists: json["voterExists"],
-    voterPath: json["voterPath"],
-    voterBPath: json["voterBPath"],
-    panExists: json["panExists"],
-    panPath: json["panPath"],
-    drivingExists: json["drivingExists"],
-    drivingPath: json["drivingPath"],
-    grSno: json["gr_Sno"],
+    addharExists: json["addharExists"] ?? false,
+    aadharPath: json["aadharPath"] ?? null,
+    aadharBPath: json["aadharBPath"] ?? null,
+    voterExists: json["voterExists"] ?? false,
+    voterPath: json["voterPath"] ?? null,
+    voterBPath: json["voterBPath"] ?? null,
+    panExists: json["panExists"] ?? false,
+    panPath: json["panPath"] ?? '',
+    drivingExists: json["drivingExists"] ?? false,
+    drivingPath: json["drivingPath"] ?? '',
+    grSno: json["gr_Sno"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {

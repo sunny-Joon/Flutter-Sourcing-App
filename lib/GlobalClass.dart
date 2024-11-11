@@ -12,7 +12,7 @@ class GlobalClass {
   }
 
   static String id = "";
-  static String creator = "";
+  static String creator = "HOAGRA";
   static String address = "";
   static String areaCode = "";
   static String password = "";

@@ -88,6 +88,17 @@ abstract class ApiService {
 
       @Part( name: "Picture") File Picture);
 
+  @POST("FiSourcing/FiDocsUploads")
+  @MultiPart()
+  Future <GlobalModel> uploadFiDocs(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Part( name:"FI_ID") String FI_ID,
+      @Part( name:"GrNo") int GrNo,
+      @Part( name: "CheckListId") String CheckListId,
+      @Part( name: "Remarks") String Remarks,
+      @Part( name: "FileName") String? FileName);
+
   @POST("FiSourcing/AddFiIDs")
   Future <GlobalModel> addFiIds(
       @Header("Authorization") String token,
