@@ -130,6 +130,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   @override
   void initState() {
     super.initState();
+    GetDocs(context, widget.selectedData.id);
     initializeData(); // Fetch initial data
   }
 
@@ -146,8 +147,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   //  });
 
-    GetDocs(context, widget.selectedData.id);
-      _isPageLoading=true;
+
   }
 
   bool isSpecialSocialCategoryVisible = false;
@@ -1968,6 +1968,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Widget _buildListItem({
     required String title,
     String? path,
+    int? id,
     String? GrNo,
     required Function(File) onImagePicked,
   }) {
@@ -1991,21 +1992,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        path != null
-                            ? Text(path)
-                            : Text('No image selected'),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 10),
                   _selectedImage != null
                       ? Image.file(
                     _selectedImage!,
@@ -2020,7 +2006,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   IconButton(
                     icon: Icon(Icons.upload),
                     onPressed: () {
-                      UploadFiDocs(context, widget.selectedData.id.toString(),title,path,GrNo);
+                      UploadFiDocs(context, widget.selectedData.id.toString(),title,path,GrNo,id);
                       print('Title: $title');
                       print('Path: $path');
                     },
@@ -2055,6 +2041,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Aadhar Front",
             path: doc.aadharPath,
+            id:doc.aadharCheckListId,
             GrNo:"0",
             onImagePicked: (File file) {
               adhaarFront = file;
@@ -2062,6 +2049,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Aadhar Back",
             path: doc.aadharBPath,
+            id:doc.aadharBCheckListId,
             GrNo:'0',
             onImagePicked: (File file) {
               adhaarBack = file;
@@ -2072,6 +2060,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Voter Front",
             path: doc.voterPath,
+            id:doc.voterCheckListId,
             GrNo:'0',
             onImagePicked: (File file) {
               voterFront = file;
@@ -2079,6 +2068,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Voter Back",
             path: doc.voterBPath,
+            id:doc.voterBCheckListId,
             GrNo:'0',
             onImagePicked: (File file) {
               voterback = file;
@@ -2089,6 +2079,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Pan Front",
             path: doc.panPath,
+            id:doc.panCheckListId,
             GrNo:'0',
             onImagePicked: (File file) {
               panFront = file;
@@ -2099,6 +2090,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "DL Front",
             path: doc.drivingPath,
+            id:doc.drivingCheckListId,
             GrNo:'0',
             onImagePicked: (File file) {
               dlFront = file;
@@ -2109,13 +2101,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Passbook Front",
             path: doc.passBookPath,
+            id:doc.passBookCheckListId,
             GrNo:'0',
             onImagePicked: (File file) {
               passbook = file;
             }));
         listItems.add(_buildListItem(
             title: "Passport",
-            path: doc.passBookBPath,
+            path: doc.passportPath,
+            id:doc.passportCheckListId,
             GrNo:'0',
             onImagePicked: (File file) {
               passport = file;
@@ -2138,6 +2132,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "Aadhar Front",
               path: grDoc.aadharPath,
+              id:1,
               GrNo:grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -2145,6 +2140,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "Aadhar Back",
               path: grDoc.aadharBPath,
+              id:1,
               GrNo:grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -2155,6 +2151,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "Voter Front",
               path: grDoc.voterPath,
+              id:1,
               GrNo:grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -2162,6 +2159,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "Voter Back",
               path: grDoc.voterBPath,
+              id:1,
               GrNo:grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -2172,6 +2170,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "Pan Front",
               path: grDoc.panPath,
+              id:1,
               GrNo:grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -2182,6 +2181,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "DL Front",
               path: grDoc.drivingPath,
+              id:1,
               GrNo:grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -2193,18 +2193,27 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
 
-  Future<void> UploadFiDocs(BuildContext context, fiid, String?tittle, String? path, String? grNo) async {
+  Future<void> UploadFiDocs(BuildContext context, fiid, String?tittle, String? path, String? grNo, int? id) async {
     final api = Provider.of<ApiService>(context, listen: false);
 //https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//38//FiDocuments//VoterIDBorrower0711_2024_43_01.png
+
+    String baseUrl = 'https://predeptest.paisalo.in:8084';
+
+    // Replace the front part of the file path and ensure the path uses forward slashes
+    String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
+
+    // Join the base URL with the modified path
+    String finalUrl = '$baseUrl/$modifiedPath';
+    File file = File(finalUrl);
     return await api
         .uploadFiDocs(
             GlobalClass.token,
             GlobalClass.dbName,
             "FI_ID",//FI_ID,
             int.parse(grNo!),
-            "2",
+            id!,
             tittle.toString(),
-            "FileName")
+            file)
             .then((value) async {
       if (value.statuscode == 200) {
         /*setState(() {
@@ -3516,10 +3525,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Widget _buildStepSix() {
     return SingleChildScrollView(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: _buildKycDocumentList(), // Call the function here
-    ));
+        child:Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _buildKycDocumentList(), // Call the function here
+        ));
   }
 
   /*Widget _buildNextButton() {
@@ -3683,11 +3692,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               _currentStep += 1;
             });
-          } else if (_formKey.currentState?.validate() ?? false) {
+          } else if(_currentStep ==5){
+            GetDocs(context, widget.selectedData.id);
+            setState(() {
+              _currentStep += 1;
+            });
+          }
+          /*else if (_formKey.currentState?.validate() ?? false) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Form submitted successfully")),
             );
-          }
+          }*/
         },
         /*onPressed: () {
           if (_currentStep == 0) {
