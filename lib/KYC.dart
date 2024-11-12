@@ -186,6 +186,8 @@ class _KYCPageState extends State<KYCPage> {
   final _passportController = TextEditingController();
   final _panNoController = TextEditingController();
   final _drivingLicenseController = TextEditingController();
+  final _dlExpiryController = TextEditingController();
+  final _passportExpiryController = TextEditingController();
 
 /*  String? selectedState;
   String? selectedEarningMemberType;
@@ -209,7 +211,37 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context) async {
+  Widget _buildDatePickerField(BuildContext context,String labelText, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        readOnly: true,
+        onTap: () => _selectDate(context, controller),
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+  void _selectDate(BuildContext context, TextEditingController controller) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        controller.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
+    if(controller == _dobController){
+      _calculateAge();
+    }
+  }
+  /*Future<void> _selectDate(BuildContext context) async {
     DateTime now = DateTime.now();
     DateTime initialDate = _selectedDate ?? now;
 
@@ -228,7 +260,7 @@ class _KYCPageState extends State<KYCPage> {
       });
       _calculateAge();
     }
-  }
+  }*/
 
   void _calculateAge() {
     if (_selectedDate != null) {
@@ -1005,7 +1037,7 @@ class _KYCPageState extends State<KYCPage> {
                         top: -45, // Adjust the position as needed
                         left: 0,
                         right: 0,
-                        child: GestureDetector(
+                        child: InkWell(
                           onTap: _pickImage,
                           child: Center(
                             child: _imageFile == null
@@ -1024,8 +1056,8 @@ class _KYCPageState extends State<KYCPage> {
                                 : ClipOval(
                               child: Image.file(
                                 File(_imageFile!.path),
-                                width: 100,
-                                height: 100,
+                                width: 70,
+                                height: 70,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -1104,10 +1136,10 @@ class _KYCPageState extends State<KYCPage> {
     income = _expenseController.text;
     lati = _latitudeController.text;
     longi = _longitudeController.text;
-    int Expense = int.parse(expense);
-    int Income = int.parse(income);
-    double latitude = double.parse(lati);
-    double longitude = double.parse(longi);
+    int Expense = (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
+    int Income = (income != null && income.isNotEmpty) ? int.parse(income) : 0;
+    double latitude = (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
+    double longitude = (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
     String add1 = _address1Controller.text.toString();
     String add2 = _address2Controller.text.toString();
     String add3 = _address3Controller.text.toString();
@@ -1123,8 +1155,51 @@ class _KYCPageState extends State<KYCPage> {
     String bank_name = bankselected;
     String loan_Duration = selectedloanDuration!;
     String loan_amount = _loan_amountController.text.toString();
+    String? Image;
+    if(_imageFile == null){
+      Image = 'Null';
+    }
 
-    print("add 3 $add3");
+    var fields = {
+      "Aadhaar ID": adhaarid,
+      "Title": title,
+      "Name": name,
+      "Middle Name": middlename,
+      "Last Name": lastname,
+      "Date of Birth": dob,
+      "Age": age,
+      "Gender": gendre,
+      "Mobile Number": mobile,
+      "Father's First Name": fatherF,
+      "Father's Middle Name": fatherM,
+      "Father's Last Name": fatherL,
+      "Spouse's First Name": spouseF,
+      "Spouse's Middle Name": spouseM,
+      "Spouse's Last Name": spouseL,
+      "Expense": expense,
+      "Income": income,
+      "Latitude": lati,
+      "Longitude": longi,
+      "Address Line 1": add1,
+      "Address Line 2": add2,
+      "Address Line 3": add3,
+      "City": city,
+      "Pincode": pin,
+      "State": state,
+      "Relation with Borrower": relation_with_Borrower,
+      "Bank Name": bank_name,
+      "Loan Duration": loan_Duration,
+      "Loan Amount": loan_amount,
+      "Image":Image,
+    };
+
+    // Check for blank fields
+    for (var field in fields.entries) {
+      if (field.value == null || field.value!.isEmpty) {
+        showAlertDialog(context, "Please fill in the ${field.key} field.");
+        return;
+      }
+    }
 
     final api = Provider.of<ApiService>(context, listen: false);
 
@@ -1147,14 +1222,14 @@ class _KYCPageState extends State<KYCPage> {
         spouseF,
         spouseM,
         spouseL,
-        "creator",
+        GlobalClass.creator,
         Expense,
         Income,
         latitude,
         longitude,
         add1,
         add2,
-        add2,
+        add3,
         city,
         pin,
         state,
@@ -1163,7 +1238,7 @@ class _KYCPageState extends State<KYCPage> {
         bCode,
         relation_with_Borrower,
         bank_name,
-        loan_Duration!,
+        loan_Duration,
         loan_amount,
         _imageFile!)
         .then((value) async {
@@ -1181,20 +1256,41 @@ class _KYCPageState extends State<KYCPage> {
     String fiid = Fi_Id.toString();
     String pan_no = _panNoController.text.toString();
     String dl = _drivingLicenseController.text.toString();
+    String DLExpireDate = _dlExpiryController.text.toString();
     String voter_id = _voterIdController.text.toString();
     String passport = _passportController.text.toString();
+    String PassportExpireDate = _passportExpiryController.text.toString();
     int isAadharVerified = 1;
     int is_phnno_verified = 1;
     int isNameVerify = 1;
 
+    var fields = {
+      "Pan No.": pan_no,
+      "Driving License": dl,
+      "DL Expire Date": DLExpireDate,
+      "Voter Id": voter_id,
+      "Passport": passport,
+      "Passport Expire Date": PassportExpireDate,
+    };
+
+    for (var field in fields.entries) {
+      if (field.value == null || field.value.isEmpty) {
+        showAlertDialog(context, "Please fill in the ${field.key} field.");
+        return;
+      }
+    }
+
     final api = Provider.of<ApiService>(context, listen: false);
 
     Map<String, dynamic> requestBody = {
-      "Fi_ID": fiid,
+      //"Fi_ID": fiid,
+      "Fi_ID": 1144,
       "pan_no": pan_no,
       "dl": dl,
+      "DLExpireDate": DLExpireDate,
       "voter_id": voter_id,
       "passport": passport,
+      "PassportExpireDate": PassportExpireDate,
       "isAadharVerified": isAadharVerified,
       "is_phnno_verified": is_phnno_verified,
       "isNameVerify": isNameVerify
@@ -1520,7 +1616,7 @@ class _KYCPageState extends State<KYCPage> {
       case 0:
         return _buildStepOne(context);
       case 1:
-        return _buildStepTwo();
+        return _buildStepTwo(context);
       default:
         return _buildStepOne(context);
     }
@@ -1781,7 +1877,7 @@ class _KYCPageState extends State<KYCPage> {
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
                           icon: Icon(Icons.calendar_today),
-                          onPressed: () => _selectDate(context),
+                          onPressed: () => _selectDate(context,_dobController),
                         ),
                         border: OutlineInputBorder(),
                       ),
@@ -2076,32 +2172,17 @@ class _KYCPageState extends State<KYCPage> {
     ));
   }
 
-  Widget _buildStepTwo() {
+  Widget _buildStepTwo(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                  child: _buildTextField(
-                      'Permanent Account PAN No', _panNoController)),
-              SizedBox(width: 16),
-              Checkbox(
-                value:
-                    isChecked, // Replace with a variable to track the checkbox state
-                onChanged: (bool? value) {
-                  setState(() {
-                    //   isChecked = value!; // Update the checkbox state
-                  });
-                },
-              ),
-            ],
-          ),
           _buildTextField('Permanent Account PAN No', _panNoController),
           _buildTextField('Driving License', _drivingLicenseController),
+          _buildDatePickerField(context,'DL Expiry Date', _dlExpiryController),
           _buildTextField('Voter Id', _voterIdController),
           _buildTextField('Passport', _passportController),
+          _buildDatePickerField(context,'Passport Expiry Date', _passportExpiryController),
         ],
       ),
     );
@@ -2120,7 +2201,7 @@ class _KYCPageState extends State<KYCPage> {
           ),
           padding: EdgeInsets.symmetric(vertical: 6),
         ),
-        onPressed: () {
+        /*onPressed: () {
           if (_currentStep < 2) {
             setState(() {
               _currentStep += 1;
@@ -2130,15 +2211,17 @@ class _KYCPageState extends State<KYCPage> {
               SnackBar(content: Text("Form submitted successfully")),
             );
           }
-        },
-        /*onPressed: () {
-        if (_currentStep == 0) {
-          AddFiExtraDetail(context);
-        } else if (_currentStep == 1) {
-          AddFiFamilyDetail(context);
-        }
+        },*/
+        onPressed: () {
+          if (_currentStep == 0) {
+            saveFiMethod(context);
+          } else if (_currentStep == 1) {
+            saveIDsMethod(context);
+          } else if (_currentStep > 1) {
+            showKycDoneDialog(context);
+          }
 
-        if (_currentStep < 2) {
+        /*if (_currentStep < 2) {
           setState(() {
             _currentStep += 1;
           });
@@ -2146,13 +2229,54 @@ class _KYCPageState extends State<KYCPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Form submitted successfully")),
           );
-        }
-      },*/
+        }*/
+      },
         child: Text(
           "SUBMIT",
           style: TextStyle(color: Colors.white, fontSize: 16),
         ),
       ),
+    );
+  }
+
+  void showAlertDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Validation Error"),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showKycDoneDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("KYC Done"),
+          content: Text("Your KYC process is completed."),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();  // Close the dialog
+                Navigator.of(context).pop();  // Close the current class
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

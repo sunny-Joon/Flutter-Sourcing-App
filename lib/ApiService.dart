@@ -95,9 +95,9 @@ abstract class ApiService {
       @Header("dbname") String dbname,
       @Part( name:"FI_ID") String FI_ID,
       @Part( name:"GrNo") int GrNo,
-      @Part( name: "CheckListId") String CheckListId,
+      @Part( name: "CheckListId") int CheckListId,
       @Part( name: "Remarks") String Remarks,
-      @Part( name: "FileName") String? FileName);
+      @Part( name: "FileName") File FileName);
 
   @POST("FiSourcing/AddFiIDs")
   Future <GlobalModel> addFiIds(
