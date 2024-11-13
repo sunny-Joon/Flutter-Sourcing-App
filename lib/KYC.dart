@@ -2173,16 +2173,93 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   Widget _buildStepTwo(BuildContext context) {
+    bool isPanVerified,isDrivingLicenseVerified,isVoterIdVerified,isPassportVerified;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTextField('Permanent Account PAN No', _panNoController),
-          _buildTextField('Driving License', _drivingLicenseController),
-          _buildDatePickerField(context,'DL Expiry Date', _dlExpiryController),
-          _buildTextField('Voter Id', _voterIdController),
-          _buildTextField('Passport', _passportController),
-          _buildDatePickerField(context,'Passport Expiry Date', _passportExpiryController),
+          Row(
+            children: [
+              Expanded(
+                child: _buildTextField('PAN No', _panNoController),
+              ),
+              SizedBox(width: 10),
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: _buildVerificationIcon(
+                  isPanVerified = true,
+                      () {
+                    setState(() {
+                      isPanVerified = !isPanVerified;
+                    });
+                    // Implement OTP verification logic here
+                  },
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: _buildTextField('Driving License', _drivingLicenseController),
+              ),
+              SizedBox(width: 10),
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: _buildVerificationIcon(
+                  isDrivingLicenseVerified = true,
+                      () {
+                    setState(() {
+                      isDrivingLicenseVerified = !isDrivingLicenseVerified;
+                    });
+                    // Implement OTP verification logic here
+                  },
+                ),
+              ),
+            ],
+          ),
+          _buildDatePickerField(context, 'DL Expiry Date', _dlExpiryController),
+          Row(
+            children: [
+              Expanded(
+                child: _buildTextField('Voter Id', _voterIdController),
+              ),
+              SizedBox(width: 10),
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: _buildVerificationIcon(
+                  isVoterIdVerified = true,
+                      () {
+                    setState(() {
+                      isVoterIdVerified = !isVoterIdVerified;
+                    });
+                    // Implement OTP verification logic here
+                  },
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: _buildTextField('Passport', _passportController),
+              ),
+              SizedBox(width: 10),
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: _buildVerificationIcon(
+                  isPassportVerified= false,
+                      () {
+                    setState(() {
+                      isPassportVerified = !isPassportVerified;
+                    });
+                    // Implement OTP verification logic here
+                  },
+                ),
+              ),
+            ],
+          ),
+          _buildDatePickerField(context, 'Passport Expiry Date', _passportExpiryController),
         ],
       ),
     );
@@ -2213,15 +2290,15 @@ class _KYCPageState extends State<KYCPage> {
           }
         },*/
         onPressed: () {
-          if (_currentStep == 0) {
+         /* if (_currentStep == 0) {
             saveFiMethod(context);
           } else if (_currentStep == 1) {
             saveIDsMethod(context);
           } else if (_currentStep > 1) {
             showKycDoneDialog(context);
-          }
+          }*/
 
-        /*if (_currentStep < 2) {
+        if (_currentStep < 2) {
           setState(() {
             _currentStep += 1;
           });
@@ -2229,7 +2306,7 @@ class _KYCPageState extends State<KYCPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Form submitted successfully")),
           );
-        }*/
+        }
       },
         child: Text(
           "SUBMIT",
@@ -2279,4 +2356,21 @@ class _KYCPageState extends State<KYCPage> {
       },
     );
   }
+}
+
+Widget _buildVerificationIcon(bool isVerified, VoidCallback onTap) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: isVerified ? Colors.green : Colors.red,
+      ),
+      child: Icon(
+        isVerified ? Icons.check_circle : Icons.check_circle_outline,
+        color: Colors.white,
+      ),
+    ),
+  );
 }
