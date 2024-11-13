@@ -25,6 +25,10 @@ class KYCPage extends StatefulWidget {
 }
 
 class _KYCPageState extends State<KYCPage> {
+  Color iconPan = Colors.red;
+  Color iconDl = Colors.red;
+  Color iconVoter = Colors.red;
+  Color iconPassport = Colors.red;
   int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
 
@@ -75,7 +79,7 @@ class _KYCPageState extends State<KYCPage> {
   Future<void> fetchData() async {
     states = await DatabaseHelper().selectRangeCatData("state");
     marrital_status =
-    await DatabaseHelper().selectRangeCatData("marrital_status");
+        await DatabaseHelper().selectRangeCatData("marrital_status");
     relation = await DatabaseHelper().selectRangeCatData("relationship");
     reasonForLoan = await DatabaseHelper().selectRangeCatData("loan_purpose");
     aadhar_gender = await DatabaseHelper().selectRangeCatData("gender");
@@ -199,6 +203,10 @@ class _KYCPageState extends State<KYCPage> {
   String? Fi_Id;
   String qrResult = "";
   File? _imageFile;
+  bool isPanVerified = false,
+      isDrivingLicenseVerified = false,
+      isVoterIdVerified = false,
+      isPassportVerified = false;
 
   get isChecked => null;
 
@@ -211,7 +219,8 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  Widget _buildDatePickerField(BuildContext context,String labelText, TextEditingController controller) {
+  Widget _buildDatePickerField(BuildContext context, String labelText,
+      TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
@@ -225,7 +234,9 @@ class _KYCPageState extends State<KYCPage> {
       ),
     );
   }
-  void _selectDate(BuildContext context, TextEditingController controller) async {
+
+  void _selectDate(
+      BuildContext context, TextEditingController controller) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -237,10 +248,11 @@ class _KYCPageState extends State<KYCPage> {
         controller.text = DateFormat('yyyy-MM-dd').format(picked);
       });
     }
-    if(controller == _dobController){
+    if (controller == _dobController) {
       _calculateAge();
     }
   }
+
   /*Future<void> _selectDate(BuildContext context) async {
     DateTime now = DateTime.now();
     DateTime initialDate = _selectedDate ?? now;
@@ -967,7 +979,7 @@ class _KYCPageState extends State<KYCPage> {
         child: Center(
           child: Padding(
             padding:
-            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
             child: Column(
               children: [
                 Padding(
@@ -1042,25 +1054,25 @@ class _KYCPageState extends State<KYCPage> {
                           child: Center(
                             child: _imageFile == null
                                 ? ClipOval(
-                              child: Container(
-                                width: 70,
-                                height: 70,
-                                color: Colors.blue,
-                                child: Icon(
-                                  Icons.person,
-                                  size: 50.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
+                                    child: Container(
+                                      width: 70,
+                                      height: 70,
+                                      color: Colors.blue,
+                                      child: Icon(
+                                        Icons.person,
+                                        size: 50.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
                                 : ClipOval(
-                              child: Image.file(
-                                File(_imageFile!.path),
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                                    child: Image.file(
+                                      File(_imageFile!.path),
+                                      width: 70,
+                                      height: 70,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
@@ -1136,10 +1148,13 @@ class _KYCPageState extends State<KYCPage> {
     income = _expenseController.text;
     lati = _latitudeController.text;
     longi = _longitudeController.text;
-    int Expense = (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
+    int Expense =
+        (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
     int Income = (income != null && income.isNotEmpty) ? int.parse(income) : 0;
-    double latitude = (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
-    double longitude = (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
+    double latitude =
+        (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
+    double longitude =
+        (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
     String add1 = _address1Controller.text.toString();
     String add2 = _address2Controller.text.toString();
     String add3 = _address3Controller.text.toString();
@@ -1156,7 +1171,7 @@ class _KYCPageState extends State<KYCPage> {
     String loan_Duration = selectedloanDuration!;
     String loan_amount = _loan_amountController.text.toString();
     String? Image;
-    if(_imageFile == null){
+    if (_imageFile == null) {
       Image = 'Null';
     }
 
@@ -1190,7 +1205,7 @@ class _KYCPageState extends State<KYCPage> {
       "Bank Name": bank_name,
       "Loan Duration": loan_Duration,
       "Loan Amount": loan_amount,
-      "Image":Image,
+      "Image": Image,
     };
 
     // Check for blank fields
@@ -1205,42 +1220,42 @@ class _KYCPageState extends State<KYCPage> {
 
     return await api
         .saveFi(
-        GlobalClass.token,
-        GlobalClass.dbName,
-        adhaarid,
-        title,
-        name,
-        middlename,
-        lastname,
-        dob,
-        age,
-        gendre,
-        mobile,
-        fatherF,
-        fatherM,
-        fatherL,
-        spouseF,
-        spouseM,
-        spouseL,
-        GlobalClass.creator,
-        Expense,
-        Income,
-        latitude,
-        longitude,
-        add1,
-        add2,
-        add3,
-        city,
-        pin,
-        state,
-        ismarried,
-        gCode,
-        bCode,
-        relation_with_Borrower,
-        bank_name,
-        loan_Duration,
-        loan_amount,
-        _imageFile!)
+            GlobalClass.token,
+            GlobalClass.dbName,
+            adhaarid,
+            title,
+            name,
+            middlename,
+            lastname,
+            dob,
+            age,
+            gendre,
+            mobile,
+            fatherF,
+            fatherM,
+            fatherL,
+            spouseF,
+            spouseM,
+            spouseL,
+            GlobalClass.creator,
+            Expense,
+            Income,
+            latitude,
+            longitude,
+            add1,
+            add2,
+            add3,
+            city,
+            pin,
+            state,
+            ismarried,
+            gCode,
+            bCode,
+            relation_with_Borrower,
+            bank_name,
+            loan_Duration,
+            loan_amount,
+            _imageFile!)
         .then((value) async {
       if (value.statuscode == 200) {
         setState(() {
@@ -1311,8 +1326,8 @@ class _KYCPageState extends State<KYCPage> {
 
   void saveDataMethod() {}
 
-  Widget _buildTextField2(String label, TextEditingController controller,
-      TextInputType inputType) {
+  Widget _buildTextField2(
+      String label, TextEditingController controller, TextInputType inputType) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -1377,7 +1392,7 @@ class _KYCPageState extends State<KYCPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.circular(5), // Adjust as needed
+                            BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1398,7 +1413,7 @@ class _KYCPageState extends State<KYCPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.circular(5), // Adjust as needed
+                            BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1420,9 +1435,9 @@ class _KYCPageState extends State<KYCPage> {
                         List<int> byteScanData = bigIntToBytes(bigIntScanData);
 
                         List<int> decompByteScanData =
-                        decompressData(byteScanData);
+                            decompressData(byteScanData);
                         List<List<int>> parts =
-                        separateData(decompByteScanData, 255, 15);
+                            separateData(decompByteScanData, 255, 15);
                         String qrResult = decodeData(parts);
 
                         onResult(qrResult);
@@ -1438,7 +1453,7 @@ class _KYCPageState extends State<KYCPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.circular(5), // Adjust as needed
+                            BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1474,8 +1489,8 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  List<List<int>> separateData(List<int> source, int separatorByte,
-      int vtcIndex) {
+  List<List<int>> separateData(
+      List<int> source, int separatorByte, int vtcIndex) {
     int imageStartIndex = 0;
 
     List<List<int>> separatedParts = [];
@@ -1509,7 +1524,7 @@ class _KYCPageState extends State<KYCPage> {
     for (var byteArray in encodedData) {
       // Decode using ISO-8859-1
       String decodedString =
-      utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
+          utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
       decodedData.add(decodedString);
       test += decodedString;
     }
@@ -1523,7 +1538,7 @@ class _KYCPageState extends State<KYCPage> {
       setState(() {
         if (position != null) {
           _locationMessage =
-          "Latitude: ${position!.latitude}, Longitude: ${position!.longitude}";
+              "Latitude: ${position!.latitude}, Longitude: ${position!.longitude}";
           print("Geolocation: $_locationMessage");
           _latitudeController.text = position!.latitude.toString();
           _longitudeController.text = position!.longitude.toString();
@@ -1631,7 +1646,8 @@ class _KYCPageState extends State<KYCPage> {
           children: [
             Expanded(child: _buildTextField('Aadhaar Id', _aadharIdController)),
             Padding(
-              padding: EdgeInsets.only(top: 20), // Add 10px padding from above
+              padding: EdgeInsets.only(top: 20),
+              // Add 10px padding from above
               child: GestureDetector(
                 onTap: () => _showPopup(context, (String result) {
                   setState(() {
@@ -1692,9 +1708,8 @@ class _KYCPageState extends State<KYCPage> {
                 ],
               ),
             ),
-            SizedBox(
-                width:
-                    10), // Add spacing between Title dropdown and Name field if needed
+            SizedBox(width: 10),
+            // Add spacing between Title dropdown and Name field if needed
             Expanded(
               child: _buildTextField('Name', _nameController),
             ),
@@ -1813,14 +1828,13 @@ class _KYCPageState extends State<KYCPage> {
             Expanded(
               child: _buildTextField('Mobile no', _mobileNoController),
             ),
-            SizedBox(
-                width: 10), // Add spacing between the text field and the button
+            SizedBox(width: 10),
+            // Add spacing between the text field and the button
             Padding(
-              padding: EdgeInsets.only(top: 20), // Add 10px padding from above
+              padding: EdgeInsets.only(top: 20),
+              // Add 10px padding from above
               child: ElevatedButton(
-                onPressed: () {
-                  // Implement OTP verification logic here
-                },
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFA60A19), // Button color
                   minimumSize: Size(100, 45), // Fixed size for the button
@@ -1877,7 +1891,7 @@ class _KYCPageState extends State<KYCPage> {
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
                           icon: Icon(Icons.calendar_today),
-                          onPressed: () => _selectDate(context,_dobController),
+                          onPressed: () => _selectDate(context, _dobController),
                         ),
                         border: OutlineInputBorder(),
                       ),
@@ -1930,7 +1944,8 @@ class _KYCPageState extends State<KYCPage> {
             onChanged: (String? newValue) {
               if (newValue != null) {
                 setState(() {
-                  selectedMarritalStatus = newValue; // Update the selected value
+                  selectedMarritalStatus =
+                      newValue; // Update the selected value
                 });
               }
             },
@@ -2148,7 +2163,8 @@ class _KYCPageState extends State<KYCPage> {
             ),
             SizedBox(width: 8),
             Padding(
-              padding: EdgeInsets.only(top: 20), // Add 10px padding from above
+              padding: EdgeInsets.only(top: 20),
+              // Add 10px padding from above
               child: SizedBox(
                 height: 40, // Smaller height for compact button
                 width: 40, // Smaller width for compact button
@@ -2173,7 +2189,6 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   Widget _buildStepTwo(BuildContext context) {
-    bool isPanVerified,isDrivingLicenseVerified,isVoterIdVerified,isPassportVerified;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2185,37 +2200,56 @@ class _KYCPageState extends State<KYCPage> {
               ),
               SizedBox(width: 10),
               Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: _buildVerificationIcon(
-                  isPanVerified = true,
-                      () {
-                    setState(() {
-                      isPanVerified = !isPanVerified;
-                    });
-                    // Implement OTP verification logic here
-                  },
-                ),
-              ),
+                  padding: EdgeInsets.only(top: 20),
+                  child: GestureDetector(
+                    onTap: () {
+                      verifyDocs(
+                          context, _panNoController.text, "pancard", "", "");
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: iconPan, // Use the state variable for color
+                      ),
+                      child: Icon(
+                        iconPan == Colors.green
+                            ? Icons.check_circle
+                            : Icons.check_circle_outline,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )),
             ],
           ),
           Row(
             children: [
               Expanded(
-                child: _buildTextField('Driving License', _drivingLicenseController),
+                child: _buildTextField(
+                    'Driving License', _drivingLicenseController),
               ),
               SizedBox(width: 10),
               Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: _buildVerificationIcon(
-                  isDrivingLicenseVerified = true,
-                      () {
-                    setState(() {
-                      isDrivingLicenseVerified = !isDrivingLicenseVerified;
-                    });
-                    // Implement OTP verification logic here
-                  },
-                ),
-              ),
+                  padding: EdgeInsets.only(top: 20),
+                  child: GestureDetector(
+                    onTap: () {
+                      verifyDocs(context, _drivingLicenseController.text,
+                          "drivinglicense", "", "");
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: iconDl, // Use the state variable for color
+                      ),
+                      child: Icon(
+                        iconDl == Colors.green
+                            ? Icons.check_circle
+                            : Icons.check_circle_outline,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )),
             ],
           ),
           _buildDatePickerField(context, 'DL Expiry Date', _dlExpiryController),
@@ -2226,17 +2260,26 @@ class _KYCPageState extends State<KYCPage> {
               ),
               SizedBox(width: 10),
               Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: _buildVerificationIcon(
-                  isVoterIdVerified = true,
-                      () {
-                    setState(() {
-                      isVoterIdVerified = !isVoterIdVerified;
-                    });
-                    // Implement OTP verification logic here
-                  },
-                ),
-              ),
+                  padding: EdgeInsets.only(top: 20),
+                  child: GestureDetector(
+                    onTap: () {
+                      verifyDocs(
+                          context, _voterIdController.text, "voterid", "", _dobController.text);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: iconVoter, // Use the state variable for color
+                      ),
+                      child: Icon(
+                        iconVoter == Colors.green
+                            ? Icons.check_circle
+                            : Icons.check_circle_outline,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )),
             ],
           ),
           Row(
@@ -2246,20 +2289,30 @@ class _KYCPageState extends State<KYCPage> {
               ),
               SizedBox(width: 10),
               Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: _buildVerificationIcon(
-                  isPassportVerified= false,
-                      () {
-                    setState(() {
-                      isPassportVerified = !isPassportVerified;
-                    });
-                    // Implement OTP verification logic here
-                  },
-                ),
-              ),
+                  padding: EdgeInsets.only(top: 20),
+                  child: GestureDetector(
+                    onTap: () {
+                      verifyDocs(context, _passportController.text, "",
+                          "passport", "");
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: iconPassport, // Use the state variable for color
+                      ),
+                      child: Icon(
+                        iconPassport == Colors.green
+                            ? Icons.check_circle
+                            : Icons.check_circle_outline,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )),
             ],
           ),
-          _buildDatePickerField(context, 'Passport Expiry Date', _passportExpiryController),
+          _buildDatePickerField(
+              context, 'Passport Expiry Date', _passportExpiryController),
         ],
       ),
     );
@@ -2290,7 +2343,7 @@ class _KYCPageState extends State<KYCPage> {
           }
         },*/
         onPressed: () {
-         /* if (_currentStep == 0) {
+          /* if (_currentStep == 0) {
             saveFiMethod(context);
           } else if (_currentStep == 1) {
             saveIDsMethod(context);
@@ -2298,16 +2351,16 @@ class _KYCPageState extends State<KYCPage> {
             showKycDoneDialog(context);
           }*/
 
-        if (_currentStep < 2) {
-          setState(() {
-            _currentStep += 1;
-          });
-        } else if (_currentStep == 2) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Form submitted successfully")),
-          );
-        }
-      },
+          if (_currentStep < 2) {
+            setState(() {
+              _currentStep += 1;
+            });
+          } else if (_currentStep == 2) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Form submitted successfully")),
+            );
+          }
+        },
         child: Text(
           "SUBMIT",
           style: TextStyle(color: Colors.white, fontSize: 16),
@@ -2347,8 +2400,8 @@ class _KYCPageState extends State<KYCPage> {
             TextButton(
               child: Text("OK"),
               onPressed: () {
-                Navigator.of(context).pop();  // Close the dialog
-                Navigator.of(context).pop();  // Close the current class
+                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); // Close the current class
               },
             ),
           ],
@@ -2356,21 +2409,40 @@ class _KYCPageState extends State<KYCPage> {
       },
     );
   }
-}
 
-Widget _buildVerificationIcon(bool isVerified, VoidCallback onTap) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: isVerified ? Colors.green : Colors.red,
-      ),
-      child: Icon(
-        isVerified ? Icons.check_circle : Icons.check_circle_outline,
-        color: Colors.white,
-      ),
-    ),
-  );
+  Future<void> verifyDocs(BuildContext context, String idNoController,
+      String type, String ifsc, String dob) async {
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl2);
+    Map<String, dynamic> requestBody = {
+      "type": type,
+      "txtnumber": idNoController,
+      "ifsc": ifsc,
+      "userdob": dob,
+      "key": "1"
+    };
+
+    return await api.verifyDocs(requestBody).then((value) {
+
+      if (value.statusCode == 200) {
+        setState(() {
+          if (type == "passport") {
+            setState() {
+              iconPassport = Colors.green;
+            }
+          }
+          if (type == "pancard") {
+
+            iconPan = Colors.green;
+          }
+          if (type == "drivinglicense") {
+            iconPassport = Colors.green;
+          }
+          if (type == "voterid") {
+            iconPassport = Colors.green;
+          }
+        });
+
+      }
+    });
+  }
 }

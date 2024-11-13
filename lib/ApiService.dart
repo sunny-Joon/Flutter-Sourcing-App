@@ -13,14 +13,24 @@ import 'Models/GlobalModel.dart';
 import 'Models/KycUpdateModel.dart';
 import 'Models/RangeCategoryModel.dart';
 import 'Models/branch_model.dart';
+import 'Models/docsVerify.dart';
 import 'Models/login_model.dart';
-
 part 'ApiService.g.dart';
-@RestApi(baseUrl: "https://predeptest.paisalo.in:8084/MobColen/api/")
+
+
+class ApiConfig {
+  static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
+  static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
+}
+
+
+// @RestApi(baseUrl: "https://predeptest.paisalo.in:8084/MobColen/api/")
+
+@RestApi()
 abstract class ApiService {
   factory ApiService(Dio dio, {String? baseUrl}) = _ApiService;
 
-  static ApiService create() {
+  static ApiService create({required String baseUrl}) {
     final dio = Dio();
     dio.interceptors.add(
       PrettyDioLogger(
@@ -33,8 +43,16 @@ abstract class ApiService {
         maxWidth: 90,
       ),
     );
-    return ApiService(dio);
+    return ApiService(dio,baseUrl: baseUrl);
   }
+
+
+
+
+  @POST("IdentityVerification/Get")
+  Future<DocsVerify> verifyDocs(
+      @Body() Map<String, dynamic> body,
+      );
 
   @POST("Account/GetToken")
   Future<LoginModel> getLogins(
