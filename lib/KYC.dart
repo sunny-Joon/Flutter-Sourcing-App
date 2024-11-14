@@ -962,6 +962,7 @@ class _KYCPageState extends State<KYCPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xFFD42D3F),
       body: SafeArea(
         child: Center(
@@ -1710,7 +1711,7 @@ class _KYCPageState extends State<KYCPage> {
         ),
         Row(
           children: [
-            Column(
+            Expanded(child:   Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -1747,18 +1748,19 @@ class _KYCPageState extends State<KYCPage> {
                       }
                     },
                     items: aadhar_gender.map<DropdownMenuItem<String>>(
-                        (RangeCategoryDataModel state) {
-                      return DropdownMenuItem<String>(
-                        value: state.code,
-                        child: Text(state.descriptionEn),
-                      );
-                    }).toList(),
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
                   ),
                 ),
               ],
-            ),
+            ))
+          ,
             SizedBox(width: 10),
-            Column(
+            Expanded(child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -1795,16 +1797,16 @@ class _KYCPageState extends State<KYCPage> {
                       }
                     },
                     items: relationwithBorrower.map<DropdownMenuItem<String>>(
-                        (RangeCategoryDataModel state) {
-                      return DropdownMenuItem<String>(
-                        value: state.code,
-                        child: Text(state.descriptionEn),
-                      );
-                    }).toList(),
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
                   ),
                 ),
               ],
-            )
+            ))
           ],
         ),
 

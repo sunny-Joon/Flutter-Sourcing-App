@@ -286,7 +286,6 @@ class LoginPage extends StatelessWidget {
   Future<bool> _checkAndRequestPermissions(BuildContext context) async {
     final permissions = [
       Permission.camera,
-      Permission.microphone,
       Permission.location,
       Permission.phone,
       Permission.notification,

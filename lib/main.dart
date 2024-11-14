@@ -3,7 +3,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/StepperSS.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import 'ApiService.dart';
 import 'LoginPage.dart';
 import 'StepperSd.dart';
@@ -11,7 +10,7 @@ import 'StepperSd.dart';
 void main() {
 
   WidgetsFlutterBinding.ensureInitialized();
-  requestPermissions(); // Request permissions when the app starts
+  requestPermissions(); // Request permissions when the app starts+
   runApp(const MyApp());
 }
 
@@ -20,7 +19,6 @@ void requestPermissions() async {
   Map<Permission, PermissionStatus> statuses = await [
     Permission.camera,
     Permission.phone,
-    Permission.storage,
     Permission.location,
     Permission.notification, // Note: Permission.internet is not needed, as it's automatically granted.
   ].request();
