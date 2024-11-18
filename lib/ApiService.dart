@@ -14,6 +14,7 @@ import 'Models/KycUpdateModel.dart';
 import 'Models/RangeCategoryModel.dart';
 import 'Models/branch_model.dart';
 import 'Models/docsVerify.dart';
+import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
 part 'ApiService.g.dart';
 
@@ -21,6 +22,7 @@ part 'ApiService.g.dart';
 class ApiConfig {
   static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
   static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
+  static const String baseUrl3 = 'https://ifsc.razorpay.com/';
 }
 
 
@@ -54,12 +56,14 @@ abstract class ApiService {
       @Body() Map<String, dynamic> body,
       );
 
+  @GET("{ifsc}")
+  Future<Ifcsc> ifscVerify (@Path("ifsc") String ifsc);
+
   @POST("Account/GetToken")
   Future<LoginModel> getLogins(
       @Header("devid") String devid,
       @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body,
-      );
+      @Body() Map<String, dynamic> body);
 
   @POST("FiSourcing/InsertFiSourcedata")
   @MultiPart()
@@ -101,9 +105,6 @@ abstract class ApiService {
       @Part( name:"Loan_Duration") String loan_Duration,
       @Part( name:"Loan_amount") String loan_amount,
 
-
-
-
       @Part( name: "Picture") File Picture);
 
   @POST("FiSourcing/FiDocsUploads")
@@ -137,6 +138,12 @@ abstract class ApiService {
 
   @POST("FiSourcing/AddFinancialInfo")
   Future <GlobalModel> AddFinancialInfo(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body);
+
+  @POST("FiSourcing/InsertFIFamilyIncome")
+  Future <GlobalModel> FIFamilyIncome(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body);
