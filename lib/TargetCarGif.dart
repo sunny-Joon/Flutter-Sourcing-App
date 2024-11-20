@@ -16,7 +16,7 @@ class _TargetCarGifState extends State<TargetCarGif> {
     super.initState();
 
     // Start a timer to show the text after 2 seconds
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 5), () {
       setState(() {
         _showText = true;
       });
@@ -27,7 +27,9 @@ class _TargetCarGifState extends State<TargetCarGif> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-      appBar: AppBar(title: Text('Target Achieve')),
+      appBar: AppBar(title: Text('Target Achieve'),
+      backgroundColor: Color(0xFFD42D3F),
+      ),
       body: Stack(
         children: [
           // Bottom GIF

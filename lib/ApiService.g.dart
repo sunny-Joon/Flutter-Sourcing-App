@@ -13,80 +13,15 @@ class _ApiService implements ApiService {
     this._dio, {
     this.baseUrl,
     this.errorLogger,
-  });
+  }) {
+    baseUrl ??= 'https://predeptest.paisalo.in:8084/MobColen/api/';
+  }
 
   final Dio _dio;
 
   String? baseUrl;
 
   final ParseErrorLogger? errorLogger;
-
-  @override
-  Future<DocsVerify> verifyDocs(Map<String, dynamic> body) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
-    final _options = _setStreamType<DocsVerify>(Options(
-      method: 'POST',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          'IdentityVerification/Get',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late DocsVerify _value;
-    try {
-      _value = DocsVerify.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<Ifcsc> ifscVerify(String ifsc) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Ifcsc>(Options(
-      method: 'GET',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          '${ifsc}',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Ifcsc _value;
-    try {
-      _value = Ifcsc.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
 
   @override
   Future<LoginModel> getLogins(
@@ -167,6 +102,7 @@ class _ApiService implements ApiService {
     String bank_name,
     String loan_Duration,
     String loan_amount,
+    String loan_Reason,
     File Picture,
   ) async {
     final _extra = <String, dynamic>{};
@@ -309,6 +245,10 @@ class _ApiService implements ApiService {
       'Loan_amount',
       loan_amount,
     ));
+    _data.fields.add(MapEntry(
+      'Loan_Reason',
+      loan_Reason,
+    ));
     _data.files.add(MapEntry(
       'Picture',
       MultipartFile.fromFileSync(
@@ -393,7 +333,7 @@ class _ApiService implements ApiService {
     )
         .compose(
           _dio.options,
-          'FiSourcing/FiDocsUploadSingleFile',
+          'FiSourcing/FiDocsUploads',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -562,48 +502,6 @@ class _ApiService implements ApiService {
         .compose(
           _dio.options,
           'FiSourcing/AddFinancialInfo',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late GlobalModel _value;
-    try {
-      _value = GlobalModel.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<GlobalModel> FIFamilyIncome(
-    String token,
-    String dbname,
-    Map<String, dynamic> body,
-  ) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{
-      r'Authorization': token,
-      r'dbname': dbname,
-    };
-    _headers.removeWhere((k, v) => v == null);
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
-    final _options = _setStreamType<GlobalModel>(Options(
-      method: 'POST',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          'FiSourcing/InsertFIFamilyIncome',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -1530,6 +1428,90 @@ class _ApiService implements ApiService {
       errorLogger?.logError(e, s, _options);
       rethrow;
     }
+    return _value;
+  }
+
+  @override
+  Future<dynamic> verifyIdentity(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options = _setStreamType<dynamic>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'IdentityVerification/Get',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    return _value;
+  }
+
+  @override
+  Future<dynamic> getDLDetailsProtean(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options = _setStreamType<dynamic>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'DocVerify/GetDLDetails',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    return _value;
+  }
+
+  @override
+  Future<dynamic> getVoteretailsProtean(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options = _setStreamType<dynamic>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'DocVerify/GetVoterDetails',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
     return _value;
   }
 

@@ -13,14 +13,28 @@ import 'Models/GlobalModel.dart';
 import 'Models/KycUpdateModel.dart';
 import 'Models/RangeCategoryModel.dart';
 import 'Models/branch_model.dart';
+import 'Models/docsVerify.dart';
+import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
-
 part 'ApiService.g.dart';
-@RestApi(baseUrl: "https://predeptest.paisalo.in:8084/MobColen/api/")
+
+
+class ApiConfig {
+  static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
+  static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
+  static const String baseUrl3 = 'https://ifsc.razorpay.com/';
+}
+
+
+// @RestApi(baseUrl: "https://predeptest.paisalo.in:8084/MobColen/api/")
+
+@RestApi()
 abstract class ApiService {
   factory ApiService(Dio dio, {String? baseUrl}) = _ApiService;
 
-  static ApiService create() {
+
+  static ApiService create({required String baseUrl}) {
+
     final dio = Dio();
     dio.interceptors.add(
       PrettyDioLogger(
@@ -33,15 +47,27 @@ abstract class ApiService {
         maxWidth: 90,
       ),
     );
-    return ApiService(dio);
+
+    return ApiService(dio,baseUrl: baseUrl);
+
   }
+
+
+
+
+  @POST("IdentityVerification/Get")
+  Future<DocsVerify> verifyDocs(
+      @Body() Map<String, dynamic> body,
+      );
+
+  @GET("{ifsc}")
+  Future<Ifcsc> ifscVerify (@Path("ifsc") String ifsc);
 
   @POST("Account/GetToken")
   Future<LoginModel> getLogins(
       @Header("devid") String devid,
       @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body,
-      );
+      @Body() Map<String, dynamic> body);
 
   @POST("FiSourcing/InsertFiSourcedata")
   @MultiPart()
@@ -82,11 +108,20 @@ abstract class ApiService {
       @Part( name:"Bank_name") String bank_name,
       @Part( name:"Loan_Duration") String loan_Duration,
       @Part( name:"Loan_amount") String loan_amount,
-
-
-
+      @Part( name:"Loan_Reason") String loan_Reason,
 
       @Part( name: "Picture") File Picture);
+
+  @POST("FiSourcing/FiDocsUploadSingleFile")
+  @MultiPart()
+  Future <GlobalModel> uploadFiDocs(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Part( name:"FI_ID") String FI_ID,
+      @Part( name:"GrNo") int GrNo,
+      @Part( name: "CheckListId") int CheckListId,
+      @Part( name: "Remarks") String Remarks,
+      @Part( name: "FileName") File FileName);
 
   @POST("FiSourcing/AddFiIDs")
   Future <GlobalModel> addFiIds(
@@ -108,6 +143,12 @@ abstract class ApiService {
 
   @POST("FiSourcing/AddFinancialInfo")
   Future <GlobalModel> AddFinancialInfo(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body);
+
+  @POST("FiSourcing/InsertFIFamilyIncome")
+  Future <GlobalModel> FIFamilyIncome(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body);
@@ -270,4 +311,29 @@ abstract class ApiService {
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
       @Query("Fi_Id") String Fi_Id);
+
+
+  @POST("IdentityVerification/Get")
+  Future<dynamic> verifyIdentity(@Body() Map<String, dynamic> body);
+
+
+  @POST("DocVerify/GetDLDetails")
+  Future<dynamic> getDLDetailsProtean(@Body() Map<String, dynamic> body);
+
+  @POST("DocVerify/GetVoterDetails")
+  Future<dynamic> getVoteretailsProtean(@Body() Map<String, dynamic> body);
+
+
+
+
+
+
+
+}
+class ApiConfig {
+  static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
+  static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
+  static const String baseUrl3 = 'https://ifsc.razorpay.com/';
+  static const String baseUrl4 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
+  static const String baseUrl5 = 'https://erpservice.paisalo.in:980/PDL.KYC.API/api/';
 }
