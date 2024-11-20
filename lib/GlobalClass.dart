@@ -14,6 +14,9 @@ class GlobalClass {
   static String id = "";
   static String creator = "HOAGRA";
   static String address = "";
+  static String mobile = "";
+  static String designation = "";
+  static String validity = "";
   static String areaCode = "";
   static String password = "";
   static String userName = "";
