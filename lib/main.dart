@@ -43,12 +43,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     EasyLoading.init();
     return Provider<ApiService>(
-      create: (context) => ApiService.create(),
+      create: (context) => ApiService.create(ApiConfig.baseUrl1),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFD42D3F)),
           useMaterial3: true,
         ),
          home: LoginPage(),
