@@ -85,7 +85,7 @@ class BorrowerListDataModel {
     borrSignStatus: json["borrSignStatus"],
     errormsg: json["errormsg"],
     isvalide: json["isvalide"],
-    downloadLink: json["downloadLink"],
+    downloadLink: json["downloadLink"]??"",
   );
 
   Map<String, dynamic> toJson() => {

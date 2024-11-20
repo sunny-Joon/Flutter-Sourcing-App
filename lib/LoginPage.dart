@@ -374,14 +374,18 @@ class LoginPage extends StatelessWidget {
           GlobalClass.token = 'Bearer ' + refToken;
           GlobalClass.deviceId = value.data.tokenDetails.deviceSrNo;
           GlobalClass.id = value.data.tokenDetails.userName;
+          GlobalClass.validity = value.data.tokenDetails.validity;
           GlobalClass.imei = value.data.foImei.toString() ?? '';
           print('object0');
 
           if(value.data.foImei.length>0) {
             print('object');
             GlobalClass.target = value.data.foImei[0].targetCommAmt;
-            //GlobalClass.creator = folist[0].creator ?? '';
-            GlobalClass.creator='HOAGRA';
+            GlobalClass.creator = value.data.foImei[0].creator ?? '';
+          //  GlobalClass.creator='HOAGRA';
+            GlobalClass.mobile=value.data.foImei[0].mobNo;
+            GlobalClass.userName=value.data.foImei[0].name;
+            GlobalClass.designation=value.data.foImei[0].designation;
 
           }else{
             PopupDialog.showPopup(

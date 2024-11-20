@@ -107,7 +107,7 @@ abstract class ApiService {
 
       @Part( name: "Picture") File Picture);
 
-  @POST("FiSourcing/FiDocsUploads")
+  @POST("FiSourcing/FiDocsUploadSingleFile")
   @MultiPart()
   Future <GlobalModel> uploadFiDocs(
       @Header("Authorization") String token,
