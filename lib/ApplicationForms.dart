@@ -456,7 +456,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xFFD42D3F),
-      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Center(
           child: Padding(
