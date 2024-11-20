@@ -32,7 +32,9 @@ class ApiConfig {
 abstract class ApiService {
   factory ApiService(Dio dio, {String? baseUrl}) = _ApiService;
 
+
   static ApiService create({required String baseUrl}) {
+
     final dio = Dio();
     dio.interceptors.add(
       PrettyDioLogger(
@@ -45,7 +47,9 @@ abstract class ApiService {
         maxWidth: 90,
       ),
     );
+
     return ApiService(dio,baseUrl: baseUrl);
+
   }
 
 
@@ -104,6 +108,7 @@ abstract class ApiService {
       @Part( name:"Bank_name") String bank_name,
       @Part( name:"Loan_Duration") String loan_Duration,
       @Part( name:"Loan_amount") String loan_amount,
+      @Part( name:"Loan_Reason") String loan_Reason,
 
       @Part( name: "Picture") File Picture);
 
@@ -306,4 +311,29 @@ abstract class ApiService {
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
       @Query("Fi_Id") String Fi_Id);
+
+
+  @POST("IdentityVerification/Get")
+  Future<dynamic> verifyIdentity(@Body() Map<String, dynamic> body);
+
+
+  @POST("DocVerify/GetDLDetails")
+  Future<dynamic> getDLDetailsProtean(@Body() Map<String, dynamic> body);
+
+  @POST("DocVerify/GetVoterDetails")
+  Future<dynamic> getVoteretailsProtean(@Body() Map<String, dynamic> body);
+
+
+
+
+
+
+
+}
+class ApiConfig {
+  static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
+  static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
+  static const String baseUrl3 = 'https://ifsc.razorpay.com/';
+  static const String baseUrl4 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
+  static const String baseUrl5 = 'https://erpservice.paisalo.in:980/PDL.KYC.API/api/';
 }
