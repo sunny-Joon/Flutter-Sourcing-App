@@ -21,7 +21,7 @@ import 'Models/branch_model.dart';
 import 'QRScanPage.dart';
 
 class ApplicationPage extends StatefulWidget {
-  final BranchDataModel BranchData;
+   final BranchDataModel BranchData;
   final GroupDataModel GroupData;
   final BorrowerListDataModel selectedData;
 
@@ -148,6 +148,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? femselectedIncomeType;
 
   String? selectedAccountType;
+  Color iconPan = Colors.red;
+  Color iconDl = Colors.red;
+  Color iconVoter = Colors.red;
 
   final emailIdController = TextEditingController();
   final placeOfBirthController = TextEditingController();
@@ -180,7 +183,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   @override
   void initState() {
     super.initState();
-    GetDocs(context, widget.selectedData.id);
+     GetDocs(context, widget.selectedData.id);
     initializeData(); // Fetch initial data
     _emailFocusNode.addListener(_validateEmail);
     _mobileFocusNode.addListener(_validateMobile);
@@ -409,7 +412,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Future<void> _selectDate(BuildContext context, String type) async {
     DateTime now = DateTime.now();
     DateTime initialDate = _selectedDate ?? now;
-    int FIID = widget.selectedData.id;
+      int FIID = widget.selectedData.id;
 
     DateTime? picked = await showDatePicker(
       context: context,
@@ -551,7 +554,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Widget _buildTextField(
       String label, TextEditingController controller, bool saved) {
     return Container(
-      color: Colors.white,
       //margin: EdgeInsets.symmetric(vertical: 4),
       // padding: EdgeInsets.all(4),
       child: Column(
@@ -565,7 +567,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           SizedBox(height: 1),
           Container(
-              width: double.infinity, // Set the desired width
+              width: double.infinity,
+              color: Colors.white,// Set the desired width
               //  //height: 45, // Set the desired height
               child: Center(
                 child: TextFormField(
@@ -635,7 +638,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
-      "fi_Id": widget.selectedData.id,
+       "fi_Id": widget.selectedData.id,
       "email_Id": emailIdController.text,
       "place_Of_Birth": placeOfBirthController.text,
       "depedent_Person": selectedDependent,
@@ -724,7 +727,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> AddFiFamilyDetail(BuildContext context) async {
-    String Fi_ID = widget.selectedData.id.toString();
+     String Fi_ID = widget.selectedData.id.toString();
     String motheR_FIRST_NAME = _motherFController.text.toString();
     String motheR_MIDDLE_NAME = _motherMController.text.toString();
     String motheR_LAST_NAME = _motherLController.text.toString();
@@ -736,7 +739,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final api = Provider.of<ApiService>(context, listen: false);
 
     Map<String, dynamic> requestBody = {
-      "Fi_ID": Fi_ID,
+       "Fi_ID": Fi_ID,
       "motheR_FIRST_NAME": motheR_FIRST_NAME,
       "motheR_MIDDLE_NAME": motheR_MIDDLE_NAME,
       "motheR_LAST_NAME": motheR_LAST_NAME,
@@ -760,7 +763,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> AddFinancialInfo(BuildContext context) async {
-    String Fi_ID = widget.selectedData.id.toString();
+     String Fi_ID = widget.selectedData.id.toString();
     String bankType = selectedAccountType.toString();
     String bank_Ac = _bank_AcController.text.toString();
     String bank_name = _bank_nameController.text.toString();
@@ -771,7 +774,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final api = Provider.of<ApiService>(context, listen: false);
 
     Map<String, dynamic> requestBody = {
-      "Fi_ID": Fi_ID,
+        "Fi_ID": Fi_ID,
       "bankType": bankType,
       "bank_Ac": bank_Ac,
       "bank_name": bank_name,
@@ -986,7 +989,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final api = Provider.of<ApiService>(context, listen: false);
 
     return await api.KycScanning(
-            GlobalClass.token, GlobalClass.dbName, "38" /*fiid.toString()*/)
+            GlobalClass.token, GlobalClass.dbName, "10004" /*fiid.toString()*/)
         .then((value) async {
       if (value.statuscode == 200) {
         setState(() {
@@ -1164,10 +1167,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Widget _buildListItem({
-    required String title,
-    String? path,
-    int? id,
-    String? GrNo,
+    required String title, String? path,int? id,String? GrNo,
     required Function(File) onImagePicked,
   }) {
     String baseUrl = 'https://predeptest.paisalo.in:8084';
@@ -1239,11 +1239,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     ),
                     onPressed: () {
                       UploadFiDocs(
-                          context, id.toString(), title, path, GrNo, id);
+                          context, title, _selectedImage, GrNo, id);
                       print('Title: $title');
                       print('Path: $path');
                     },
                   ),
+
                 ],
               ),
             ),
@@ -1420,33 +1421,40 @@ class _ApplicationPageState extends State<ApplicationPage> {
               }));
         }
       }
+    } else {
+      listItems.add(
+        Center(
+          child: CircularProgressIndicator(
+            color: Colors.red,
+          ),
+        ),
+      );
     }
     return listItems;
   }
 
-  Future<void> UploadFiDocs(BuildContext context, fiid, String? tittle,
-      String? path, String? grNo, int? id) async {
+  Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file, String? grNo, int? checklistid) async {
     final api = Provider.of<ApiService>(context, listen: false);
 //https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//38//FiDocuments//VoterIDBorrower0711_2024_43_01.png
 
-    String baseUrl = 'https://predeptest.paisalo.in:8084';
+   /* String baseUrl = 'https://predeptest.paisalo.in:8084';
 
     // Replace the front part of the file path and ensure the path uses forward slashes
     String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
 
     // Join the base URL with the modified path
     String finalUrl = '$baseUrl/$modifiedPath';
-    File file = File(finalUrl);
+    File file = File(finalUrl);*/
     return await api
         .uploadFiDocs(
             GlobalClass.token,
             GlobalClass.dbName,
-            "FI_ID",
-            //FI_ID,
+            "10004",
             int.parse(grNo!),
-            id!,
+            checklistid!,
+
             tittle.toString(),
-            file)
+            file!)
         .then((value) async {
       if (value.statuscode == 200) {
         /*setState(() {
@@ -3144,8 +3152,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 children: [
                   _buildTextField(
                       'IFSC', _bank_IFCSController, FinancialInfoEditable),
-                  _buildTextField(
-                      'BANK ACCOUNT', _bank_AcController, FinancialInfoEditable),
+                  _buildTextField('BANK ACCOUNT', _bank_AcController,
+                      FinancialInfoEditable),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
@@ -3167,10 +3175,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         }
                       },
                       child: Text(
-                        bankAccHolder == null ? 'VERIFY NAME' : 'VERIFY ADDRESS',
+                        bankAccHolder == null
+                            ? 'VERIFY NAME'
+                            : 'VERIFY ADDRESS',
                         style: TextStyle(fontSize: 18), // Text size
                       ),
-
                     ),
                   )
                 ],
@@ -3270,7 +3279,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                     ),
                     Container(
-                      //height: 45,
+                      height: 60,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -3315,7 +3324,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                     ),
                     Container(
-                      //height: 45,
+                      height: 60,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -3363,7 +3372,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                     ),
                     Container(
-                      //height: 45,
+                      height: 60,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -3408,7 +3417,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                     ),
                     Container(
-                      //height: 45,
+                      height: 60,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -3456,7 +3465,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                     ),
                     Container(
-                      //height: 45,
+                      height: 60,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -3501,7 +3510,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                     ),
                     Container(
-                      //height: 45,
+                      height: 60,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -3549,7 +3558,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                     ),
                     Container(
-                      //height: 45,
+                      height: 60,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -3594,7 +3603,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                     ),
                     Container(
-                      //height: 45,
+                      height: 60,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -3647,35 +3656,37 @@ class _ApplicationPageState extends State<ApplicationPage> {
               Expanded(
                   child: _buildTextField(
                       'Aadhaar Id', _aadharIdController, GuarantorEditable)),
-              GestureDetector(
-                onTap: () => _showPopup(context, (String result) {
-                  setState(() {
-                    qrResult = result;
-                  });
-                }), // Show popup on image click
-                child: Icon(
-                  Icons.qr_code_scanner,
-                  size: 50.0, // Set the size of the icon
-                  color: Colors.blue, // Set the color of the icon
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                // Add 10px padding from above
+                child: GestureDetector(
+                  onTap: () => _showPopup(context, (String result) {
+                    setState(() {
+                      qrResult = result;
+                    });
+                  }), // Show popup on image click
+                  child: Icon(
+                    Icons.qr_code_2_sharp,
+                    size: 50.0, // Set the size of the icon
+                    color: Colors.grey, // Set the color of the icon
+                  ),
                 ),
-              ),
+              )
             ],
           ),
           Row(
             children: [
-              Expanded(
+              SizedBox(
+                width: 95, // Fixed width for the Title dropdown
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Title',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontSize: 16),
                     ),
                     Container(
-                      width: 150,
-                      // Adjust the width as needed
-                      //height: 45,
-                      // Fixed height
+                      height: 60,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -3686,7 +3697,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(color: Colors.black, fontSize: 16),
                         underline: Container(
                           height: 2,
                           color: Colors
@@ -3708,24 +3719,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ],
                 ),
               ),
-              GestureDetector(
-                onTap: _pickImage,
-                child: _imageFile == null
-                    ? Icon(
-                        Icons.person,
-                        size: 50.0,
-                        color: Colors.blue,
-                      )
-                    : Image.file(
-                        File(_imageFile!.path),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
+              SizedBox(width: 10),
+              // Add spacing between Title dropdown and Name field if needed
+              Expanded(
+                child: _buildTextField(
+                    'Name', _fnameController, GuarantorEditable),
               ),
             ],
           ),
-          _buildTextField('Name', _fnameController, GuarantorEditable),
           Row(
             children: [
               Expanded(
@@ -3738,55 +3739,113 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       'Last Name', _lnameController, GuarantorEditable)),
             ],
           ),
-          Text(
-            'Gender',
-            style: TextStyle(fontSize: 13),
-          ),
-          Container(
-            width: 150,
-            // Adjust the width as needed
-            //height: 45,
-            // Fixed height
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: DropdownButton<String>(
-              value: genderselected,
-              isExpanded: true,
-              iconSize: 24,
-              elevation: 16,
-              style: TextStyle(color: Colors.black, fontSize: 13),
-              underline: Container(
-                height: 2,
-                color: Colors
-                    .transparent, // Set to transparent to remove default underline
+          Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Gender',
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  Container(
+                    width: 150,
+                    // Adjust the width as needed
+                    height: 60,
+                    // Fixed height
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: genderselected,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      underline: Container(
+                        height: 2,
+                        color: Colors
+                            .transparent, // Set to transparent to remove default underline
+                      ),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            genderselected =
+                                newValue; // Update the selected value
+                          });
+                        }
+                      },
+                      items: aadhar_gender.map<DropdownMenuItem<String>>(
+                          (RangeCategoryDataModel state) {
+                        return DropdownMenuItem<String>(
+                          value: state.code,
+                          child: Text(state.descriptionEn),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
               ),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() {
-                    genderselected = newValue; // Update the selected value
-                  });
-                }
-              },
-              items: aadhar_gender.map<DropdownMenuItem<String>>(
-                  (RangeCategoryDataModel state) {
-                return DropdownMenuItem<String>(
-                  value: state.code,
-                  child: Text(state.descriptionEn),
-                );
-              }).toList(),
-            ),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Relationship',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Container(
+                    width: 150,
+                    // Adjust the width as needed
+                    height: 60,
+                    // Fixed height
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: relationselected,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      underline: Container(
+                        height: 2,
+                        color: Colors
+                            .transparent, // Set to transparent to remove default underline
+                      ),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            relationselected =
+                                newValue; // Update the selected value
+                          });
+                        }
+                      },
+                      items: relation.map<DropdownMenuItem<String>>(
+                          (RangeCategoryDataModel state) {
+                        return DropdownMenuItem<String>(
+                          value: state.code,
+                          child: Text(state.descriptionEn),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              )
+            ],
           ),
           Text(
             'Religion',
             style: TextStyle(fontSize: 13),
           ),
           Container(
-            width: 150,
+            width: MediaQuery.of(context).size.width,
             // Adjust the width as needed
-            //height: 45,
+            height: 60,
             // Fixed height
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
@@ -3820,47 +3879,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               }).toList(),
             ),
           ),
-          Text(
-            'Relationship With Borrower',
-            style: TextStyle(fontSize: 13),
-          ),
-          Container(
-            width: 150,
-            // Adjust the width as needed
-            //height: 45,
-            // Fixed height
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: DropdownButton<String>(
-              value: relationselected,
-              isExpanded: true,
-              iconSize: 24,
-              elevation: 16,
-              style: TextStyle(color: Colors.black, fontSize: 13),
-              underline: Container(
-                height: 2,
-                color: Colors
-                    .transparent, // Set to transparent to remove default underline
-              ),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() {
-                    relationselected = newValue; // Update the selected value
-                  });
-                }
-              },
-              items: relation.map<DropdownMenuItem<String>>(
-                  (RangeCategoryDataModel state) {
-                return DropdownMenuItem<String>(
-                  value: state.code,
-                  child: Text(state.descriptionEn),
-                );
-              }).toList(),
-            ),
-          ),
           _buildTextField('Mobile no', _phoneController, GuarantorEditable),
           Row(
             children: [
@@ -3874,7 +3892,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       'Age',
                       style: TextStyle(fontSize: 13),
                     ),
-                    SizedBox(height: 10),
                     Container(
                       color: Colors.white,
                       child: TextField(
@@ -3888,7 +3905,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ],
                 ),
               ),
-              SizedBox(width: 13),
+              SizedBox(width: 10),
               // Date of Birth Box
               Expanded(
                 child: Column(
@@ -3898,7 +3915,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       'Date of Birth',
                       style: TextStyle(fontSize: 13),
                     ),
-                    SizedBox(height: 10),
                     Container(
                       color: Colors.white,
                       child: TextField(
@@ -3918,29 +3934,138 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ],
           ),
-          _buildTextField('Pan', _p_Address1Controller, GuarantorEditable),
-          _buildTextField(
-              'Driving License', _p_Address1Controller, GuarantorEditable),
-          _buildTextField('Voter Id', _p_Address1Controller, GuarantorEditable),
+          SizedBox(height: 10),
+          Container(
+            padding: EdgeInsets.all(0), // Padding of 10 from each side
+            decoration: BoxDecoration(
+              color: Color(0xFFF8F8DA), // Custom grey color
+              border: Border.all(color: Colors.red), // Red border color
+              borderRadius: BorderRadius.circular(10), // Circular corners
+            ),
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField(
+                            'PAN No', _panController, GuarantorEditable),
+                      ),
+                      SizedBox(width: 10),
+                      Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: GestureDetector(
+                            onTap: () {
+                              verifyDocs(context, _panController.text,
+                                  "pancard", "", "");
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color:
+                                    iconPan, // Use the state variable for color
+                              ),
+                              child: Icon(
+                                iconPan == Colors.green
+                                    ? Icons.check_circle
+                                    : Icons.check_circle_outline,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField('Driving License', _dlController,
+                            GuarantorEditable),
+                      ),
+                      SizedBox(width: 10),
+                      Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: GestureDetector(
+                            onTap: () {
+                              verifyDocs(context, _dlController.text,
+                                  "drivinglicense", "", "");
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color:
+                                    iconDl, // Use the state variable for color
+                              ),
+                              child: Icon(
+                                iconDl == Colors.green
+                                    ? Icons.check_circle
+                                    : Icons.check_circle_outline,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+
+                  Text(
+                    'OR',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.red, // Set the text color to red
+                    ),
+                    textAlign: TextAlign.center, // Center the text
+                  ),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField(
+                            'Voter Id', _voterController, GuarantorEditable),
+                      ),
+                      SizedBox(width: 10),
+                      Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: GestureDetector(
+                            onTap: () {
+                              verifyDocs(context, _voterController.text,
+                                  "voterid", "", _dobController.text);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color:
+                                iconVoter, // Use the state variable for color
+                              ),
+                              child: Icon(
+                                iconVoter == Colors.green
+                                    ? Icons.check_circle
+                                    : Icons.check_circle_outline,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )),
+                    ],
+                  )
+                ],
+              ),
+            )),
+          ),
+          SizedBox(height: 10),
           _buildTextField('Address1', _p_Address1Controller, GuarantorEditable),
           _buildTextField('Address2', _p_Address2Controller, GuarantorEditable),
           _buildTextField('Address3', _p_Address3Controller, GuarantorEditable),
-          Row(
-            children: [
-              Expanded(
-                  child: _buildTextField(
-                      'City', _p_CityController, GuarantorEditable)),
-              Expanded(
-                  child: _buildTextField(
-                      'Pincode', _pincodeController, GuarantorEditable)),
-            ],
-          ),
           Text(
             'State Name',
             style: TextStyle(fontSize: 13),
           ),
           Container(
-            width: 150,
+            width: MediaQuery.of(context).size.width,
             // Adjust the width as needed
             //height: 45,
             // Fixed height
@@ -3976,6 +4101,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
               }).toList(),
             ),
           ),
+          Row(
+            children: [
+              Expanded(
+                  child: _buildTextField(
+                      'City', _p_CityController, GuarantorEditable)),
+              SizedBox(width: 10),
+
+              Expanded(
+                  child: _buildTextField(
+                      'Pincode', _pincodeController, GuarantorEditable)),
+            ],
+          ),
         ],
       ),
     );
@@ -3983,10 +4120,23 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Widget _buildStepSeven() {
     return SingleChildScrollView(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: _buildKycDocumentList(), // Call the function here
-    ));
+      child: Container(
+        height: MediaQuery.of(context).size.height - 250,
+        width: double.infinity, // Set the width to the full screen size
+        child: SingleChildScrollView(
+          child: _isPageLoading
+              ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _buildKycDocumentList(), // Call the function here
+          )
+              : Center(
+            child: CircularProgressIndicator(
+              color: Colors.red,
+            ),
+          ),
+        )
+      ),
+    ); // Call the function her
   }
 
   Widget _buildPreviousButton() {
@@ -4052,7 +4202,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               _currentStep += 1;
             });
           } else if (_currentStep == 6) {
-            GetDocs(context, widget.selectedData.id);
+               GetDocs(context, widget.selectedData.id);
             setState(() {
               _currentStep += 1;
             });

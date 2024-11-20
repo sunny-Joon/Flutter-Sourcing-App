@@ -40,8 +40,10 @@ class _BorrowerListState extends State<BorrowerList> {
     await apiService.BorrowerList(
       GlobalClass.token,
       GlobalClass.dbName,
-      "groupCode",
-      "branchCode",
+      // widget.GroupData.groupCode,
+      // widget.BranchData.branchCode,
+      "0001",
+      "002"
     ).then((response) {
       if (response.statuscode == 200) {
         setState(() {
