@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/PopupDialog.dart';
 import 'package:flutter_sourcing_app/SharedeviceId.dart';
@@ -10,8 +11,16 @@ import 'Fragments.dart';
 import 'Models/login_model.dart';
 import 'TermsConditions.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+class _LoginPageState extends State<LoginPage> {
+
   late String refToken, target;
+ /* bool _isExpanded = false;
+  late AnimationController _controller;
+  late Animation<double> _animation;*/
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +51,7 @@ class LoginPage extends StatelessWidget {
                     'assets/Images/paisa_logo.png', // Adjust the image path
                     width: double.infinity,
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 80),
                   Center(
                     child: Text(
                       'Ver: 1.1',
@@ -50,7 +59,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  Card(
+                 /* Card(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(color: Colors.grey.shade400), // Grey border
                     ),elevation: 0,
@@ -74,7 +83,7 @@ class LoginPage extends StatelessWidget {
                         hint: Text('Select Database'),
                       ),
                     ),
-                  ),
+                  ),*/
 
                   SizedBox(height: 20),
                   Text(
@@ -274,12 +283,45 @@ class LoginPage extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.white,
-        child:
-            Icon(Icons.support_agent), // Placeholder for customer support icon
-      ),
+      /*floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (_isExpanded) ...[
+            ScaleTransition(
+              scale: _animation,
+              alignment: Alignment.bottomCenter,
+              child: _buildFab(Icons.chat, 'Chatbot', () {
+                // Your chatbot action here
+              }),
+            ),
+            ScaleTransition(
+              scale: _animation,
+              alignment: Alignment.bottomCenter,
+              child: _buildFab(Icons.email, 'Email', () {
+                // Your email action here
+              }),
+            ),
+            ScaleTransition(
+              scale: _animation,
+              alignment: Alignment.bottomCenter,
+              child: _buildFab(Icons.call, 'Call Support', () {
+                // Your call support action here
+              }),
+            ),
+            ScaleTransition(
+              scale: _animation,
+              alignment: Alignment.bottomCenter,
+              child: _buildFab(Icons.call, 'WhatsApp', () {
+                // Your WhatsApp action here
+              }),
+            ),
+          ],
+          FloatingActionButton(
+            onPressed: _toggle,
+            child: Icon(_isExpanded ? Icons.close : Icons.add),
+          ),
+        ],
+      ),*/
     );
   }
 
@@ -352,9 +394,8 @@ class LoginPage extends StatelessWidget {
     return statuses.every((status) => status.isGranted);
   }
 
-  Future<void> _getLogin(
-      String userName, String userPassword, BuildContext context) async {
-    // EasyLoading.show(status: 'Loading...',);
+  Future<void> _getLogin( String userName, String userPassword, BuildContext context) async {
+     EasyLoading.show(status: 'Loading...',);
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
       "userName": userName,
@@ -393,11 +434,38 @@ class LoginPage extends StatelessWidget {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => Fragments()));
         }
+        EasyLoading.dismiss();
       } else {
         PopupDialog.showPopup(
             context, value.statuscode.toString(), value.message);
         //  _showErrorDialog(context);
+        EasyLoading.dismiss();
       }
+
     });
   }
+
+  Widget _buildFab(IconData icon, String tooltip, VoidCallback onPressed) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5.0),
+      child: FloatingActionButton(
+        onPressed: onPressed,
+        tooltip: tooltip,
+        child: Icon(icon),
+      ),
+    );
+  }
+
+  /*void _toggle() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+  }*/
+
+
 }

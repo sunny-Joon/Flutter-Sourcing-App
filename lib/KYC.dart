@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
@@ -30,6 +32,10 @@ class _KYCPageState extends State<KYCPage> {
   late ApiService apiService;
   late ApiService apiService_idc;
   late ApiService apiService_protean;
+
+  final TextEditingController _otpController = TextEditingController();
+  int _timeLeft = 60; // Timer starting at 60 seconds
+  Timer? _timer;
 
   Color iconPan = Colors.red;
   Color iconDl = Colors.red;
@@ -166,7 +172,7 @@ class _KYCPageState extends State<KYCPage> {
     }); // Refresh the UI
   }
 
-  final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
+ // final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
 
   // TextEditingControllers for all input fields
@@ -553,6 +559,8 @@ class _KYCPageState extends State<KYCPage> {
 
 
   Future<void> saveFiMethod(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...',);
+
     print("object");
     String adhaarid = _aadharIdController.text.toString();
     String title = selectedTitle??"";
@@ -685,11 +693,18 @@ class _KYCPageState extends State<KYCPage> {
           _currentStep += 1;
           Fi_Id = value.data[0].fiId.toString();
         });
-      } else {}
+        EasyLoading.dismiss();
+
+      } else {
+        EasyLoading.dismiss();
+
+      }
     });
   }
 
   Future<void> saveIDsMethod(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...',);
+
     print("object");
     String fiid = Fi_Id.toString();
     String pan_no = _panNoController.text.toString();
@@ -741,7 +756,12 @@ class _KYCPageState extends State<KYCPage> {
         setState(() {
           _currentStep += 1;
         });
-      } else {}
+        EasyLoading.dismiss();
+
+      } else {
+        EasyLoading.dismiss();
+
+      }
     });
   }
 
@@ -1276,7 +1296,11 @@ class _KYCPageState extends State<KYCPage> {
                   if(_mobileNoController.text.isEmpty){
                     showToast_Error("Please enter mobile number");
                   }else{
-                      getOTPByMobileNo(_mobileNoController.text);
+                      //getOTPByMobileNo(_mobileNoController.text);
+                    mobileOtp(context,_mobileNoController.text);
+                    _showOTPDialog(context);
+                    _timeLeft = 60;
+                    _startTimer();
                   }
                   // Implement OTP verification logic here
                 },
@@ -1285,9 +1309,13 @@ class _KYCPageState extends State<KYCPage> {
                   backgroundColor: Color(0xFFA60A19), // Button color
                   minimumSize: Size(100, 45), // Fixed size for the button
                 ),
-                child: Text(
+                child: /*Text(
                   'Verify',
                   style: TextStyle(color: Colors.white, fontSize: 16),
+                ),*/
+                Text(
+                  '$_timeLeft',
+                  style: TextStyle(color: Colors.green, fontSize: 16),
                 ),
               ),
             ),
@@ -1855,6 +1883,8 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
   void docVerifyIDC(String type,String txnNumber,String ifsc,String dob) async {
+    EasyLoading.show(status: 'Loading...',);
+
     try {
       // Initialize Dio
 
@@ -1918,6 +1948,8 @@ class _KYCPageState extends State<KYCPage> {
         }
         showToast_Error("Unexpected Response: $response");
         print("Unexpected Response: $response");
+        EasyLoading.dismiss();
+
       }
     } catch (e) {
       showToast_Error("An error occurred: $e");
@@ -1947,6 +1979,8 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   void dlVerifyByProtean(String userid,String dlNo,String dob) async {
+    EasyLoading.show(status: 'Loading...',);
+
     try {
       // Initialize Dio
 
@@ -1963,6 +1997,7 @@ class _KYCPageState extends State<KYCPage> {
       // Hit the API
       final response = await apiService_protean.getDLDetailsProtean(requestBody);
 
+      EasyLoading.show(status: 'Loading...',);
 
       // Handle response
       if (response is Map<String, dynamic>) {
@@ -1979,9 +2014,12 @@ class _KYCPageState extends State<KYCPage> {
           }
         });
 
+        EasyLoading.dismiss();
 
       } else {
         print("Unexpected Response: $response");
+        EasyLoading.dismiss();
+
       }
     } catch (e) {
       // Handle errors
@@ -1990,6 +2028,8 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   void voterVerifyByProtean(String userid,String voterNo) async {
+    EasyLoading.show(status: 'Loading...',);
+
     try {
       // Initialize Dio
 
@@ -2019,11 +2059,15 @@ class _KYCPageState extends State<KYCPage> {
           } else {
             docVerifyIDC("voterid",_voterIdController.text,"","");
           }
+
         });
+        EasyLoading.dismiss();
 
 
       } else {
         print("Unexpected Response: $response");
+        EasyLoading.dismiss();
+
       }
     } catch (e) {
       // Handle errors
@@ -2210,9 +2254,8 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   void getOTPByMobileNo(String text) {
-
-
-
+    // Handle OTP submission here
+    debugPrint("Submitted OTP: $text");
   }
 
 
@@ -2247,6 +2290,111 @@ class _KYCPageState extends State<KYCPage> {
           if (type == "voterid") {
             iconPassport = Colors.green;
           }
+        });
+
+      }
+    });
+  }
+
+
+  void _showOTPDialog(BuildContext context) {
+    _timeLeft = 60;
+    _startTimer();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Row(
+                children: [
+                  Text(
+                    'OTP',
+                    style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(), // Pushes the timer and icon to the right
+                  Text(
+                    '$_timeLeft',
+                    style: TextStyle(color: Colors.green, fontSize: 16),
+                  ),
+                  SizedBox(width: 5),
+                  Icon(Icons.timer, color: Colors.green),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _otpController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter OTP',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Handle submit action
+                      String otp = _otpController.text;
+                      print('OTP submitted: $otp');
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Button color
+                    ),
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                )
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _startTimer() {
+    EasyLoading.dismiss();
+
+    Stopwatch stopwatch = Stopwatch();
+    stopwatch.start();
+
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_timeLeft > 0) {
+       // setState(() {
+          _timeLeft = 60 - stopwatch.elapsed.inSeconds;
+          EasyLoading.dismiss();
+
+        //  });
+      } else {
+        _timer?.cancel();
+        stopwatch.stop();
+        EasyLoading.dismiss();
+
+      }
+    });
+  }
+
+  Future<void> mobileOtp(BuildContext context, String mobileNo) async {
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+    Map<String, dynamic> requestBody = {
+      "MobileNo": mobileNo,
+      "Language": "English",
+      "ContentId": "1007458689942092806",
+    };
+
+    return await api.mobileOtpSend(requestBody).then((value) {
+
+      if (value.statuscode == 200) {
+        setState(() {
+
         });
 
       }
