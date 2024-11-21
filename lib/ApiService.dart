@@ -20,6 +20,7 @@ import 'Models/login_model.dart';
 part 'ApiService.g.dart';
 
 
+
 class ApiConfig {
   static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
   static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
@@ -27,6 +28,7 @@ class ApiConfig {
   static const String baseUrl4 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
   static const String baseUrl5 = 'https://erpservice.paisalo.in:980/PDL.KYC.API/api/';
 }
+
 
 
 // @RestApi(baseUrl: "https://predeptest.paisalo.in:8084/MobColen/api/")
@@ -60,6 +62,11 @@ abstract class ApiService {
 
   @POST("IdentityVerification/Get")
   Future<DocsVerify> verifyDocs(
+      @Body() Map<String, dynamic> body,
+      );
+
+  @POST("Masters/SendSms")
+  Future<GlobalModel> mobileOtpSend(
       @Body() Map<String, dynamic> body,
       );
 
@@ -307,7 +314,8 @@ abstract class ApiService {
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
       @Query("Group_code") String Group_code,
-      @Query("Branch_code") String Branch_code);
+      @Query("Branch_code") String Branch_code,
+      @Query("Creator") String Creator);
 
   @GET("FiSourcing/GetFiUploadedDocuments")
   Future<KycScanningModel> KycScanning(

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -235,6 +236,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   }
 
   Future<void> saveHouseVisitForm(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...',);
+
     String HouseType=housetype;
     String IsvalidLocation=isvalidlocation;
     String CPFlifeStyle=cpflifestyle;
@@ -401,9 +404,9 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         Address,
         Image!).then((response) {
       if (response.statuscode == 200) {
-        // Handle success
+        EasyLoading.dismiss();
       } else {
-        // Handle error
+        EasyLoading.dismiss();
       }
     }).catchError((error) {
       // Handle error

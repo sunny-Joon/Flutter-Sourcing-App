@@ -12,6 +12,15 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   requestPermissions(); // Request permissions when the app starts+
   runApp(const MyApp());
+  configLoading();
+}
+void configLoading() {
+  EasyLoading.instance
+    ..loadingStyle = EasyLoadingStyle.light
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..maskType = EasyLoadingMaskType.black
+    ..userInteractions = false
+    ..dismissOnTap = false;
 }
 
 void requestPermissions() async {
@@ -54,6 +63,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
          home: LoginPage(),
+         builder: EasyLoading.init(),
          // home:MultiStepForm(),
       ),
     );

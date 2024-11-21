@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +27,6 @@ class BorrowerList extends StatefulWidget {
 
 class _BorrowerListState extends State<BorrowerList> {
   List<BorrowerListDataModel> _borrowerItems = [];
-  bool _isLoading = true;
 
   @override
   void initState() {
@@ -35,6 +35,8 @@ class _BorrowerListState extends State<BorrowerList> {
   }
 
   Future<void> _fetchBorrowerList() async {
+    EasyLoading.show(status: 'Loading...',);
+
     final apiService = Provider.of<ApiService>(context, listen: false);
 
     await apiService.BorrowerList(
@@ -42,18 +44,23 @@ class _BorrowerListState extends State<BorrowerList> {
       GlobalClass.dbName,
 
       widget.GroupData.groupCode,
-     widget.BranchData.branchCode
+     widget.BranchData.branchCode,
+      GlobalClass.creator.toString()
 
     ).then((response) {
       if (response.statuscode == 200) {
         setState(() {
           _borrowerItems = response.data;
-          _isLoading = false;
+
         });
+        EasyLoading.dismiss();
+print("object++12");
       } else {
         setState(() {
-          _isLoading = false;
+
         });
+        EasyLoading.dismiss();
+
       }
     });
   }
@@ -62,12 +69,12 @@ class _BorrowerListState extends State<BorrowerList> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Column(
+      body: /*_isLoading
+          ? Center(child: CircularProgressIndicator())*/
+          /*:*/ Column(
         children: [
           SizedBox(height: 50),
-          Padding(padding: EdgeInsets.all(8),
+          /*Padding(padding: EdgeInsets.all(8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,21 +96,21 @@ class _BorrowerListState extends State<BorrowerList> {
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                ),
+                ),*/
                 Center(
                   child: Image.asset(
                     'assets/Images/paisa_logo.png', // Replace with your logo asset path
                     height: 50,
                   ),
                 ),
-                Container(
+                /*Container(
                   height: 40,
                   width: 40,
                   alignment: Alignment.center,
                 ),
               ],
             ),
-          ),
+          ),*/
           Card(
             margin: EdgeInsets.only(bottom: 10, top: 0, left: 10, right: 10),
             elevation: 8,

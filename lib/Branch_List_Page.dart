@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Group_List_Page.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
@@ -29,6 +30,8 @@ class _BranchListPageState extends State<BranchListPage> {
   }
 
   Future<void> _fetchBranchList() async {
+    EasyLoading.show(status: 'Loading...',);
+
     final apiService = Provider.of<ApiService>(context, listen: false);
 
       await apiService.getBranchList(GlobalClass.dbName, GlobalClass.creator).then((response){
@@ -37,8 +40,12 @@ class _BranchListPageState extends State<BranchListPage> {
             _items = response.data; // Store the response data
             _isLoading = false;
           });
+          EasyLoading.dismiss();
+
           print('Branch List retrieved successfully');
         } else {
+          EasyLoading.dismiss();
+
           print('Failed to retrieve branch list');
           setState(() {
             _isLoading = false;

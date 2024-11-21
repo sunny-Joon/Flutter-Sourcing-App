@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -21,7 +22,7 @@ import 'Models/branch_model.dart';
 import 'QRScanPage.dart';
 
 class ApplicationPage extends StatefulWidget {
-   final BranchDataModel BranchData;
+  final BranchDataModel BranchData;
   final GroupDataModel GroupData;
   final BorrowerListDataModel selectedData;
 
@@ -51,7 +52,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool femMemIncomeEditable = true;
   String pageTitle = "Personal Info";
 
-  final _emailFocusNode = FocusNode();
   final _mobileFocusNode = FocusNode();
   final _pinFocusNodeP = FocusNode();
   final _pinFocusNodeC = FocusNode();
@@ -180,12 +180,123 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final _IncomeController = TextEditingController();
   final _AgeController = TextEditingController();
 
+  final _business_DetailController = TextEditingController();
+  final _any_current_EMIController = TextEditingController();
+  final _future_IncomeController = TextEditingController();
+  final _agriculture_incomeController = TextEditingController();
+  final _earning_mem_countController = TextEditingController();
+  final _other_IncomeController = TextEditingController();
+  final _annuaL_INCOMEController = TextEditingController();
+  final _spendOnChildrenController = TextEditingController();
+  final _otheR_THAN_AGRICULTURAL_INCOMEController = TextEditingController();
+  final _years_in_businessController = TextEditingController();
+  final _pensionIncomeController = TextEditingController();
+  final _any_RentalIncomeController = TextEditingController();
+  final _rentController = TextEditingController();
+  final _foodingController = TextEditingController();
+  final _educationController = TextEditingController();
+  final _healthController = TextEditingController();
+  final _travellingController = TextEditingController();
+  final _entertainmentController = TextEditingController();
+  final _othersController = TextEditingController();
+  final _homeTypeController = TextEditingController();
+  final _homeRoofTypeController = TextEditingController();
+  final _toiletTypeController = TextEditingController();
+
+  final _bank_AcController = TextEditingController();
+  final _bank_nameController = TextEditingController();
+  final _bank_IFCSController = TextEditingController();
+  final _bankOpeningDateController = TextEditingController();
+  String? bankAccHolder, bankAddress;
+
+  final _fnameController = TextEditingController();
+  final _mnameController = TextEditingController();
+  final _lnameController = TextEditingController();
+  final _p_Address1Controller = TextEditingController();
+  final _p_Address2Controller = TextEditingController();
+  final _p_Address3Controller = TextEditingController();
+  final _p_CityController = TextEditingController();
+  final _pincodeController = TextEditingController();
+  final _dobController = TextEditingController();
+  final _ageController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _panController = TextEditingController();
+  final _dlController = TextEditingController();
+  final _voterController = TextEditingController();
+  final _aadharIdController = TextEditingController();
+
+  final FocusNode _fnameFocus = FocusNode();
+  final FocusNode _mnameFocus = FocusNode();
+  final FocusNode _lnameFocus = FocusNode();
+  final FocusNode _p_Address1Focus = FocusNode();
+  final FocusNode _p_Address2Focus = FocusNode();
+  final FocusNode _p_Address3Focus = FocusNode();
+  final FocusNode _p_CityFocus = FocusNode();
+  final FocusNode _pincodeFocus = FocusNode();
+  final FocusNode _dobFocus = FocusNode();
+  final FocusNode _ageFocus = FocusNode();
+  final FocusNode _phoneFocus = FocusNode();
+  final FocusNode _panFocus = FocusNode();
+  final FocusNode _dlFocus = FocusNode();
+  final FocusNode _voterFocus = FocusNode();
+  final FocusNode _aadharIdFocus = FocusNode();
+  final FocusNode _emailIdFocus = FocusNode();
+  final FocusNode _placeOfBirthFocus = FocusNode();
+  final FocusNode _resCatFocus = FocusNode();
+  final FocusNode _mobileFocus = FocusNode();
+  final FocusNode _address1FocusP = FocusNode();
+  final FocusNode _address2FocusP = FocusNode();
+  final FocusNode _address3FocusP = FocusNode();
+  final FocusNode _address1FocusC = FocusNode();
+  final FocusNode _address2FocusC = FocusNode();
+  final FocusNode _address3FocusC = FocusNode();
+  final FocusNode _cityFocusP = FocusNode();
+  final FocusNode _pincodeFocusP = FocusNode();
+  final FocusNode _cityFocusC = FocusNode();
+  final FocusNode _pincodeFocusC = FocusNode();
+  final FocusNode _motherFFocus = FocusNode();
+  final FocusNode _motherMFocus = FocusNode();
+  final FocusNode _motherLFocus = FocusNode();
+  final FocusNode _schoolingChildrenFocus = FocusNode();
+  final FocusNode _numOfChildrenFocus = FocusNode();
+  final FocusNode _otherDependentsFocus = FocusNode();
+  final FocusNode _loanAmountFocus = FocusNode();
+  final FocusNode _femNameFocus = FocusNode();
+  final FocusNode _IncomeFocus = FocusNode();
+  final FocusNode _AgeFocus = FocusNode();
+  final FocusNode _business_DetailFocus = FocusNode();
+  final FocusNode _any_current_EMIFocus = FocusNode();
+  final FocusNode _future_IncomeFocus = FocusNode();
+  final FocusNode _agriculture_incomeFocus = FocusNode();
+  final FocusNode _earning_mem_countFocus = FocusNode();
+  final FocusNode _other_IncomeFocus = FocusNode();
+  final FocusNode _annuaL_INCOMEFocus = FocusNode();
+  final FocusNode _spendOnChildrenFocus = FocusNode();
+  final FocusNode _otheR_THAN_AGRICULTURAL_INCOMEFocus = FocusNode();
+  final FocusNode _years_in_businessFocus = FocusNode();
+  final FocusNode _pensionIncomeFocus = FocusNode();
+  final FocusNode _any_RentalIncomeFocus = FocusNode();
+  final FocusNode _rentFocus = FocusNode();
+  final FocusNode _foodingFocus = FocusNode();
+  final FocusNode _educationFocus = FocusNode();
+  final FocusNode _healthFocus = FocusNode();
+  final FocusNode _travellingFocus = FocusNode();
+  final FocusNode _entertainmentFocus = FocusNode();
+  final FocusNode _othersFocus = FocusNode();
+  final FocusNode _homeTypeFocus = FocusNode();
+  final FocusNode _homeRoofTypeFocus = FocusNode();
+  final FocusNode _toiletTypeFocus = FocusNode();
+  final FocusNode _bank_AcFocus = FocusNode();
+  final FocusNode _bank_nameFocus = FocusNode();
+  final FocusNode _bank_IFCSFocus = FocusNode();
+  final FocusNode _bankOpeningDateFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
-     GetDocs(context, widget.selectedData.id);
+    GetDocs(context, widget.selectedData.id);
     initializeData(); // Fetch initial data
-    _emailFocusNode.addListener(_validateEmail);
+    _emailIdFocus.addListener(_validateEmail);
     _mobileFocusNode.addListener(_validateMobile);
     _pinFocusNodeP.addListener(() {
       _validatePincode("A");
@@ -342,51 +453,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final _formKeys = List.generate(6, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
 
-  final _business_DetailController = TextEditingController();
-  final _any_current_EMIController = TextEditingController();
-  final _future_IncomeController = TextEditingController();
-  final _agriculture_incomeController = TextEditingController();
-  final _earning_mem_countController = TextEditingController();
-  final _other_IncomeController = TextEditingController();
-  final _annuaL_INCOMEController = TextEditingController();
-  final _spendOnChildrenController = TextEditingController();
-  final _otheR_THAN_AGRICULTURAL_INCOMEController = TextEditingController();
-  final _years_in_businessController = TextEditingController();
-  final _pensionIncomeController = TextEditingController();
-  final _any_RentalIncomeController = TextEditingController();
-  final _rentController = TextEditingController();
-  final _foodingController = TextEditingController();
-  final _educationController = TextEditingController();
-  final _healthController = TextEditingController();
-  final _travellingController = TextEditingController();
-  final _entertainmentController = TextEditingController();
-  final _othersController = TextEditingController();
-  final _homeTypeController = TextEditingController();
-  final _homeRoofTypeController = TextEditingController();
-  final _toiletTypeController = TextEditingController();
-
-  final _bank_AcController = TextEditingController();
-  final _bank_nameController = TextEditingController();
-  final _bank_IFCSController = TextEditingController();
-  final _bankOpeningDateController = TextEditingController();
-  String? bankAccHolder, bankAddress;
-
-  final _fnameController = TextEditingController();
-  final _mnameController = TextEditingController();
-  final _lnameController = TextEditingController();
-  final _p_Address1Controller = TextEditingController();
-  final _p_Address2Controller = TextEditingController();
-  final _p_Address3Controller = TextEditingController();
-  final _p_CityController = TextEditingController();
-  final _pincodeController = TextEditingController();
-  final _dobController = TextEditingController();
-  final _ageController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _panController = TextEditingController();
-  final _dlController = TextEditingController();
-  final _voterController = TextEditingController();
-  final _aadharIdController = TextEditingController();
-
   String? selectedBank;
   String? Fi_Id;
   String qrResult = "";
@@ -412,7 +478,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Future<void> _selectDate(BuildContext context, String type) async {
     DateTime now = DateTime.now();
     DateTime initialDate = _selectedDate ?? now;
-      int FIID = widget.selectedData.id;
+    int FIID = widget.selectedData.id;
 
     DateTime? picked = await showDatePicker(
       context: context,
@@ -456,7 +522,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xFFD42D3F),
-
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -552,8 +617,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-  Widget _buildTextField(
-      String label, TextEditingController controller, bool saved) {
+  Widget _buildTextField(String label, TextEditingController controller,
+      bool saved, FocusNode FN) {
     return Container(
       //margin: EdgeInsets.symmetric(vertical: 4),
       // padding: EdgeInsets.all(4),
@@ -569,12 +634,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
           SizedBox(height: 1),
           Container(
               width: double.infinity,
-              color: Colors.white,// Set the desired width
+              color: Colors.white, // Set the desired width
               //  //height: 45, // Set the desired height
               child: Center(
                 child: TextFormField(
                   enabled: saved,
                   controller: controller,
+                  focusNode: FN,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                   ),
@@ -592,7 +658,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Widget _buildTextField2(String label, TextEditingController controller,
-      TextInputType inputType, bool saved) {
+      TextInputType inputType, bool saved, FocusNode FN) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -614,6 +680,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               child: TextFormField(
                 enabled: saved,
                 controller: controller,
+                focusNode: FN,
                 keyboardType: inputType, // Set the input type
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -633,13 +700,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> AddFiExtraDetail(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
     int A = selectedIsHandicap == 'Yes' ? 1 : 0;
     print("objectrent $selectedIsHouseRental");
     int B = selectedIsHouseRental == 'Yes' ? 1 : 0;
 
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
-       "fi_Id": widget.selectedData.id,
+      "fi_Id": widget.selectedData.id,
       "email_Id": emailIdController.text,
       "place_Of_Birth": placeOfBirthController.text,
       "depedent_Person": selectedDependent,
@@ -679,7 +750,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             _currentStep += 1;
           });
+          EasyLoading.dismiss();
         } else {
+          EasyLoading.dismiss();
+
           // Handle failure
           showAlertDialog(
               context, "Failed to update details. Please try again.");
@@ -728,7 +802,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> AddFiFamilyDetail(BuildContext context) async {
-     String Fi_ID = widget.selectedData.id.toString();
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
+    String Fi_ID = widget.selectedData.id.toString();
     String motheR_FIRST_NAME = _motherFController.text.toString();
     String motheR_MIDDLE_NAME = _motherMController.text.toString();
     String motheR_LAST_NAME = _motherLController.text.toString();
@@ -740,7 +818,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final api = Provider.of<ApiService>(context, listen: false);
 
     Map<String, dynamic> requestBody = {
-       "Fi_ID": Fi_ID,
+      "Fi_ID": Fi_ID,
       "motheR_FIRST_NAME": motheR_FIRST_NAME,
       "motheR_MIDDLE_NAME": motheR_MIDDLE_NAME,
       "motheR_LAST_NAME": motheR_LAST_NAME,
@@ -758,13 +836,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             _currentStep += 1;
           });
-        } else {}
+          EasyLoading.dismiss();
+        } else {
+          EasyLoading.dismiss();
+        }
       });
     }
   }
 
   Future<void> AddFinancialInfo(BuildContext context) async {
-     String Fi_ID = widget.selectedData.id.toString();
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
+    String Fi_ID = widget.selectedData.id.toString();
     String bankType = selectedAccountType.toString();
     String bank_Ac = _bank_AcController.text.toString();
     String bank_name = _bank_nameController.text.toString();
@@ -775,7 +860,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final api = Provider.of<ApiService>(context, listen: false);
 
     Map<String, dynamic> requestBody = {
-        "Fi_ID": Fi_ID,
+      "Fi_ID": Fi_ID,
       "bankType": bankType,
       "bank_Ac": bank_Ac,
       "bank_name": bank_name,
@@ -792,12 +877,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             _currentStep += 1;
           });
+          EasyLoading.dismiss();
         } else {}
       });
     }
   }
 
   Future<void> FiFemMemIncome(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
     String Fi_ID = "139";
     String Age = _AgeController.text;
     String Name = _femNameController.text;
@@ -836,12 +926,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             _currentStep += 1;
           });
-        } else {}
+          EasyLoading.dismiss();
+        } else {
+          EasyLoading.dismiss();
+        }
       });
     }
   }
 
   Future<void> AddFiIncomeAndExpense(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
     String fi_ID = "139";
     String occupation = selectedOccupation.toString();
     String business_Detail = _business_DetailController.text.toString();
@@ -913,12 +1010,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             _currentStep += 1;
           });
-        } else {}
+          EasyLoading.dismiss();
+        } else {
+          EasyLoading.dismiss();
+        }
       });
     }
   }
 
   Future<void> saveGuarantorMethod(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
     print("object");
     String fi_ID = "139";
     String gr_Sno = "1";
@@ -987,6 +1091,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> GetDocs(BuildContext context, int fiid) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
     final api = Provider.of<ApiService>(context, listen: false);
 
     return await api.KycScanning(
@@ -996,8 +1104,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           getData = value;
           _isPageLoading = true;
+          EasyLoading.dismiss();
         });
-      } else {}
+        EasyLoading.dismiss();
+      } else {
+        EasyLoading.dismiss();
+      }
     });
   }
 
@@ -1168,7 +1280,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Widget _buildListItem({
-    required String title, String? path,int? id,String? GrNo,
+    required String title,
+    String? path,
+    int? id,
+    String? GrNo,
     required Function(File) onImagePicked,
   }) {
     String baseUrl = 'https://predeptest.paisalo.in:8084';
@@ -1239,13 +1354,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       size: 30,
                     ),
                     onPressed: () {
-                      UploadFiDocs(
-                          context, title, _selectedImage, GrNo, id);
+                      UploadFiDocs(context, title, _selectedImage, GrNo, id);
                       print('Title: $title');
                       print('Path: $path');
                     },
                   ),
-
                 ],
               ),
             ),
@@ -1434,11 +1547,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
     return listItems;
   }
 
-  Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file, String? grNo, int? checklistid) async {
+  Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file,
+      String? grNo, int? checklistid) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
     final api = Provider.of<ApiService>(context, listen: false);
 //https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//38//FiDocuments//VoterIDBorrower0711_2024_43_01.png
 
-   /* String baseUrl = 'https://predeptest.paisalo.in:8084';
+    /* String baseUrl = 'https://predeptest.paisalo.in:8084';
 
     // Replace the front part of the file path and ensure the path uses forward slashes
     String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
@@ -1447,22 +1565,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String finalUrl = '$baseUrl/$modifiedPath';
     File file = File(finalUrl);*/
     return await api
-        .uploadFiDocs(
-            GlobalClass.token,
-            GlobalClass.dbName,
-            "10004",
-            int.parse(grNo!),
-            checklistid!,
-
-            tittle.toString(),
-            file!)
+        .uploadFiDocs(GlobalClass.token, GlobalClass.dbName, "10004",
+            int.parse(grNo!), checklistid!, tittle.toString(), file!)
         .then((value) async {
       if (value.statuscode == 200) {
         /*setState(() {
           _currentStep += 1;
           Fi_Id = value.data[0].fiId.toString();
         });*/
-      } else {}
+        EasyLoading.dismiss();
+      } else {
+        EasyLoading.dismiss();
+      }
     });
   }
 
@@ -1561,7 +1675,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               child: TextFormField(
                 enabled: fixtraEditable,
                 controller: emailIdController,
-                focusNode: _emailFocusNode,
+                focusNode: _emailIdFocus,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   errorText: _emailError,
@@ -1569,8 +1683,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 keyboardType: TextInputType.emailAddress,
               ),
             )),
-        _buildTextField(
-            'Place of Birth', placeOfBirthController, fixtraEditable),
+        _buildTextField('Place of Birth', placeOfBirthController,
+            fixtraEditable, _placeOfBirthFocus),
 
         Row(
           children: [
@@ -1635,8 +1749,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // Align children to the start of the column
                   children: [
-                    _buildTextField(
-                        'Res. Category', resCatController, fixtraEditable),
+                    _buildTextField('Res. Category', resCatController,
+                        fixtraEditable, _resCatFocus),
                   ],
                 ),
               ),
@@ -1951,9 +2065,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ),
         ),
-        _buildTextField('Address1', address1ControllerP, fixtraEditable),
-        _buildTextField('Address2', address2ControllerP, fixtraEditable),
-        _buildTextField('Address3', address3ControllerP, fixtraEditable),
+        _buildTextField(
+            'Address1', address1ControllerP, fixtraEditable, _address1FocusP),
+        _buildTextField(
+            'Address2', address2ControllerP, fixtraEditable, _address2FocusP),
+        _buildTextField(
+            'Address3', address3ControllerP, fixtraEditable, _address3FocusP),
 
         Text(
           'State',
@@ -2002,7 +2119,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             // City TextField
             Expanded(
-              child: _buildTextField('City', cityControllerP, fixtraEditable),
+              child: _buildTextField(
+                  'City', cityControllerP, fixtraEditable, _cityFocusP),
             ),
             SizedBox(
                 width:
@@ -2076,9 +2194,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
-        _buildTextField('Address1', address1ControllerC, fixtraEditable),
-        _buildTextField('Address2', address2ControllerC, fixtraEditable),
-        _buildTextField('Address3', address3ControllerC, fixtraEditable),
+        _buildTextField(
+            'Address1', address1ControllerC, fixtraEditable, _address1FocusC),
+        _buildTextField(
+            'Address2', address2ControllerC, fixtraEditable, _address2FocusC),
+        _buildTextField(
+            'Address3', address3ControllerC, fixtraEditable, _address3FocusC),
 
         Text(
           'State',
@@ -2126,7 +2247,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             // City TextField
             Expanded(
-              child: _buildTextField('City', cityControllerC, fixtraEditable),
+              child: _buildTextField(
+                  'City', cityControllerC, fixtraEditable, _cityFocusC),
             ),
             SizedBox(
                 width:
@@ -2508,25 +2630,26 @@ class _ApplicationPageState extends State<ApplicationPage> {
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTextField('Mother name', _motherFController, FiIncomeEditable),
+        _buildTextField(
+            'Mother name', _motherFController, FiIncomeEditable, _motherFFocus),
         Row(
           children: [
             Expanded(
-                child: _buildTextField(
-                    'Middle Name', _motherMController, FiFamilyEditable)),
+                child: _buildTextField('Middle Name', _motherMController,
+                    FiFamilyEditable, _motherMFocus)),
             SizedBox(width: 13),
             // Add spacing between the text fields if needed
             Expanded(
-                child: _buildTextField(
-                    'Last Name', _motherLController, FiFamilyEditable)),
+                child: _buildTextField('Last Name', _motherLController,
+                    FiFamilyEditable, _motherLFocus)),
           ],
         ),
         _buildTextField2('No. of Children', _numOfChildrenController,
-            TextInputType.number, FiFamilyEditable),
+            TextInputType.number, FiFamilyEditable, _numOfChildrenFocus),
         _buildTextField2('Schooling Children', _schoolingChildrenController,
-            TextInputType.number, FiIncomeEditable),
+            TextInputType.number, FiIncomeEditable, _schoolingChildrenFocus),
         _buildTextField2('Other Dependents', _otherDependentsController,
-            TextInputType.number, FiFamilyEditable),
+            TextInputType.number, FiIncomeEditable, _otherDependentsFocus),
       ],
     ));
   }
@@ -2953,14 +3076,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       'Future Income',
                       _future_IncomeController,
                       TextInputType.number,
-                      FiIncomeEditable),
+                      FiIncomeEditable,
+                      _future_IncomeFocus),
                 ),
                 Expanded(
                   child: _buildTextField2(
                       'Agriculture Income',
                       _agriculture_incomeController,
                       TextInputType.number,
-                      FiIncomeEditable),
+                      FiIncomeEditable,
+                      _agriculture_incomeFocus),
                 ),
               ],
             ),
@@ -2971,14 +3096,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       'Other Income',
                       _other_IncomeController,
                       TextInputType.number,
-                      FiIncomeEditable),
+                      FiIncomeEditable,
+                      _other_IncomeFocus),
                 ),
                 Expanded(
                   child: _buildTextField2(
                       'Annual Income',
                       _annuaL_INCOMEController,
                       TextInputType.number,
-                      FiIncomeEditable),
+                      FiIncomeEditable,
+                      _annuaL_INCOMEFocus),
                 ),
               ],
             ),
@@ -2989,14 +3116,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       'Not Agricultural Income',
                       _otheR_THAN_AGRICULTURAL_INCOMEController,
                       TextInputType.number,
-                      FiIncomeEditable),
+                      FiIncomeEditable,
+                      _otheR_THAN_AGRICULTURAL_INCOMEFocus),
                 ),
                 Expanded(
                   child: _buildTextField2(
                       'Pension Income',
                       _pensionIncomeController,
                       TextInputType.number,
-                      FiIncomeEditable),
+                      FiIncomeEditable,
+                      _pensionIncomeFocus),
                 ),
               ],
             ),
@@ -3007,7 +3136,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       'Rental Income',
                       _any_RentalIncomeController,
                       TextInputType.number,
-                      FiIncomeEditable),
+                      FiIncomeEditable,
+                      _any_RentalIncomeFocus),
                 ),
               ],
             ),
@@ -3037,11 +3167,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Expanded(
                   child: _buildTextField2('Rent', _rentController,
-                      TextInputType.number, FiIncomeEditable),
+                      TextInputType.number, FiIncomeEditable, _rentFocus),
                 ),
                 Expanded(
                   child: _buildTextField2('Food', _foodingController,
-                      TextInputType.number, FiIncomeEditable),
+                      TextInputType.number, FiIncomeEditable, _foodingFocus),
                 ),
               ],
             ),
@@ -3049,11 +3179,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Expanded(
                   child: _buildTextField2('Education', _educationController,
-                      TextInputType.number, FiIncomeEditable),
+                      TextInputType.number, FiIncomeEditable, _educationFocus),
                 ),
                 Expanded(
                   child: _buildTextField2('Health', _healthController,
-                      TextInputType.number, FiIncomeEditable),
+                      TextInputType.number, FiIncomeEditable, _healthFocus),
                 ),
               ],
             ),
@@ -3061,14 +3191,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Expanded(
                   child: _buildTextField2('Travelling', _travellingController,
-                      TextInputType.number, FiIncomeEditable),
+                      TextInputType.number, FiIncomeEditable, _travellingFocus),
                 ),
                 Expanded(
                   child: _buildTextField2(
                       'Entertainment',
                       _entertainmentController,
                       TextInputType.number,
-                      FiIncomeEditable),
+                      FiIncomeEditable,
+                      _entertainmentFocus),
                 ),
               ],
             ),
@@ -3079,11 +3210,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       'Expense On Children',
                       _spendOnChildrenController,
                       TextInputType.number,
-                      FiIncomeEditable),
+                      FiIncomeEditable,
+                      _spendOnChildrenFocus),
                 ),
                 Expanded(
                   child: _buildTextField2('Others', _othersController,
-                      TextInputType.number, FiIncomeEditable),
+                      TextInputType.number, FiIncomeEditable, _othersFocus),
                 ),
               ],
             ),
@@ -3133,8 +3265,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               }).toList(),
             ),
           ),
-          _buildTextField(
-              'BANK NAME', _bank_nameController, FinancialInfoEditable),
+          _buildTextField('BANK NAME', _bank_nameController,
+              FinancialInfoEditable, _bank_nameFocus),
 
           SizedBox(height: 10), // Adds space between the fields
 
@@ -3151,10 +3283,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildTextField(
-                      'IFSC', _bank_IFCSController, FinancialInfoEditable),
+                  _buildTextField('IFSC', _bank_IFCSController,
+                      FinancialInfoEditable, _bank_IFCSFocus),
                   _buildTextField('BANK ACCOUNT', _bank_AcController,
-                      FinancialInfoEditable),
+                      FinancialInfoEditable, _bank_AcFocus),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
@@ -3236,6 +3368,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             color: Colors.white,
             child: TextField(
               controller: _bankOpeningDateController,
+              focusNode: _bankOpeningDateFocus,
               decoration: InputDecoration(
                 suffixIcon: IconButton(
                   icon: Icon(Icons.calendar_today),
@@ -3256,17 +3389,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTextField('Name', _femNameController, femMemIncomeEditable),
+          _buildTextField(
+              'Name', _femNameController, femMemIncomeEditable, _femNameFocus),
           Row(
             children: [
               Expanded(
                 child: _buildTextField(
-                    'Age', _AgeController, FinancialInfoEditable),
+                    'Age', _AgeController, FinancialInfoEditable, _AgeFocus),
               ),
               SizedBox(width: 10), // Adds space between the fields
               Expanded(
-                child: _buildTextField(
-                    'Income', _IncomeController, femMemIncomeEditable),
+                child: _buildTextField('Income', _IncomeController,
+                    femMemIncomeEditable, _IncomeFocus),
               ),
             ],
           ),
@@ -3655,8 +3789,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           Row(
             children: [
               Expanded(
-                  child: _buildTextField(
-                      'Aadhaar Id', _aadharIdController, GuarantorEditable)),
+                  child: _buildTextField('Aadhaar Id', _aadharIdController,
+                      GuarantorEditable, _aadharIdFocus)),
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 // Add 10px padding from above
@@ -3724,7 +3858,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               // Add spacing between Title dropdown and Name field if needed
               Expanded(
                 child: _buildTextField(
-                    'Name', _fnameController, GuarantorEditable),
+                    'Name', _fnameController, GuarantorEditable, _fnameFocus),
               ),
             ],
           ),
@@ -3732,12 +3866,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Expanded(
                   child: _buildTextField(
-                      'Middle Name', _mnameController, GuarantorEditable)),
+                'Middle Name',
+                _mnameController,
+                GuarantorEditable,
+                _mnameFocus,
+              )),
               SizedBox(width: 13),
               // Add spacing between the text fields if needed
               Expanded(
-                  child: _buildTextField(
-                      'Last Name', _lnameController, GuarantorEditable)),
+                  child: _buildTextField('Last Name', _lnameController,
+                      GuarantorEditable, _mnameFocus)),
             ],
           ),
           Row(
@@ -3880,7 +4018,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               }).toList(),
             ),
           ),
-          _buildTextField('Mobile no', _phoneController, GuarantorEditable),
+          _buildTextField(
+              'Mobile no', _phoneController, GuarantorEditable, _phoneFocus),
           Row(
             children: [
               // Age Box
@@ -3952,8 +4091,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildTextField(
-                            'PAN No', _panController, GuarantorEditable),
+                        child: _buildTextField('PAN No', _panController,
+                            GuarantorEditable, _panFocus),
                       ),
                       SizedBox(width: 10),
                       Padding(
@@ -3984,7 +4123,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Expanded(
                         child: _buildTextField('Driving License', _dlController,
-                            GuarantorEditable),
+                            GuarantorEditable, _dlFocus),
                       ),
                       SizedBox(width: 10),
                       Padding(
@@ -4012,7 +4151,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     ],
                   ),
                   SizedBox(height: 4),
-
                   Text(
                     'OR',
                     style: TextStyle(
@@ -4021,12 +4159,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     ),
                     textAlign: TextAlign.center, // Center the text
                   ),
-
                   Row(
                     children: [
                       Expanded(
-                        child: _buildTextField(
-                            'Voter Id', _voterController, GuarantorEditable),
+                        child: _buildTextField('Voter Id', _voterController,
+                            GuarantorEditable, _voterFocus),
                       ),
                       SizedBox(width: 10),
                       Padding(
@@ -4041,7 +4178,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color:
-                                iconVoter, // Use the state variable for color
+                                    iconVoter, // Use the state variable for color
                               ),
                               child: Icon(
                                 iconVoter == Colors.green
@@ -4058,9 +4195,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
             )),
           ),
           SizedBox(height: 10),
-          _buildTextField('Address1', _p_Address1Controller, GuarantorEditable),
-          _buildTextField('Address2', _p_Address2Controller, GuarantorEditable),
-          _buildTextField('Address3', _p_Address3Controller, GuarantorEditable),
+          _buildTextField('Address1', _p_Address1Controller, GuarantorEditable,
+              _p_Address1Focus),
+          _buildTextField('Address2', _p_Address2Controller, GuarantorEditable,
+              _p_Address3Focus),
+          _buildTextField('Address3', _p_Address3Controller, GuarantorEditable,
+              _p_Address3Focus),
           Text(
             'State Name',
             style: TextStyle(fontSize: 13),
@@ -4105,13 +4245,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
           Row(
             children: [
               Expanded(
-                  child: _buildTextField(
-                      'City', _p_CityController, GuarantorEditable)),
+                  child: _buildTextField('City', _p_CityController,
+                      GuarantorEditable, _p_CityFocus)),
               SizedBox(width: 10),
-
               Expanded(
-                  child: _buildTextField(
-                      'Pincode', _pincodeController, GuarantorEditable)),
+                  child: _buildTextField('Pincode', _pincodeController,
+                      GuarantorEditable, _pincodeFocus)),
             ],
           ),
         ],
@@ -4122,21 +4261,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Widget _buildStepSeven() {
     return SingleChildScrollView(
       child: Container(
-        height: MediaQuery.of(context).size.height - 250,
-        width: double.infinity, // Set the width to the full screen size
-        child: SingleChildScrollView(
-          child: _isPageLoading
-              ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildKycDocumentList(), // Call the function here
-          )
-              : Center(
-            child: CircularProgressIndicator(
-              color: Colors.red,
-            ),
-          ),
-        )
-      ),
+          height: MediaQuery.of(context).size.height - 250,
+          width: double.infinity, // Set the width to the full screen size
+          child: SingleChildScrollView(
+            child: _isPageLoading
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildKycDocumentList(), // Call the function here
+                  )
+                : Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.red,
+                    ),
+                  ),
+          )),
     ); // Call the function her
   }
 
@@ -4197,7 +4335,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
-        onPressed: () {
+        /* onPressed: () {
           if (_currentStep < 6) {
             setState(() {
               _currentStep += 1;
@@ -4213,17 +4351,32 @@ class _ApplicationPageState extends State<ApplicationPage> {
             );
           }
         },
-        /*onPressed: () {
-          if (_currentStep == 0) {
+
+        if (_currentStep < 7) {
             setState(() {
-              pageTitle = "Personal Info.";
+              _currentStep += 1;
             });
-            AddFiExtraDetail(context);
+          } else if (_currentStep == 7) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Form submitted successfully")),
+            );
+          }*/
+
+        onPressed: () {
+          if (_currentStep == 0) {
+            if (_stepOneValidations()) {
+              setState(() {
+                pageTitle = "Personal Info.";
+              });
+              AddFiExtraDetail(context);
+            }
           } else if (_currentStep == 1) {
             setState(() {
               pageTitle = "Family Details";
             });
-            AddFiFamilyDetail(context);
+            if (_stepTwoValidations()) {
+              AddFiFamilyDetail(context);
+            }
           } else if (_currentStep == 2) {
             setState(() {
               pageTitle = "Income & Expense";
@@ -4250,17 +4403,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             });
             // UploadFiDocs(context, widget.selectedData.id.toString());
           }
-
-          */ /*if (_currentStep < 7) {
-            setState(() {
-              _currentStep += 1;
-            });
-          } else if (_currentStep == 7) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Form submitted successfully")),
-            );
-          }*/ /*
-        },*/
+        },
         child: Text(
           _currentStep == 6 ? "SUBMIT" : "NEXT",
           style: TextStyle(color: Colors.white, fontSize: 13),
@@ -4297,7 +4440,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void _validateEmail() {
     print("object22");
-    if (!_emailFocusNode.hasFocus) {
+    if (!_emailIdFocus.hasFocus) {
       setState(() {
         final email = emailIdController.text;
         if (email.isEmpty || !_isValidEmail(email)) {
@@ -4394,6 +4537,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> verifyDocs(BuildContext context, String idNoController,
       String type, String ifsc, String dob) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl2);
     Map<String, dynamic> requestBody = {
       "type": type,
@@ -4408,11 +4555,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           bankAccHolder = value.data.fullName.toString();
         });
+        EasyLoading.dismiss();
+      } else {
+        EasyLoading.dismiss();
       }
     });
   }
 
   Future<void> ifscVerify(BuildContext context, String ifsc) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl3);
 
     return await api.ifscVerify(ifsc).then((value) {
@@ -4420,11 +4574,89 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           bankAddress = value.address.toString();
         });
+        EasyLoading.dismiss();
       } else {
         print('Failed to get valid data');
+        EasyLoading.dismiss();
       }
     }).catchError((error) {
       print('Error occurred: $error');
     });
+  }
+
+  bool _stepOneValidations() {
+    if (emailIdController.text.isEmpty) {
+      showToast_Error("Please enter Email ID");
+      _emailIdFocus.requestFocus();
+      return false;
+    } else if (placeOfBirthController.text.isEmpty) {
+      showToast_Error("Please enter Place of Birth");
+      _placeOfBirthFocus.requestFocus();
+      return false;
+    } else if (resCatController.text.isEmpty) {
+      showToast_Error("Please enter Residence Category");
+      _resCatFocus.requestFocus();
+      return false;
+    } else if (mobileController.text.isEmpty) {
+      showToast_Error("Please enter Mobile Number");
+      _mobileFocus.requestFocus();
+      return false;
+    } else if (address1ControllerP.text.isEmpty) {
+      showToast_Error("Please enter Address Line 1 (Permanent)");
+      _address1FocusP.requestFocus();
+      return false;
+    } else if (address2ControllerP.text.isEmpty) {
+      showToast_Error("Please enter Address Line 2 (Permanent)");
+      _address2FocusP.requestFocus();
+      return false;
+    } else if (address3ControllerP.text.isEmpty) {
+      showToast_Error("Please enter Address Line 3 (Permanent)");
+      _address3FocusP.requestFocus();
+      return false;
+    } else if (address1ControllerC.text.isEmpty) {
+      showToast_Error("Please enter Address Line 1 (Current)");
+      _address1FocusC.requestFocus();
+      return false;
+    } else if (address2ControllerC.text.isEmpty) {
+      showToast_Error("Please enter Address Line 2 (Current)");
+      _address2FocusC.requestFocus();
+      return false;
+    } else if (address3ControllerC.text.isEmpty) {
+      showToast_Error("Please enter Address Line 3 (Current)");
+      _address3FocusC.requestFocus();
+      return false;
+    } else if (cityControllerP.text.isEmpty) {
+      showToast_Error("Please enter City (Permanent)");
+      _cityFocusP.requestFocus();
+      return false;
+    } else if (pincodeControllerP.text.isEmpty) {
+      showToast_Error("Please enter Pincode (Permanent)");
+      _pincodeFocusP.requestFocus();
+      return false;
+    } else if (cityControllerC.text.isEmpty) {
+      showToast_Error("Please enter City (Current)");
+      _cityFocusC.requestFocus();
+      return false;
+    } else if (pincodeControllerC.text.isEmpty) {
+      showToast_Error("Please enter Pincode (Current)");
+      _pincodeFocusC.requestFocus();
+      return false;
+    }
+    return true;
+  }
+
+  bool _stepTwoValidations() {
+    return true;
+  }
+
+  void showToast_Error(String message) {
+    Fluttertoast.showToast(
+      msg: "$message",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER, // Position of the toast
+      backgroundColor: Colors.redAccent,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 }

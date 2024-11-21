@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Group_recycler_item.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
@@ -23,6 +24,7 @@ class GroupListPage extends StatefulWidget {
 }
 
 class _GroupListPageState extends State<GroupListPage> {
+
   List<GroupDataModel> _items = [];
   String _searchText = '';
   bool _isLoading = true;
@@ -34,6 +36,8 @@ class _GroupListPageState extends State<GroupListPage> {
   }
 
   Future<void> _fetchGroupList() async {
+    EasyLoading.show(status: 'Loading...',);
+
     final apiService = Provider.of<ApiService>(context, listen: false);
 
     try {
@@ -47,6 +51,8 @@ class _GroupListPageState extends State<GroupListPage> {
         setState(() {
           _items = response.data; // Store the response data
           _isLoading = false;
+          EasyLoading.dismiss();
+
         });
         print('Group List retrieved successfully');
       } else {

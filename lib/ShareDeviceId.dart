@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:geolocator/geolocator.dart';
@@ -65,12 +66,16 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   }
 
   Future<void> _fetchCreatorList() async {
+    EasyLoading.show(status: 'Loading...',);
+
     final api = Provider.of<ApiService>(context, listen: false);
     final value = await api.getCreatorList(GlobalClass.dbName);
     if (value.statuscode == 200 && value.data.isNotEmpty) {
       setState(() {
         _creators = value.data;
         _isLoading = false;
+        EasyLoading.dismiss();
+
       });
     }
   }
@@ -421,6 +426,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 }
 
 Future<void> _saveMappingReq(
+
     BuildContext context,
     String name,
     String _mobileController,
@@ -433,6 +439,9 @@ Future<void> _saveMappingReq(
     String longitude,
     String latitude,
     String _selectedRequestType) async {
+
+  EasyLoading.show(status: 'Loading...',);
+
   final api = Provider.of<ApiService>(context, listen: false);
 
   Map<String, dynamic> requestBody = {
@@ -453,8 +462,11 @@ Future<void> _saveMappingReq(
     if (value.statuscode == 200) {
         PopupDialog.showPopup(
             context, value.statuscode.toString(), value.message);
+        EasyLoading.dismiss();
 
     } else {
+      EasyLoading.dismiss();
+
       PopupDialog.showPopup(context, value.statuscode.toString(), value.message);
 
     }

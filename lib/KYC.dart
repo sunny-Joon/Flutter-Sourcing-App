@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
@@ -30,6 +32,10 @@ class _KYCPageState extends State<KYCPage> {
   late ApiService apiService;
   late ApiService apiService_idc;
   late ApiService apiService_protean;
+
+  final TextEditingController _otpController = TextEditingController();
+  int _timeLeft = 60; // Timer starting at 60 seconds
+  Timer? _timer;
 
   Color iconPan = Colors.red;
   Color iconDl = Colors.red;
@@ -81,9 +87,11 @@ class _KYCPageState extends State<KYCPage> {
 
   @override
   void initState() {
+
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
+
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
 
@@ -174,7 +182,7 @@ class _KYCPageState extends State<KYCPage> {
     }); // Refresh the UI
   }
 
-  final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
+ // final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
 
   // TextEditingControllers for all input fields
@@ -317,455 +325,6 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  /*@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFD42D3F),
-      body: Center(
-        child: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height - 100,
-          width: MediaQuery
-              .of(context)
-              .size
-              .width - 24,
-          decoration: BoxDecoration(
-              color: Colors.white
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(left: 0, right: 0, top: 30, bottom: 10),
-            child: Stepper(
-              type: StepperType.horizontal,
-              currentStep: _currentStep,
-              onStepContinue: () {
-                // Validate the current step's form before proceeding
-                if (_formKeys[_currentStep].currentState?.validate() ?? false) {
-                  // Call the save method based on the current step
-                  if (_currentStep == 0) {
-                    saveFiMethod(context); // Call save method for step 0
-                  } else if (_currentStep == 1) {
-                    saveIDsMethod(context);
-                  }
-                  */
-  /*if (_currentStep < 3) {
-                      setState(() {
-                        _currentStep += 1;
-                      });
-                    }*/
-  /*
-                }
-              },
-              onStepCancel: () {
-                if (_currentStep > 0) {
-                  setState(() {
-                    _currentStep -= 1;
-                  });
-                }
-              },
-              controlsBuilder: (BuildContext context,
-                  ControlsDetails controls) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 150,
-                      child: TextButton(
-                        onPressed: () {
-                          // Check if either latitude or longitude is empty or '0'
-                          if ((_latitudeController.text.isEmpty ||
-                              _latitudeController.text == '0') ||
-                              (_longitudeController.text.isEmpty ||
-                                  _longitudeController.text == '0')) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(
-                                  "Please click the refresh button first to update location")),
-                            );
-                          } else {
-                            // Proceed to the next step if latitude and longitude are valid
-                            controls.onStepContinue?.call();
-                          }
-                        },
-                        child: Text(
-                          'Next',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: TextButton.styleFrom(
-                          backgroundColor: Color(0xFFD42D3F),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                                Radius.elliptical(5, 5)),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-
-              steps: [
-                Step(
-                  title: Text(''),
-                  isActive: _currentStep >= 0,
-                  content: Form(
-                    key: _formKeys[0],
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                                child: _buildTextField(
-                                    'Aadhaar Id', _aadharIdController)),
-                            GestureDetector(
-                              onTap: () =>
-                                  _showPopup(context, (String result) {
-                                    setState(() {
-                                      qrResult = result;
-                                    });
-                                  }), // Show popup on image click
-                              child: Icon(
-                                Icons.qr_code_scanner,
-                                size: 50.0, // Set the size of the icon
-                                color: Colors.blue, // Set the color of the icon
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Title',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  Container(
-                                    width: 150,
-                                    // Adjust the width as needed
-                                    height:  45,
-                                    // Fixed height
-                                    padding:
-                                    EdgeInsets.symmetric(horizontal: 12),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: DropdownButton<String>(
-                                      value: selectedTitle,
-                                      isExpanded: true,
-
-                                      iconSize: 24,
-                                      elevation: 16,
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 16),
-                                      underline: Container(
-                                        height: 2,
-                                        color: Colors
-                                            .transparent, // Set to transparent to remove default underline
-                                      ),
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          selectedTitle = newValue!;
-                                        });
-                                      },
-                                      items: titleList.map((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: _pickImage,
-                              child: _imageFile == null
-                                  ? Icon(
-                                Icons.person,
-                                size: 50.0,
-                                color: Colors.blue,
-                              )
-                                  : Image.file(
-                                File(_imageFile!.path),
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ],
-                        ),
-                        _buildTextField('Name', _nameController),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: _buildTextField(
-                                    'Middle Name', _nameMController)),
-                            SizedBox(
-                                width:
-                                16),
-                            // Add spacing between the text fields if needed
-                            Expanded(
-                                child: _buildTextField(
-                                    'Last Name', _nameLController)),
-                          ],
-                        ),
-                        Text(
-                          'Gender',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Container(
-                          width: 150,
-                          // Adjust the width as needed
-                          height:  45,
-                          // Fixed height
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: genderselected,
-                            isExpanded: true,
-
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 16),
-                            underline: Container(
-                              height: 2,
-                              color: Colors
-                                  .transparent, // Set to transparent to remove default underline
-                            ),
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
-                                setState(() {
-                                  genderselected =
-                                      newValue; // Update the selected value
-                                });
-                              }
-                            },
-                            items: aadhar_gender.map<DropdownMenuItem<String>>(
-                                    (RangeCategoryDataModel state) {
-                                  return DropdownMenuItem<String>(
-                                    value: state.code,
-                                    child: Text(state.descriptionEn),
-                                  );
-                                }).toList(),
-                          ),
-                        ),
-
-                        Text(
-                          'Relationship with Borrower',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Container(
-                          width: 150,
-                          // Adjust the width as needed
-                          height:  45,
-                          // Fixed height
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: relationwithBorrowerselected,
-                            isExpanded: true,
-
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 16),
-                            underline: Container(
-                              height: 2,
-                              color: Colors
-                                  .transparent, // Set to transparent to remove default underline
-                            ),
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
-                                setState(() {
-                                  relationwithBorrowerselected =
-                                      newValue; // Update the selected value
-                                });
-                              }
-                            },
-                            items: relationwithBorrower.map<
-                                DropdownMenuItem<String>>(
-                                    (RangeCategoryDataModel state) {
-                                  return DropdownMenuItem<String>(
-                                    value: state.code,
-                                    child: Text(state.descriptionEn),
-                                  );
-                                }).toList(),
-                          ),
-                        ),
-                        _buildTextField('Mobile no', _mobileNoController),
-                        Row(
-                          children: [
-                            // Age Box
-                            SizedBox(
-                              width: 80, // Set a fixed width for the age box
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Age',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Container(
-                                    color: Colors.white,
-                                    child: TextField(
-                                      controller: _ageController,
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      readOnly: true,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 16),
-                            // Date of Birth Box
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Date of Birth',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Container(
-                                    color: Colors.white,
-                                    child: TextField(
-                                      controller: _dobController,
-                                      decoration: InputDecoration(
-                                        suffixIcon: IconButton(
-                                          icon: Icon(Icons.calendar_today),
-                                          onPressed: () => _selectDate(context),
-                                        ),
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      readOnly: true,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        _buildTextField(
-                            'Father First Name', _fatherFirstNameController),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildTextField('Father Middle Name',
-                                  _fatherMiddleNameController),
-                            ),
-                            SizedBox(
-                                width:
-                                8),
-                            // Add spacing between the text fields if needed
-                            Expanded(
-                                child: _buildTextField('Father Last Name',
-                                    _fatherLastNameController)),
-                          ],
-                        ),
-                        CheckboxListTile(
-                          title: Text('IsMarried'),
-                          value: isMarried,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isMarried = value!;
-                            });
-                          },
-                        ),
-                        // Conditionally show the spouse fields only when isMarried is true
-                        if (isMarried)
-                          Column(
-                            children: [
-                              _buildTextField('Spouse First Name',
-                                  _spouseFirstNameController),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _buildTextField('Spouse Middle Name',
-                                        _spouseMiddleNameController),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Expanded(
-                                    child: _buildTextField('Spouse Last Name',
-                                        _spouseLastNameController),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: _buildTextField(
-                                    'Monthly Expense', _incomeController)),
-                            SizedBox(
-                                width:
-                                8),
-                            // Add spacing between the text fields if needed
-                            Expanded(
-                                child: _buildTextField(
-                                    'Monthly Income', _expenseController)),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: _buildTextField(
-                                        'Latitude', _latitudeController),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: _buildTextField(
-                                        'Longitude', _longitudeController),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            SizedBox(
-                              height: 40, // Smaller height for compact button
-                              width: 40, // Smaller width for compact button
-                              child: ElevatedButton(
-                                onPressed: geolocator,
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.all(0),
-                                  // Remove padding for smaller size
-                                  minimumSize: Size(
-                                      40, 40), // Ensure button remains compact
-                                ),
-                                child: Icon(
-                                  Icons.refresh,
-                                  size: 18, // Smaller icon size for compact look
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-*/
 
   @override
   Widget build(BuildContext context) {
@@ -893,6 +452,8 @@ class _KYCPageState extends State<KYCPage> {
 
   int calculateAgeFromString(String dateString,
       {String format = "yyyy-MM-dd"}) {
+
+
     try {
       // Parse the string date
       DateTime birthDate = DateFormat(format).parse(dateString);
@@ -945,6 +506,7 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
+
   Widget _buildTextField(String label, TextEditingController controller) {
     return Container(
       color: Colors.white,
@@ -981,108 +543,115 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   Future<void> saveFiMethod(BuildContext context) async {
-    print("object");
-    String adhaarid = _aadharIdController.text.toString();
-    String title = selectedTitle ?? "";
-    String name = _nameController.text.toString();
-    String middlename = _nameMController.text.toString();
-    String lastname = _nameLController.text.toString();
-    String dob = _dobController.text.toString();
-    String age = _ageController.text.toString();
-    String gendre = genderselected;
-    String mobile = _mobileNoController.text.toString();
-    String fatherF = _fatherFirstNameController.text.toString();
-    String fatherM = _fatherMiddleNameController.text.toString();
-    String fatherL = _fatherLastNameController.text.toString();
-    String spouseF = _spouseFirstNameController.text.toString();
-    String spouseM = _spouseMiddleNameController.text.toString();
-    String spouseL = _spouseLastNameController.text.toString();
-    expense = _expenseController.text;
-    income = _expenseController.text;
-    lati = _latitudeController.text;
-    longi = _longitudeController.text;
-    int Expense =
-        (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
-    int Income = (income != null && income.isNotEmpty) ? int.parse(income) : 0;
-    double latitude =
-        (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
-    double longitude =
-        (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
-    String add1 = _address1Controller.text.toString();
-    String add2 = _address2Controller.text.toString();
-    String add3 = _address3Controller.text.toString();
-    String city = _cityController.text.toString();
-    String pin = _pincodeController.text.toString();
-    String state = stateselected!.descriptionEn;
-    bool ismarried = selectedMarritalStatus.toString() == 'Married';
-    String gCode = widget.GroupData.groupCode;
-    String bCode = widget.data.branchCode.toString();
 
-    String relation_with_Borrower = relationwithBorrowerselected;
+    EasyLoading.show(status: 'Loading...',);
+      String adhaarid = _aadharIdController.text.toString();
+      String title = selectedTitle??"";
+      String name = _nameController.text.toString();
+      String middlename = _nameMController.text.toString();
+      String lastname = _nameLController.text.toString();
+      String dob = _dobController.text.toString();
+      String age = _ageController.text.toString();
+      String gendre = genderselected;
+      String mobile = _mobileNoController.text.toString();
+      String fatherF = _fatherFirstNameController.text.toString();
+      String fatherM = _fatherMiddleNameController.text.toString();
+      String fatherL = _fatherLastNameController.text.toString();
+      String spouseF = _spouseFirstNameController.text.toString();
+      String spouseM = _spouseMiddleNameController.text.toString();
+      String spouseL = _spouseLastNameController.text.toString();
+      expense = _expenseController.text;
+      income = _expenseController.text;
+      lati = _latitudeController.text;
+      longi = _longitudeController.text;
+      int Expense =
+      (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
+      int Income = (income != null && income.isNotEmpty) ? int.parse(income) : 0;
+      double latitude =
+      (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
+      double longitude =
+      (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
+      String add1 = _address1Controller.text.toString();
+      String add2 = _address2Controller.text.toString();
+      String add3 = _address3Controller.text.toString();
+      String city = _cityController.text.toString();
+      String pin = _pincodeController.text.toString();
+      String state = stateselected;
+      bool ismarried = selectedMarritalStatus.toString() == 'Married';
+      String gCode = widget.GroupData.groupCode;
+      String bCode = widget.data.branchCode.toString();
 
-    String bank_name = bankselected;
-    String loan_Duration = selectedloanDuration!;
-    String loan_amount = _loan_amountController.text.toString();
-    String? Image;
-    if (_imageFile == null) {
-      Image = 'Null';
-    }
+      String relation_with_Borrower = relationwithBorrowerselected;
 
+      String bank_name = bankselected;
+      String loan_Duration = selectedloanDuration!;
+      String loan_amount = _loan_amountController.text.toString();
+      String? Image;
+      if (_imageFile == null) {
+        Image = 'Null';
+      }
 
-    // Check for blank fields
+      final api = Provider.of<ApiService>(context, listen: false);
 
-    final api = Provider.of<ApiService>(context, listen: false);
+      return await api
+          .saveFi(
 
-    return await api
-        .saveFi(
-            GlobalClass.token,
-            GlobalClass.dbName,
-            adhaarid,
-            title,
-            name,
-            middlename,
-            lastname,
-            dob,
-            age,
-            gendre,
-            mobile,
-            fatherF,
-            fatherM,
-            fatherL,
-            spouseF,
-            spouseM,
-            spouseL,
-            GlobalClass.creator,
-            Expense,
-            Income,
-            latitude,
-            longitude,
-            add1,
-            add2,
-            add3,
-            city,
-            pin,
-            state,
-            ismarried,
-            gCode,
-            bCode,
-            relation_with_Borrower,
-            bank_name,
-            loan_Duration,
-            loan_amount,
-            selectedLoanReason!,
-            _imageFile!)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        setState(() {
-          _currentStep += 1;
-          Fi_Id = value.data[0].fiId.toString();
-        });
-      } else {}
-    });
+          GlobalClass.token,
+          GlobalClass.dbName,
+          adhaarid,
+          title,
+          name,
+          middlename,
+          lastname,
+          dob,
+          age,
+          gendre,
+          mobile,
+          fatherF,
+          fatherM,
+          fatherL,
+          spouseF,
+          spouseM,
+          spouseL,
+          GlobalClass.creator,
+          Expense,
+          Income,
+          latitude,
+          longitude,
+          add1,
+          add2,
+          add3,
+          city,
+          pin,
+          state,
+          ismarried,
+          gCode,
+          bCode,
+          relation_with_Borrower,
+          bank_name,
+          loan_Duration,
+          loan_amount,
+          selectedLoanReason!,
+          _imageFile!)
+
+          .then((value) async {
+        if (value.statuscode == 200) {
+          setState(() {
+            _currentStep += 1;
+            Fi_Id = value.data[0].fiId.toString();
+          });
+          EasyLoading.dismiss();
+
+        } else {
+          EasyLoading.dismiss();
+
+        }
+      });
   }
 
   Future<void> saveIDsMethod(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...',);
+
     print("object");
     String fiid = Fi_Id.toString();
     String pan_no = _panNoController.text.toString();
@@ -1138,7 +707,12 @@ class _KYCPageState extends State<KYCPage> {
         setState(() {
           _currentStep += 1;
         });
-      } else {}
+        EasyLoading.dismiss();
+
+      } else {
+        EasyLoading.dismiss();
+
+      }
     });
   }
 
@@ -1684,8 +1258,14 @@ class _KYCPageState extends State<KYCPage> {
                 onPressed: () {
                   if (_mobileNoController.text.isEmpty) {
                     showToast_Error("Please enter mobile number");
-                  } else {
-                    getOTPByMobileNo(_mobileNoController.text);
+
+                  }else{
+                      //getOTPByMobileNo(_mobileNoController.text);
+                    mobileOtp(context,_mobileNoController.text);
+                    _showOTPDialog(context);
+                    _timeLeft = 60;
+                    _startTimer();
+
                   }
                   // Implement OTP verification logic here
                 },
@@ -1693,9 +1273,13 @@ class _KYCPageState extends State<KYCPage> {
                   backgroundColor: Color(0xFFA60A19), // Button color
                   minimumSize: Size(100, 45), // Fixed size for the button
                 ),
-                child: Text(
+                child: /*Text(
                   'Verify',
                   style: TextStyle(color: Colors.white, fontSize: 16),
+                ),*/
+                Text(
+                  '$_timeLeft',
+                  style: TextStyle(color: Colors.green, fontSize: 16),
                 ),
               ),
             ),
@@ -2264,6 +1848,13 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
+  void docVerifyIDC(String type,String txnNumber,String ifsc,String dob) async {
+    EasyLoading.show(status: 'Loading...',);
+
+    try {
+      // Initialize Dio
+
+
   Widget _buildLabeledDropdownField<T>(
       String labelText,
       String label,
@@ -2390,6 +1981,8 @@ class _KYCPageState extends State<KYCPage> {
         }
         showToast_Error("Unexpected Response: $response");
         print("Unexpected Response: $response");
+        EasyLoading.dismiss();
+
       }
     } catch (e) {
       showToast_Error("An error occurred: $e");
@@ -2414,7 +2007,11 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  void dlVerifyByProtean(String userid, String dlNo, String dob) async {
+
+  void dlVerifyByProtean(String userid,String dlNo,String dob) async {
+    EasyLoading.show(status: 'Loading...',);
+
+
     try {
       // Initialize Dio
 
@@ -2428,8 +2025,11 @@ class _KYCPageState extends State<KYCPage> {
       };
 
       // Hit the API
-      final response =
-          await apiService_protean.getDLDetailsProtean(requestBody);
+
+      final response = await apiService_protean.getDLDetailsProtean(requestBody);
+
+      EasyLoading.show(status: 'Loading...',);
+
 
       // Handle response
       if (response is Map<String, dynamic>) {
@@ -2444,9 +2044,11 @@ class _KYCPageState extends State<KYCPage> {
                 _dobController.text);
           }
         });
+
       } else {
         docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
             _dobController.text);
+        EasyLoading.dismiss();
       }
     } catch (e) {
       // Handle errors
@@ -2455,7 +2057,10 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  void voterVerifyByProtean(String userid, String voterNo) async {
+
+  void voterVerifyByProtean(String userid,String voterNo) async {
+    EasyLoading.show(status: 'Loading...',);
+
     try {
       // Initialize Dio
 
@@ -2483,9 +2088,13 @@ class _KYCPageState extends State<KYCPage> {
           } else {
             docVerifyIDC("voterid", _voterIdController.text, "", "");
           }
+
         });
+
       } else {
         docVerifyIDC("voterid", _voterIdController.text, "", "");
+
+
       }
     } catch (e) {
       // Handle errors
@@ -2520,7 +2129,13 @@ class _KYCPageState extends State<KYCPage> {
         onPressed: () {
            if (_currentStep == 0) {
 
-            saveFiMethod(context);
+
+           if (_currentStep == 0) {
+             if(firstPageFieldVelidate()){
+               saveFiMethod(context);
+
+             }
+
           } else if (_currentStep == 1) {
               if(secondPageFieldValidate()){
                 saveIDsMethod(context);
@@ -2529,6 +2144,7 @@ class _KYCPageState extends State<KYCPage> {
           } else if (_currentStep > 1) {
             showKycDoneDialog(context);
           }
+
 
           /*if (_currentStep < 2) {
             setState(() {
@@ -2725,7 +2341,13 @@ bool checkIdMendate(){
       showToast_Error("Please capture borrower profile picture");
       return false;
     }
-    return true;
+
+      return true;
+  }
+
+  void getOTPByMobileNo(String text) {
+    // Handle OTP submission here
+    debugPrint("Submitted OTP: $text");
   }
 
   void getOTPByMobileNo(String text) {}
@@ -2763,6 +2385,7 @@ bool checkIdMendate(){
     });
   }
 
+
   void getPlace(String type, String stateCode, String districtCode,
       String subDistrictCode) async {
     print(GlobalClass.token);
@@ -2794,5 +2417,111 @@ bool checkIdMendate(){
     } catch (e) {
       print("Error: $e");
     }
+
+
+  void _showOTPDialog(BuildContext context) {
+    _timeLeft = 60;
+    _startTimer();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Row(
+                children: [
+                  Text(
+                    'OTP',
+                    style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(), // Pushes the timer and icon to the right
+                  Text(
+                    '$_timeLeft',
+                    style: TextStyle(color: Colors.green, fontSize: 16),
+                  ),
+                  SizedBox(width: 5),
+                  Icon(Icons.timer, color: Colors.green),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _otpController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter OTP',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Handle submit action
+                      String otp = _otpController.text;
+                      print('OTP submitted: $otp');
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Button color
+                    ),
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                )
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _startTimer() {
+    EasyLoading.dismiss();
+
+    Stopwatch stopwatch = Stopwatch();
+    stopwatch.start();
+
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_timeLeft > 0) {
+       // setState(() {
+          _timeLeft = 60 - stopwatch.elapsed.inSeconds;
+          EasyLoading.dismiss();
+
+        //  });
+      } else {
+        _timer?.cancel();
+        stopwatch.stop();
+        EasyLoading.dismiss();
+
+      }
+    });
+  }
+
+  Future<void> mobileOtp(BuildContext context, String mobileNo) async {
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+    Map<String, dynamic> requestBody = {
+      "MobileNo": mobileNo,
+      "Language": "English",
+      "ContentId": "1007458689942092806",
+    };
+
+    return await api.mobileOtpSend(requestBody).then((value) {
+
+      if (value.statuscode == 200) {
+        setState(() {
+
+        });
+
+      }
+    });
+
   }
 }
+
