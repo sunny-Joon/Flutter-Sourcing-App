@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
+import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
@@ -26,7 +27,6 @@ class KYCPage extends StatefulWidget {
 }
 
 class _KYCPageState extends State<KYCPage> {
-
   late ApiService apiService;
   late ApiService apiService_idc;
   late ApiService apiService_protean;
@@ -50,11 +50,19 @@ class _KYCPageState extends State<KYCPage> {
   List<RangeCategoryDataModel> income_type = [];
   List<RangeCategoryDataModel> bank = [];
   List<RangeCategoryDataModel> relationwithBorrower = [];
+  List<PlaceData> listCityCodes = [];
+  List<PlaceData> listDistrictCodes = [];
+  List<PlaceData> listSubDistrictCodes = [];
+  List<PlaceData> listVillagesCodes = [];
+  PlaceData? selectedCityCode;
+  PlaceData? selectedDistrictCode;
+  PlaceData? selectedSubDistrictCode;
+  PlaceData? selectedVillageCode;
 
   List<String> loanDuration = ['12', '24', '36', '48'];
 
   List<String> titleList = ["Mr.", "Mrs.", "Miss"];
-   String? selectedTitle;
+  String? selectedTitle;
   String expense = "";
   String income = "";
   String lati = "";
@@ -62,7 +70,7 @@ class _KYCPageState extends State<KYCPage> {
   String? selectedMarritalStatus;
   String? selectedLoanReason;
 
-  String stateselected = 'select';
+  RangeCategoryDataModel? stateselected;
   String genderselected = 'select';
   String relationwithBorrowerselected = 'select';
   String bankselected = 'select';
@@ -73,9 +81,9 @@ class _KYCPageState extends State<KYCPage> {
 
   @override
   void initState() {
-    apiService=ApiService.create(ApiConfig.baseUrl1);
-    apiService_idc=ApiService.create(ApiConfig.baseUrl4);
-    apiService_protean=ApiService.create(ApiConfig.baseUrl5);
+    apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+    apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
+    apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
 
@@ -204,9 +212,10 @@ class _KYCPageState extends State<KYCPage> {
   final _dlExpiryController = TextEditingController();
   final _passportExpiryController = TextEditingController();
 
-  bool panVerified=false;
-  bool dlVerified=false;
-  bool voterVerified=false;
+  bool panVerified = false;
+  bool dlVerified = false;
+  bool voterVerified = false;
+  String? dlDob;
 /*  String? selectedState;
   String? selectedEarningMemberType;
   String? selectedBusinessDetail;
@@ -223,7 +232,6 @@ class _KYCPageState extends State<KYCPage> {
       isPassportVerified = false;
 
   get isChecked => null;
-
 
   void _pickImage() async {
     File? pickedImage = await GlobalClass().pickImage();
@@ -255,17 +263,20 @@ class _KYCPageState extends State<KYCPage> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime(1900),
       lastDate: DateTime(2101),
     );
     if (picked != null) {
       setState(() {
-        controller.text = DateFormat('yyyy-MM-dd').format(picked);
+        _selectedDate = picked;
+        _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
+        dlDob = DateFormat('dd-MM-yyyy').format(picked);
+        _calculateAge();
       });
     }
-    if (controller == _dobController) {
-      _calculateAge();
-    }
+    // if (controller == _dobController) {
+    //   _calculateAge();
+    // }
   }
 
   /*Future<void> _selectDate(BuildContext context) async {
@@ -754,22 +765,17 @@ class _KYCPageState extends State<KYCPage> {
                           ],
                         ),
 
-
-
-
+*/
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding:
-
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-
             child: Column(
               children: [
                 Padding(
@@ -815,59 +821,64 @@ class _KYCPageState extends State<KYCPage> {
                 //  _buildProgressIndicator(),
                 SizedBox(height: 30),
                 Container(
-                  height: MediaQuery.of(context).size.height-220,
-                  child: Flexible(child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black,
-                              blurRadius: 7,
-                            ),
-                          ],
-                        ),
-                        child: Form(
-                          key: _formKey,
-                          child: _getStepContent(context),
-                        ),
-                      ),
-                      Positioned(
-                          top: -35, // Adjust the position as needed
-                          left: 0,
-                          right: 0,
-                          child: Center(
-                            child: _imageFile == null
-
-                                ? InkWell(child: ClipOval(
-                              child: Container(
-                                width: 70,
-                                height: 70,
-                                color: Colors.blue,
-                                child: Icon(
-                                  Icons.person,
-                                  size: 50.0,
-                                  color: Colors.white,
-                                ),
+                  height: MediaQuery.of(context).size.height - 220,
+                  child: Flexible(
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black,
+                                blurRadius: 7,
                               ),
-                            ),onTap: _pickImage,)
-                                :InkWell(child:  ClipOval(
-                              child: Image.file(
-                                File(_imageFile!.path),
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.cover,
-                              ),
-                            ),onTap: _pickImage,),
-                          )
-
-                      ),
-                    ],
-                  ),),
+                            ],
+                          ),
+                          child: Form(
+                            key: _formKey,
+                            child: _getStepContent(context),
+                          ),
+                        ),
+                        Positioned(
+                            top: -35, // Adjust the position as needed
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: _imageFile == null
+                                  ? InkWell(
+                                      child: ClipOval(
+                                        child: Container(
+                                          width: 70,
+                                          height: 70,
+                                          color: Colors.blue,
+                                          child: Icon(
+                                            Icons.person,
+                                            size: 50.0,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      onTap: _pickImage,
+                                    )
+                                  : InkWell(
+                                      child: ClipOval(
+                                        child: Image.file(
+                                          File(_imageFile!.path),
+                                          width: 70,
+                                          height: 70,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      onTap: _pickImage,
+                                    ),
+                            )),
+                      ],
+                    ),
+                  ),
                 ),
 
                 SizedBox(height: 20),
@@ -879,44 +890,9 @@ class _KYCPageState extends State<KYCPage> {
       ),
     );
   }
-  void _pickImage() async {
-    File? pickedImage = await GlobalClass().pickImage();
-    if (pickedImage != null) {
-      setState(() {
-        _imageFile = pickedImage;
-      });
-    }
-  }
-  Widget _buildDatePickerField(BuildContext context,String labelText, TextEditingController controller) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: controller,
-        readOnly: true,
-        onTap: () => _selectDate(context, controller),
-        decoration: InputDecoration(
-          labelText: labelText,
-          border: OutlineInputBorder(),
-        ),
-      ),
-    );
-  }
-  void _selectDate(BuildContext context, TextEditingController controller) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
-      setState(() {
-        _dobController.text = DateFormat('dd-MM-yyyy').format(picked);
-     _ageController.text= calculateAgeFromString(DateFormat('yyyy-MM-dd').format(picked)).toString();
-      });
-    }
 
-  }
-  int calculateAgeFromString(String dateString, {String format = "yyyy-MM-dd"}) {
+  int calculateAgeFromString(String dateString,
+      {String format = "yyyy-MM-dd"}) {
     try {
       // Parse the string date
       DateTime birthDate = DateFormat(format).parse(dateString);
@@ -937,6 +913,7 @@ class _KYCPageState extends State<KYCPage> {
       return -1; // Return an invalid age to indicate error
     }
   }
+
   int calculateAge(DateTime birthDate) {
     DateTime today = DateTime.now();
     int age = today.year - birthDate.year;
@@ -949,22 +926,25 @@ class _KYCPageState extends State<KYCPage> {
 
     return age;
   }
+
   void showToast_Error(String message) {
     Fluttertoast.showToast(
       msg: "$message",
       toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER, // Position of the toast
+      gravity: ToastGravity.CENTER,
+      // Position of the toast
       backgroundColor: Colors.redAccent,
       textColor: Colors.white,
       fontSize: 16.0,
     );
   }
-  void _showErrorMessage(String msg,BuildContext context){
+
+  void _showErrorMessage(String msg, BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg)),
-
     );
   }
+
   Widget _buildTextField(String label, TextEditingController controller) {
     return Container(
       color: Colors.white,
@@ -975,14 +955,11 @@ class _KYCPageState extends State<KYCPage> {
         children: [
           Text(
             label,
-            style: TextStyle(
-              fontSize: 16,
-              height: 2
-            ),
+            style: TextStyle(fontSize: 16, height: 2),
           ),
           SizedBox(height: 1),
           Container(
-            padding: EdgeInsets.zero,
+              padding: EdgeInsets.zero,
               width: double.infinity, // Set the desired width
               child: Center(
                 child: TextFormField(
@@ -1003,11 +980,10 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-
   Future<void> saveFiMethod(BuildContext context) async {
     print("object");
     String adhaarid = _aadharIdController.text.toString();
-    String title = selectedTitle??"";
+    String title = selectedTitle ?? "";
     String name = _nameController.text.toString();
     String middlename = _nameMController.text.toString();
     String lastname = _nameLController.text.toString();
@@ -1037,7 +1013,7 @@ class _KYCPageState extends State<KYCPage> {
     String add3 = _address3Controller.text.toString();
     String city = _cityController.text.toString();
     String pin = _pincodeController.text.toString();
-    String state = stateselected;
+    String state = stateselected!.descriptionEn;
     bool ismarried = selectedMarritalStatus.toString() == 'Married';
     String gCode = widget.GroupData.groupCode;
     String bCode = widget.data.branchCode.toString();
@@ -1052,85 +1028,50 @@ class _KYCPageState extends State<KYCPage> {
       Image = 'Null';
     }
 
-    var fields = {
-      "Aadhaar ID": adhaarid,
-      "Title": title,
-      "Name": name,
-      "Middle Name": middlename,
-      "Last Name": lastname,
-      "Date of Birth": dob,
-      "Age": age,
-      "Gender": gendre,
-      "Mobile Number": mobile,
-      "Father's First Name": fatherF,
-      "Father's Middle Name": fatherM,
-      "Father's Last Name": fatherL,
-      "Spouse's First Name": spouseF,
-      "Spouse's Middle Name": spouseM,
-      "Spouse's Last Name": spouseL,
-      "Expense": expense,
-      "Income": income,
-      "Latitude": lati,
-      "Longitude": longi,
-      "Address Line 1": add1,
-      "Address Line 2": add2,
-      "Address Line 3": add3,
-      "City": city,
-      "Pincode": pin,
-      "State": state,
-      "Relation with Borrower": relation_with_Borrower,
-      "Bank Name": bank_name,
-      "Loan Duration": loan_Duration,
-      "Loan Amount": loan_amount,
-      "Image": Image,
-    };
 
     // Check for blank fields
-
 
     final api = Provider.of<ApiService>(context, listen: false);
 
     return await api
         .saveFi(
-
-        GlobalClass.token,
-        GlobalClass.dbName,
-        adhaarid,
-        title,
-        name,
-        middlename,
-        lastname,
-        dob,
-        age,
-        gendre,
-        mobile,
-        fatherF,
-        fatherM,
-        fatherL,
-        spouseF,
-        spouseM,
-        spouseL,
-        GlobalClass.creator,
-        Expense,
-        Income,
-        latitude,
-        longitude,
-        add1,
-        add2,
-        add3,
-        city,
-        pin,
-        state,
-        ismarried,
-        gCode,
-        bCode,
-        relation_with_Borrower,
-        bank_name,
-        loan_Duration,
-        loan_amount,
-        selectedLoanReason!,
-        _imageFile!)
-
+            GlobalClass.token,
+            GlobalClass.dbName,
+            adhaarid,
+            title,
+            name,
+            middlename,
+            lastname,
+            dob,
+            age,
+            gendre,
+            mobile,
+            fatherF,
+            fatherM,
+            fatherL,
+            spouseF,
+            spouseM,
+            spouseL,
+            GlobalClass.creator,
+            Expense,
+            Income,
+            latitude,
+            longitude,
+            add1,
+            add2,
+            add3,
+            city,
+            pin,
+            state,
+            ismarried,
+            gCode,
+            bCode,
+            relation_with_Borrower,
+            bank_name,
+            loan_Duration,
+            loan_amount,
+            selectedLoanReason!,
+            _imageFile!)
         .then((value) async {
       if (value.statuscode == 200) {
         setState(() {
@@ -1183,7 +1124,11 @@ class _KYCPageState extends State<KYCPage> {
       "PassportExpireDate": PassportExpireDate,
       "isAadharVerified": isAadharVerified,
       "is_phnno_verified": is_phnno_verified,
-      "isNameVerify": isNameVerify
+      "VILLAGE_CODE": isNameVerify,
+      "CITY_CODE": isNameVerify,
+      "SUB_DIST_CODE": isNameVerify,
+      "DIST_CODE": isNameVerify,
+      "STATE_CODE": isNameVerify,
     };
 
     return await api
@@ -1512,7 +1457,6 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   Widget _buildStepOne(BuildContext context) {
-
     return SingleChildScrollView(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1545,16 +1489,21 @@ class _KYCPageState extends State<KYCPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 2,),
+                  SizedBox(
+                    height: 2,
+                  ),
                   Text(
                     'Title',
                     style: TextStyle(fontSize: 16),
                   ),
-                  SizedBox(height: 8,),
+                  SizedBox(
+                    height: 8,
+                  ),
                   Container(
                     alignment: Alignment.center,
 
-                     height: 55,  // Fixed height
+                    height: 55,
+                    // Fixed height
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -1605,21 +1554,26 @@ class _KYCPageState extends State<KYCPage> {
         _buildTextField('Guardian Name', _gurNameController),
         Row(
           children: [
-            Expanded(child:   Column(
+            Expanded(
+                child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 4,),
+                SizedBox(
+                  height: 4,
+                ),
                 Text(
                   'Gender',
                   style: TextStyle(fontSize: 16),
                 ),
-                SizedBox(height: 4,),
+                SizedBox(
+                  height: 4,
+                ),
                 Container(
                   alignment: Alignment.center,
 
                   width: 150,
                   // Adjust the width as needed
-                    height: 55,
+                  height: 55,
                   // Fixed height
                   padding: EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
@@ -1646,33 +1600,37 @@ class _KYCPageState extends State<KYCPage> {
                       }
                     },
                     items: aadhar_gender.map<DropdownMenuItem<String>>(
-                            (RangeCategoryDataModel state) {
-                          return DropdownMenuItem<String>(
-                            value: state.code,
-                            child: Text(state.descriptionEn),
-                          );
-                        }).toList(),
+                        (RangeCategoryDataModel state) {
+                      return DropdownMenuItem<String>(
+                        value: state.code,
+                        child: Text(state.descriptionEn),
+                      );
+                    }).toList(),
                   ),
                 ),
               ],
-            ))
-          ,
+            )),
             SizedBox(width: 10),
-            Expanded(child: Column(
+            Expanded(
+                child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 4,),
+                SizedBox(
+                  height: 4,
+                ),
                 Text(
                   'Relationship',
                   style: TextStyle(fontSize: 16),
                 ),
-                SizedBox(height: 4,),
+                SizedBox(
+                  height: 4,
+                ),
                 Container(
                   alignment: Alignment.center,
 
                   width: 150,
                   // Adjust the width as needed
-                    height: 55,
+                  height: 55,
                   // Fixed height
                   padding: EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
@@ -1699,12 +1657,12 @@ class _KYCPageState extends State<KYCPage> {
                       }
                     },
                     items: relationwithBorrower.map<DropdownMenuItem<String>>(
-                            (RangeCategoryDataModel state) {
-                          return DropdownMenuItem<String>(
-                            value: state.code,
-                            child: Text(state.descriptionEn),
-                          );
-                        }).toList(),
+                        (RangeCategoryDataModel state) {
+                      return DropdownMenuItem<String>(
+                        value: state.code,
+                        child: Text(state.descriptionEn),
+                      );
+                    }).toList(),
                   ),
                 ),
               ],
@@ -1723,16 +1681,14 @@ class _KYCPageState extends State<KYCPage> {
               padding: EdgeInsets.only(top: 20),
               // Add 10px padding from above
               child: ElevatedButton(
-
                 onPressed: () {
-                  if(_mobileNoController.text.isEmpty){
+                  if (_mobileNoController.text.isEmpty) {
                     showToast_Error("Please enter mobile number");
-                  }else{
-                      getOTPByMobileNo(_mobileNoController.text);
+                  } else {
+                    getOTPByMobileNo(_mobileNoController.text);
                   }
                   // Implement OTP verification logic here
                 },
-
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFA60A19), // Button color
                   minimumSize: Size(100, 45), // Fixed size for the button
@@ -1753,7 +1709,9 @@ class _KYCPageState extends State<KYCPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 4,),
+                  SizedBox(
+                    height: 4,
+                  ),
                   Text(
                     'Age',
                     style: TextStyle(fontSize: 16),
@@ -1778,7 +1736,9 @@ class _KYCPageState extends State<KYCPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 4,),
+                  SizedBox(
+                    height: 4,
+                  ),
                   Text(
                     'Date of Birth',
                     style: TextStyle(fontSize: 16),
@@ -1816,19 +1776,23 @@ class _KYCPageState extends State<KYCPage> {
                 child: _buildTextField('Last Name', _fatherLastNameController)),
           ],
         ),
-        SizedBox(height: 4,),
+        SizedBox(
+          height: 4,
+        ),
         Text(
           'Marital Status',
           style: TextStyle(fontSize: 16),
         ),
-        SizedBox(height: 4,),
+        SizedBox(
+          height: 4,
+        ),
 
         Container(
           alignment: Alignment.center,
 
           width: double.infinity,
           // Adjust the width as needed
-            height: 55,
+          height: 55,
           // Fixed height
           padding: EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
@@ -1903,62 +1867,32 @@ class _KYCPageState extends State<KYCPage> {
             Expanded(child: _buildTextField('Pincode', _pincodeController)),
           ],
         ),
-        SizedBox(height: 4,),
-
-        Text(
-          'State Name',
-          style: TextStyle(fontSize: 16),
+        SizedBox(
+          height: 4,
         ),
-        SizedBox(height: 4,),
 
-        Container(
-          alignment: Alignment.center,
-
-          width: double.infinity,
-          // Adjust the width as needed
-            height: 55,
-          // Fixed height
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: DropdownButton<String>(
-            value: stateselected,
-            isExpanded: true,
-            iconSize: 24,
-            elevation: 16,
-            style: TextStyle(color: Colors.black, fontSize: 16),
-            underline: Container(
-              height: 2,
-              color: Colors
-                  .transparent, // Set to transparent to remove default underline
-            ),
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  stateselected = newValue; // Update the selected value
-                });
-              }
-            },
-            items: states
-                .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
-              return DropdownMenuItem<String>(
-                value: state.code,
-                child: Text(state.descriptionEn),
-              );
-            }).toList(),
-          ),
-        ),
+        _buildLabeledDropdownField(
+            'Select State', 'State', states, stateselected,
+            (RangeCategoryDataModel? newValue) {
+          setState(() {
+            stateselected = newValue;
+            getPlace("city", stateselected!.code, "", "");
+            getPlace("district", stateselected!.code, "", "");
+          });
+        }, String),
         _buildTextField2(
             'Loan Amount', _loan_amountController, TextInputType.number),
 
-        SizedBox(height: 4,),
+        SizedBox(
+          height: 4,
+        ),
         Text(
           'Loan Reason',
           style: TextStyle(fontSize: 16),
         ),
-        SizedBox(height: 4,),
+        SizedBox(
+          height: 4,
+        ),
 
         Container(
           alignment: Alignment.center,
@@ -1999,7 +1933,9 @@ class _KYCPageState extends State<KYCPage> {
             }).toList(),
           ),
         ),
-        SizedBox(height: 4,),
+        SizedBox(
+          height: 4,
+        ),
 
         Row(
           children: [
@@ -2017,7 +1953,7 @@ class _KYCPageState extends State<KYCPage> {
                     alignment: Alignment.center,
                     width: 150,
                     // Adjust the width as needed
-                      height: 55,
+                    height: 55,
                     // Fixed height
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
@@ -2064,7 +2000,7 @@ class _KYCPageState extends State<KYCPage> {
                   SizedBox(height: 5),
                   Container(
                     alignment: Alignment.center,
-                      height: 55,
+                    height: 55,
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -2162,23 +2098,21 @@ class _KYCPageState extends State<KYCPage> {
               ),
               SizedBox(width: 10),
               Padding(
-
                 padding: EdgeInsets.only(top: 20),
                 child: InkWell(
                   enableFeedback: true,
-                  onTap: (){
-                    if(_panNoController.text.isEmpty){
+                  onTap: () {
+                    if (_panNoController.text.isEmpty) {
                       showToast_Error("Please Enter PAN No.");
-                    }else{
-                      docVerifyIDC("pancard",_panNoController.text,"","");
-
+                    } else {
+                      docVerifyIDC("pancard", _panNoController.text, "", "");
                     }
                   },
                   child: Container(
                     padding: EdgeInsets.all(3),
                     decoration: BoxDecoration(
-                      shape:  BoxShape.circle,
-                      color:panVerified?Colors.green: Colors.grey,
+                      shape: BoxShape.circle,
+                      color: panVerified ? Colors.green : Colors.grey,
                     ),
                     child: Icon(
                       Icons.check_circle,
@@ -2187,36 +2121,39 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ),
               ),
-
             ],
           ),
-          panCardHolderName==null?Text("Please search PAN card holder name for verification",style: TextStyle(color: Colors.grey.shade400,fontSize: 11),): Text(panCardHolderName!,style: TextStyle(color: Colors.green,fontSize: 14)),
-
+          panCardHolderName == null
+              ? Text(
+                  "Please search PAN card holder name for verification",
+                  style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
+                )
+              : Text(panCardHolderName!,
+                  style: TextStyle(color: Colors.green, fontSize: 14)),
           Row(
             children: [
-
               Flexible(
                 flex: 2,
-                child: _buildTextField('Driving License', _drivingLicenseController),
+                child: _buildTextField(
+                    'Driving License', _drivingLicenseController),
               ),
               SizedBox(width: 10),
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 child: GestureDetector(
-                  onTap: (){
-                    if(_drivingLicenseController.text.isEmpty){
+                  onTap: () {
+                    if (_drivingLicenseController.text.isEmpty) {
                       showToast_Error("Please Enter Driving License");
-                    }else{
-                      dlVerifyByProtean(GlobalClass.id,_drivingLicenseController.text,"");
-
-
+                    } else {
+                      dlVerifyByProtean(GlobalClass.id,
+                          _drivingLicenseController.text, dlDob!);
                     }
                   },
                   child: Container(
                     padding: EdgeInsets.all(3),
                     decoration: BoxDecoration(
-                      shape:  BoxShape.circle,
-                      color:dlVerified?Colors.green: Colors.grey,
+                      shape: BoxShape.circle,
+                      color: dlVerified ? Colors.green : Colors.grey,
                     ),
                     child: Icon(
                       Icons.check_circle,
@@ -2225,12 +2162,17 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ),
               ),
-
             ],
           ),
-          dlCardHolderName==null?Text("Please search driving license holder name for verification",style: TextStyle(color: Colors.grey.shade400,fontSize: 11),): Text(dlCardHolderName!,style: TextStyle(color: Colors.green,fontSize: 14)),
-
-          _buildDatePickerField(context, 'Driving License Expiry Date', _dlExpiryController),
+          dlCardHolderName == null
+              ? Text(
+                  "Please search driving license holder name for verification",
+                  style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
+                )
+              : Text(dlCardHolderName!,
+                  style: TextStyle(color: Colors.green, fontSize: 14)),
+          _buildDatePickerField(
+              context, 'Driving License Expiry Date', _dlExpiryController),
           Row(
             children: [
               Flexible(
@@ -2239,22 +2181,21 @@ class _KYCPageState extends State<KYCPage> {
               ),
               SizedBox(width: 10),
               Padding(
-
                 padding: EdgeInsets.only(top: 20),
                 child: GestureDetector(
-                  onTap: (){
-                    if(_voterIdController.text.isEmpty){
+                  onTap: () {
+                    if (_voterIdController.text.isEmpty) {
                       showToast_Error("Please Enter Voter No.");
-                    }else{
-
-                      voterVerifyByProtean(GlobalClass.id,_voterIdController.text);
+                    } else {
+                      voterVerifyByProtean(
+                          GlobalClass.id, _voterIdController.text);
                     }
                   },
                   child: Container(
                     padding: EdgeInsets.all(3),
                     decoration: BoxDecoration(
-                      shape:  BoxShape.circle,
-                      color:voterVerified?Colors.green: Colors.grey,
+                      shape: BoxShape.circle,
+                      color: voterVerified ? Colors.green : Colors.grey,
                     ),
                     child: Icon(
                       Icons.check_circle,
@@ -2263,57 +2204,141 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ),
               ),
-
             ],
           ),
-          voterCardHolderName==null?Text("Please search voter card holder name for verification",style: TextStyle(color: Colors.grey.shade400,fontSize: 11),): Text(voterCardHolderName!,style: TextStyle(color: Colors.green,fontSize: 14)),
-
+          voterCardHolderName == null
+              ? Text(
+                  "Please search voter card holder name for verification",
+                  style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
+                )
+              : Text(voterCardHolderName!,
+                  style: TextStyle(color: Colors.green, fontSize: 14)),
           Row(
             children: [
               Flexible(
                 flex: 2,
                 child: _buildTextField('Passport', _passportController),
               ),
-
-              SizedBox(width: 10),
-              Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: GestureDetector(
-                    onTap: () {
-                      verifyDocs(context, _passportController.text, "",
-                          "passport", "");
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: iconPassport, // Use the state variable for color
-                      ),
-                      child: Icon(
-                        iconPassport == Colors.green
-                            ? Icons.check_circle
-                            : Icons.check_circle_outline,
-                        color: Colors.white,
-                      ),
-                    ),
-                  )),
-
             ],
           ),
           _buildDatePickerField(
               context, 'Passport Expiry Date', _passportExpiryController),
+          _buildLabeledDropdownField(
+              'Select City', 'Cities', listCityCodes, selectedCityCode,
+              (PlaceData? newValue) {
+            setState(() {
+              selectedCityCode = newValue;
+              // getPlace("city",stateselected!.code,"","");
+              // getPlace("district",stateselected!.code,"","");
+            });
+          }, String),
+          _buildLabeledDropdownField('Select District', 'Districts',
+              listDistrictCodes, selectedDistrictCode, (PlaceData? newValue) {
+            setState(() {
+              selectedDistrictCode = newValue;
+               getPlace("subdistrict",stateselected!.code,selectedDistrictCode!.distCode!,"");
+              // getPlace("district",stateselected!.code,"","");
+            });
+          }, String),
+          _buildLabeledDropdownField(
+              'Select Sub-District',
+              'Sub-Districts',
+              listSubDistrictCodes,
+              selectedSubDistrictCode, (PlaceData? newValue) {
+            setState(() {
+              selectedSubDistrictCode = newValue;
+               getPlace("village",stateselected!.code,selectedDistrictCode!.distCode!,selectedSubDistrictCode!.subDistCode!);
+              // getPlace("district",stateselected!.code,"","");
+            });
+          }, String),
+          _buildLabeledDropdownField('Select Village', 'Village',
+              listVillagesCodes, selectedVillageCode, (PlaceData? newValue) {
+            setState(() {
+              selectedVillageCode = newValue;
+              // getPlace("city",stateselected!.code,"","");
+              // getPlace("district",stateselected!.code,"","");
+            });
+          }, String),
         ],
       ),
     );
   }
-  void docVerifyIDC(String type,String txnNumber,String ifsc,String dob) async {
+
+  Widget _buildLabeledDropdownField<T>(
+      String labelText,
+      String label,
+      List<T> items,
+      T? selectedValue,
+      ValueChanged<T?>? onChanged,
+      Type objName) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            labelText,
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+          SizedBox(height: 8),
+          DropdownButtonFormField<T>(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              labelText: label,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: BorderSide(
+                  color: Colors.grey.shade400, // Border color when enabled
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: BorderSide(
+                  color: Colors.grey, // Border color when focused
+                ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: BorderSide(
+                  color: Colors.grey, // Default border color
+                ),
+              ),
+            ),
+            value: selectedValue,
+            items: items.map((T value) {
+              String setdata = "";
+              if (value is RangeCategoryDataModel) {
+                setdata = value.descriptionEn;
+              }else if (value is PlaceData) {
+                if(label=="Cities"){
+                  setdata = value.cityName??"";
+                }else if(label=="Districts"){
+                  setdata = value.distName??"";
+                }else if(label=="Sub-Districts"){
+                  setdata = value.subDistName??"";
+                }else if(label=="Village"){
+                  setdata = value.villageName??"";
+                }
+              }
+
+              return DropdownMenuItem<T>(
+                value: value,
+                child: Text(setdata), // Convert the value to string for display
+              );
+            }).toList(),
+            onChanged: onChanged,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void docVerifyIDC(
+      String type, String txnNumber, String ifsc, String dob) async {
     try {
-      // Initialize Dio
-
-      // Create ApiService instance
-
-
-      // API body
       Map<String, dynamic> requestBody = {
         "type": type,
         "txtnumber": txnNumber,
@@ -2329,40 +2354,35 @@ class _KYCPageState extends State<KYCPage> {
       if (response is Map<String, dynamic>) {
         Map<String, dynamic> responseData = response["data"];
         // Parse JSON object if it’s a map
-        if(type=="pancard"){
-            setState(() {
-
-              panCardHolderName="${responseData['first_name']} ${responseData['last_name']}";
-              panVerified=true;
-
-            });
-        }else if(type=="drivinglicense"){
+        if (type == "pancard") {
           setState(() {
-            dlCardHolderName =
-            "${responseData['first_name']} ${responseData['last_name']}";
+            panCardHolderName =
+                "${responseData['first_name']} ${responseData['last_name']}";
+            panVerified = true;
+          });
+        } else if (type == "drivinglicense") {
+          setState(() {
+            dlCardHolderName = "${responseData['name']}";
             dlVerified = true;
           });
-        }else if(type=="voterid"){
+        } else if (type == "voterid") {
           setState(() {
             voterCardHolderName = "${responseData['name']}";
             voterVerified = true;
           });
         }
       } else {
-        if(type=="pancard"){
+        if (type == "pancard") {
           setState(() {
-
-            panCardHolderName="PAN no is not verified";
-            panVerified=false;
-
+            panCardHolderName = "PAN no is not verified";
+            panVerified = false;
           });
-        }else if(type=="drivinglicense"){
+        } else if (type == "drivinglicense") {
           setState(() {
-            dlCardHolderName =
-            "Driving License is not verified";
+            dlCardHolderName = "Driving License is not verified";
             dlVerified = false;
           });
-        }else if(type=="voterid"){
+        } else if (type == "voterid") {
           setState(() {
             voterCardHolderName = "Voter no. is not verified";
             voterVerified = false;
@@ -2374,36 +2394,31 @@ class _KYCPageState extends State<KYCPage> {
     } catch (e) {
       showToast_Error("An error occurred: $e");
 
-      if(type=="pancard"){
+      if (type == "pancard") {
         setState(() {
-
-          panCardHolderName="PAN no is not verified";
-          panVerified=false;
-
+          panCardHolderName = "PAN no is not verified";
+          panVerified = false;
         });
-      }else if(type=="drivinglicense"){
+      } else if (type == "drivinglicense") {
         setState(() {
-          dlCardHolderName =
-          "Driving License is not verified";
+          dlCardHolderName = "Driving License is not verified";
           dlVerified = false;
         });
-      }else if(type=="voterid"){
+      } else if (type == "voterid") {
         setState(() {
           voterCardHolderName = "Voter no. is not verified";
           voterVerified = false;
         });
       }
       // Handle errors
-
     }
   }
 
-  void dlVerifyByProtean(String userid,String dlNo,String dob) async {
+  void dlVerifyByProtean(String userid, String dlNo, String dob) async {
     try {
       // Initialize Dio
 
       // Create ApiService instance
-
 
       // API body
       Map<String, dynamic> requestBody = {
@@ -2413,51 +2428,48 @@ class _KYCPageState extends State<KYCPage> {
       };
 
       // Hit the API
-      final response = await apiService_protean.getDLDetailsProtean(requestBody);
-
+      final response =
+          await apiService_protean.getDLDetailsProtean(requestBody);
 
       // Handle response
       if (response is Map<String, dynamic>) {
         Map<String, dynamic> responseData = response["data"];
         // Parse JSON object if it’s a map
         setState(() {
-          if (responseData['first_name'] != null) {
-            dlCardHolderName =
-            "${responseData['first_name']} ${responseData['last_name']}";
+          if (responseData['result']['name'] != null) {
+            dlCardHolderName = "${responseData['result']['name']}";
             dlVerified = true;
           } else {
-            docVerifyIDC("drivinglicense",_drivingLicenseController.text,"","");
-
+            docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
+                _dobController.text);
           }
         });
-
-
       } else {
-        print("Unexpected Response: $response");
+        docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
+            _dobController.text);
       }
     } catch (e) {
       // Handle errors
-      print("Error: $e");
+      docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
+          _dobController.text);
     }
   }
 
-  void voterVerifyByProtean(String userid,String voterNo) async {
+  void voterVerifyByProtean(String userid, String voterNo) async {
     try {
       // Initialize Dio
 
       // Create ApiService instance
 
-
       // API body
       Map<String, dynamic> requestBody = {
         "userID": userid,
         "voterno": voterNo,
-
       };
 
       // Hit the API
-      final response = await apiService_protean.getVoteretailsProtean(requestBody);
-
+      final response =
+          await apiService_protean.getVoteretailsProtean(requestBody);
 
       // Handle response
       if (response is Map<String, dynamic>) {
@@ -2466,23 +2478,20 @@ class _KYCPageState extends State<KYCPage> {
         setState(() {
           if (responseData['result'].responseData['name'] != null) {
             voterCardHolderName =
-            "${responseData['result'].responseData['name']}";
+                "${responseData['result'].responseData['name']}";
             voterVerified = true;
           } else {
-            docVerifyIDC("voterid",_voterIdController.text,"","");
+            docVerifyIDC("voterid", _voterIdController.text, "", "");
           }
         });
-
-
       } else {
-        print("Unexpected Response: $response");
+        docVerifyIDC("voterid", _voterIdController.text, "", "");
       }
     } catch (e) {
       // Handle errors
-      print("Error: $e");
+      docVerifyIDC("voterid", _voterIdController.text, "", "");
     }
   }
-
 
   Widget _buildNextButton(BuildContext context) {
     return Container(
@@ -2509,17 +2518,19 @@ class _KYCPageState extends State<KYCPage> {
           }
         },*/
         onPressed: () {
+           if (_currentStep == 0) {
 
-          /* if (_currentStep == 0) {
             saveFiMethod(context);
           } else if (_currentStep == 1) {
-            saveIDsMethod(context);
+              if(secondPageFieldValidate()){
+                saveIDsMethod(context);
+              }
+
           } else if (_currentStep > 1) {
             showKycDoneDialog(context);
-          }*/
+          }
 
-
-          if (_currentStep < 2) {
+          /*if (_currentStep < 2) {
             setState(() {
               _currentStep += 1;
             });
@@ -2527,7 +2538,7 @@ class _KYCPageState extends State<KYCPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Form submitted successfully")),
             );
-          }
+          }*/
         },
         child: Text(
           "SUBMIT",
@@ -2577,97 +2588,147 @@ class _KYCPageState extends State<KYCPage> {
       },
     );
   }
+bool secondPageFieldValidate(){
+
+  if(_panNoController.text.isNotEmpty){
+    if(!panVerified){
+      showToast_Error("Please verify PAN");
+      return false;
+    }
+  }
+    if(_voterIdController.text.isNotEmpty){
+      if(!voterVerified){
+        showToast_Error("Please verify voter id");
+        return false;
+      }
+    }
+       if(_drivingLicenseController.text.isNotEmpty){
+      if(!dlVerified){
+        showToast_Error("Please verify driving license");
+        return false;
+      }
+    }
 
 
+    if(!panVerified && !voterVerified && !dlVerified){
+      showToast_Error("Please enter and verify minimum any two IDs or voter Id");
+      return false;
+    }else if(checkIdMendate()==false){
+      showToast_Error("Please enter and verify either voter Id or Any other two Ids");
+      return false;
+    }else if(selectedCityCode==null){
+      showToast_Error("Please select city");
+      return false;
+    } else if(selectedDistrictCode==null){
+      showToast_Error("Please select district");
+      return false;
+    } else if(selectedSubDistrictCode==null){
+      showToast_Error("Please select subdistrict");
+      return false;
+    } else if(selectedVillageCode==null){
+      showToast_Error("Please select village");
+      return false;
+    }
+
+    return true;
+}
+
+bool checkIdMendate(){
+    if(voterVerified){
+      return true;
+    }else if(panVerified && dlVerified){
+      return true;
+    }else{
+      return false;
+    }
+
+}
   bool firstPageFieldVelidate() {
-    if(_aadharIdController.text.isEmpty){
+    if (_aadharIdController.text.isEmpty) {
       showToast_Error("Please enter correct aadhaar id");
       return false;
-    }else if(selectedTitle==null){
+    } else if (selectedTitle == null) {
       showToast_Error("Please choose title");
       return false;
-    } else if(_nameController.text.isEmpty){
+    } else if (_nameController.text.isEmpty) {
       showToast_Error("Please enter borrower first name");
       return false;
-    }else if(_nameLController.text.isEmpty){
+    } else if (_nameLController.text.isEmpty) {
       showToast_Error("Please enter borrower last name");
       return false;
-    }else if(_gurNameController.text.isEmpty){
+    } else if (_gurNameController.text.isEmpty) {
       showToast_Error("Please enter guardian name");
       return false;
-    }else if(genderselected.toLowerCase()=="select"){
+    } else if (genderselected.toLowerCase() == "select") {
       showToast_Error("Please select borrower's gender");
       return false;
-    }else if(relationwithBorrowerselected.toLowerCase()=="select"){
+    } else if (relationwithBorrowerselected.toLowerCase() == "select") {
       showToast_Error("Please select borrower's relation with guardian");
       return false;
-    }else if(_mobileNoController.text.isEmpty || _mobileNoController.text.length!=10){
+    } else if (_mobileNoController.text.isEmpty ||
+        _mobileNoController.text.length != 10) {
       showToast_Error("Please enter mobile correct number");
       return false;
-    }else if(_dobController.text.isEmpty){
+    } else if (_dobController.text.isEmpty) {
       showToast_Error("Please enter date of birth");
       return false;
-    }else if(_fatherFirstNameController.text.isEmpty){
+    } else if (_fatherFirstNameController.text.isEmpty) {
       showToast_Error("Please enter father first name");
       return false;
-    }else if(_fatherLastNameController.text.isEmpty){
+    } else if (_fatherLastNameController.text.isEmpty) {
       showToast_Error("Please enter father last name");
       return false;
-    }else if(selectedMarritalStatus==null){
+    } else if (selectedMarritalStatus == null) {
       showToast_Error("Please select marital status");
       return false;
-    }else if(selectedMarritalStatus!.toLowerCase()!="unmarried"){
-      if(_spouseFirstNameController.text.isEmpty){
+    } else if (selectedMarritalStatus!.toLowerCase() != "unmarried") {
+      if (_spouseFirstNameController.text.isEmpty) {
         showToast_Error("Please enter spouse first name");
         return false;
-      }else if(_spouseLastNameController.text.isEmpty){
+      } else if (_spouseLastNameController.text.isEmpty) {
         showToast_Error("Please enter spouse last name");
         return false;
       }
-  }else if(_address1Controller.text.isEmpty){
+    } else if (_address1Controller.text.isEmpty) {
       showToast_Error("Please enter address 1");
       return false;
-    }else if(_address2Controller.text.isEmpty){
+    } else if (_address2Controller.text.isEmpty) {
       showToast_Error("Please enter address 2");
       return false;
-    }else if(_cityController.text.isEmpty){
+    } else if (_cityController.text.isEmpty) {
       showToast_Error("Please enter city");
       return false;
-    }else if(_pincodeController.text.isEmpty || _pincodeController.text.length!=6){
+    } else if (_pincodeController.text.isEmpty ||
+        _pincodeController.text.length != 6) {
       showToast_Error("Please enter correct Pin code");
       return false;
-    }else if(stateselected.toLowerCase()=="select"){
+    } else if (stateselected!.descriptionEn.toLowerCase() == "select") {
       showToast_Error("Please select state");
       return false;
-    }else if(_loan_amountController.text.isEmpty){
+    } else if (_loan_amountController.text.isEmpty) {
       showToast_Error("Please enter correct loan amount");
       return false;
-    }else if(selectedLoanReason==null){
+    } else if (selectedLoanReason == null) {
       showToast_Error("Please select loan reason");
       return false;
-    }else if(selectedloanDuration==null){
+    } else if (selectedloanDuration == null) {
       showToast_Error("Please select loan duration");
       return false;
-    }else if(bankselected.toLowerCase()=="select"){
+    } else if (bankselected.toLowerCase() == "select") {
       showToast_Error("Please select bank");
       return false;
-    }else if(_latitudeController.text.isEmpty || _longitudeController.text.isEmpty){
+    } else if (_latitudeController.text.isEmpty ||
+        _longitudeController.text.isEmpty) {
       showToast_Error("Please turn on location service of mobile");
       return false;
-    }else if(_imageFile==null){
+    } else if (_imageFile == null) {
       showToast_Error("Please capture borrower profile picture");
       return false;
     }
-      return true;
+    return true;
   }
 
-  void getOTPByMobileNo(String text) {
-
-
-
-  }
-}
-
+  void getOTPByMobileNo(String text) {}
 
   Future<void> verifyDocs(BuildContext context, String idNoController,
       String type, String ifsc, String dob) async {
@@ -2681,7 +2742,6 @@ class _KYCPageState extends State<KYCPage> {
     };
 
     return await api.verifyDocs(requestBody).then((value) {
-
       if (value.statusCode == 200) {
         setState(() {
           if (type == "passport") {
@@ -2690,7 +2750,6 @@ class _KYCPageState extends State<KYCPage> {
             }
           }
           if (type == "pancard") {
-
             iconPan = Colors.green;
           }
           if (type == "drivinglicense") {
@@ -2700,8 +2759,40 @@ class _KYCPageState extends State<KYCPage> {
             iconPassport = Colors.green;
           }
         });
-
       }
     });
+  }
+
+  void getPlace(String type, String stateCode, String districtCode,
+      String subDistrictCode) async {
+    print(GlobalClass.token);
+    try {
+      PlaceCodesModel response = await apiService.getVillageStateDistrict(
+        GlobalClass.token,
+        GlobalClass.dbName,
+        type, // Type
+        subDistrictCode, // SubDistrictCode
+        districtCode, // DistrictCode
+        stateCode, // StateCode
+      );
+
+     // if (response.statuscode == 200 && response.data[0].isValid == null) {
+        setState(() {
+          if (type == "city") {
+            listCityCodes = response.data;
+            print("Cities ${listCityCodes.length}");
+          } else if (type == 'district') {
+            listDistrictCodes = response.data;
+          } else if (type == "subdistrict") {
+            listSubDistrictCodes = response.data;
+          } else if (type == "village") {
+            listVillagesCodes = response.data;
+          }
+        });
+
+      //} else {}
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 }
