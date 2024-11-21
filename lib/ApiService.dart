@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
+import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
 import 'package:flutter_sourcing_app/Models/target_response_model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/http.dart';
@@ -17,6 +18,17 @@ import 'Models/docsVerify.dart';
 import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
 part 'ApiService.g.dart';
+
+
+
+class ApiConfig {
+  static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
+  static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
+  static const String baseUrl3 = 'https://ifsc.razorpay.com/';
+  static const String baseUrl4 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
+  static const String baseUrl5 = 'https://erpservice.paisalo.in:980/PDL.KYC.API/api/';
+}
+
 
 
 // @RestApi(baseUrl: "https://predeptest.paisalo.in:8084/MobColen/api/")
@@ -323,16 +335,18 @@ abstract class ApiService {
   Future<dynamic> getVoteretailsProtean(@Body() Map<String, dynamic> body);
 
 
+  @GET("FiSourcing/GetVillageStateDistrict")
+  Future<PlaceCodesModel> getVillageStateDistrict(
+
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("Type") String type,
+      @Query("SubDistrictCode") String? subDistrictCode,
+      @Query("DistrictCode") String? districtCode,
+      @Query("StateCode") String stateCode,
+      );
 
 
 
 
-
-}
-class ApiConfig {
-  static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
-  static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
-  static const String baseUrl3 = 'https://ifsc.razorpay.com/';
-  static const String baseUrl4 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
-  static const String baseUrl5 = 'https://erpservice.paisalo.in:980/PDL.KYC.API/api/';
 }
