@@ -493,7 +493,6 @@ class _KYCPageState extends State<KYCPage> {
       msg: "$message",
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.CENTER,
-      // Position of the toast
       backgroundColor: Colors.redAccent,
       textColor: Colors.white,
       fontSize: 16.0,
@@ -576,7 +575,7 @@ class _KYCPageState extends State<KYCPage> {
       String add3 = _address3Controller.text.toString();
       String city = _cityController.text.toString();
       String pin = _pincodeController.text.toString();
-      String state = stateselected;
+      String state = stateselected.toString();
       bool ismarried = selectedMarritalStatus.toString() == 'Married';
       String gCode = widget.GroupData.groupCode;
       String bCode = widget.data.branchCode.toString();
@@ -1848,13 +1847,6 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-  void docVerifyIDC(String type,String txnNumber,String ifsc,String dob) async {
-    EasyLoading.show(status: 'Loading...',);
-
-    try {
-      // Initialize Dio
-
-
   Widget _buildLabeledDropdownField<T>(
       String labelText,
       String label,
@@ -1903,15 +1895,15 @@ class _KYCPageState extends State<KYCPage> {
               String setdata = "";
               if (value is RangeCategoryDataModel) {
                 setdata = value.descriptionEn;
-              }else if (value is PlaceData) {
-                if(label=="Cities"){
-                  setdata = value.cityName??"";
-                }else if(label=="Districts"){
-                  setdata = value.distName??"";
-                }else if(label=="Sub-Districts"){
-                  setdata = value.subDistName??"";
-                }else if(label=="Village"){
-                  setdata = value.villageName??"";
+              } else if (value is PlaceData) {
+                if (label == "Cities") {
+                  setdata = value.cityName ?? "";
+                } else if (label == "Districts") {
+                  setdata = value.distName ?? "";
+                } else if (label == "Sub-Districts") {
+                  setdata = value.subDistName ?? "";
+                } else if (label == "Village") {
+                  setdata = value.villageName ?? "";
                 }
               }
 
@@ -2074,7 +2066,7 @@ class _KYCPageState extends State<KYCPage> {
 
       // Hit the API
       final response =
-          await apiService_protean.getVoteretailsProtean(requestBody);
+      await apiService_protean.getVoteretailsProtean(requestBody);
 
       // Handle response
       if (response is Map<String, dynamic>) {
@@ -2083,18 +2075,14 @@ class _KYCPageState extends State<KYCPage> {
         setState(() {
           if (responseData['result'].responseData['name'] != null) {
             voterCardHolderName =
-                "${responseData['result'].responseData['name']}";
+            "${responseData['result'].responseData['name']}";
             voterVerified = true;
           } else {
             docVerifyIDC("voterid", _voterIdController.text, "", "");
           }
-
         });
-
       } else {
         docVerifyIDC("voterid", _voterIdController.text, "", "");
-
-
       }
     } catch (e) {
       // Handle errors
@@ -2127,8 +2115,6 @@ class _KYCPageState extends State<KYCPage> {
           }
         },*/
         onPressed: () {
-           if (_currentStep == 0) {
-
 
            if (_currentStep == 0) {
              if(firstPageFieldVelidate()){
@@ -2144,7 +2130,6 @@ class _KYCPageState extends State<KYCPage> {
           } else if (_currentStep > 1) {
             showKycDoneDialog(context);
           }
-
 
           /*if (_currentStep < 2) {
             setState(() {
@@ -2350,7 +2335,6 @@ bool checkIdMendate(){
     debugPrint("Submitted OTP: $text");
   }
 
-  void getOTPByMobileNo(String text) {}
 
   Future<void> verifyDocs(BuildContext context, String idNoController,
       String type, String ifsc, String dob) async {
@@ -2399,26 +2383,25 @@ bool checkIdMendate(){
         stateCode, // StateCode
       );
 
-     // if (response.statuscode == 200 && response.data[0].isValid == null) {
-        setState(() {
-          if (type == "city") {
-            listCityCodes = response.data;
-            print("Cities ${listCityCodes.length}");
-          } else if (type == 'district') {
-            listDistrictCodes = response.data;
-          } else if (type == "subdistrict") {
-            listSubDistrictCodes = response.data;
-          } else if (type == "village") {
-            listVillagesCodes = response.data;
-          }
-        });
+      // if (response.statuscode == 200 && response.data[0].isValid == null) {
+      setState(() {
+        if (type == "city") {
+          listCityCodes = response.data;
+          print("Cities ${listCityCodes.length}");
+        } else if (type == 'district') {
+          listDistrictCodes = response.data;
+        } else if (type == "subdistrict") {
+          listSubDistrictCodes = response.data;
+        } else if (type == "village") {
+          listVillagesCodes = response.data;
+        }
+      });
 
       //} else {}
     } catch (e) {
       print("Error: $e");
     }
-
-
+  }
   void _showOTPDialog(BuildContext context) {
     _timeLeft = 60;
     _startTimer();
