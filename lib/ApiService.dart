@@ -53,6 +53,11 @@ abstract class ApiService {
       @Body() Map<String, dynamic> body,
       );
 
+  @POST("Masters/SendSms")
+  Future<GlobalModel> mobileOtpSend(
+      @Body() Map<String, dynamic> body,
+      );
+
   @GET("{ifsc}")
   Future<Ifcsc> ifscVerify (@Path("ifsc") String ifsc);
 
@@ -297,7 +302,8 @@ abstract class ApiService {
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
       @Query("Group_code") String Group_code,
-      @Query("Branch_code") String Branch_code);
+      @Query("Branch_code") String Branch_code,
+      @Query("Creator") String Creator);
 
   @GET("FiSourcing/GetFiUploadedDocuments")
   Future<KycScanningModel> KycScanning(

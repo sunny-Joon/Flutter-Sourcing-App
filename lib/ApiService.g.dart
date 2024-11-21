@@ -56,6 +56,40 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<GlobalModel> mobileOtpSend(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options = _setStreamType<GlobalModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'Masters/SendSms',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late GlobalModel _value;
+    try {
+      _value = GlobalModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<Ifcsc> ifscVerify(String ifsc) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -1458,11 +1492,13 @@ class _ApiService implements ApiService {
     String dbName,
     String Group_code,
     String Branch_code,
+    String Creator,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'Group_code': Group_code,
       r'Branch_code': Branch_code,
+      r'Creator': Creator,
     };
     final _headers = <String, dynamic>{
       r'Authorization': token,

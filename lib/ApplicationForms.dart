@@ -632,6 +632,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> AddFiExtraDetail(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...',);
+
     int A = selectedIsHandicap == 'Yes' ? 1 : 0;
     print("objectrent $selectedIsHouseRental");
     int B = selectedIsHouseRental == 'Yes' ? 1 : 0;
@@ -678,7 +680,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             _currentStep += 1;
           });
+          EasyLoading.dismiss();
+
         } else {
+          EasyLoading.dismiss();
+
           // Handle failure
           showAlertDialog(
               context, "Failed to update details. Please try again.");
@@ -727,7 +733,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> AddFiFamilyDetail(BuildContext context) async {
-     String Fi_ID = widget.selectedData.id.toString();
+    EasyLoading.show(status: 'Loading...',);
+
+    String Fi_ID = widget.selectedData.id.toString();
     String motheR_FIRST_NAME = _motherFController.text.toString();
     String motheR_MIDDLE_NAME = _motherMController.text.toString();
     String motheR_LAST_NAME = _motherLController.text.toString();
@@ -757,13 +765,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             _currentStep += 1;
           });
-        } else {}
+          EasyLoading.dismiss();
+
+        } else {
+          EasyLoading.dismiss();
+
+        }
       });
     }
   }
 
   Future<void> AddFinancialInfo(BuildContext context) async {
-     String Fi_ID = widget.selectedData.id.toString();
+    EasyLoading.show(status: 'Loading...',);
+
+    String Fi_ID = widget.selectedData.id.toString();
     String bankType = selectedAccountType.toString();
     String bank_Ac = _bank_AcController.text.toString();
     String bank_name = _bank_nameController.text.toString();
@@ -791,12 +806,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             _currentStep += 1;
           });
+          EasyLoading.dismiss();
+
         } else {}
       });
     }
   }
 
   Future<void> FiFemMemIncome(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...',);
+
     String Fi_ID = "139";
     String Age = _AgeController.text;
     String Name = _femNameController.text;
@@ -835,12 +854,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             _currentStep += 1;
           });
-        } else {}
+          EasyLoading.dismiss();
+
+        } else {
+          EasyLoading.dismiss();
+
+        }
       });
     }
   }
 
   Future<void> AddFiIncomeAndExpense(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...',);
+
     String fi_ID = "139";
     String occupation = selectedOccupation.toString();
     String business_Detail = _business_DetailController.text.toString();
@@ -912,12 +938,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             _currentStep += 1;
           });
-        } else {}
+          EasyLoading.dismiss();
+
+        } else {
+          EasyLoading.dismiss();
+
+        }
       });
     }
   }
 
   Future<void> saveGuarantorMethod(BuildContext context) async {
+
+    EasyLoading.show(status: 'Loading...',);
+
     print("object");
     String fi_ID = "139";
     String gr_Sno = "1";
@@ -986,6 +1020,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> GetDocs(BuildContext context, int fiid) async {
+    EasyLoading.show(status: 'Loading...',);
+
     final api = Provider.of<ApiService>(context, listen: false);
 
     return await api.KycScanning(
@@ -995,8 +1031,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           getData = value;
           _isPageLoading = true;
+          EasyLoading.dismiss();
+
         });
-      } else {}
+        EasyLoading.dismiss();
+
+      } else {
+        EasyLoading.dismiss();
+
+      }
     });
   }
 
@@ -1434,6 +1477,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file, String? grNo, int? checklistid) async {
+    EasyLoading.show(status: 'Loading...',);
+
     final api = Provider.of<ApiService>(context, listen: false);
 //https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//38//FiDocuments//VoterIDBorrower0711_2024_43_01.png
 
@@ -1461,7 +1506,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
           _currentStep += 1;
           Fi_Id = value.data[0].fiId.toString();
         });*/
-      } else {}
+        EasyLoading.dismiss();
+
+      } else {
+        EasyLoading.dismiss();
+
+      }
     });
   }
 
@@ -4393,6 +4443,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> verifyDocs(BuildContext context, String idNoController,
       String type, String ifsc, String dob) async {
+    EasyLoading.show(status: 'Loading...',);
+
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl2);
     Map<String, dynamic> requestBody = {
       "type": type,
@@ -4407,11 +4459,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           bankAccHolder = value.data.fullName.toString();
         });
-      }
+        EasyLoading.dismiss();
+
+      }else{
+      EasyLoading.dismiss();
+    }
     });
   }
 
   Future<void> ifscVerify(BuildContext context, String ifsc) async {
+    EasyLoading.show(status: 'Loading...',);
+
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl3);
 
     return await api.ifscVerify(ifsc).then((value) {
@@ -4419,8 +4477,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           bankAddress = value.address.toString();
         });
+        EasyLoading.dismiss();
+
       } else {
         print('Failed to get valid data');
+        EasyLoading.dismiss();
+
       }
     }).catchError((error) {
       print('Error occurred: $error');
