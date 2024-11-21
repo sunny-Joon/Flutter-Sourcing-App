@@ -513,12 +513,6 @@ class _KYCPageState extends State<KYCPage> {
       fontSize: 16.0,
     );
   }
-  void _showErrorMessage(String msg,BuildContext context){
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg)),
-
-    );
-  }
   Widget _buildTextField(String label, TextEditingController controller) {
     return Container(
       color: Colors.white,
@@ -560,146 +554,108 @@ class _KYCPageState extends State<KYCPage> {
 
   Future<void> saveFiMethod(BuildContext context) async {
     EasyLoading.show(status: 'Loading...',);
+      String adhaarid = _aadharIdController.text.toString();
+      String title = selectedTitle??"";
+      String name = _nameController.text.toString();
+      String middlename = _nameMController.text.toString();
+      String lastname = _nameLController.text.toString();
+      String dob = _dobController.text.toString();
+      String age = _ageController.text.toString();
+      String gendre = genderselected;
+      String mobile = _mobileNoController.text.toString();
+      String fatherF = _fatherFirstNameController.text.toString();
+      String fatherM = _fatherMiddleNameController.text.toString();
+      String fatherL = _fatherLastNameController.text.toString();
+      String spouseF = _spouseFirstNameController.text.toString();
+      String spouseM = _spouseMiddleNameController.text.toString();
+      String spouseL = _spouseLastNameController.text.toString();
+      expense = _expenseController.text;
+      income = _expenseController.text;
+      lati = _latitudeController.text;
+      longi = _longitudeController.text;
+      int Expense =
+      (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
+      int Income = (income != null && income.isNotEmpty) ? int.parse(income) : 0;
+      double latitude =
+      (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
+      double longitude =
+      (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
+      String add1 = _address1Controller.text.toString();
+      String add2 = _address2Controller.text.toString();
+      String add3 = _address3Controller.text.toString();
+      String city = _cityController.text.toString();
+      String pin = _pincodeController.text.toString();
+      String state = stateselected;
+      bool ismarried = selectedMarritalStatus.toString() == 'Married';
+      String gCode = widget.GroupData.groupCode;
+      String bCode = widget.data.branchCode.toString();
 
-    print("object");
-    String adhaarid = _aadharIdController.text.toString();
-    String title = selectedTitle??"";
-    String name = _nameController.text.toString();
-    String middlename = _nameMController.text.toString();
-    String lastname = _nameLController.text.toString();
-    String dob = _dobController.text.toString();
-    String age = _ageController.text.toString();
-    String gendre = genderselected;
-    String mobile = _mobileNoController.text.toString();
-    String fatherF = _fatherFirstNameController.text.toString();
-    String fatherM = _fatherMiddleNameController.text.toString();
-    String fatherL = _fatherLastNameController.text.toString();
-    String spouseF = _spouseFirstNameController.text.toString();
-    String spouseM = _spouseMiddleNameController.text.toString();
-    String spouseL = _spouseLastNameController.text.toString();
-    expense = _expenseController.text;
-    income = _expenseController.text;
-    lati = _latitudeController.text;
-    longi = _longitudeController.text;
-    int Expense =
-        (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
-    int Income = (income != null && income.isNotEmpty) ? int.parse(income) : 0;
-    double latitude =
-        (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
-    double longitude =
-        (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
-    String add1 = _address1Controller.text.toString();
-    String add2 = _address2Controller.text.toString();
-    String add3 = _address3Controller.text.toString();
-    String city = _cityController.text.toString();
-    String pin = _pincodeController.text.toString();
-    String state = stateselected;
-    bool ismarried = selectedMarritalStatus.toString() == 'Married';
-    String gCode = widget.GroupData.groupCode;
-    String bCode = widget.data.branchCode.toString();
+      String relation_with_Borrower = relationwithBorrowerselected;
 
-    String relation_with_Borrower = relationwithBorrowerselected;
-
-    String bank_name = bankselected;
-    String loan_Duration = selectedloanDuration!;
-    String loan_amount = _loan_amountController.text.toString();
-    String? Image;
-    if (_imageFile == null) {
-      Image = 'Null';
-    }
-
-    var fields = {
-      "Aadhaar ID": adhaarid,
-      "Title": title,
-      "Name": name,
-      "Middle Name": middlename,
-      "Last Name": lastname,
-      "Date of Birth": dob,
-      "Age": age,
-      "Gender": gendre,
-      "Mobile Number": mobile,
-      "Father's First Name": fatherF,
-      "Father's Middle Name": fatherM,
-      "Father's Last Name": fatherL,
-      "Spouse's First Name": spouseF,
-      "Spouse's Middle Name": spouseM,
-      "Spouse's Last Name": spouseL,
-      "Expense": expense,
-      "Income": income,
-      "Latitude": lati,
-      "Longitude": longi,
-      "Address Line 1": add1,
-      "Address Line 2": add2,
-      "Address Line 3": add3,
-      "City": city,
-      "Pincode": pin,
-      "State": state,
-      "Relation with Borrower": relation_with_Borrower,
-      "Bank Name": bank_name,
-      "Loan Duration": loan_Duration,
-      "Loan Amount": loan_amount,
-      "Image": Image,
-    };
-
-    // Check for blank fields
-
-
-    final api = Provider.of<ApiService>(context, listen: false);
-
-    return await api
-        .saveFi(
-
-        GlobalClass.token,
-        GlobalClass.dbName,
-        adhaarid,
-        title,
-        name,
-        middlename,
-        lastname,
-        dob,
-        age,
-        gendre,
-        mobile,
-        fatherF,
-        fatherM,
-        fatherL,
-        spouseF,
-        spouseM,
-        spouseL,
-        GlobalClass.creator,
-        Expense,
-        Income,
-        latitude,
-        longitude,
-        add1,
-        add2,
-        add3,
-        city,
-        pin,
-        state,
-        ismarried,
-        gCode,
-        bCode,
-        relation_with_Borrower,
-        bank_name,
-        loan_Duration,
-        loan_amount,
-        selectedLoanReason!,
-        _imageFile!)
-
-        .then((value) async {
-      if (value.statuscode == 200) {
-        setState(() {
-          _currentStep += 1;
-          Fi_Id = value.data[0].fiId.toString();
-        });
-        EasyLoading.dismiss();
-
-      } else {
-        EasyLoading.dismiss();
-
+      String bank_name = bankselected;
+      String loan_Duration = selectedloanDuration!;
+      String loan_amount = _loan_amountController.text.toString();
+      String? Image;
+      if (_imageFile == null) {
+        Image = 'Null';
       }
-    });
+
+      final api = Provider.of<ApiService>(context, listen: false);
+
+      return await api
+          .saveFi(
+
+          GlobalClass.token,
+          GlobalClass.dbName,
+          adhaarid,
+          title,
+          name,
+          middlename,
+          lastname,
+          dob,
+          age,
+          gendre,
+          mobile,
+          fatherF,
+          fatherM,
+          fatherL,
+          spouseF,
+          spouseM,
+          spouseL,
+          GlobalClass.creator,
+          Expense,
+          Income,
+          latitude,
+          longitude,
+          add1,
+          add2,
+          add3,
+          city,
+          pin,
+          state,
+          ismarried,
+          gCode,
+          bCode,
+          relation_with_Borrower,
+          bank_name,
+          loan_Duration,
+          loan_amount,
+          selectedLoanReason!,
+          _imageFile!)
+
+          .then((value) async {
+        if (value.statuscode == 200) {
+          setState(() {
+            _currentStep += 1;
+            Fi_Id = value.data[0].fiId.toString();
+          });
+          EasyLoading.dismiss();
+
+        } else {
+          EasyLoading.dismiss();
+
+        }
+      });
   }
 
   Future<void> saveIDsMethod(BuildContext context) async {
@@ -2102,16 +2058,19 @@ class _KYCPageState extends State<KYCPage> {
         },*/
         onPressed: () {
 
-          /* if (_currentStep == 0) {
-            saveFiMethod(context);
+           if (_currentStep == 0) {
+             if(firstPageFieldVelidate()){
+               saveFiMethod(context);
+
+             }
           } else if (_currentStep == 1) {
             saveIDsMethod(context);
           } else if (_currentStep > 1) {
             showKycDoneDialog(context);
-          }*/
+          }
 
 
-          if (_currentStep < 2) {
+          /*if (_currentStep < 2) {
             setState(() {
               _currentStep += 1;
             });
@@ -2119,7 +2078,7 @@ class _KYCPageState extends State<KYCPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Form submitted successfully")),
             );
-          }
+          }*/
         },
         child: Text(
           "SUBMIT",
