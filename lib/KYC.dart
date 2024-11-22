@@ -32,6 +32,7 @@ class _KYCPageState extends State<KYCPage> {
   late ApiService apiService;
   late ApiService apiService_idc;
   late ApiService apiService_protean;
+  late ApiService apiService_OCR;
 
   final TextEditingController _otpController = TextEditingController();
   int _timeLeft = 60; // Timer starting at 60 seconds
@@ -91,6 +92,7 @@ class _KYCPageState extends State<KYCPage> {
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
+    apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
 
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
@@ -773,8 +775,9 @@ class _KYCPageState extends State<KYCPage> {
                 SizedBox(
                   width: double.infinity, // Match the width of the dialog
                   child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
+                    onPressed: () async {
+                        getDataFromOCR("adharFront",context);
+
                     },
                     child: Text(
                       'Adhaar Front',
@@ -857,7 +860,81 @@ class _KYCPageState extends State<KYCPage> {
       },
     );
   }
+  String formatDate(String date) {
+    try {
+      // Parse the input string to a DateTime object
+      DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
+      setState(() {
+        _selectedDate=parsedDate;
+        _calculateAge();
+      });
 
+      // Return the formatted date string in yyyy-MM-dd format
+      return DateFormat('yyyy-MM-dd').format(parsedDate);
+    } catch (e) {
+      // Handle any invalid format
+      return 'Invalid Date';
+    }
+  }
+  Future<void> getDataFromOCR(String type,BuildContext context) async {
+    EasyLoading.show();
+    File? pickedImage = await GlobalClass().pickImage();
+
+    if (pickedImage != null) {
+
+
+
+      try{
+
+        final response = await apiService_OCR.uploadDocument(
+          type, // imgType
+          pickedImage!, // File
+        );
+        if(response.statusCode==200){
+
+          if(type=="adharFront"){
+            setState(() {
+              _aadharIdController.text=response.data.adharId;
+              List<String> nameParts = response.data.name.trim().split(" ");
+              if (nameParts.length == 1) {
+                _nameController.text = nameParts[0];
+              } else if (nameParts.length == 2) {
+                _nameController.text = nameParts[0];
+                _nameLController.text = nameParts[1];
+              } else {
+                _nameController.text = nameParts.first;
+                _nameLController.text = nameParts.last;
+                _nameMController.text = nameParts.sublist(1, nameParts.length - 1).join(' ');
+              }
+              _dobController.text=formatDate(response.data.dob);
+              genderselected = aadhar_gender.firstWhere((item) => item.descriptionEn.toLowerCase() == response.data.gender.toLowerCase()).descriptionEn;
+              if(genderselected=="Male"){
+                selectedTitle="Mr.";
+              }else{
+                selectedTitle="Mrs.";
+              }
+
+            });
+
+
+            Navigator.of(context).pop();
+          }
+          EasyLoading.dismiss();
+
+        }else{
+          showToast_Error("Data not fetched from this Aadhaar card please check the image");
+          Navigator.of(context).pop();
+          EasyLoading.dismiss();
+        }
+
+      }catch(_){
+        showToast_Error("Data not fetched from this Aadhaar card please check the image");
+        Navigator.of(context).pop();
+        EasyLoading.dismiss();
+
+      }
+    }
+  }
   List<int> bigIntToBytes(BigInt bigInt) {
     // Convert BigInt to a byte array (List<int>)
     List<int> byteArray = [];
@@ -1161,24 +1238,23 @@ class _KYCPageState extends State<KYCPage> {
                     style: TextStyle(color: Colors.black, fontSize: 16),
                     underline: Container(
                       height: 2,
-                      color: Colors
-                          .transparent, // Set to transparent to remove default underline
+                      color: Colors.transparent, // Set to transparent to remove default underline
                     ),
                     onChanged: (String? newValue) {
                       if (newValue != null) {
                         setState(() {
-                          genderselected =
-                              newValue; // Update the selected value
+                          genderselected = newValue; // Update the selected value
                         });
                       }
                     },
                     items: aadhar_gender.map<DropdownMenuItem<String>>(
-                        (RangeCategoryDataModel state) {
-                      return DropdownMenuItem<String>(
-                        value: state.code,
-                        child: Text(state.descriptionEn),
-                      );
-                    }).toList(),
+                          (RangeCategoryDataModel state) {
+                        return DropdownMenuItem<String>(
+                          value: state.code,
+                          child: Text(state.descriptionEn),
+                        );
+                      },
+                    ).toList(),
                   ),
                 ),
               ],

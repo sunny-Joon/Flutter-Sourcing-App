@@ -17,6 +17,7 @@ import 'Models/branch_model.dart';
 import 'Models/docsVerify.dart';
 import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
+import 'Models/ocr_response_model.dart';
 part 'ApiService.g.dart';
 
 
@@ -27,6 +28,8 @@ class ApiConfig {
   static const String baseUrl3 = 'https://ifsc.razorpay.com/';
   static const String baseUrl4 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
   static const String baseUrl5 = 'https://erpservice.paisalo.in:980/PDL.KYC.API/api/';
+  static const String baseUrl6 = 'https://ocr.paisalo.in:950/api/';
+
 }
 
 
@@ -345,7 +348,12 @@ abstract class ApiService {
       @Query("DistrictCode") String? districtCode,
       @Query("StateCode") String stateCode,
       );
-
+  @POST("OCR/DocVerifyforSpaceOCR")
+  @MultiPart()
+  Future<OcrResponse> uploadDocument(
+      @Query("imgType") String imgType,
+      @Part(name: "file") File file,
+      );
 
 
 
