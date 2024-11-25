@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter_sourcing_app/Models/BankNamesModel.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
 import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
@@ -156,6 +157,17 @@ abstract class ApiService {
 
   @POST("FiSourcing/AddFinancialInfo")
   Future <GlobalModel> AddFinancialInfo(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body);
+
+  @GET("Masters/GetBankName")
+  Future <BankNamesModel> bankNames(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname);
+
+  @POST("Tracklocations/CreateFiVerfiedInfo")
+  Future <GlobalModel> FiVerifiedInfo(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body);
