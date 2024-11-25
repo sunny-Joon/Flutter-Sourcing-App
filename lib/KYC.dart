@@ -87,7 +87,6 @@ class _KYCPageState extends State<KYCPage> {
 
   @override
   void initState() {
-
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
@@ -182,7 +181,7 @@ class _KYCPageState extends State<KYCPage> {
     }); // Refresh the UI
   }
 
- // final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
+  // final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
 
   // TextEditingControllers for all input fields
@@ -282,31 +281,7 @@ class _KYCPageState extends State<KYCPage> {
         _calculateAge();
       });
     }
-    // if (controller == _dobController) {
-    //   _calculateAge();
-    // }
   }
-
-  /*Future<void> _selectDate(BuildContext context) async {
-    DateTime now = DateTime.now();
-    DateTime initialDate = _selectedDate ?? now;
-
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: DateTime(1900),
-      lastDate: now,
-    );
-
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-        _dobController.text = DateFormat('yyyy/MM/dd').format(picked);
-        print(_dobController.text);
-      });
-      _calculateAge();
-    }
-  }*/
 
   void _calculateAge() {
     if (_selectedDate != null) {
@@ -324,7 +299,6 @@ class _KYCPageState extends State<KYCPage> {
       _ageController.text = '';
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -359,7 +333,9 @@ class _KYCPageState extends State<KYCPage> {
                           ),
                         ),
                         onTap: () {
-                          Navigator.of(context).pop();
+                         setState(() {
+                           _currentStep--;
+                         });
                         },
                       ),
                       Center(
@@ -452,8 +428,6 @@ class _KYCPageState extends State<KYCPage> {
 
   int calculateAgeFromString(String dateString,
       {String format = "yyyy-MM-dd"}) {
-
-
     try {
       // Parse the string date
       DateTime birthDate = DateFormat(format).parse(dateString);
@@ -505,7 +479,6 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-
   Widget _buildTextField(String label, TextEditingController controller) {
     return Container(
       color: Colors.white,
@@ -542,114 +515,115 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   Future<void> saveFiMethod(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+    String adhaarid = _aadharIdController.text.toString();
+    String title = selectedTitle ?? "";
+    String name = _nameController.text.toString();
+    String middlename = _nameMController.text.toString();
+    String lastname = _nameLController.text.toString();
+    String dob = _dobController.text.toString();
+    String age = _ageController.text.toString();
+    String gendre = genderselected;
+    String mobile = _mobileNoController.text.toString();
+    String fatherF = _fatherFirstNameController.text.toString();
+    String fatherM = _fatherMiddleNameController.text.toString();
+    String fatherL = _fatherLastNameController.text.toString();
+    String spouseF = _spouseFirstNameController.text.toString();
+    String spouseM = _spouseMiddleNameController.text.toString();
+    String spouseL = _spouseLastNameController.text.toString();
+    expense = _expenseController.text;
+    income = _expenseController.text;
+    lati = _latitudeController.text;
+    longi = _longitudeController.text;
+    int Expense =
+        (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
+    int Income = (income != null && income.isNotEmpty) ? int.parse(income) : 0;
+    double latitude =
+        (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
+    double longitude =
+        (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
+    String add1 = _address1Controller.text.toString();
+    String add2 = _address2Controller.text.toString();
+    String add3 = _address3Controller.text.toString();
+    String city = _cityController.text.toString();
+    String pin = _pincodeController.text.toString();
+    String state = stateselected.toString();
+    bool ismarried = selectedMarritalStatus.toString() == 'Married';
+    String gCode = widget.GroupData.groupCode;
+    String bCode = widget.data.branchCode.toString();
 
-    EasyLoading.show(status: 'Loading...',);
-      String adhaarid = _aadharIdController.text.toString();
-      String title = selectedTitle??"";
-      String name = _nameController.text.toString();
-      String middlename = _nameMController.text.toString();
-      String lastname = _nameLController.text.toString();
-      String dob = _dobController.text.toString();
-      String age = _ageController.text.toString();
-      String gendre = genderselected;
-      String mobile = _mobileNoController.text.toString();
-      String fatherF = _fatherFirstNameController.text.toString();
-      String fatherM = _fatherMiddleNameController.text.toString();
-      String fatherL = _fatherLastNameController.text.toString();
-      String spouseF = _spouseFirstNameController.text.toString();
-      String spouseM = _spouseMiddleNameController.text.toString();
-      String spouseL = _spouseLastNameController.text.toString();
-      expense = _expenseController.text;
-      income = _expenseController.text;
-      lati = _latitudeController.text;
-      longi = _longitudeController.text;
-      int Expense =
-      (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
-      int Income = (income != null && income.isNotEmpty) ? int.parse(income) : 0;
-      double latitude =
-      (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
-      double longitude =
-      (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
-      String add1 = _address1Controller.text.toString();
-      String add2 = _address2Controller.text.toString();
-      String add3 = _address3Controller.text.toString();
-      String city = _cityController.text.toString();
-      String pin = _pincodeController.text.toString();
-      String state = stateselected.toString();
-      bool ismarried = selectedMarritalStatus.toString() == 'Married';
-      String gCode = widget.GroupData.groupCode;
-      String bCode = widget.data.branchCode.toString();
+    String relation_with_Borrower = relationwithBorrowerselected;
 
-      String relation_with_Borrower = relationwithBorrowerselected;
+    String bank_name = bankselected;
+    String loan_Duration = selectedloanDuration!;
+    String loan_amount = _loan_amountController.text.toString();
+    String? Image;
+    if (_imageFile == null) {
+      Image = 'Null';
+    }
 
-      String bank_name = bankselected;
-      String loan_Duration = selectedloanDuration!;
-      String loan_amount = _loan_amountController.text.toString();
-      String? Image;
-      if (_imageFile == null) {
-        Image = 'Null';
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .saveFi(
+            GlobalClass.token,
+            GlobalClass.dbName,
+            adhaarid,
+            title,
+            name,
+            middlename,
+            lastname,
+            dob,
+            age,
+            gendre,
+            mobile,
+            fatherF,
+            fatherM,
+            fatherL,
+            spouseF,
+            spouseM,
+            spouseL,
+            GlobalClass.creator,
+            Expense,
+            Income,
+            latitude,
+            longitude,
+            add1,
+            add2,
+            add3,
+            city,
+            pin,
+            state,
+            ismarried,
+            gCode,
+            bCode,
+            relation_with_Borrower,
+            bank_name,
+            loan_Duration,
+            loan_amount,
+            selectedLoanReason!,
+            _imageFile!)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          _currentStep += 1;
+          Fi_Id = value.data[0].fiId.toString();
+        });
+        EasyLoading.dismiss();
+      } else {
+        EasyLoading.dismiss();
       }
-
-      final api = Provider.of<ApiService>(context, listen: false);
-
-      return await api
-          .saveFi(
-
-          GlobalClass.token,
-          GlobalClass.dbName,
-          adhaarid,
-          title,
-          name,
-          middlename,
-          lastname,
-          dob,
-          age,
-          gendre,
-          mobile,
-          fatherF,
-          fatherM,
-          fatherL,
-          spouseF,
-          spouseM,
-          spouseL,
-          GlobalClass.creator,
-          Expense,
-          Income,
-          latitude,
-          longitude,
-          add1,
-          add2,
-          add3,
-          city,
-          pin,
-          state,
-          ismarried,
-          gCode,
-          bCode,
-          relation_with_Borrower,
-          bank_name,
-          loan_Duration,
-          loan_amount,
-          selectedLoanReason!,
-          _imageFile!)
-
-          .then((value) async {
-        if (value.statuscode == 200) {
-          setState(() {
-            _currentStep += 1;
-            Fi_Id = value.data[0].fiId.toString();
-          });
-          EasyLoading.dismiss();
-
-        } else {
-          EasyLoading.dismiss();
-
-        }
-      });
+    }).catchError((_) {
+      EasyLoading.dismiss();
+    });
   }
 
   Future<void> saveIDsMethod(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...',);
+    EasyLoading.show(
+      status: 'Loading...',
+    );
 
     print("object");
     String fiid = Fi_Id.toString();
@@ -663,7 +637,7 @@ class _KYCPageState extends State<KYCPage> {
     int is_phnno_verified = 1;
     int isNameVerify = 1;
 
-    var fields = {
+    /*var fields = {
       "Pan No.": pan_no,
       "Driving License": dl,
       "DL Expire Date": DLExpireDate,
@@ -677,13 +651,13 @@ class _KYCPageState extends State<KYCPage> {
         showAlertDialog(context, "Please fill in the ${field.key} field.");
         return;
       }
-    }
+    }*/
 
     final api = Provider.of<ApiService>(context, listen: false);
 
     Map<String, dynamic> requestBody = {
-      //"Fi_ID": fiid,
-      "Fi_ID": 1144,
+      "Fi_ID": fiid,
+      // "Fi_ID": 1144,
       "pan_no": pan_no,
       "dl": dl,
       "DLExpireDate": DLExpireDate,
@@ -708,9 +682,10 @@ class _KYCPageState extends State<KYCPage> {
         });
         EasyLoading.dismiss();
 
+        GlobalClass()
+            .showAlert(context, "FICODE & Creator", fiid, Colors.green);
       } else {
         EasyLoading.dismiss();
-
       }
     });
   }
@@ -1257,14 +1232,12 @@ class _KYCPageState extends State<KYCPage> {
                 onPressed: () {
                   if (_mobileNoController.text.isEmpty) {
                     showToast_Error("Please enter mobile number");
-
-                  }else{
-                      //getOTPByMobileNo(_mobileNoController.text);
-                    mobileOtp(context,_mobileNoController.text);
+                  } else {
+                    //getOTPByMobileNo(_mobileNoController.text);
+                    mobileOtp(context, _mobileNoController.text);
                     _showOTPDialog(context);
                     _timeLeft = 60;
                     _startTimer();
-
                   }
                   // Implement OTP verification logic here
                 },
@@ -1276,7 +1249,7 @@ class _KYCPageState extends State<KYCPage> {
                   'Verify',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),*/
-                Text(
+                    Text(
                   '$_timeLeft',
                   style: TextStyle(color: Colors.green, fontSize: 16),
                 ),
@@ -1819,7 +1792,8 @@ class _KYCPageState extends State<KYCPage> {
               listDistrictCodes, selectedDistrictCode, (PlaceData? newValue) {
             setState(() {
               selectedDistrictCode = newValue;
-               getPlace("subdistrict",stateselected!.code,selectedDistrictCode!.distCode!,"");
+              getPlace("subdistrict", stateselected!.code,
+                  selectedDistrictCode!.distCode!, "");
               // getPlace("district",stateselected!.code,"","");
             });
           }, String),
@@ -1830,7 +1804,11 @@ class _KYCPageState extends State<KYCPage> {
               selectedSubDistrictCode, (PlaceData? newValue) {
             setState(() {
               selectedSubDistrictCode = newValue;
-               getPlace("village",stateselected!.code,selectedDistrictCode!.distCode!,selectedSubDistrictCode!.subDistCode!);
+              getPlace(
+                  "village",
+                  stateselected!.code,
+                  selectedDistrictCode!.distCode!,
+                  selectedSubDistrictCode!.subDistCode!);
               // getPlace("district",stateselected!.code,"","");
             });
           }, String),
@@ -1935,46 +1913,47 @@ class _KYCPageState extends State<KYCPage> {
 
       // Handle response
       if (response is Map<String, dynamic>) {
-        Map<String, dynamic> responseData = response["data"];
-        // Parse JSON object if it’s a map
-        if (type == "pancard") {
-          setState(() {
-            panCardHolderName =
-                "${responseData['first_name']} ${responseData['last_name']}";
-            panVerified = true;
-          });
-        } else if (type == "drivinglicense") {
-          setState(() {
-            dlCardHolderName = "${responseData['name']}";
-            dlVerified = true;
-          });
-        } else if (type == "voterid") {
-          setState(() {
-            voterCardHolderName = "${responseData['name']}";
-            voterVerified = true;
-          });
+        if (response["status_code"] == 200) {
+          Map<String, dynamic> responseData = response["data"];
+          // Parse JSON object if it’s a map
+          if (type == "pancard") {
+            setState(() {
+              panCardHolderName =
+                  "${responseData['first_name']} ${responseData['last_name']}";
+              panVerified = true;
+            });
+          } else if (type == "drivinglicense") {
+            setState(() {
+              dlCardHolderName = "${responseData['name']}";
+              dlVerified = true;
+            });
+          } else if (type == "voterid") {
+            setState(() {
+              voterCardHolderName = "${responseData['name']}";
+              voterVerified = true;
+            });
+          }
+        } else {
+          if (type == "pancard") {
+            setState(() {
+              panCardHolderName = "PAN no is not verified";
+              panVerified = false;
+            });
+          } else if (type == "drivinglicense") {
+            setState(() {
+              dlCardHolderName = "Driving License is not verified";
+              dlVerified = false;
+            });
+          } else if (type == "voterid") {
+            setState(() {
+              voterCardHolderName = "Voter no. is not verified";
+              voterVerified = false;
+            });
+          }
+          showToast_Error("Unexpected Response: $response");
+          print("Unexpected Response: $response");
+          EasyLoading.dismiss();
         }
-      } else {
-        if (type == "pancard") {
-          setState(() {
-            panCardHolderName = "PAN no is not verified";
-            panVerified = false;
-          });
-        } else if (type == "drivinglicense") {
-          setState(() {
-            dlCardHolderName = "Driving License is not verified";
-            dlVerified = false;
-          });
-        } else if (type == "voterid") {
-          setState(() {
-            voterCardHolderName = "Voter no. is not verified";
-            voterVerified = false;
-          });
-        }
-        showToast_Error("Unexpected Response: $response");
-        print("Unexpected Response: $response");
-        EasyLoading.dismiss();
-
       }
     } catch (e) {
       showToast_Error("An error occurred: $e");
@@ -1999,10 +1978,10 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-
-  void dlVerifyByProtean(String userid,String dlNo,String dob) async {
-    EasyLoading.show(status: 'Loading...',);
-
+  void dlVerifyByProtean(String userid, String dlNo, String dob) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
 
     try {
       // Initialize Dio
@@ -2018,10 +1997,12 @@ class _KYCPageState extends State<KYCPage> {
 
       // Hit the API
 
-      final response = await apiService_protean.getDLDetailsProtean(requestBody);
+      final response =
+          await apiService_protean.getDLDetailsProtean(requestBody);
 
-      EasyLoading.show(status: 'Loading...',);
-
+      EasyLoading.show(
+        status: 'Loading...',
+      );
 
       // Handle response
       if (response is Map<String, dynamic>) {
@@ -2036,7 +2017,6 @@ class _KYCPageState extends State<KYCPage> {
                 _dobController.text);
           }
         });
-
       } else {
         docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
             _dobController.text);
@@ -2049,9 +2029,10 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-
-  void voterVerifyByProtean(String userid,String voterNo) async {
-    EasyLoading.show(status: 'Loading...',);
+  void voterVerifyByProtean(String userid, String voterNo) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
 
     try {
       // Initialize Dio
@@ -2066,7 +2047,7 @@ class _KYCPageState extends State<KYCPage> {
 
       // Hit the API
       final response =
-      await apiService_protean.getVoteretailsProtean(requestBody);
+          await apiService_protean.getVoteretailsProtean(requestBody);
 
       // Handle response
       if (response is Map<String, dynamic>) {
@@ -2075,7 +2056,7 @@ class _KYCPageState extends State<KYCPage> {
         setState(() {
           if (responseData['result'].responseData['name'] != null) {
             voterCardHolderName =
-            "${responseData['result'].responseData['name']}";
+                "${responseData['result'].responseData['name']}";
             voterVerified = true;
           } else {
             docVerifyIDC("voterid", _voterIdController.text, "", "");
@@ -2115,18 +2096,14 @@ class _KYCPageState extends State<KYCPage> {
           }
         },*/
         onPressed: () {
-
-           if (_currentStep == 0) {
-             if(firstPageFieldVelidate()){
-               saveFiMethod(context);
-
-             }
-
+          if (_currentStep == 0) {
+            if (firstPageFieldVelidate()) {
+              saveFiMethod(context);
+            }
           } else if (_currentStep == 1) {
-              if(secondPageFieldValidate()){
-                saveIDsMethod(context);
-              }
-
+            //if (secondPageFieldValidate()) {
+              saveIDsMethod(context);
+           // }
           } else if (_currentStep > 1) {
             showKycDoneDialog(context);
           }
@@ -2189,61 +2166,62 @@ class _KYCPageState extends State<KYCPage> {
       },
     );
   }
-bool secondPageFieldValidate(){
 
-  if(_panNoController.text.isNotEmpty){
-    if(!panVerified){
-      showToast_Error("Please verify PAN");
-      return false;
+  bool secondPageFieldValidate() {
+    if (_panNoController.text.isNotEmpty) {
+      if (!panVerified) {
+        showToast_Error("Please verify PAN");
+        return false;
+      }
     }
-  }
-    if(_voterIdController.text.isNotEmpty){
-      if(!voterVerified){
+    if (_voterIdController.text.isNotEmpty) {
+      if (!voterVerified) {
         showToast_Error("Please verify voter id");
         return false;
       }
     }
-       if(_drivingLicenseController.text.isNotEmpty){
-      if(!dlVerified){
+    if (_drivingLicenseController.text.isNotEmpty) {
+      if (!dlVerified) {
         showToast_Error("Please verify driving license");
         return false;
       }
     }
 
-
-    if(!panVerified && !voterVerified && !dlVerified){
-      showToast_Error("Please enter and verify minimum any two IDs or voter Id");
+    if (!panVerified && !voterVerified && !dlVerified) {
+      showToast_Error(
+          "Please enter and verify minimum any two IDs or voter Id");
       return false;
-    }else if(checkIdMendate()==false){
-      showToast_Error("Please enter and verify either voter Id or Any other two Ids");
+    } else if (checkIdMendate() == false) {
+      showToast_Error(
+          "Please enter and verify either voter Id or Any other two Ids");
       return false;
-    }else if(selectedCityCode==null){
+    } else if (selectedCityCode == null) {
       showToast_Error("Please select city");
       return false;
-    } else if(selectedDistrictCode==null){
+    } else if (selectedDistrictCode == null) {
       showToast_Error("Please select district");
       return false;
-    } else if(selectedSubDistrictCode==null){
+    } else if (selectedSubDistrictCode == null) {
       showToast_Error("Please select subdistrict");
       return false;
-    } else if(selectedVillageCode==null){
+    } else if (selectedVillageCode == null) {
       showToast_Error("Please select village");
       return false;
     }
 
     return true;
-}
+  }
 
-bool checkIdMendate(){
-    if(voterVerified){
+  bool checkIdMendate() {
+    if (voterVerified) {
       return true;
-    }else if(panVerified && dlVerified){
+    } else if (panVerified && dlVerified) {
       return true;
-    }else{
+    } else {
       return false;
     }
+  }
 
-}
   bool firstPageFieldVelidate() {
     if (_aadharIdController.text.isEmpty) {
       showToast_Error("Please enter correct aadhaar id");
@@ -2327,14 +2305,13 @@ bool checkIdMendate(){
       return false;
     }
 
-      return true;
+    return true;
   }
 
   void getOTPByMobileNo(String text) {
     // Handle OTP submission here
     debugPrint("Submitted OTP: $text");
   }
-
 
   Future<void> verifyDocs(BuildContext context, String idNoController,
       String type, String ifsc, String dob) async {
@@ -2369,7 +2346,6 @@ bool checkIdMendate(){
     });
   }
 
-
   void getPlace(String type, String stateCode, String districtCode,
       String subDistrictCode) async {
     print(GlobalClass.token);
@@ -2402,6 +2378,7 @@ bool checkIdMendate(){
       print("Error: $e");
     }
   }
+
   void _showOTPDialog(BuildContext context) {
     _timeLeft = 60;
     _startTimer();
@@ -2416,7 +2393,10 @@ bool checkIdMendate(){
                 children: [
                   Text(
                     'OTP',
-                    style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
                   Spacer(), // Pushes the timer and icon to the right
                   Text(
@@ -2473,16 +2453,15 @@ bool checkIdMendate(){
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (_timeLeft > 0) {
-       // setState(() {
-          _timeLeft = 60 - stopwatch.elapsed.inSeconds;
-          EasyLoading.dismiss();
+        // setState(() {
+        _timeLeft = 60 - stopwatch.elapsed.inSeconds;
+        EasyLoading.dismiss();
 
         //  });
       } else {
         _timer?.cancel();
         stopwatch.stop();
         EasyLoading.dismiss();
-
       }
     });
   }
@@ -2496,15 +2475,9 @@ bool checkIdMendate(){
     };
 
     return await api.mobileOtpSend(requestBody).then((value) {
-
       if (value.statuscode == 200) {
-        setState(() {
-
-        });
-
+        setState(() {});
       }
     });
-
   }
 }
-

@@ -293,27 +293,27 @@ class _ApiService implements ApiService {
       longitude.toString(),
     ));
     _data.fields.add(MapEntry(
-      'current_Address1',
+      'P_Address1',
       currentAddress1,
     ));
     _data.fields.add(MapEntry(
-      'current_Address2',
+      'P_Address2',
       currentAddress2,
     ));
     _data.fields.add(MapEntry(
-      'current_Address3',
+      'P_Address3',
       currentAddress3,
     ));
     _data.fields.add(MapEntry(
-      'current_City',
+      'P_City',
       currentCity,
     ));
     _data.fields.add(MapEntry(
-      'current_Pincode',
+      'P_Pincode',
       currentPincode,
     ));
     _data.fields.add(MapEntry(
-      'current_State',
+      'P_State',
       currentState,
     ));
     _data.fields.add(MapEntry(
