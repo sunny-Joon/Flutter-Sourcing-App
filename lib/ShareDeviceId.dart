@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
@@ -14,7 +15,6 @@ class Sharedeviceid extends StatefulWidget {
   final String mobile;
   final String deviceid;
 
-
   const Sharedeviceid(
       {super.key, required this.mobile, required this.deviceid});
 
@@ -24,49 +24,127 @@ class Sharedeviceid extends StatefulWidget {
 
 class _SharedeviceidState extends State<Sharedeviceid> {
   String? _selectedRequestType;
-  CreatorListDataModel? _selectedCreator;
+  String? _selectedCreator;
   String _locationMessage = "";
 
-  BranchDataModel? _selectedBranch;
-  final List<String> _requestTypes = ['Type 1', 'Type 2', 'Type 3'];
+  List<String> _selectedBranches = [];
+
+  final List<String> _requestTypes = [
+    'New User Mapping',
+    'Login Issue',
+    'Update or mapping with Branch'
+  ];
   List<CreatorListDataModel> _creators = [];
   List<BranchDataModel> _branch_codes = [];
   bool _isLoading = true;
-
-   TextEditingController _nameController=TextEditingController();
-   TextEditingController _imei1Controller=TextEditingController();
-   TextEditingController _imei2Controller=TextEditingController();
-   TextEditingController _mobileController=TextEditingController();
-   TextEditingController _mobileNoController=TextEditingController();
-   TextEditingController _deviceIdController=TextEditingController();
-   TextEditingController _longitudeController=TextEditingController();
-   TextEditingController _latitudeController=TextEditingController();
   String? _errorText;
+
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _imei1Controller = TextEditingController();
+  TextEditingController _imei2Controller = TextEditingController();
+  TextEditingController _mobileNoController = TextEditingController();
+  TextEditingController _branchController = TextEditingController();
+
+  String? _userIdController;
+  String? _deviceIdController;
+  String? _longitudeController;
+  String? _latitudeController;
+
+  final FocusNode _nameFocus = FocusNode();
+  final FocusNode _imei1Focus = FocusNode();
+  final FocusNode _imei2Focus = FocusNode();
+  final FocusNode _mobileNoFocus = FocusNode();
+  final FocusNode _branchFocus = FocusNode();
+
+  bool validate() {
+    // Validate Name
+    if (_nameController.text.isEmpty) {
+      showToast_Error("Please enter Name");
+      _nameFocus.requestFocus();
+      return false;
+    }
+
+    // Validate IMEI No. 1 (15 digits)
+    if (_imei1Controller.text.isEmpty) {
+      showToast_Error("Please enter IMEI No. 1");
+      _imei1Focus.requestFocus();
+      return false;
+    } else if (!RegExp(r'^\d{15}$').hasMatch(_imei1Controller.text)) {
+      showToast_Error("IMEI No. 1 must be 15 digits");
+      _imei1Focus.requestFocus();
+      return false;
+    }
+
+    // Validate IMEI No. 2 (15 digits)
+    if (_imei2Controller.text.isEmpty) {
+      showToast_Error("Please enter IMEI No. 2");
+      _imei2Focus.requestFocus();
+      return false;
+    } else if (!RegExp(r'^\d{15}$').hasMatch(_imei2Controller.text)) {
+      showToast_Error("IMEI No. 2 must be 15 digits");
+      _imei2Focus.requestFocus();
+      return false;
+    }
+
+    // Validate User ID (null check)
+    if (_userIdController == null) {
+      showToast_Error("User ID Not Found");
+      return false;
+    }
+
+    // Validate Mobile No. (10 digits)
+    if (_mobileNoController.text.isEmpty) {
+      showToast_Error("Please enter Mobile No.");
+      _mobileNoFocus.requestFocus();
+      return false;
+    } else if (!RegExp(r'^\d{10}$').hasMatch(_mobileNoController.text)) {
+      showToast_Error("Mobile No. must be 10 digits");
+      _mobileNoFocus.requestFocus();
+      return false;
+    }
+
+    // Validate Device ID (16 digits)
+    if (_deviceIdController == null) {
+      showToast_Error("Device ID Not Found");
+      return false;
+    } else if (!RegExp(r'^\d{16}$').hasMatch(_deviceIdController!)) {
+      showToast_Error("Device ID must be 16 digits");
+      return false;
+    }
+
+    // Validate Longitude
+    if (_longitudeController == null) {
+      showToast_Error("Longitude Not Found");
+      return false;
+    }
+
+    // Validate Latitude
+    if (_latitudeController == null) {
+      showToast_Error("Latitude Not Found");
+      return false;
+    }
+
+    return true;
+  }
+
+
 
   @override
   void initState() {
     super.initState();
-    _mobileController = TextEditingController(text: widget.mobile);
-    _deviceIdController = TextEditingController(text: widget.deviceid);
+    _userIdController = widget.mobile.toString();
+    _deviceIdController = widget.deviceid.toString();
+    _branchController = TextEditingController();
 
     _fetchCreatorList();
 
     geolocator();
   }
 
-  @override
-  void dispose() {
-    _mobileController.dispose();
-    _deviceIdController.dispose();
-    _nameController.dispose();
-    _imei1Controller.dispose();
-    _imei2Controller.dispose();
-    _mobileNoController.dispose();
-    super.dispose();
-  }
-
   Future<void> _fetchCreatorList() async {
-    EasyLoading.show(status: 'Loading...',);
+    EasyLoading.show(
+      status: 'Loading...',
+    );
 
     final api = Provider.of<ApiService>(context, listen: false);
     final value = await api.getCreatorList(GlobalClass.dbName);
@@ -75,25 +153,23 @@ class _SharedeviceidState extends State<Sharedeviceid> {
         _creators = value.data;
         _isLoading = false;
         EasyLoading.dismiss();
-
       });
     }
   }
 
-  Future<void> _fetchBranchList(BuildContext context,
-      CreatorListDataModel creators) async {
+  Future<void> _fetchBranchList(BuildContext context, String creators) async {
     final api = Provider.of<ApiService>(context, listen: false);
-    final value = await api.getBranchList(
-        GlobalClass.dbName, creators.creator.toString());
+    final value = await api.getBranchList(GlobalClass.dbName, creators);
     if (value.statuscode == 200) {
       setState(() {
-        _branch_codes = value.data;
+        _branch_codes = value.data; // Assuming value.data is a list of BranchDataModel
         _isLoading = false;
       });
     }
   }
 
-   _onSave(BuildContext context) {
+
+  /* _onSave(BuildContext context) {
     final error = _validateData();
     if (error != null) {
       setState(() {
@@ -114,198 +190,395 @@ class _SharedeviceidState extends State<Sharedeviceid> {
         _mobileNoController.text,
         _longitudeController.text,
         _latitudeController.text,
-        _selectedRequestType.toString());
-  }
+        _selectedRequestType.toString());*/
 
-  String? _validateData() {
 
-    final name = _nameController.text;
-    final mobile = _mobileNoController.text;
-    final creator = _selectedCreator;
-    final deviceId = _deviceIdController.text;
-    final compType = _selectedRequestType;
-    final imei1 = _imei1Controller.text;
-    final imei2 = _imei2Controller.text;
-    final longitude = _longitudeController.text;
-    final latitude = _latitudeController.text;
-    final branchCode = _selectedBranch;
-
-    if (name.isEmpty) return 'Name is required.';
-    if (mobile.length != 10) return 'Mobile number must be 10 digits long.';
-    if (imei1.length != 15) return 'IMEI must be 15 digits.';
-    if (deviceId.length != 16) return 'Device ID must be 16 digits.';
-    if (creator == null) return 'Creator is required.';
-    if (branchCode == null) return 'branchCode is required.';
-    if (compType == null) return 'Request Type is required.';
-    if (longitude.isEmpty) return 'Latitude is required.';
-    if (latitude.isEmpty) return 'Longitude is required.';
-    return null;
+  void showToast_Error(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.red,
-      appBar: AppBar(
-        title: Text('Share Device ID'),
-        backgroundColor: Colors.red[900],
-      ),
       body: _isLoading
           ? Center(
-        child: CircularProgressIndicator(),
-      )
-          : Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTextField('Device Id', _deviceIdController, false),
-              SizedBox(height: 10),
-              _buildTextField('User Id', _mobileController, false),
-              SizedBox(height: 10),
-              _buildDropdownField(
-                  'Request Type', _requestTypes, _selectedRequestType,
-                      (String? newValue) {
-                    setState(() {
-                      _selectedRequestType = newValue;
-                    });
-                  }),
-              SizedBox(height: 10),
-              _buildLabeledDropdownField(
-                  context,
-                  'Creator',
-                  'Creator',
-                  _creators,
-                  _selectedCreator, (CreatorListDataModel? newValue) {
-                setState(() {
-                  _selectedCreator = newValue;
-                  _fetchBranchList(context, _selectedCreator!);
-                });
-              },
-                  CreatorListDataModel),
-              SizedBox(height: 10),
-              _buildLabeledDropdownField(
-                  context,
-                  'Branch Code',
-                  'Branch Code',
-                  _branch_codes,
-                  _selectedBranch,
-                      (BranchDataModel? newValue) {
-                    setState(() {
-                      _selectedBranch = newValue;
-                    });
-                  },
-                  BranchDataModel),
-              SizedBox(height: 10),
-              _buildTextField('Name', _nameController, true),
-              SizedBox(height: 10),
-              _buildTextField('Mobile', _mobileNoController, true),
-              SizedBox(height: 10),
-              _buildTextField('IMEI No. 1', _imei1Controller, true),
-              SizedBox(height: 10),
-              _buildTextField('IMEI No. 2', _imei2Controller, true),
-              SizedBox(height: 10),
-              _buildTextField('Longitude', _longitudeController, true),
-              SizedBox(height: 10),
-              _buildTextField('Latitude', _latitudeController, true),
-              SizedBox(height: 10),
-              if (_errorText != null)
-                Text(
-                  _errorText!,
-                  style: TextStyle(color: Colors.white, fontSize: 15),
+              child: CircularProgressIndicator(),
+            )
+          :  SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: 40),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                    width: 1, color: Colors.grey.shade300),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                              ),
+                              height: 40,
+                              width: 40,
+                              alignment: Alignment.center,
+                              child: Center(
+                                child:
+                                    Icon(Icons.arrow_back_ios_sharp, size: 16),
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          Center(
+                            child: Image.asset(
+                              'assets/Images/logo_white.png',
+                              // Replace with your logo asset path
+                              height: 30,
+                            ),
+                          ),
+                          Container(
+                            height: 40,
+                            width: 40,
+                            alignment: Alignment.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                    //SizedBox(height:2 ),
+                    Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Container(
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black,
+                                      blurRadius: 7,
+                                    ),
+                                  ],
+                                ),
+                                child: Form(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Device Id:- ${_deviceIdController}',
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        'User Id:- ${_userIdController}',
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+
+                                      //SizedBox(height:2 ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        'Request Type',
+                                        style: TextStyle(fontSize: 13),
+                                      ),
+
+                                      Container(
+                                        alignment: Alignment.center,
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 4),
+                                        padding: EdgeInsets.all(4),
+                                        // height: 55,
+                                        // Fixed height
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: DropdownButton<String>(
+                                          value: _selectedRequestType,
+                                          isExpanded: true,
+                                          iconSize: 24,
+                                          elevation: 16,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 13),
+                                          underline: Container(
+                                            height: 2,
+                                            color: Colors
+                                                .transparent, // Set to transparent to remove default underline
+                                          ),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              _selectedRequestType = newValue!;
+                                            });
+                                          },
+                                          items:
+                                              _requestTypes.map((String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+
+                                      SizedBox(height: 4),
+                                      Text(
+                                        'Creator',
+                                        style: TextStyle(fontSize: 13),
+                                      ),
+
+                                      Container(
+                                        alignment: Alignment.center,
+                                        //height: 55,
+                                        // Fixed height
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 4),
+                                        padding: EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: DropdownButton<String>(
+                                          value: _selectedCreator,
+                                          isExpanded: true,
+                                          iconSize: 24,
+                                          elevation: 16,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16),
+                                          underline: Container(
+                                            height: 2,
+                                            color: Colors
+                                                .transparent, // Set to transparent to remove default underline
+                                          ),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              _selectedCreator = newValue!;
+                                              _fetchBranchList(context, _selectedCreator!);
+                                            });
+                                          },
+                                          items: _creators.map(
+                                              (CreatorListDataModel value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value.creator,
+                                              child: Text(value.creator),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+
+                                      Row(
+                                        children: [
+                                          // Expanded widget makes the TextField take up the available space
+                                          Expanded(
+                                            child: _buildTextField(
+                                                'Branch Codes',
+                                                _branchController,
+                                                TextInputType.name,
+                                                true,
+                                                _branchFocus
+                                            ),
+                                          ),
+                                          // IconButton will be placed on the right of the TextField
+                                          IconButton(
+                                            onPressed: () {
+                                              _showMultiSelect();  // Define your action for the icon button
+                                            },
+                                            icon: Icon(Icons.arrow_drop_down_circle_sharp),
+                                          ),
+                                        ],
+                                      ),
+
+                                      /*_buildLabeledDropdownField(
+                                context,
+                                'Creator',
+                                'Creator',
+                                _creators,
+                                _selectedCreator, (CreatorListDataModel? newValue) {
+                              setState(() {
+                                _selectedCreator = newValue;
+                                _fetchBranchList(context, _selectedCreator!);
+                              });
+                            },
+                                CreatorListDataModel),
+                            //SizedBox(height:2 ),
+                            _buildLabeledDropdownField(
+                                context,
+                                'Branch Code',
+                                'Branch Code',
+                                _branch_codes,
+                                _selectedBranch,
+                                    (BranchDataModel? newValue) {
+                                  setState(() {
+                                    _selectedBranch = newValue;
+                                  });
+                                },
+                                BranchDataModel),*/
+                                      //SizedBox(height:2 ),
+                                      _buildTextField('Name', _nameController,
+                                          TextInputType.name, true, _nameFocus),
+                                      //SizedBox(height:2 ),
+                                      _buildTextField(
+                                          'Mobile',
+                                          _mobileNoController,
+                                          TextInputType.number,
+                                          true,
+                                          _mobileNoFocus),
+                                      //SizedBox(height:2 ),
+                                      _buildTextField(
+                                          'IMEI No. 1',
+                                          _imei1Controller,
+                                          TextInputType.number,
+                                          true,
+                                          _imei1Focus),
+                                      //SizedBox(height:2 ),
+                                      _buildTextField(
+                                          'IMEI No. 2',
+                                          _imei2Controller,
+                                          TextInputType.number,
+                                          true,
+                                          _imei2Focus),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.location_on, // Location icon
+                                            color: Colors.green,
+                                          ),
+                                          SizedBox(
+                                              width:
+                                                  4), // Add some space between the icon and the text
+                                          Expanded(
+                                            child: Text(
+                                              '${_latitudeController},${_longitudeController}',
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              geolocator();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red[900],
+                                            ),
+                                            child: Icon(
+                                              Icons.refresh,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      //SizedBox(height:2 ),
+                                      if (_errorText != null)
+                                        Text(
+                                          _errorText!,
+                                          style: TextStyle(
+                                              color: Colors.red, fontSize: 13),
+                                        ),
+                                      //SizedBox(height:2 ),
+                                      Center(
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            if (validate()) {
+                                              _saveMappingReq(context);
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red[900],
+                                            minimumSize: Size(150,
+                                                36), // Set the width to 150 and the height to 36 (or your preferred height)
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      0), // Rectangular shape
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical:
+                                                    12), // Adjust vertical padding as needed
+                                          ),
+                                          child: Text(
+                                            'Save',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )),
+                    SizedBox(height: 20),
+                    // _buildNextButton(context),
+                  ],
                 ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // Handle cancel action
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red[900],
-                    ),
-                    child: Text('Cancel',
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                  ElevatedButton(
-                    onPressed: _onSave(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red[900],
-                    ),
-                    child: Text('Save',
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                ],
               ),
-            ],
-          ),
-        ),
-      ),
+
     );
   }
 
   Widget _buildTextField(String label, TextEditingController controller,
-      bool isEditable) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(color: Colors.white, fontSize: 15),
-        ),
-        Card(
-          elevation: 5,
-          child: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-              hintText: label,
-              contentPadding: EdgeInsets.all(10),
-              border: InputBorder.none,
+      TextInputType inputType, bool YN, FocusNode FN) {
+    return Container(
+      color: Colors.white,
+      margin: EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.all(4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
             ),
-            keyboardType: label.contains('Mobile') || label.contains('IMEI')
-                ? TextInputType.phone
-                : TextInputType.text,
-            enabled: isEditable,
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDropdownField<T>(String label, List<T> items, T? selectedItem,
-      ValueChanged<T?> onChanged) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(color: Colors.white, fontSize: 15),
-        ),
-        Card(
-          elevation: 5,
-          child: DropdownButtonFormField<T>(
-            value: selectedItem,
-            onChanged: onChanged,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(15),
-              border: InputBorder.none,
+          SizedBox(height: 1),
+          Container(
+            width: double.infinity, // Set the desired width
+            child: Center(
+              child: TextFormField(
+                controller: controller,
+                focusNode: FN,
+                keyboardType: inputType,
+                // Set the input type
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+                enabled: YN,
+              ),
             ),
-            hint: Text('Select $label'),
-            items: items.map((T item) {
-              String newVal = "";
-              if (item is CreatorListDataModel) {
-                newVal = item.creator;
-              }
-              return DropdownMenuItem<T>(
-                value: item,
-                child: Text(item.toString()),
-              );
-            }).toList(),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -313,22 +586,21 @@ class _SharedeviceidState extends State<Sharedeviceid> {
     try {
       Position position = await _getCurrentPosition();
       setState(() {
-        _locationMessage = "Latitude: ${position.latitude}, Longitude: ${position.longitude}";
-        print(" geolocatttion: $_locationMessage"); // Print the location message to the console
-        _latitudeController.text = position.latitude.toString();
-        _longitudeController.text = position.longitude.toString();
+        _locationMessage =
+            "Latitude: ${position.latitude}, Longitude: ${position.longitude}";
+        print(
+            " geolocatttion: $_locationMessage"); // Print the location message to the console
+        _latitudeController = position.latitude.toString();
+        _longitudeController = position.longitude.toString();
       });
     } catch (e) {
       setState(() {
         _locationMessage = e.toString();
       });
-      print(" geolocatttion: $_locationMessage"); // Print the error message to the console
-      // Only set controllers if position is available
-      _latitudeController.clear();
-      _longitudeController.clear();
+      print(
+          " geolocatttion: $_locationMessage"); // Print the error message to the console
     }
   }
-
 
   Future<Position> _getCurrentPosition() async {
     bool serviceEnabled;
@@ -356,119 +628,101 @@ class _SharedeviceidState extends State<Sharedeviceid> {
     // When permissions are granted, get the position of the device.
     return await Geolocator.getCurrentPosition();
   }
-}
 
-  Widget _buildLabeledDropdownField<T>(
-    BuildContext context,
-    String labelText,
-    String label,
-    List<T> items,
-    T? selectedValue,
-    ValueChanged<T?>? onChanged,
-    Type objName) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          labelText,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            fontFamily: "assets/fonts/Poppins-SemiBold.ttf",
-          ),
-        ),
-        SizedBox(height: 8),
-        DropdownButtonFormField<T>(
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white,
-            //   labelText: label,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
-              borderSide: BorderSide(
-                color: Colors.grey.shade400, // Border color when enabled
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
-              borderSide: BorderSide(
-                color: Colors.grey, // Border color when focused
-              ),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
-              borderSide: BorderSide(
-                color: Colors.grey, // Default border color
-              ),
-            ),
-          ),
-          value: selectedValue,
-          items: items.map((T value) {
-            String setdata = "";
-            if (value is CreatorListDataModel) {
-              setdata = (value as CreatorListDataModel).creator;
-            }else if (value is BranchDataModel) {
-              setdata = (value as BranchDataModel).branchName;
-            }
+  Future<void> _saveMappingReq(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
 
-            return DropdownMenuItem<T>(
-              value: value,
-              child: Text(setdata), // Convert the value to string for display
-            );
-          }).toList(),
-          onChanged: onChanged,
-        ),
-      ],
-    ),
-  );
-}
+    final api = Provider.of<ApiService>(context, listen: false);
 
-Future<void> _saveMappingReq(
+    Map<String, dynamic> requestBody = {
+      "name": _nameController.text,
+      "mobile": _mobileNoController.text,
+      "IMEI_no1": _imei1Controller.text,
+      "IMEI_no2": _imei2Controller.text,
+      "deviceId": _deviceIdController,
+      "map_branch": _branchController.text,
+      "creator": _selectedCreator,
+      "userId": _userIdController,
+      "longitude": _longitudeController,
+      "latitude": _latitudeController,
+      "compType": _selectedRequestType,
+    };
 
-    BuildContext context,
-    String name,
-    String _mobileController,
-    String imei1,
-    String imei2,
-    String deviceId,
-    String branchCode,
-    String creator,
-    String mobile,
-    String longitude,
-    String latitude,
-    String _selectedRequestType) async {
-
-  EasyLoading.show(status: 'Loading...',);
-
-  final api = Provider.of<ApiService>(context, listen: false);
-
-  Map<String, dynamic> requestBody = {
-    "name": name,
-    "mobile": mobile,
-    "creator": creator,
-    "compType": _selectedRequestType,
-    "deviceId": deviceId,
-    "IMEI_no1": imei1,
-    "IMEI_no2": imei2,
-    "userId": _mobileController,
-    "map_branch": branchCode,
-    "latitude": latitude,
-    "longitude": longitude,
-  };
-
-  return await api.getImeiMappingReq(GlobalClass.dbName, requestBody).then((value) async {
-    if (value.statuscode == 200) {
-        PopupDialog.showPopup(
-            context, value.statuscode.toString(), value.message);
+    return await api
+        .getImeiMappingReq(GlobalClass.dbName, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
         EasyLoading.dismiss();
 
-    } else {
-      EasyLoading.dismiss();
+        PopupDialog.showPopup(
+            context, value.statuscode.toString(), value.message);
+      } else {
+        EasyLoading.dismiss();
+        PopupDialog.showPopup(
+            context, value.statuscode.toString(), value.message);
+      }
+    });
+  }
 
-      PopupDialog.showPopup(context, value.statuscode.toString(), value.message);
+  void _showMultiSelect() async {
+    final selectedValues = await showModalBottomSheet<List<String>>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Select Branches',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _branch_codes.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return CheckboxListTile(
+                        title: Text(_branch_codes[index].branchName),
+                        value: _selectedBranches.contains(_branch_codes[index].branchCode),
+                        onChanged: (bool? value) {
+                          setModalState(() {
+                            if (value == true) {
+                              _selectedBranches.add(_branch_codes[index].branchCode);
+                            } else {
+                              _selectedBranches.remove(_branch_codes[index].branchCode);
+                            }
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context, _selectedBranches);
+                  },
+                  child: Text('Done'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
 
+    if (selectedValues != null) {
+      setState(() {
+        _selectedBranches = selectedValues;
+        _branchController.text = _selectedBranches.join(", "); // Update the TextField with selected branches
+      });
     }
-  });
+  }
+
+
+
 }
+
