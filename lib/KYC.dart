@@ -353,7 +353,7 @@ class _KYCPageState extends State<KYCPage> {
                     ],
                   ),
                 ),
-                //  _buildProgressIndicator(),
+                 // _buildProgressIndicator(),
                 SizedBox(height: 30),
                 Container(
                   height: MediaQuery.of(context).size.height - 220,
@@ -2084,7 +2084,7 @@ class _KYCPageState extends State<KYCPage> {
           ),
           padding: EdgeInsets.symmetric(vertical: 6),
         ),
-        /*onPressed: () {
+        onPressed: () {
           if (_currentStep < 2) {
             setState(() {
               _currentStep += 1;
@@ -2094,8 +2094,8 @@ class _KYCPageState extends State<KYCPage> {
               SnackBar(content: Text("Form submitted successfully")),
             );
           }
-        },*/
-        onPressed: () {
+        },
+        /*onPressed: () {
           if (_currentStep == 0) {
             if (firstPageFieldVelidate()) {
               saveFiMethod(context);
@@ -2106,7 +2106,7 @@ class _KYCPageState extends State<KYCPage> {
            // }
           } else if (_currentStep > 1) {
             showKycDoneDialog(context);
-          }
+          }*/
 
           /*if (_currentStep < 2) {
             setState(() {
@@ -2116,8 +2116,8 @@ class _KYCPageState extends State<KYCPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Form submitted successfully")),
             );
-          }*/
-        },
+          }
+        },*/
         child: Text(
           "SUBMIT",
           style: TextStyle(color: Colors.white, fontSize: 16),

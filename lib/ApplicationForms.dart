@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
+import 'package:flutter_sourcing_app/Models/BankNamesModel.dart';
 import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -61,6 +62,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? _pinErrorC;
   bool _isAddressChecked = false;
 
+  late List<BankNamesDataModel> bankNamesList = [];
   List<RangeCategoryDataModel> religion = [];
   List<RangeCategoryDataModel> cast = [];
   List<RangeCategoryDataModel> states = [];
@@ -81,44 +83,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
   List<String> titleList = ["Select", "Mr.", "Mrs.", "Miss"];
   List<String> accType = ["Select", "Current", "Savings", "Salary"];
   String titleselected = "Select";
-  String selectedTitle = "Select";
   String expense = "";
   String income = "";
   String lati = "";
   String longi = "";
 
   //fiextra
-  List<String> onetonine = [
-    'Select',
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9'
-  ];
+  List<String> onetonine = ['Select', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
   List<String> loanDuration = ['Select', '12', '24', '36', '48'];
   List<String> trueFalse = ['Select', 'Yes', 'No'];
 
-  String? stateselected;
-  String? relationselected;
-  String? genderselected;
-  String? religionselected;
-  String? selectedLoanDuration;
+  Color iconPan = Colors.red;
+  Color iconDl = Colors.red;
+  Color iconVoter = Colors.red;
 
-  //INCOME & EXPENSES
-  String? selectedOccupation;
-  String? selectedBusiness;
-  String? selectedHomeType;
-  String? selectedRoofType;
-  String? selectedToiletType;
-  String? selectedLivingWithSpouse;
-  String? selectedEarningMembers;
-  String? selectedBusinessExperience;
-  String? selectedOtherEMI;
 
 //FIEXTRA
   String? selectedDependent;
@@ -136,22 +114,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? selectedProperty;
   String? selectedPresentHouseOwner;
   String? selectedIsHouseRental;
-
-  //FEM MEM INCOME
-  String? femselectedGender;
-  String? femselectedRelationWithBorrower;
-  String? femselectedHealth;
-  String? femselectedEducation;
-  String? femselectedSchoolType;
-  String? femselectedBusiness;
-  String? femselectedBusinessType;
-  String? femselectedIncomeType;
-
-  String? selectedAccountType;
-  Color iconPan = Colors.red;
-  Color iconDl = Colors.red;
-  Color iconVoter = Colors.red;
-
   final emailIdController = TextEditingController();
   final placeOfBirthController = TextEditingController();
   final resCatController = TextEditingController();
@@ -166,30 +128,51 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final pincodeControllerP = TextEditingController();
   late var cityControllerC = TextEditingController();
   late var pincodeControllerC = TextEditingController();
+  final loanAmountController = TextEditingController();
+
+  //FEM MEM INCOME
+  String? femselectedGender;
+  String? femselectedRelationWithBorrower;
+  String? femselectedHealth;
+  String? femselectedEducation;
+  String? femselectedSchoolType;
+  String? femselectedBusiness;
+  String? femselectedBusinessType;
+  String? femselectedIncomeType;
+  final _femNameController = TextEditingController();
+  final _AgeController = TextEditingController();
+  final _IncomeController = TextEditingController();
+
+  //Financial INFO
+  String? selectedAccountType, selectedBankName;
+  final _bank_IFCSController = TextEditingController();
+  final _bank_AcController = TextEditingController();
+  String? bankAccHolder, bankAddress;
+  final _bankOpeningDateController = TextEditingController();
 
   // AddFiFamilyDetail
   final _motherFController = TextEditingController();
   final _motherMController = TextEditingController();
   final _motherLController = TextEditingController();
-  final _schoolingChildrenController = TextEditingController();
-  final _numOfChildrenController = TextEditingController();
-  final _otherDependentsController = TextEditingController();
+  String? selectednumOfChildren;
+  String? selectedschoolingChildren;
+  String? selectedotherDependents;
 
-  final loanAmountController = TextEditingController();
-  final _femNameController = TextEditingController();
-  final _IncomeController = TextEditingController();
-  final _AgeController = TextEditingController();
-
-  final _business_DetailController = TextEditingController();
-  final _any_current_EMIController = TextEditingController();
+  //INCOME & EXPENSES
+  String? selectedOccupation;
+  String? selectedBusiness;
+  String? selectedHomeType;
+  String? selectedRoofType;
+  String? selectedToiletType;
+  String? selectedLivingWithSpouse;
+  String? selectedEarningMembers;
+  String? selectedBusinessExperience;
+  String? selectedOtherEMI;
   final _future_IncomeController = TextEditingController();
   final _agriculture_incomeController = TextEditingController();
-  final _earning_mem_countController = TextEditingController();
   final _other_IncomeController = TextEditingController();
   final _annuaL_INCOMEController = TextEditingController();
-  final _spendOnChildrenController = TextEditingController();
   final _otheR_THAN_AGRICULTURAL_INCOMEController = TextEditingController();
-  final _years_in_businessController = TextEditingController();
   final _pensionIncomeController = TextEditingController();
   final _any_RentalIncomeController = TextEditingController();
   final _rentController = TextEditingController();
@@ -198,33 +181,32 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final _healthController = TextEditingController();
   final _travellingController = TextEditingController();
   final _entertainmentController = TextEditingController();
+  final _spendOnChildrenController = TextEditingController();
   final _othersController = TextEditingController();
-  final _homeTypeController = TextEditingController();
-  final _homeRoofTypeController = TextEditingController();
-  final _toiletTypeController = TextEditingController();
 
-  final _bank_AcController = TextEditingController();
-  final _bank_nameController = TextEditingController();
-  final _bank_IFCSController = TextEditingController();
-  final _bankOpeningDateController = TextEditingController();
-  String? bankAccHolder, bankAddress;
-
+  //Guarrantor Page
+  final _aadharIdController = TextEditingController();
   final _fnameController = TextEditingController();
   final _mnameController = TextEditingController();
   final _lnameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _dobController = TextEditingController();
+  final _ageController = TextEditingController();
+  final _panController = TextEditingController();
+  final _dlController = TextEditingController();
+  final _voterController = TextEditingController();
   final _p_Address1Controller = TextEditingController();
   final _p_Address2Controller = TextEditingController();
   final _p_Address3Controller = TextEditingController();
   final _p_CityController = TextEditingController();
   final _pincodeController = TextEditingController();
-  final _dobController = TextEditingController();
-  final _ageController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _panController = TextEditingController();
-  final _dlController = TextEditingController();
-  final _voterController = TextEditingController();
-  final _aadharIdController = TextEditingController();
+  String? stateselected;
+  String? relationselected;
+  String? genderselected;
+  String? religionselected;
+  String? selectedTitle;
 
+//Guarrantor Page
   final FocusNode _fnameFocus = FocusNode();
   final FocusNode _mnameFocus = FocusNode();
   final FocusNode _lnameFocus = FocusNode();
@@ -257,23 +239,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final FocusNode _motherFFocus = FocusNode();
   final FocusNode _motherMFocus = FocusNode();
   final FocusNode _motherLFocus = FocusNode();
-  final FocusNode _schoolingChildrenFocus = FocusNode();
-  final FocusNode _numOfChildrenFocus = FocusNode();
-  final FocusNode _otherDependentsFocus = FocusNode();
-  final FocusNode _loanAmountFocus = FocusNode();
+
+  //Fem Mem Income
   final FocusNode _femNameFocus = FocusNode();
   final FocusNode _IncomeFocus = FocusNode();
   final FocusNode _AgeFocus = FocusNode();
-  final FocusNode _business_DetailFocus = FocusNode();
-  final FocusNode _any_current_EMIFocus = FocusNode();
   final FocusNode _future_IncomeFocus = FocusNode();
   final FocusNode _agriculture_incomeFocus = FocusNode();
-  final FocusNode _earning_mem_countFocus = FocusNode();
   final FocusNode _other_IncomeFocus = FocusNode();
   final FocusNode _annuaL_INCOMEFocus = FocusNode();
   final FocusNode _spendOnChildrenFocus = FocusNode();
   final FocusNode _otheR_THAN_AGRICULTURAL_INCOMEFocus = FocusNode();
-  final FocusNode _years_in_businessFocus = FocusNode();
   final FocusNode _pensionIncomeFocus = FocusNode();
   final FocusNode _any_RentalIncomeFocus = FocusNode();
   final FocusNode _rentFocus = FocusNode();
@@ -283,19 +259,21 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final FocusNode _travellingFocus = FocusNode();
   final FocusNode _entertainmentFocus = FocusNode();
   final FocusNode _othersFocus = FocusNode();
-  final FocusNode _homeTypeFocus = FocusNode();
-  final FocusNode _homeRoofTypeFocus = FocusNode();
-  final FocusNode _toiletTypeFocus = FocusNode();
+
+  //Financial Info
   final FocusNode _bank_AcFocus = FocusNode();
-  final FocusNode _bank_nameFocus = FocusNode();
   final FocusNode _bank_IFCSFocus = FocusNode();
   final FocusNode _bankOpeningDateFocus = FocusNode();
+
+  late int FIID;
 
   @override
   void initState() {
     super.initState();
-    GetDocs(context, widget.selectedData.id);
+    FIID = widget.selectedData.id;
+    GetDocs(context);
     initializeData(); // Fetch initial data
+    _BabnkNamesAPI(context);
     _emailIdFocus.addListener(_validateEmail);
     _mobileFocusNode.addListener(_validateMobile);
     _pinFocusNodeP.addListener(() {
@@ -309,7 +287,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Future<void> initializeData() async {
     super.initState();
     fetchData();
-    // _dobController.addListener(() {
+
     _calculateAge();
     // Fetch initial data
     selectedDependent = onetonine.isNotEmpty ? onetonine[0] : null;
@@ -449,8 +427,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }); // Refresh the UI
   }
 
-  //int _currentStep = 0;
-  final _formKeys = List.generate(6, (index) => GlobalKey<FormState>());
+ // final _formKeys = List.generate(6, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
 
   String? selectedBank;
@@ -478,7 +455,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Future<void> _selectDate(BuildContext context, String type) async {
     DateTime now = DateTime.now();
     DateTime initialDate = _selectedDate ?? now;
-    int FIID = widget.selectedData.id;
 
     DateTime? picked = await showDatePicker(
       context: context,
@@ -495,13 +471,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
               DateFormat('yyyy-MM-dd').format(picked);
         } else {
           _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
+          _calculateAge();
         }
       });
     }
   }
 
   void _calculateAge() {
+    print("DOBAGE$_selectedDate");
     if (_selectedDate != null) {
+      print("DOBAGE$_selectedDate");
+
       DateTime today = DateTime.now();
       int age = today.year - _selectedDate!.year;
 
@@ -522,65 +502,72 @@ class _ApplicationPageState extends State<ApplicationPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xFFD42D3F),
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Center(
-          child: Padding(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 13.0, vertical: 24.0),
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                                width: 1, color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                          ),
-                          height: 40,
-                          width: 40,
-                          alignment: Alignment.center,
-                          child: Center(
-                            child: Icon(Icons.arrow_back_ios_sharp, size: 13),
-                          ),
+          child:Padding(
+        padding:
+        const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+    child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border:
+                              Border.all(width: 1, color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
                         ),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
+                        height: 40,
+                        width: 40,
+                        alignment: Alignment.center,
+                        child: Center(
+                          child: Icon(Icons.arrow_back_ios_sharp, size: 13),
+                        ),
                       ),
-                      Center(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    Center(
                         /*child: Image.asset(
                           'assets/Images/paisa_logo.png',
                           // Replace with your logo asset path
                           height: 50,
                         ),*/
-                        child: Text(
-                          pageTitle,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30 // Make the text bold
-                          ),
-                        ),
+                        child: Expanded(
+                      child: Text(
+                        pageTitle,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24 // Make the text bold
+                            ),
                       ),
-                      Container(
-                        height: 40,
-                        width: 40,
-                        alignment: Alignment.center,
-                      ),
-                    ],
-                  ),
+                    )),
+                    Container(
+                      height: 40,
+                      width: 40,
+                      alignment: Alignment.center,
+                    ),
+                  ],
                 ),
-                _buildProgressIndicator(),
-                SizedBox(height: 20),
-                Expanded(
-                  child: Container(
+              ),
+              _buildProgressIndicator(),
+              SizedBox(height: 50),
+        Container(
+          height: MediaQuery.of(context).size.height - 240,
+          child: Flexible(
+            child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    //height: MediaQuery.of(context).size.height - 230,
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -598,9 +585,48 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       child: _getStepContent(),
                     ),
                   ),
+                  Positioned(
+                      top: -35, // Adjust the position as needed
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: _imageFile == null
+                            ? InkWell(
+                          child: ClipOval(
+                            child: Container(
+                              width: 70,
+                              height: 70,
+                              color: Colors.blue,
+                              child: Icon(
+                                Icons.person,
+                                size: 50.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          onTap: _pickImage,
+                        )
+                            : InkWell(
+                          child: ClipOval(
+                            child: Image.file(
+                              File(_imageFile!.path),
+                              width: 70,
+                              height: 70,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          onTap: _pickImage,
+                        ),
+                      )),
+                  ]
                 ),
-                SizedBox(height: 20),
-                Row(
+              ),
+        ),
+              SizedBox(height: 10),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                child: Row(
                   children: [
                     _buildPreviousButton(),
                     SizedBox(width: 8),
@@ -609,10 +635,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     _buildNextButton(),
                   ],
                 ),
-              ],
-            ),
+              )
+            ],
           ),
         ),
+      ),
       ),
     );
   }
@@ -711,7 +738,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
-      "fi_Id": widget.selectedData.id,
+      "fi_Id": FIID,
       "email_Id": emailIdController.text,
       "place_Of_Birth": placeOfBirthController.text,
       "depedent_Person": selectedDependent,
@@ -745,7 +772,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     if (DataValidate(context, requestBody)) {
       await api
           .updatePersonalDetails(
-          GlobalClass.dbName, GlobalClass.token, requestBody)
+              GlobalClass.dbName, GlobalClass.token, requestBody)
           .then((value) async {
         if (value.statuscode == 200) {
           setState(() {
@@ -807,14 +834,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
       status: 'Loading...',
     );
 
-    String Fi_ID = widget.selectedData.id.toString();
+    String Fi_ID = FIID.toString();
     String motheR_FIRST_NAME = _motherFController.text.toString();
     String motheR_MIDDLE_NAME = _motherMController.text.toString();
     String motheR_LAST_NAME = _motherLController.text.toString();
     String motheR_MAIDEN_NAME = "ghjfg";
-    String noOfChildren = _numOfChildrenController.text.toString();
-    String schoolingChildren = _schoolingChildrenController.text.toString();
-    String otherDependents = _otherDependentsController.text.toString();
+    String noOfChildren = selectednumOfChildren!;
+    String schoolingChildren = selectedschoolingChildren!;
+    String otherDependents = selectedotherDependents!;
 
     final api = Provider.of<ApiService>(context, listen: false);
 
@@ -831,7 +858,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     if (DataValidate(context, requestBody)) {
       return await api.FiFamilyDetail(
-          GlobalClass.token, GlobalClass.dbName, requestBody)
+              GlobalClass.token, GlobalClass.dbName, requestBody)
           .then((value) async {
         if (value.statuscode == 200) {
           setState(() {
@@ -850,10 +877,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
       status: 'Loading...',
     );
 
-    String Fi_ID = widget.selectedData.id.toString();
+    String Fi_ID = FIID.toString();
     String bankType = selectedAccountType.toString();
+    String bank_name = selectedBankName.toString();
+
     String bank_Ac = _bank_AcController.text.toString();
-    String bank_name = _bank_nameController.text.toString();
     String bank_IFCS = _bank_IFCSController.text.toString();
     String bank_address = bankAddress!;
     String bankOpeningDate = _bankOpeningDateController.text.toString();
@@ -872,7 +900,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     if (DataValidate(context, requestBody)) {
       await api.AddFinancialInfo(
-          GlobalClass.token, GlobalClass.dbName, requestBody)
+              GlobalClass.token, GlobalClass.dbName, requestBody)
           .then((value) async {
         if (value.statuscode == 200) {
           setState(() {
@@ -889,7 +917,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       status: 'Loading...',
     );
 
-    String Fi_ID = "139";
+    String Fi_ID = FIID.toString();
     String Age = _AgeController.text;
     String Name = _femNameController.text;
     String Gender = femselectedGender.toString();
@@ -921,7 +949,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     if (DataValidate(context, requestBody)) {
       return await api.FIFamilyIncome(
-          GlobalClass.token, GlobalClass.dbName, requestBody)
+              GlobalClass.token, GlobalClass.dbName, requestBody)
           .then((value) async {
         if (value.statuscode == 200) {
           setState(() {
@@ -940,25 +968,31 @@ class _ApplicationPageState extends State<ApplicationPage> {
       status: 'Loading...',
     );
 
-    String fi_ID = "139";
+    String fi_ID = FIID.toString();
     String occupation = selectedOccupation.toString();
-    String business_Detail = _business_DetailController.text.toString();
-    int any_current_EMI = int.parse(_any_current_EMIController.text.toString());
+    String business_Detail = selectedBusiness.toString();
+    int any_current_EMI = int.parse(selectedOtherEMI.toString());
+    String homeType = selectedHomeType.toString();
+    String homeRoofType = selectedRoofType.toString();
+    String toiletType = selectedToiletType.toString();
+    bool livingSpouse =
+        selectedLivingWithSpouse.toString().toLowerCase() == "true"
+            ? true
+            : false;
+    int earning_mem_count = int.parse(selectedEarningMembers.toString());
+    int years_in_business = int.parse(selectedBusinessExperience.toString());
+
     int future_Income = int.parse(_future_IncomeController.text.toString());
     int agriculture_income =
-    int.parse(_agriculture_incomeController.text.toString());
-    int earning_mem_count =
-    int.parse(_earning_mem_countController.text.toString());
+        int.parse(_agriculture_incomeController.text.toString());
     int other_Income = int.parse(_other_IncomeController.text.toString());
     int annuaL_INCOME = int.parse(_annuaL_INCOMEController.text.toString());
     int spendOnChildren = int.parse(_spendOnChildrenController.text.toString());
     int otheR_THAN_AGRICULTURAL_INCOME =
-    int.parse(_otheR_THAN_AGRICULTURAL_INCOMEController.text.toString());
-    int years_in_business =
-    int.parse(_years_in_businessController.text.toString());
+        int.parse(_otheR_THAN_AGRICULTURAL_INCOMEController.text.toString());
     int pensionIncome = int.parse(_pensionIncomeController.text.toString());
     int any_RentalIncome =
-    int.parse(_any_RentalIncomeController.text.toString());
+        int.parse(_any_RentalIncomeController.text.toString());
     int rent = int.parse(_rentController.text.toString());
     int fooding = int.parse(_foodingController.text.toString());
     int education = int.parse(_educationController.text.toString());
@@ -966,10 +1000,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     int travelling = int.parse(_travellingController.text.toString());
     int entertainment = int.parse(_entertainmentController.text.toString());
     int others = int.parse(_othersController.text.toString());
-    String homeType = _homeTypeController.text.toString();
-    String homeRoofType = _homeRoofTypeController.text.toString();
-    String toiletType = _toiletTypeController.text.toString();
-    bool livingSpouse = true;
+
     String docs_path = "";
 
     final api = Provider.of<ApiService>(context, listen: false);
@@ -1005,7 +1036,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     if (DataValidate(context, requestBody)) {
       return await api.AddFiIncomeAndExpense(
-          GlobalClass.token, GlobalClass.dbName, requestBody)
+              GlobalClass.token, GlobalClass.dbName, requestBody)
           .then((value) async {
         if (value.statuscode == 200) {
           setState(() {
@@ -1025,7 +1056,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
 
     print("object");
-    String fi_ID = "139";
+    String fi_ID = FIID.toString();
     String gr_Sno = "1";
     String title = titleselected;
     String fname = _fnameController.text.toString();
@@ -1054,33 +1085,33 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     return await api
         .saveGurrantor(
-        GlobalClass.token,
-        GlobalClass.dbName,
-        fi_ID,
-        gr_Sno,
-        title,
-        fname,
-        mname,
-        lname,
-        relation_with_Borrower,
-        p_Address1,
-        p_Address2,
-        p_Address3,
-        p_City,
-        p_State,
-        pincode,
-        dob,
-        age,
-        phone,
-        pan,
-        dl,
-        voter,
-        aadharId,
-        gender,
-        religion,
-        esign_Succeed,
-        esign_UUID,
-        _imageFile!)
+            GlobalClass.token,
+            GlobalClass.dbName,
+            fi_ID,
+            gr_Sno,
+            title,
+            fname,
+            mname,
+            lname,
+            relation_with_Borrower,
+            p_Address1,
+            p_Address2,
+            p_Address3,
+            p_City,
+            p_State,
+            pincode,
+            dob,
+            age,
+            phone,
+            pan,
+            dl,
+            voter,
+            aadharId,
+            gender,
+            religion,
+            esign_Succeed,
+            esign_UUID,
+            _imageFile!)
         .then((value) async {
       if (value.statuscode == 200) {
         setState(() {
@@ -1091,7 +1122,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-  Future<void> GetDocs(BuildContext context, int fiid) async {
+  Future<void> GetDocs(BuildContext context) async {
     EasyLoading.show(
       status: 'Loading...',
     );
@@ -1099,7 +1130,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final api = Provider.of<ApiService>(context, listen: false);
 
     return await api.KycScanning(
-        GlobalClass.token, GlobalClass.dbName, "10004" /*fiid.toString()*/)
+            GlobalClass.token, GlobalClass.dbName, FIID.toString())
         .then((value) async {
       if (value.statuscode == 200) {
         setState(() {
@@ -1140,7 +1171,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.circular(5), // Adjust as needed
+                            BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1161,7 +1192,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.circular(5), // Adjust as needed
+                            BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1183,9 +1214,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         List<int> byteScanData = bigIntToBytes(bigIntScanData);
 
                         List<int> decompByteScanData =
-                        decompressData(byteScanData);
+                            decompressData(byteScanData);
                         List<List<int>> parts =
-                        separateData(decompByteScanData, 255, 15);
+                            separateData(decompByteScanData, 255, 15);
                         String qrResult = decodeData(parts);
 
                         onResult(qrResult);
@@ -1201,7 +1232,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.circular(5), // Adjust as needed
+                            BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1237,8 +1268,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  List<List<int>> separateData(List<int> source, int separatorByte,
-      int vtcIndex) {
+  List<List<int>> separateData(
+      List<int> source, int separatorByte, int vtcIndex) {
     int imageStartIndex = 0;
 
     List<List<int>> separatedParts = [];
@@ -1272,7 +1303,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     for (var byteArray in encodedData) {
       // Decode using ISO-8859-1
       String decodedString =
-      utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
+          utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
       decodedData.add(decodedString);
       test += decodedString;
     }
@@ -1323,27 +1354,27 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 children: [
                   _selectedImage != null
                       ? Image.file(
-                    _selectedImage!,
-                    width: 50,
-                    height: 50,
-                  )
+                          _selectedImage!,
+                          width: 50,
+                          height: 50,
+                        )
                       : path != null
-                      ? Image.network(
-                    finalUrl,
-                    width: 50,
-                    height: 50,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(
-                        Icons.hide_image_outlined,
-                        size: 30,
-                      );
-                    },
-                  )
-                      : Image.asset(
-                    'assets/Images/rupees.png',
-                    width: 50,
-                    height: 50,
-                  ),
+                          ? Image.network(
+                              finalUrl,
+                              width: 50,
+                              height: 50,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.hide_image_outlined,
+                                  size: 30,
+                                );
+                              },
+                            )
+                          : Image.asset(
+                              'assets/Images/rupees.png',
+                              width: 50,
+                              height: 50,
+                            ),
                   Text(
                     title,
                     style: TextStyle(
@@ -1566,14 +1597,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String finalUrl = '$baseUrl/$modifiedPath';
     File file = File(finalUrl);*/
     return await api
-        .uploadFiDocs(
-        GlobalClass.token,
-        GlobalClass.dbName,
-        "10004",
-        int.parse(grNo!),
-        checklistid!,
-        tittle.toString(),
-        file!)
+        .uploadFiDocs(GlobalClass.token, GlobalClass.dbName, "10004",
+            int.parse(grNo!), checklistid!, tittle.toString(), file!)
         .then((value) async {
       if (value.statuscode == 200) {
         /*setState(() {
@@ -1656,7 +1681,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Widget _lineIndicator() {
     return Container(
-      width: 20,
+      width: 10,
       height: 2,
       color: Colors.grey.shade300,
     );
@@ -1665,937 +1690,72 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Widget _buildStepOne() {
     return SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // _buildTextField('Email ID', emailIdController, fixtraEditable),
+        Text(
+          "Email Id",
+          style: TextStyle(
+            fontSize: 13,
+          ),
+        ),
+        SizedBox(height: 1),
+        Container(
+            width: double.infinity, // Set the desired width
+            //   //height: 45, // Set the desired height
+            child: Center(
+              child: TextFormField(
+                enabled: fixtraEditable,
+                controller: emailIdController,
+                focusNode: _emailIdFocus,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  errorText: _emailError,
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+            )),
+        _buildTextField('Place of Birth', placeOfBirthController,
+            fixtraEditable, _placeOfBirthFocus),
+
+        Row(
           children: [
-            // _buildTextField('Email ID', emailIdController, fixtraEditable),
-            Text(
-              "Email Id",
-              style: TextStyle(
-                fontSize: 13,
-              ),
-            ),
-            SizedBox(height: 1),
-            Container(
-                width: double.infinity, // Set the desired width
-                //   //height: 45, // Set the desired height
-                child: Center(
-                  child: TextFormField(
-                    enabled: fixtraEditable,
-                    controller: emailIdController,
-                    focusNode: _emailIdFocus,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      errorText: _emailError,
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                )),
-            _buildTextField('Place of Birth', placeOfBirthController,
-                fixtraEditable, _placeOfBirthFocus),
-
-            Row(
-              children: [
-                // Dependent Persons Column
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
-                    // Gap of 5 to the right for the first column
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // Align children to the start of the column
-                      children: [
-                        Text(
-                          'Dependent Persons',
-                          style: TextStyle(fontSize: 13),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 5),
-                        // Add some spacing between the Text and Container
-                        Container(
-                          //  //height: 45,
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: selectedDependent,
-                            isExpanded: true,
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.transparent,
-                            ),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedDependent = newValue!;
-                              });
-                            },
-                            items: onetonine.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10), // Gap of 10 between the two columns
-
-                // Reservation Category Column
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    // Gap of 5 to the left for the second column
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // Align children to the start of the column
-                      children: [
-                        _buildTextField('Res. Category', resCatController,
-                            fixtraEditable, _resCatFocus),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            Row(
-              children: [
-                // Religion Column
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
-                    // Gap of 5 to the right for the first column
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // Align children to the start of the column
-                      children: [
-                        Text(
-                          'Religion',
-                          style: TextStyle(fontSize: 13),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 5),
-                        // Add some spacing between the Text and Container
-                        Container(
-                          //height: 45,
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: selectedReligionextra,
-                            isExpanded: true,
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.transparent,
-                            ),
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
-                                setState(() {
-                                  selectedReligionextra = newValue;
-                                });
-                              }
-                            },
-                            items: religion.map<DropdownMenuItem<String>>(
-                                    (RangeCategoryDataModel state) {
-                                  return DropdownMenuItem<String>(
-                                    value: state.code,
-                                    child: Text(state.descriptionEn),
-                                  );
-                                }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10), // Gap of 10 between the two columns
-                // Cast Column
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    // Gap of 5 to the left for the second column
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // Align children to the start of the column
-                      children: [
-                        Text(
-                          'Cast',
-                          style: TextStyle(fontSize: 13),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 5),
-                        // Add some spacing between the Text and Container
-                        Container(
-                          //height: 45,
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: selectedCast,
-                            isExpanded: true,
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                            underline: Container(
-                              height: 2,
-                              color: Colors
-                                  .transparent, // Set to transparent to remove default underline
-                            ),
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
-                                setState(() {
-                                  selectedCast =
-                                      newValue; // Update the selected value
-                                });
-                              }
-                            },
-                            items: cast.map<DropdownMenuItem<String>>(
-                                    (RangeCategoryDataModel state) {
-                                  return DropdownMenuItem<String>(
-                                    value: state.code,
-                                    child: Text(state.descriptionEn),
-                                  );
-                                }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 10),
-
-            Text(
-              "Mobile No.",
-              style: TextStyle(
-                fontSize: 13,
-              ),
-            ),
-            SizedBox(height: 1),
-            Container(
-                width: double.infinity, // Set the desired width
-                //   //height: 45, // Set the desired height
-                child: Center(
-                  child: TextFormField(
-                    enabled: fixtraEditable,
-                    controller: mobileController,
-                    focusNode: _mobileFocusNode,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      errorText: _mobileError,
-                    ),
-                    keyboardType: TextInputType.phone,
-                  ),
-                )),
-            Row(
-              children: [
-                // Is Handicap Column
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    // Gap of 5 to the left for the second column
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // Align children to the start of the column
-                      children: [
-                        Text(
-                          'Is Handicap',
-                          style: TextStyle(fontSize: 13),
-                          textAlign: TextAlign.left, // Align text to the left
-                        ),
-                        SizedBox(height: 5),
-                        // Add some spacing between the Text and Container
-                        Container(
-                          //height: 45,
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: selectedIsHandicap,
-                            isExpanded: true,
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.transparent,
-                            ),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedIsHandicap = newValue!;
-                              });
-                            },
-                            items: trueFalse.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10), // Gap of 10 between the two columns
-
-                // Special Ability Column
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    // Gap of 5 to the left for the second column
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // Align children to the start of the column
-                      children: [
-                        Text(
-                          'Special Ability',
-                          style: TextStyle(fontSize: 13),
-                          textAlign: TextAlign.left, // Align text to the left
-                        ),
-                        SizedBox(height: 5),
-                        // Add some spacing between the Text and Container
-                        Container(
-                          //height: 45,
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: selectedspecialAbility,
-                            isExpanded: true,
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.transparent,
-                            ),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedspecialAbility = newValue!;
-                                isSpecialSocialCategoryVisible =
-                                (newValue == 'Yes'); // Update visibility
-                              });
-                            },
-                            items: trueFalse.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Special Social Category',
-                  style: TextStyle(fontSize: 13),
-                ),
-                Container(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
-                  //height: 45,
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: DropdownButton<String>(
-                    value: selectedSpecialSocialCategory,
-                    isExpanded: true,
-                    iconSize: 24,
-                    elevation: 16,
-                    style: TextStyle(color: Colors.black, fontSize: 13),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.transparent,
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedSpecialSocialCategory = newValue!;
-                      });
-                    },
-                    items: trueFalse.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 10),
-            // Gap of 10 between the two columns
-
-            Container(
-              padding: EdgeInsets.all(8.0),
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-              decoration: BoxDecoration(
-                color: Color(0xFFD42D3F),
-                borderRadius: BorderRadius.zero, // Sharp corners
-              ),
-              child: Center(
-                // Center widget to center the text inside the container
-                child: Text(
-                  'PERMANENT',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            _buildTextField(
-                'Address1', address1ControllerP, fixtraEditable,
-                _address1FocusP),
-            _buildTextField(
-                'Address2', address2ControllerP, fixtraEditable,
-                _address2FocusP),
-            _buildTextField(
-                'Address3', address3ControllerP, fixtraEditable,
-                _address3FocusP),
-
-            Text(
-              'State',
-              style: TextStyle(fontSize: 13),
-            ),
-            Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-              // Adjust the width as needed
-              //height: 45,
-              // Fixed height
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: DropdownButton<String>(
-                value: selectedStateextraP,
-                isExpanded: true,
-                iconSize: 24,
-                elevation: 16,
-                style: TextStyle(color: Colors.black, fontSize: 13),
-                underline: Container(
-                  height: 2,
-                  color: Colors
-                      .transparent, // Set to transparent to remove default underline
-                ),
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    setState(() {
-                      selectedStateextraP =
-                          newValue; // Update the selected value
-                    });
-                  }
-                },
-                items: states
-                    .map<DropdownMenuItem<String>>((
-                    RangeCategoryDataModel state) {
-                  return DropdownMenuItem<String>(
-                    value: state.code,
-                    child: Text(state.descriptionEn),
-                  );
-                }).toList(),
-              ),
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // City TextField
-                Expanded(
-                  child: _buildTextField(
-                      'City', cityControllerP, fixtraEditable, _cityFocusP),
-                ),
-                SizedBox(
-                    width:
-                    10),
-                // Add some space between the City TextField and Pin Code Text
-                // Pin Code Text and TextFormField
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Pin Code",
-                        style: TextStyle(
-                          fontSize: 13,
-                        ),
-                      ),
-                      SizedBox(height: 1),
-                      Container(
-                        width: double.infinity, // Set the desired width
-                        child: TextFormField(
-                          enabled: fixtraEditable,
-                          controller: pincodeControllerP,
-                          focusNode: _pinFocusNodeP,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            errorText: _pinErrorP,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(
-                height:
-                10),
-            // Add some space between the City TextField and Pin Code Text
-
-            Container(
-              padding: EdgeInsets.all(8.0),
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-              decoration: BoxDecoration(
-                color: Color(0xFFD42D3F),
-                borderRadius: BorderRadius.zero, // Sharp corners
-              ),
-              child: Center(
-                // Center widget to center the text inside the container
-                child: Text(
-                  'CURRENT',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Checkbox(
-                  value: _isAddressChecked,
-                  onChanged: _onCheckboxChanged,
-                ),
-                Text(
-                  'Same as Permanent Address',
-                  style: TextStyle(
-                    fontSize: 10.0,
-                    color: Color(0xFFD42D3F), // Custom color
-                  ),
-                ),
-              ],
-            ),
-            _buildTextField(
-                'Address1', address1ControllerC, fixtraEditable,
-                _address1FocusC),
-            _buildTextField(
-                'Address2', address2ControllerC, fixtraEditable,
-                _address2FocusC),
-            _buildTextField(
-                'Address3', address3ControllerC, fixtraEditable,
-                _address3FocusC),
-
-            Text(
-              'State',
-              style: TextStyle(fontSize: 13),
-            ),
-            Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-              // Adjust the width as needed
-              //height: 45,
-              // Fixed height
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: DropdownButton<String>(
-                value: selectedStateextraC,
-                isExpanded: true,
-                iconSize: 24,
-                elevation: 16,
-                style: TextStyle(color: Colors.black, fontSize: 13),
-                underline: Container(
-                  height: 2,
-                  color: Colors
-                      .transparent, // Set to transparent to remove default underline
-                ),
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    setState(() {
-                      selectedStateextraC =
-                          newValue; // Update the selected value
-                    });
-                  }
-                },
-                items: states
-                    .map<DropdownMenuItem<String>>((
-                    RangeCategoryDataModel state) {
-                  return DropdownMenuItem<String>(
-                    value: state.code,
-                    child: Text(state.descriptionEn),
-                  );
-                }).toList(),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // City TextField
-                Expanded(
-                  child: _buildTextField(
-                      'City', cityControllerC, fixtraEditable, _cityFocusC),
-                ),
-                SizedBox(
-                    width:
-                    10),
-                // Add some space between the City TextField and Pin Code Text
-                // Pin Code Text and TextFormField
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Pin Code",
-                        style: TextStyle(
-                          fontSize: 13,
-                        ),
-                      ),
-                      SizedBox(height: 1),
-                      Container(
-                        width: double.infinity, // Set the desired width
-                        child: TextFormField(
-                          enabled: fixtraEditable,
-                          controller: pincodeControllerC,
-                          focusNode: _pinFocusNodeC,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            errorText: _pinErrorC,
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    // Gap of 5 to the left for the second column
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // Align children to the start of the column
-                      children: [
-                        Text(
-                          'Is House Rental',
-                          style: TextStyle(fontSize: 13),
-                          textAlign: TextAlign.left, // Align text to the left
-                        ),
-                        SizedBox(height: 5),
-                        // Add some spacing between the Text and Container
-                        Container(
-                          //height: 45,
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: selectedIsHouseRental,
-                            isExpanded: true,
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.transparent,
-                            ),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedIsHouseRental = newValue!;
-                              });
-                            },
-                            items: trueFalse.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 10),
-
-            Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 0.0),
-                    // Gap between columns
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // District
-                        Text(
-                          'District',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        // Spacing between text and dropdown
-                        Container(
-                          //height: 45,
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: selectedDistrict,
-                            isExpanded: true,
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.transparent,
-                            ),
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
-                                setState(() {
-                                  selectedDistrict =
-                                      newValue; // Update the selected value
-                                });
-                              }
-                            },
-                            items: states.map<DropdownMenuItem<String>>(
-                                    (RangeCategoryDataModel state) {
-                                  return DropdownMenuItem<String>(
-                                    value: state.code,
-                                    child: Text(state.descriptionEn),
-                                  );
-                                }).toList(),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        // Spacing between different fields
-
-                        // Village
-                        Text(
-                          'Village',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        SizedBox(height: 5),
-                        Container(
-                          //height: 45,
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: selectedVillage,
-                            isExpanded: true,
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.transparent,
-                            ),
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
-                                setState(() {
-                                  selectedVillage =
-                                      newValue; // Update the selected value
-                                });
-                              }
-                            },
-                            items: states.map<DropdownMenuItem<String>>(
-                                    (RangeCategoryDataModel state) {
-                                  return DropdownMenuItem<String>(
-                                    value: state.code,
-                                    child: Text(state.descriptionEn),
-                                  );
-                                }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 0.0),
-                    // Gap between columns
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Sub District
-                        Text(
-                          'Sub District',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        // Spacing between text and dropdown
-                        Container(
-                          //height: 45,
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: selectedSubDistrict,
-                            isExpanded: true,
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.transparent,
-                            ),
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
-                                setState(() {
-                                  selectedSubDistrict =
-                                      newValue; // Update the selected value
-                                });
-                              }
-                            },
-                            items: trueFalse.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        // Spacing between different fields
-
-                        // Residing for (Years)
-                        Text(
-                          'Residing for (Years)',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        Container(
-                          //height: 45,
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: selectedResidingFor,
-                            isExpanded: true,
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.transparent,
-                            ),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedResidingFor = newValue!;
-                              });
-                            },
-                            items: onetonine.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Column(
+            // Dependent Persons Column
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 5.0),
+                // Gap of 5 to the right for the first column
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // Align children to the start of the column
                   children: [
                     Text(
-                      'Property (In Acres)',
+                      'Dependent Persons',
                       style: TextStyle(fontSize: 13),
+                      textAlign: TextAlign.left,
                     ),
+                    SizedBox(height: 5),
+                    // Add some spacing between the Text and Container
                     Container(
-                      width: 150,
-                      // Adjust the width as needed
-                      //height: 45,
-                      // Fixed height
+                      //  //height: 45,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: DropdownButton<String>(
-                        value: selectedProperty,
+                        value: selectedDependent,
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
                         style: TextStyle(color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
-                          color: Colors
-                              .transparent, // Set to transparent to remove default underline
+                          color: Colors.transparent,
                         ),
                         onChanged: (String? newValue) {
                           setState(() {
-                            selectedProperty = newValue!;
+                            selectedDependent = newValue!;
                           });
                         },
                         items: onetonine.map((String value) {
@@ -2608,25 +1768,109 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     ),
                   ],
                 ),
-                SizedBox(width: 10),
-                Column(
+              ),
+            ),
+            SizedBox(width: 10), // Gap of 10 between the two columns
+
+            // Reservation Category Column
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                // Gap of 5 to the left for the second column
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // Align children to the start of the column
+                  children: [
+                    _buildTextField('Res. Category', resCatController,
+                        fixtraEditable, _resCatFocus),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        Row(
+          children: [
+            // Religion Column
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 5.0),
+                // Gap of 5 to the right for the first column
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // Align children to the start of the column
                   children: [
                     Text(
-                      'House Owner',
+                      'Religion',
                       style: TextStyle(fontSize: 13),
+                      textAlign: TextAlign.left,
                     ),
+                    SizedBox(height: 5),
+                    // Add some spacing between the Text and Container
                     Container(
-                      width: 150,
-                      // Adjust the width as needed
                       //height: 45,
-                      // Fixed height
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: DropdownButton<String>(
-                        value: selectedPresentHouseOwner,
+                        value: selectedReligionextra,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.transparent,
+                        ),
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              selectedReligionextra = newValue;
+                            });
+                          }
+                        },
+                        items: religion.map<DropdownMenuItem<String>>(
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: 10), // Gap of 10 between the two columns
+            // Cast Column
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                // Gap of 5 to the left for the second column
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // Align children to the start of the column
+                  children: [
+                    Text(
+                      'Cast',
+                      style: TextStyle(fontSize: 13),
+                      textAlign: TextAlign.left,
+                    ),
+                    SizedBox(height: 5),
+                    // Add some spacing between the Text and Container
+                    Container(
+                      //height: 45,
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedCast,
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
@@ -2639,440 +1883,176 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         onChanged: (String? newValue) {
                           if (newValue != null) {
                             setState(() {
-                              selectedPresentHouseOwner =
+                              selectedCast =
                                   newValue; // Update the selected value
                             });
                           }
                         },
-                        items: landOwner.map<DropdownMenuItem<String>>(
-                                (RangeCategoryDataModel state) {
-                              return DropdownMenuItem<String>(
-                                value: state.code,
-                                child: Text(state.descriptionEn),
-                              );
-                            }).toList(),
+                        items: cast.map<DropdownMenuItem<String>>(
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
                       ),
-                    )
+                    ),
                   ],
-                )
-              ],
-            )
+                ),
+              ),
+            ),
           ],
-        ));
-  }
+        ),
 
-  Widget _buildStepTwo() {
-    return SingleChildScrollView(
-        child: Column(
+        SizedBox(height: 10),
+
+        Text(
+          "Mobile No.",
+          style: TextStyle(
+            fontSize: 13,
+          ),
+        ),
+        SizedBox(height: 1),
+        Container(
+            width: double.infinity, // Set the desired width
+            //   //height: 45, // Set the desired height
+            child: Center(
+              child: TextFormField(
+                enabled: fixtraEditable,
+                controller: mobileController,
+                focusNode: _mobileFocusNode,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  errorText: _mobileError,
+                ),
+                keyboardType: TextInputType.phone,
+              ),
+            )),
+        Row(
+          children: [
+            // Is Handicap Column
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                // Gap of 5 to the left for the second column
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // Align children to the start of the column
+                  children: [
+                    Text(
+                      'Is Handicap',
+                      style: TextStyle(fontSize: 13),
+                      textAlign: TextAlign.left, // Align text to the left
+                    ),
+                    SizedBox(height: 5),
+                    // Add some spacing between the Text and Container
+                    Container(
+                      //height: 45,
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedIsHandicap,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.transparent,
+                        ),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedIsHandicap = newValue!;
+                          });
+                        },
+                        items: trueFalse.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: 10), // Gap of 10 between the two columns
+
+            // Special Ability Column
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                // Gap of 5 to the left for the second column
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // Align children to the start of the column
+                  children: [
+                    Text(
+                      'Special Ability',
+                      style: TextStyle(fontSize: 13),
+                      textAlign: TextAlign.left, // Align text to the left
+                    ),
+                    SizedBox(height: 5),
+                    // Add some spacing between the Text and Container
+                    Container(
+                      //height: 45,
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedspecialAbility,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.transparent,
+                        ),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedspecialAbility = newValue!;
+                            isSpecialSocialCategoryVisible =
+                                (newValue == 'Yes'); // Update visibility
+                          });
+                        },
+                        items: trueFalse.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTextField(
-                'Mother name', _motherFController, FiIncomeEditable,
-                _motherFFocus),
-            Row(
-              children: [
-                Expanded(
-                    child: _buildTextField('Middle Name', _motherMController,
-                        FiFamilyEditable, _motherMFocus)),
-                SizedBox(width: 13),
-                // Add spacing between the text fields if needed
-                Expanded(
-                    child: _buildTextField('Last Name', _motherLController,
-                        FiFamilyEditable, _motherLFocus)),
-              ],
-            ),
-            _buildTextField2('No. of Children', _numOfChildrenController,
-                TextInputType.number, FiFamilyEditable, _numOfChildrenFocus),
-            _buildTextField2('Schooling Children', _schoolingChildrenController,
-                TextInputType.number, FiIncomeEditable,
-                _schoolingChildrenFocus),
-            _buildTextField2('Other Dependents', _otherDependentsController,
-                TextInputType.number, FiIncomeEditable, _otherDependentsFocus),
-          ],
-        ));
-  }
-
-  Widget _buildStepThree() {
-    return SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        'Occupation',
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      Container(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: DropdownButton<String>(
-                          value: selectedOccupation,
-                          isExpanded: true,
-                          iconSize: 24,
-                          elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
-                          underline: Container(
-                            height: 2,
-                            color: Colors
-                                .transparent, // Remove default underline
-                          ),
-                          onChanged: (String? newValue) {
-                            if (newValue != null) {
-                              setState(() {
-                                selectedOccupation =
-                                    newValue; // Update the selected value
-                              });
-                            }
-                          },
-                          items: occupationType.map<DropdownMenuItem<String>>(
-                                  (RangeCategoryDataModel state) {
-                                return DropdownMenuItem<String>(
-                                  value: state.code,
-                                  child: Text(state.descriptionEn),
-                                );
-                              }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 10), // Spacing between the two columns
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        'Business Detail',
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      Container(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: DropdownButton<String>(
-                          value: selectedBusiness,
-                          isExpanded: true,
-                          iconSize: 24,
-                          elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
-                          underline: Container(
-                            height: 2,
-                            color: Colors
-                                .transparent, // Remove default underline
-                          ),
-                          onChanged: (String? newValue) {
-                            if (newValue != null) {
-                              setState(() {
-                                selectedBusiness =
-                                    newValue; // Update the selected value
-                              });
-                            }
-                          },
-                          items: business_Type.map<DropdownMenuItem<String>>(
-                                  (RangeCategoryDataModel state) {
-                                return DropdownMenuItem<String>(
-                                  value: state.code,
-                                  child: Text(state.descriptionEn),
-                                );
-                              }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        'Any Current EMI',
-                        style: TextStyle(fontSize: 13),
-                        textAlign: TextAlign.left,
-                      ),
-                      Container(
-                        //  //height: 45,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: DropdownButton<String>(
-                          value: selectedOtherEMI,
-                          isExpanded: true,
-                          iconSize: 24,
-                          elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.transparent,
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedOtherEMI = newValue!;
-                            });
-                          },
-                          items: trueFalse.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 10), // Spacing between the two columns
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        'Home Type',
-                        style: TextStyle(fontSize: 13),
-                        textAlign: TextAlign.left,
-                      ),
-                      Container(
-                        //  //height: 45,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: DropdownButton<String>(
-                          value: selectedHomeType,
-                          isExpanded: true,
-                          iconSize: 24,
-                          elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.transparent,
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedHomeType = newValue!;
-                            });
-                          },
-                          items: onetonine.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        'Roof Type',
-                        style: TextStyle(fontSize: 13),
-                        textAlign: TextAlign.left,
-                      ),
-                      Container(
-                        //  //height: 45,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: DropdownButton<String>(
-                          value: selectedRoofType,
-                          isExpanded: true,
-                          iconSize: 24,
-                          elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.transparent,
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedRoofType = newValue!;
-                            });
-                          },
-                          items: onetonine.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 10), // Spacing between the two columns
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        'Toilet Type',
-                        style: TextStyle(fontSize: 13),
-                        textAlign: TextAlign.left,
-                      ),
-                      Container(
-                        //  //height: 45,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: DropdownButton<String>(
-                          value: selectedToiletType,
-                          isExpanded: true,
-                          iconSize: 24,
-                          elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.transparent,
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedToiletType = newValue!;
-                            });
-                          },
-                          items: onetonine.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        'Living With Spouse',
-                        style: TextStyle(fontSize: 13),
-                        textAlign: TextAlign.left,
-                      ),
-                      Container(
-                        //  //height: 45,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: DropdownButton<String>(
-                          value: selectedLivingWithSpouse,
-                          isExpanded: true,
-                          iconSize: 24,
-                          elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.transparent,
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedLivingWithSpouse = newValue!;
-                            });
-                          },
-                          items: trueFalse.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 10), // Spacing between the two columns
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        'Earning Members (count)',
-                        style: TextStyle(fontSize: 13),
-                        textAlign: TextAlign.left,
-                      ),
-                      Container(
-                        //  //height: 45,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: DropdownButton<String>(
-                          value: selectedEarningMembers,
-                          isExpanded: true,
-                          iconSize: 24,
-                          elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.transparent,
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedEarningMembers = newValue!;
-                            });
-                          },
-                          items: onetonine.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
             Text(
-              'Business Experience',
+              'Special Social Category',
               style: TextStyle(fontSize: 13),
-              textAlign: TextAlign.left,
             ),
             Container(
-              //  //height: 45,
+              width: MediaQuery.of(context).size.width,
+              //height: 45,
               padding: EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(5),
               ),
               child: DropdownButton<String>(
-                value: selectedBusinessExperience,
+                value: selectedSpecialSocialCategory,
                 isExpanded: true,
                 iconSize: 24,
                 elevation: 16,
@@ -3083,10 +2063,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 ),
                 onChanged: (String? newValue) {
                   setState(() {
-                    selectedBusinessExperience = newValue!;
+                    selectedSpecialSocialCategory = newValue!;
                   });
                 },
-                items: onetonine.map((String value) {
+                items: trueFalse.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
@@ -3094,191 +2074,1303 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 }).toList(),
               ),
             ),
-            SizedBox(height: 10),
-            Container(
-              padding: EdgeInsets.all(8.0),
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-              decoration: BoxDecoration(
-                color: Color(0xFFD42D3F),
-                borderRadius: BorderRadius.zero, // Sharp corners
+          ],
+        ),
+
+        SizedBox(height: 10),
+        // Gap of 10 between the two columns
+
+        Container(
+          padding: EdgeInsets.all(8.0),
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: Color(0xFFD42D3F),
+            borderRadius: BorderRadius.zero, // Sharp corners
+          ),
+          child: Center(
+            // Center widget to center the text inside the container
+            child: Text(
+              'PERMANENT',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
-              child: Center(
-                // Center widget to center the text inside the container
-                child: Text(
-                  'INCOMES',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        _buildTextField(
+            'Address1', address1ControllerP, fixtraEditable, _address1FocusP),
+        _buildTextField(
+            'Address2', address2ControllerP, fixtraEditable, _address2FocusP),
+        _buildTextField(
+            'Address3', address3ControllerP, fixtraEditable, _address3FocusP),
+
+        Text(
+          'State',
+          style: TextStyle(fontSize: 13),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          // Adjust the width as needed
+          //height: 45,
+          // Fixed height
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: DropdownButton<String>(
+            value: selectedStateextraP,
+            isExpanded: true,
+            iconSize: 24,
+            elevation: 16,
+            style: TextStyle(color: Colors.black, fontSize: 13),
+            underline: Container(
+              height: 2,
+              color: Colors
+                  .transparent, // Set to transparent to remove default underline
+            ),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  selectedStateextraP = newValue; // Update the selected value
+                });
+              }
+            },
+            items: states
+                .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
+              return DropdownMenuItem<String>(
+                value: state.code,
+                child: Text(state.descriptionEn),
+              );
+            }).toList(),
+          ),
+        ),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // City TextField
+            Expanded(
+              child: _buildTextField(
+                  'City', cityControllerP, fixtraEditable, _cityFocusP),
+            ),
+            SizedBox(width: 10),
+            // Add some space between the City TextField and Pin Code Text
+            // Pin Code Text and TextFormField
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Pin Code",
+                    style: TextStyle(
+                      fontSize: 13,
+                    ),
                   ),
+                  SizedBox(height: 1),
+                  Container(
+                    width: double.infinity, // Set the desired width
+                    child: TextFormField(
+                      enabled: fixtraEditable,
+                      controller: pincodeControllerP,
+                      focusNode: _pinFocusNodeP,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        errorText: _pinErrorP,
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(height: 10),
+        // Add some space between the City TextField and Pin Code Text
+
+        Container(
+          padding: EdgeInsets.all(8.0),
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: Color(0xFFD42D3F),
+            borderRadius: BorderRadius.zero, // Sharp corners
+          ),
+          child: Center(
+            // Center widget to center the text inside the container
+            child: Text(
+              'CURRENT',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Checkbox(
+              value: _isAddressChecked,
+              onChanged: _onCheckboxChanged,
+            ),
+            Text(
+              'Same as Permanent Address',
+              style: TextStyle(
+                fontSize: 10.0,
+                color: Color(0xFFD42D3F), // Custom color
+              ),
+            ),
+          ],
+        ),
+        _buildTextField(
+            'Address1', address1ControllerC, fixtraEditable, _address1FocusC),
+        _buildTextField(
+            'Address2', address2ControllerC, fixtraEditable, _address2FocusC),
+        _buildTextField(
+            'Address3', address3ControllerC, fixtraEditable, _address3FocusC),
+
+        Text(
+          'State',
+          style: TextStyle(fontSize: 13),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          // Adjust the width as needed
+          //height: 45,
+          // Fixed height
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: DropdownButton<String>(
+            value: selectedStateextraC,
+            isExpanded: true,
+            iconSize: 24,
+            elevation: 16,
+            style: TextStyle(color: Colors.black, fontSize: 13),
+            underline: Container(
+              height: 2,
+              color: Colors
+                  .transparent, // Set to transparent to remove default underline
+            ),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  selectedStateextraC = newValue; // Update the selected value
+                });
+              }
+            },
+            items: states
+                .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
+              return DropdownMenuItem<String>(
+                value: state.code,
+                child: Text(state.descriptionEn),
+              );
+            }).toList(),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // City TextField
+            Expanded(
+              child: _buildTextField(
+                  'City', cityControllerC, fixtraEditable, _cityFocusC),
+            ),
+            SizedBox(width: 10),
+            // Add some space between the City TextField and Pin Code Text
+            // Pin Code Text and TextFormField
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Pin Code",
+                    style: TextStyle(
+                      fontSize: 13,
+                    ),
+                  ),
+                  SizedBox(height: 1),
+                  Container(
+                    width: double.infinity, // Set the desired width
+                    child: TextFormField(
+                      enabled: fixtraEditable,
+                      controller: pincodeControllerC,
+                      focusNode: _pinFocusNodeC,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        errorText: _pinErrorC,
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+
+        Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                // Gap of 5 to the left for the second column
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // Align children to the start of the column
+                  children: [
+                    Text(
+                      'Is House Rental',
+                      style: TextStyle(fontSize: 13),
+                      textAlign: TextAlign.left, // Align text to the left
+                    ),
+                    SizedBox(height: 5),
+                    // Add some spacing between the Text and Container
+                    Container(
+                      //height: 45,
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedIsHouseRental,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.transparent,
+                        ),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedIsHouseRental = newValue!;
+                          });
+                        },
+                        items: trueFalse.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            Column(
-              children: [
-                Row(
+          ],
+        ),
+
+        SizedBox(height: 10),
+
+        Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 0.0),
+                // Gap between columns
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: _buildTextField2(
-                          'Future Income',
-                          _future_IncomeController,
-                          TextInputType.number,
-                          FiIncomeEditable,
-                          _future_IncomeFocus),
+                    // District
+                    Text(
+                      'District',
+                      style: TextStyle(fontSize: 13),
                     ),
-                    Expanded(
-                      child: _buildTextField2(
-                          'Agriculture Income',
-                          _agriculture_incomeController,
-                          TextInputType.number,
-                          FiIncomeEditable,
-                          _agriculture_incomeFocus),
+                    // Spacing between text and dropdown
+                    Container(
+                      //height: 45,
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedDistrict,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.transparent,
+                        ),
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              selectedDistrict =
+                                  newValue; // Update the selected value
+                            });
+                          }
+                        },
+                        items: states.map<DropdownMenuItem<String>>(
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    // Spacing between different fields
+
+                    // Village
+                    Text(
+                      'Village',
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    SizedBox(height: 5),
+                    Container(
+                      //height: 45,
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedVillage,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.transparent,
+                        ),
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              selectedVillage =
+                                  newValue; // Update the selected value
+                            });
+                          }
+                        },
+                        items: states.map<DropdownMenuItem<String>>(
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ],
                 ),
-                Row(
+              ),
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 0.0),
+                // Gap between columns
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: _buildTextField2(
-                          'Other Income',
-                          _other_IncomeController,
-                          TextInputType.number,
-                          FiIncomeEditable,
-                          _other_IncomeFocus),
+                    // Sub District
+                    Text(
+                      'Sub District',
+                      style: TextStyle(fontSize: 13),
                     ),
-                    Expanded(
-                      child: _buildTextField2(
-                          'Annual Income',
-                          _annuaL_INCOMEController,
-                          TextInputType.number,
-                          FiIncomeEditable,
-                          _annuaL_INCOMEFocus),
+                    // Spacing between text and dropdown
+                    Container(
+                      //height: 45,
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedSubDistrict,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.transparent,
+                        ),
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              selectedSubDistrict =
+                                  newValue; // Update the selected value
+                            });
+                          }
+                        },
+                        items: trueFalse.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    // Spacing between different fields
+
+                    // Residing for (Years)
+                    Text(
+                      'Residing for (Years)',
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    Container(
+                      //height: 45,
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedResidingFor,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.transparent,
+                        ),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedResidingFor = newValue!;
+                          });
+                        },
+                        items: onetonine.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildTextField2(
-                          'Not Agricultural Income',
-                          _otheR_THAN_AGRICULTURAL_INCOMEController,
-                          TextInputType.number,
-                          FiIncomeEditable,
-                          _otheR_THAN_AGRICULTURAL_INCOMEFocus),
-                    ),
-                    Expanded(
-                      child: _buildTextField2(
-                          'Pension Income',
-                          _pensionIncomeController,
-                          TextInputType.number,
-                          FiIncomeEditable,
-                          _pensionIncomeFocus),
-                    ),
-                  ],
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 10),
+        Row(
+
+          children: [
+            Flexible(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                Text(
+                  'Property (In Acres)',
+                  style: TextStyle(fontSize: 13),
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildTextField2(
-                          'Rental Income',
-                          _any_RentalIncomeController,
-                          TextInputType.number,
-                          FiIncomeEditable,
-                          _any_RentalIncomeFocus),
+                Container(
+                  //width: 150,
+                  // Adjust the width as needed
+                  //height: 45,
+                  // Fixed height
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: DropdownButton<String>(
+                    value: selectedProperty,
+                    isExpanded: true,
+                    iconSize: 24,
+                    elevation: 16,
+                    style: TextStyle(color: Colors.black, fontSize: 13),
+                    underline: Container(
+                      height: 2,
+                      color: Colors
+                          .transparent, // Set to transparent to remove default underline
                     ),
-                  ],
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedProperty = newValue!;
+                      });
+                    },
+                    items: onetonine.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ],
             ),
-            Container(
-              padding: EdgeInsets.all(8.0),
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-              decoration: BoxDecoration(
-                color: Color(0xFFD42D3F),
-                borderRadius: BorderRadius.zero, // Sharp corners
-              ),
-              child: Center(
-                // Center widget to center the text inside the container
-                child: Text(
-                  'EXPENSES',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
             ),
-            Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildTextField2('Rent', _rentController,
-                          TextInputType.number, FiIncomeEditable, _rentFocus),
-                    ),
-                    Expanded(
-                      child: _buildTextField2('Food', _foodingController,
-                          TextInputType.number, FiIncomeEditable,
-                          _foodingFocus),
-                    ),
-                  ],
+            SizedBox(width: 10),
+            Flexible(
+              flex: 1,
+              child:Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+
+                children: [
+                Text(
+                  'House Owner',
+                  style: TextStyle(fontSize: 13),
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildTextField2('Education', _educationController,
-                          TextInputType.number, FiIncomeEditable,
-                          _educationFocus),
+                Container(
+                  //width: 150,
+                  // Adjust the width as needed
+                  //height: 45,
+                  // Fixed height
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: DropdownButton<String>(
+                    value: selectedPresentHouseOwner,
+                    isExpanded: true,
+                    iconSize: 24,
+                    elevation: 16,
+                    style: TextStyle(color: Colors.black, fontSize: 13),
+                    underline: Container(
+                      height: 2,
+                      color: Colors
+                          .transparent, // Set to transparent to remove default underline
                     ),
-                    Expanded(
-                      child: _buildTextField2('Health', _healthController,
-                          TextInputType.number, FiIncomeEditable, _healthFocus),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildTextField2(
-                          'Travelling', _travellingController,
-                          TextInputType.number, FiIncomeEditable,
-                          _travellingFocus),
-                    ),
-                    Expanded(
-                      child: _buildTextField2(
-                          'Entertainment',
-                          _entertainmentController,
-                          TextInputType.number,
-                          FiIncomeEditable,
-                          _entertainmentFocus),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildTextField2(
-                          'Expense On Children',
-                          _spendOnChildrenController,
-                          TextInputType.number,
-                          FiIncomeEditable,
-                          _spendOnChildrenFocus),
-                    ),
-                    Expanded(
-                      child: _buildTextField2('Others', _othersController,
-                          TextInputType.number, FiIncomeEditable, _othersFocus),
-                    ),
-                  ],
-                ),
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setState(() {
+                          selectedPresentHouseOwner =
+                              newValue; // Update the selected value
+                        });
+                      }
+                    },
+                    items: landOwner.map<DropdownMenuItem<String>>(
+                        (RangeCategoryDataModel state) {
+                      return DropdownMenuItem<String>(
+                        value: state.code,
+                        child: Text(state.descriptionEn),
+                      );
+                    }).toList(),
+                  ),
+                )
               ],
             )
+            )
           ],
-        ));
+        )
+      ],
+    ));
+  }
+
+  Widget _buildStepTwo() {
+    return SingleChildScrollView(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildTextField(
+            'Mother name', _motherFController, FiIncomeEditable, _motherFFocus),
+        Row(
+          children: [
+            Expanded(
+                child: _buildTextField('Middle Name', _motherMController,
+                    FiFamilyEditable, _motherMFocus)),
+            SizedBox(width: 13),
+            // Add spacing between the text fields if needed
+            Expanded(
+                child: _buildTextField('Last Name', _motherLController,
+                    FiFamilyEditable, _motherLFocus)),
+          ],
+        ),
+        Text(
+          'No. of Children',
+          style: TextStyle(fontSize: 13),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          // Adjust the width as needed
+          //height: 45,
+          // Fixed height
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: DropdownButton<String>(
+            value: selectednumOfChildren,
+            isExpanded: true,
+            iconSize: 24,
+            elevation: 16,
+            style: TextStyle(color: Colors.black, fontSize: 13),
+            underline: Container(
+              height: 2,
+              color: Colors
+                  .transparent, // Set to transparent to remove default underline
+            ),
+            onChanged: (String? newValue) {
+              setState(() {
+                selectednumOfChildren = newValue!;
+              });
+            },
+            items: onetonine.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+        ),
+        Text(
+          'Schooling Children',
+          style: TextStyle(fontSize: 13),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          // Adjust the width as needed
+          //height: 45,
+          // Fixed height
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: DropdownButton<String>(
+            value: selectedschoolingChildren,
+            isExpanded: true,
+            iconSize: 24,
+            elevation: 16,
+            style: TextStyle(color: Colors.black, fontSize: 13),
+            underline: Container(
+              height: 2,
+              color: Colors
+                  .transparent, // Set to transparent to remove default underline
+            ),
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedschoolingChildren = newValue!;
+              });
+            },
+            items: onetonine.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+        ),
+        Text(
+          'Other Dependents',
+          style: TextStyle(fontSize: 13),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          // Adjust the width as needed
+          //height: 45,
+          // Fixed height
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: DropdownButton<String>(
+            value: selectedotherDependents,
+            isExpanded: true,
+            iconSize: 24,
+            elevation: 16,
+            style: TextStyle(color: Colors.black, fontSize: 13),
+            underline: Container(
+              height: 2,
+              color: Colors
+                  .transparent, // Set to transparent to remove default underline
+            ),
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedotherDependents = newValue!;
+              });
+            },
+            items: onetonine.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    ));
+  }
+
+  Widget _buildStepThree() {
+    return SingleChildScrollView(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    'Occupation',
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedOccupation,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 13),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.transparent, // Remove default underline
+                      ),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            selectedOccupation =
+                                newValue; // Update the selected value
+                          });
+                        }
+                      },
+                      items: occupationType.map<DropdownMenuItem<String>>(
+                          (RangeCategoryDataModel state) {
+                        return DropdownMenuItem<String>(
+                          value: state.code,
+                          child: Text(state.descriptionEn),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 10), // Spacing between the two columns
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    'Business Detail',
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedBusiness,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 13),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.transparent, // Remove default underline
+                      ),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            selectedBusiness =
+                                newValue; // Update the selected value
+                          });
+                        }
+                      },
+                      items: business_Type.map<DropdownMenuItem<String>>(
+                          (RangeCategoryDataModel state) {
+                        return DropdownMenuItem<String>(
+                          value: state.code,
+                          child: Text(state.descriptionEn),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    'Any Current EMI',
+                    style: TextStyle(fontSize: 13),
+                    textAlign: TextAlign.left,
+                  ),
+                  Container(
+                    //  //height: 45,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedOtherEMI,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 13),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.transparent,
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedOtherEMI = newValue!;
+                        });
+                      },
+                      items: trueFalse.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 10), // Spacing between the two columns
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    'Home Type',
+                    style: TextStyle(fontSize: 13),
+                    textAlign: TextAlign.left,
+                  ),
+                  Container(
+                    //  //height: 45,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedHomeType,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 13),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.transparent,
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedHomeType = newValue!;
+                        });
+                      },
+                      items: onetonine.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    'Roof Type',
+                    style: TextStyle(fontSize: 13),
+                    textAlign: TextAlign.left,
+                  ),
+                  Container(
+                    //  //height: 45,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedRoofType,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 13),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.transparent,
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedRoofType = newValue!;
+                        });
+                      },
+                      items: onetonine.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 10), // Spacing between the two columns
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    'Toilet Type',
+                    style: TextStyle(fontSize: 13),
+                    textAlign: TextAlign.left,
+                  ),
+                  Container(
+                    //  //height: 45,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedToiletType,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 13),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.transparent,
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedToiletType = newValue!;
+                        });
+                      },
+                      items: onetonine.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    'Living With Spouse',
+                    style: TextStyle(fontSize: 13),
+                    textAlign: TextAlign.left,
+                  ),
+                  Container(
+                    //  //height: 45,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedLivingWithSpouse,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 13),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.transparent,
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedLivingWithSpouse = newValue!;
+                        });
+                      },
+                      items: trueFalse.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 10), // Spacing between the two columns
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    'Earning Members (count)',
+                    style: TextStyle(fontSize: 13),
+                    textAlign: TextAlign.left,
+                  ),
+                  Container(
+                    //  //height: 45,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedEarningMembers,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 13),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.transparent,
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedEarningMembers = newValue!;
+                        });
+                      },
+                      items: onetonine.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Text(
+          'Business Experience',
+          style: TextStyle(fontSize: 13),
+          textAlign: TextAlign.left,
+        ),
+        Container(
+          //  //height: 45,
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: DropdownButton<String>(
+            value: selectedBusinessExperience,
+            isExpanded: true,
+            iconSize: 24,
+            elevation: 16,
+            style: TextStyle(color: Colors.black, fontSize: 13),
+            underline: Container(
+              height: 2,
+              color: Colors.transparent,
+            ),
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedBusinessExperience = newValue!;
+              });
+            },
+            items: onetonine.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+        ),
+        SizedBox(height: 10),
+        Container(
+          padding: EdgeInsets.all(8.0),
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: Color(0xFFD42D3F),
+            borderRadius: BorderRadius.zero, // Sharp corners
+          ),
+          child: Center(
+            // Center widget to center the text inside the container
+            child: Text(
+              'INCOMES',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2(
+                      'Future Income',
+                      _future_IncomeController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _future_IncomeFocus),
+                ),
+                Expanded(
+                  child: _buildTextField2(
+                      'Agriculture Income',
+                      _agriculture_incomeController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _agriculture_incomeFocus),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2(
+                      'Rental Income',
+                      _any_RentalIncomeController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _any_RentalIncomeFocus),
+                ),
+                Expanded(
+                  child: _buildTextField2(
+                      'Annual Income',
+                      _annuaL_INCOMEController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _annuaL_INCOMEFocus),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2(
+                      'Not Agricultural Income',
+                      _otheR_THAN_AGRICULTURAL_INCOMEController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _otheR_THAN_AGRICULTURAL_INCOMEFocus),
+                ),
+                Expanded(
+                  child: _buildTextField2(
+                      'Pension Income',
+                      _pensionIncomeController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _pensionIncomeFocus),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2(
+                      'Other Income',
+                      _other_IncomeController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _other_IncomeFocus),
+                ),
+              ],
+            ),
+          ],
+        ),
+        Container(
+          padding: EdgeInsets.all(8.0),
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: Color(0xFFD42D3F),
+            borderRadius: BorderRadius.zero, // Sharp corners
+          ),
+          child: Center(
+            // Center widget to center the text inside the container
+            child: Text(
+              'EXPENSES',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2('Rent', _rentController,
+                      TextInputType.number, FiIncomeEditable, _rentFocus),
+                ),
+                Expanded(
+                  child: _buildTextField2('Food', _foodingController,
+                      TextInputType.number, FiIncomeEditable, _foodingFocus),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2('Education', _educationController,
+                      TextInputType.number, FiIncomeEditable, _educationFocus),
+                ),
+                Expanded(
+                  child: _buildTextField2('Health', _healthController,
+                      TextInputType.number, FiIncomeEditable, _healthFocus),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2('Travelling', _travellingController,
+                      TextInputType.number, FiIncomeEditable, _travellingFocus),
+                ),
+                Expanded(
+                  child: _buildTextField2(
+                      'Entertainment',
+                      _entertainmentController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _entertainmentFocus),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2(
+                      'Expense On Children',
+                      _spendOnChildrenController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _spendOnChildrenFocus),
+                ),
+                Expanded(
+                  child: _buildTextField2('Others', _othersController,
+                      TextInputType.number, FiIncomeEditable, _othersFocus),
+                ),
+              ],
+            ),
+          ],
+        )
+      ],
+    ));
   }
 
   Widget _buildStepFour() {
@@ -3321,8 +3413,41 @@ class _ApplicationPageState extends State<ApplicationPage> {
               }).toList(),
             ),
           ),
-          _buildTextField('BANK NAME', _bank_nameController,
-              FinancialInfoEditable, _bank_nameFocus),
+          Text(
+            'BANK NAME',
+            style: TextStyle(fontSize: 13),
+            textAlign: TextAlign.left,
+          ),
+          Container(
+            //  //height: 45,
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: DropdownButton<String>(
+              value: selectedBankName,
+              isExpanded: true,
+              iconSize: 24,
+              elevation: 16,
+              style: TextStyle(color: Colors.black, fontSize: 13),
+              underline: Container(
+                height: 2,
+                color: Colors.transparent,
+              ),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedBankName = newValue!;
+                });
+              },
+              items: bankNamesList.map((BankNamesDataModel value) {
+                return DropdownMenuItem<String>(
+                  value: value.bankName,
+                  child: Text(value.bankName),
+                );
+              }).toList(),
+            ),
+          ),
 
           SizedBox(height: 10), // Adds space between the fields
 
@@ -3335,49 +3460,50 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
             child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildTextField('IFSC', _bank_IFCSController,
-                          FinancialInfoEditable, _bank_IFCSFocus),
-                      _buildTextField('BANK ACCOUNT', _bank_AcController,
-                          FinancialInfoEditable, _bank_AcFocus),
-                      Container(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white, // Text color
-                            backgroundColor:
-                            Colors.red, // Background color of the button
-                            padding: EdgeInsets.symmetric(vertical: 0.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius
-                                  .zero, // Rectangular shape
-                            ),
-                          ),
-                          onPressed: () {
-                            if (bankAccHolder == null) {
-                              verifyDocs(context, _bank_AcController.text,
-                                  "bankaccount", _bank_IFCSController.text, "");
-                            } else {
-                              ifscVerify(context, _bank_IFCSController.text);
-                            }
-                          },
-                          child: Text(
-                            bankAccHolder == null
-                                ? 'VERIFY NAME'
-                                : 'VERIFY ADDRESS',
-                            style: TextStyle(fontSize: 18), // Text size
-                          ),
-                        ),
-                      )
-                    ],
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildTextField('IFSC', _bank_IFCSController,
+                      FinancialInfoEditable, _bank_IFCSFocus),
+                  _buildTextField2(
+                    'BANK ACCOUNT',
+                    _bank_AcController,
+                    TextInputType.number,
+                    FinancialInfoEditable,
+                    _bank_AcFocus,
                   ),
-                )),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, // Text color
+                        backgroundColor:
+                            Colors.red, // Background color of the button
+                        padding: EdgeInsets.symmetric(vertical: 0.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero, // Rectangular shape
+                        ),
+                      ),
+                      onPressed: () {
+                        if (bankAccHolder == null) {
+                          verifyDocs(context, _bank_AcController.text,
+                              "bankaccount", _bank_IFCSController.text, "");
+                        } else {
+                          ifscVerify(context, _bank_IFCSController.text);
+                        }
+                      },
+                      child: Text(
+                        bankAccHolder == null
+                            ? 'VERIFY NAME'
+                            : 'VERIFY ADDRESS',
+                        style: TextStyle(fontSize: 18), // Text size
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )),
           ),
           SizedBox(height: 10), // Adds space between the fields
 
@@ -3454,13 +3580,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
           Row(
             children: [
               Expanded(
-                child: _buildTextField(
-                    'Age', _AgeController, FinancialInfoEditable, _AgeFocus),
+                child: _buildTextField2('Age', _AgeController,
+                    TextInputType.number, FinancialInfoEditable, _AgeFocus),
               ),
               SizedBox(width: 10), // Adds space between the fields
               Expanded(
-                child: _buildTextField('Income', _IncomeController,
-                    femMemIncomeEditable, _IncomeFocus),
+                child: _buildTextField2('Income', _IncomeController,
+                    TextInputType.number, femMemIncomeEditable, _IncomeFocus),
               ),
             ],
           ),
@@ -3468,6 +3594,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Gender',
@@ -3499,12 +3626,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           }
                         },
                         items: aadhar_gender.map<DropdownMenuItem<String>>(
-                                (RangeCategoryDataModel state) {
-                              return DropdownMenuItem<String>(
-                                value: state.code,
-                                child: Text(state.descriptionEn),
-                              );
-                            }).toList(),
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
@@ -3544,12 +3671,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           }
                         },
                         items: relation.map<DropdownMenuItem<String>>(
-                                (RangeCategoryDataModel state) {
-                              return DropdownMenuItem<String>(
-                                value: state.code,
-                                child: Text(state.descriptionEn),
-                              );
-                            }).toList(),
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
@@ -3561,6 +3688,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Health',
@@ -3592,12 +3720,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           }
                         },
                         items: health.map<DropdownMenuItem<String>>(
-                                (RangeCategoryDataModel state) {
-                              return DropdownMenuItem<String>(
-                                value: state.code,
-                                child: Text(state.descriptionEn),
-                              );
-                            }).toList(),
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
@@ -3606,6 +3734,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               SizedBox(width: 10), // Spacing between the two columns
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Education',
@@ -3637,12 +3766,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           }
                         },
                         items: education.map<DropdownMenuItem<String>>(
-                                (RangeCategoryDataModel state) {
-                              return DropdownMenuItem<String>(
-                                value: state.code,
-                                child: Text(state.descriptionEn),
-                              );
-                            }).toList(),
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
@@ -3654,6 +3783,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'SchoolType',
@@ -3685,12 +3815,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           }
                         },
                         items: schoolType.map<DropdownMenuItem<String>>(
-                                (RangeCategoryDataModel state) {
-                              return DropdownMenuItem<String>(
-                                value: state.code,
-                                child: Text(state.descriptionEn),
-                              );
-                            }).toList(),
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
@@ -3699,6 +3829,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               SizedBox(width: 10), // Spacing between the two columns
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Business',
@@ -3730,12 +3861,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           }
                         },
                         items: occupationType.map<DropdownMenuItem<String>>(
-                                (RangeCategoryDataModel state) {
-                              return DropdownMenuItem<String>(
-                                value: state.code,
-                                child: Text(state.descriptionEn),
-                              );
-                            }).toList(),
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
@@ -3747,6 +3878,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Business Type',
@@ -3778,12 +3910,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           }
                         },
                         items: business_Type.map<DropdownMenuItem<String>>(
-                                (RangeCategoryDataModel state) {
-                              return DropdownMenuItem<String>(
-                                value: state.code,
-                                child: Text(state.descriptionEn),
-                              );
-                            }).toList(),
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
@@ -3792,6 +3924,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               SizedBox(width: 10), // Spacing between the two columns
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'IncomeType',
@@ -3823,12 +3956,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           }
                         },
                         items: income_type.map<DropdownMenuItem<String>>(
-                                (RangeCategoryDataModel state) {
-                              return DropdownMenuItem<String>(
-                                value: state.code,
-                                child: Text(state.descriptionEn),
-                              );
-                            }).toList(),
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
@@ -3849,18 +3982,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
           Row(
             children: [
               Expanded(
-                  child: _buildTextField('Aadhaar Id', _aadharIdController,
+                  child: _buildTextField2('Aadhaar Id', _aadharIdController,TextInputType.number,
                       GuarantorEditable, _aadharIdFocus)),
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 // Add 10px padding from above
                 child: GestureDetector(
-                  onTap: () =>
-                      _showPopup(context, (String result) {
-                        setState(() {
-                          qrResult = result;
-                        });
-                      }), // Show popup on image click
+                  onTap: () => _showPopup(context, (String result) {
+                    setState(() {
+                      qrResult = result;
+                    });
+                  }), // Show popup on image click
                   child: Icon(
                     Icons.qr_code_2_sharp,
                     size: 50.0, // Set the size of the icon
@@ -3879,7 +4011,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Title',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 13),
                     ),
                     Container(
                       height: 60,
@@ -3893,7 +4025,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 16),
+                        style: TextStyle(color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors
@@ -3927,114 +4059,118 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Expanded(
                   child: _buildTextField(
-                    'Middle Name',
-                    _mnameController,
-                    GuarantorEditable,
-                    _mnameFocus,
-                  )),
+                'Middle Name',
+                _mnameController,
+                GuarantorEditable,
+                _mnameFocus,
+              )),
               SizedBox(width: 13),
               // Add spacing between the text fields if needed
               Expanded(
                   child: _buildTextField('Last Name', _lnameController,
-                      GuarantorEditable, _mnameFocus)),
+                      GuarantorEditable, _lnameFocus)),
             ],
           ),
           Row(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Gender',
-                    style: TextStyle(fontSize: 13),
-                  ),
-                  Container(
-                    width: 150,
-                    // Adjust the width as needed
-                    height: 60,
-                    // Fixed height
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
+              Flexible(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Gender',
+                      style: TextStyle(fontSize: 13),
                     ),
-                    child: DropdownButton<String>(
-                      value: genderselected,
-                      isExpanded: true,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                      underline: Container(
-                        height: 2,
-                        color: Colors
-                            .transparent, // Set to transparent to remove default underline
+                    Container(
+                      // Adjust the width as needed
+                      height: 60,
+                      // Fixed height
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          setState(() {
-                            genderselected =
-                                newValue; // Update the selected value
-                          });
-                        }
-                      },
-                      items: aadhar_gender.map<DropdownMenuItem<String>>(
-                              (RangeCategoryDataModel state) {
-                            return DropdownMenuItem<String>(
-                              value: state.code,
-                              child: Text(state.descriptionEn),
-                            );
-                          }).toList(),
+                      child: DropdownButton<String>(
+                        value: genderselected,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors
+                              .transparent, // Set to transparent to remove default underline
+                        ),
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              genderselected =
+                                  newValue; // Update the selected value
+                            });
+                          }
+                        },
+                        items: aadhar_gender.map<DropdownMenuItem<String>>(
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Relationship',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Container(
-                    width: 150,
-                    // Adjust the width as needed
-                    height: 60,
-                    // Fixed height
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
+              Flexible(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Relationship',
+                      style: TextStyle(fontSize: 13),
                     ),
-                    child: DropdownButton<String>(
-                      value: relationselected,
-                      isExpanded: true,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                      underline: Container(
-                        height: 2,
-                        color: Colors
-                            .transparent, // Set to transparent to remove default underline
+                    Container(
+                      // Adjust the width as needed
+                      height: 60,
+                      // Fixed height
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          setState(() {
-                            relationselected =
-                                newValue; // Update the selected value
-                          });
-                        }
-                      },
-                      items: relation.map<DropdownMenuItem<String>>(
-                              (RangeCategoryDataModel state) {
-                            return DropdownMenuItem<String>(
-                              value: state.code,
-                              child: Text(state.descriptionEn),
-                            );
-                          }).toList(),
+                      child: DropdownButton<String>(
+                        value: relationselected,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors
+                              .transparent, // Set to transparent to remove default underline
+                        ),
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              relationselected =
+                                  newValue; // Update the selected value
+                            });
+                          }
+                        },
+                        items: relation.map<DropdownMenuItem<String>>(
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               )
             ],
           ),
@@ -4043,12 +4179,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             style: TextStyle(fontSize: 13),
           ),
           Container(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
+            width: MediaQuery.of(context).size.width,
             // Adjust the width as needed
-            height: 60,
+            //height: 60,
             // Fixed height
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
@@ -4074,16 +4207,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 }
               },
               items: religion.map<DropdownMenuItem<String>>(
-                      (RangeCategoryDataModel state) {
-                    return DropdownMenuItem<String>(
-                      value: state.code,
-                      child: Text(state.descriptionEn),
-                    );
-                  }).toList(),
+                  (RangeCategoryDataModel state) {
+                return DropdownMenuItem<String>(
+                  value: state.code,
+                  child: Text(state.descriptionEn),
+                );
+              }).toList(),
             ),
           ),
-          _buildTextField(
-              'Mobile no', _phoneController, GuarantorEditable, _phoneFocus),
+          _buildTextField2(
+              'Mobile no', _phoneController,TextInputType.number, GuarantorEditable, _phoneFocus),
           Row(
             children: [
               // Age Box
@@ -4148,122 +4281,121 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
             child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField('PAN No', _panController,
-                                GuarantorEditable, _panFocus),
-                          ),
-                          SizedBox(width: 10),
-                          Padding(
-                              padding: EdgeInsets.only(top: 20),
-                              child: GestureDetector(
-                                onTap: () {
-                                  verifyDocs(context, _panController.text,
-                                      "pancard", "", "");
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color:
+                      Expanded(
+                        child: _buildTextField('PAN No', _panController,
+                            GuarantorEditable, _panFocus),
+                      ),
+                      SizedBox(width: 10),
+                      Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: GestureDetector(
+                            onTap: () {
+                              verifyDocs(context, _panController.text,
+                                  "pancard", "", "");
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color:
                                     iconPan, // Use the state variable for color
-                                  ),
-                                  child: Icon(
-                                    iconPan == Colors.green
-                                        ? Icons.check_circle
-                                        : Icons.check_circle_outline,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField(
-                                'Driving License', _dlController,
-                                GuarantorEditable, _dlFocus),
-                          ),
-                          SizedBox(width: 10),
-                          Padding(
-                              padding: EdgeInsets.only(top: 20),
-                              child: GestureDetector(
-                                onTap: () {
-                                  verifyDocs(context, _dlController.text,
-                                      "drivinglicense", "", "");
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color:
-                                    iconDl, // Use the state variable for color
-                                  ),
-                                  child: Icon(
-                                    iconDl == Colors.green
-                                        ? Icons.check_circle
-                                        : Icons.check_circle_outline,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )),
-                        ],
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'OR',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.red, // Set the text color to red
-                        ),
-                        textAlign: TextAlign.center, // Center the text
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField('Voter Id', _voterController,
-                                GuarantorEditable, _voterFocus),
-                          ),
-                          SizedBox(width: 10),
-                          Padding(
-                              padding: EdgeInsets.only(top: 20),
-                              child: GestureDetector(
-                                onTap: () {
-                                  verifyDocs(context, _voterController.text,
-                                      "voterid", "", _dobController.text);
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color:
-                                    iconVoter, // Use the state variable for color
-                                  ),
-                                  child: Icon(
-                                    iconVoter == Colors.green
-                                        ? Icons.check_circle
-                                        : Icons.check_circle_outline,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )),
-                        ],
-                      )
+                              ),
+                              child: Icon(
+                                iconPan == Colors.green
+                                    ? Icons.check_circle
+                                    : Icons.check_circle_outline,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )),
                     ],
                   ),
-                )),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField('Driving License', _dlController,
+                            GuarantorEditable, _dlFocus),
+                      ),
+                      SizedBox(width: 10),
+                      Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: GestureDetector(
+                            onTap: () {
+                              verifyDocs(context, _dlController.text,
+                                  "drivinglicense", "", "");
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color:
+                                    iconDl, // Use the state variable for color
+                              ),
+                              child: Icon(
+                                iconDl == Colors.green
+                                    ? Icons.check_circle
+                                    : Icons.check_circle_outline,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'OR',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.red, // Set the text color to red
+                    ),
+                    textAlign: TextAlign.center, // Center the text
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField('Voter Id', _voterController,
+                            GuarantorEditable, _voterFocus),
+                      ),
+                      SizedBox(width: 10),
+                      Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: GestureDetector(
+                            onTap: () {
+                              verifyDocs(context, _voterController.text,
+                                  "voterid", "", _dobController.text);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color:
+                                    iconVoter, // Use the state variable for color
+                              ),
+                              child: Icon(
+                                iconVoter == Colors.green
+                                    ? Icons.check_circle
+                                    : Icons.check_circle_outline,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )),
+                    ],
+                  )
+                ],
+              ),
+            )),
           ),
           SizedBox(height: 10),
           _buildTextField('Address1', _p_Address1Controller, GuarantorEditable,
               _p_Address1Focus),
           _buildTextField('Address2', _p_Address2Controller, GuarantorEditable,
-              _p_Address3Focus),
+              _p_Address2Focus),
           _buildTextField('Address3', _p_Address3Controller, GuarantorEditable,
               _p_Address3Focus),
           Text(
@@ -4271,10 +4403,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             style: TextStyle(fontSize: 13),
           ),
           Container(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
+            width: MediaQuery.of(context).size.width,
             // Adjust the width as needed
             //height: 45,
             // Fixed height
@@ -4302,12 +4431,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 }
               },
               items: states.map<DropdownMenuItem<String>>(
-                      (RangeCategoryDataModel state) {
-                    return DropdownMenuItem<String>(
-                      value: state.code,
-                      child: Text(state.descriptionEn),
-                    );
-                  }).toList(),
+                  (RangeCategoryDataModel state) {
+                return DropdownMenuItem<String>(
+                  value: state.code,
+                  child: Text(state.descriptionEn),
+                );
+              }).toList(),
             ),
           ),
           Row(
@@ -4317,7 +4446,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       GuarantorEditable, _p_CityFocus)),
               SizedBox(width: 10),
               Expanded(
-                  child: _buildTextField('Pincode', _pincodeController,
+                  child: _buildTextField2('Pincode', _pincodeController,TextInputType.number,
                       GuarantorEditable, _pincodeFocus)),
             ],
           ),
@@ -4329,22 +4458,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Widget _buildStepSeven() {
     return SingleChildScrollView(
       child: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height - 250,
+          height: MediaQuery.of(context).size.height - 250,
           width: double.infinity, // Set the width to the full screen size
           child: SingleChildScrollView(
             child: _isPageLoading
                 ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: _buildKycDocumentList(), // Call the function here
-            )
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildKycDocumentList(), // Call the function here
+                  )
                 : Center(
-              child: CircularProgressIndicator(
-                color: Colors.red,
-              ),
-            ),
+                    child: CircularProgressIndicator(
+                      color: Colors.red,
+                    ),
+                  ),
           )),
     ); // Call the function her
   }
@@ -4406,13 +4532,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
-        onPressed: () {
+       /* onPressed: () {
           if (_currentStep < 6) {
             setState(() {
               _currentStep += 1;
             });
           } else if (_currentStep == 6) {
-            GetDocs(context, widget.selectedData.id);
+            GetDocs(context, FIID);
             setState(() {
               _currentStep += 1;
             });
@@ -4421,7 +4547,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               SnackBar(content: Text("Form submitted successfully")),
             );
           }
-        },
+        },*/
 
         /*if (_currentStep < 7) {
             setState(() {
@@ -4433,12 +4559,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
             );
           }*/
 
-        /*onPressed: () {
+        onPressed: () {
           if (_currentStep == 0) {
-            if (_stepOneValidations()) {
               setState(() {
                 pageTitle = "Personal Info.";
               });
+              if (_stepOneValidations()) {
               AddFiExtraDetail(context);
             }
           } else if (_currentStep == 1) {
@@ -4452,29 +4578,37 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               pageTitle = "Income & Expense";
             });
-            AddFiIncomeAndExpense(context);
+            if(_stepThreeValidations()) {
+              AddFiIncomeAndExpense(context);
+            }
           } else if (_currentStep == 3) {
             setState(() {
               pageTitle = "Financial Info.";
             });
-            AddFinancialInfo(context);
+            if(_stepFourValidations()){
+              AddFinancialInfo(context);
+            }
           } else if (_currentStep == 4) {
             setState(() {
               pageTitle = "Family Income";
             });
-            FiFemMemIncome(context);
+            if(_stepFiveValidations()) {
+              FiFemMemIncome(context);
+            }
           } else if (_currentStep == 5) {
             setState(() {
               pageTitle = "Guarantor Form";
             });
-            saveGuarantorMethod(context);
+            if(_stepSixValidations()) {
+              saveGuarantorMethod(context);
+            }
           } else if (_currentStep == 6) {
             setState(() {
               pageTitle = "Docs Upload";
             });
-            // UploadFiDocs(context, widget.selectedData.id.toString());
+            // UploadFiDocs(context, FIID.toString());
           }
-        },*/
+        },
         child: Text(
           _currentStep == 6 ? "SUBMIT" : "NEXT",
           style: TextStyle(color: Colors.white, fontSize: 13),
@@ -4655,6 +4789,28 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
+  Future<void> _BabnkNamesAPI(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
+
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .bankNames(GlobalClass.token, GlobalClass.dbName)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        if (!value.data.isEmpty) {
+          setState(() {
+            bankNamesList = value.data;
+          });
+        }
+      } else {
+        EasyLoading.dismiss();
+        showToast_Error("Bank Name List Not Fetched");
+      }
+    });
+  }
+
   bool _stepOneValidations() {
     if (emailIdController.text.isEmpty) {
       showToast_Error("Please enter Email ID");
@@ -4724,8 +4880,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         timeInSecForIosWeb: 1,
         backgroundColor: Colors.red,
         textColor: Colors.white,
-        fontSize: 16.0
-    );
+        fontSize: 13.0);
   }
 
   bool _stepTwoValidations() {
@@ -4733,25 +4888,287 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please enter Mother's First Name");
       _motherFFocus.requestFocus();
       return false;
-    } else if (_motherMController.text.isEmpty) {
-      showToast_Error("Please enter Mother's Middle Name");
-      _motherMFocus.requestFocus();
+    } else if (selectednumOfChildren == null ||
+        selectednumOfChildren!.isEmpty ||
+        selectedOccupation!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Number of Children");
       return false;
-    } else if (_motherLController.text.isEmpty) {
-      showToast_Error("Please enter Mother's Last Name");
-      _motherLFocus.requestFocus();
+    } else if (selectedschoolingChildren == null ||
+        selectedschoolingChildren!.isEmpty ||
+        selectedschoolingChildren!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Schooling Children");
       return false;
-    } else if (_numOfChildrenController.text.isEmpty) {
-      showToast_Error("Please enter Number of Children");
-      _numOfChildrenFocus.requestFocus();
+    } else if (selectedotherDependents == null ||
+        selectedotherDependents!.isEmpty ||
+        selectedotherDependents!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Other Dependents");
       return false;
-    } else if (_schoolingChildrenController.text.isEmpty) {
-      showToast_Error("Please enter Schooling Children");
-      _schoolingChildrenFocus.requestFocus();
+    }
+    return true;
+  }
+
+  bool _stepThreeValidations() {
+    if (selectedOccupation == null ||
+        selectedOccupation!.isEmpty ||
+        selectedOccupation!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Occupation");
       return false;
-    } else if (_otherDependentsController.text.isEmpty) {
-      showToast_Error("Please enter Other Dependents");
-      _otherDependentsFocus.requestFocus();
+    } else if (selectedBusiness == null ||
+        selectedBusiness!.isEmpty ||
+        selectedBusiness!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Business");
+      return false;
+    } else if (selectedHomeType == null ||
+        selectedHomeType!.isEmpty ||
+        selectedHomeType!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Home Type");
+      return false;
+    } else if (selectedRoofType == null ||
+        selectedRoofType!.isEmpty ||
+        selectedRoofType!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Roof Type");
+      return false;
+    } else if (selectedToiletType == null ||
+        selectedToiletType!.isEmpty ||
+        selectedToiletType!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Toilet Type");
+      return false;
+    } else if (selectedLivingWithSpouse == null ||
+        selectedLivingWithSpouse!.isEmpty ||
+        selectedLivingWithSpouse!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Living With Spouse");
+      return false;
+    } else if (selectedEarningMembers == null ||
+        selectedEarningMembers!.isEmpty ||
+        selectedEarningMembers!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Earning Members");
+      return false;
+    } else if (selectedBusinessExperience == null ||
+        selectedBusinessExperience!.isEmpty ||
+        selectedBusinessExperience!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Business Experience");
+      return false;
+    } else if (selectedOtherEMI == null ||
+        selectedOtherEMI!.isEmpty ||
+        selectedOtherEMI!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Other EMI");
+      return false;
+    } else if (_future_IncomeController.text.isEmpty) {
+      showToast_Error("Please Enter Future Income");
+      return false;
+    } else if (_agriculture_incomeController.text.isEmpty) {
+      showToast_Error("Please Enter Agriculture Income");
+      return false;
+    } else if (_other_IncomeController.text.isEmpty) {
+      showToast_Error("Please Enter Other Income");
+      return false;
+    } else if (_annuaL_INCOMEController.text.isEmpty) {
+      showToast_Error("Please Enter Annual Income");
+      return false;
+    } else if (_otheR_THAN_AGRICULTURAL_INCOMEController.text.isEmpty) {
+      showToast_Error("Please Enter Other Than Agricultural Income");
+      return false;
+    } else if (_pensionIncomeController.text.isEmpty) {
+      showToast_Error("Please Enter Pension Income");
+      return false;
+    } else if (_any_RentalIncomeController.text.isEmpty) {
+      showToast_Error("Please Enter Any Rental Income");
+      return false;
+    } else if (_rentController.text.isEmpty) {
+      showToast_Error("Please Enter Rent");
+      return false;
+    } else if (_foodingController.text.isEmpty) {
+      showToast_Error("Please Enter Fooding Expenses");
+      return false;
+    } else if (_educationController.text.isEmpty) {
+      showToast_Error("Please Enter Education Expenses");
+      return false;
+    } else if (_healthController.text.isEmpty) {
+      showToast_Error("Please Enter Health Expenses");
+      return false;
+    } else if (_travellingController.text.isEmpty) {
+      showToast_Error("Please Enter Travelling Expenses");
+      return false;
+    } else if (_entertainmentController.text.isEmpty) {
+      showToast_Error("Please Enter Entertainment Expenses");
+      return false;
+    } else if (_spendOnChildrenController.text.isEmpty) {
+      showToast_Error("Please Enter Spending on Children");
+      return false;
+    } else if (_othersController.text.isEmpty) {
+      showToast_Error("Please Enter Other Expenses");
+      return false;
+    }
+    return true;
+  }
+
+  bool _stepFourValidations() {
+    if (_bank_AcController.text.isEmpty) {
+      showToast_Error("Please Enter Bank Account Number");
+      _bank_AcFocus.requestFocus();
+      return false;
+    } else if (selectedBankName == null ||
+        selectedBankName!.isEmpty ||
+        selectedBankName!.toLowerCase() == 'select') {
+      showToast_Error("Please Enter Bank Name");
+      return false;
+    } else if (_bank_IFCSController.text.isEmpty) {
+      showToast_Error("Please Enter Bank IFSC Code");
+      _bank_IFCSFocus.requestFocus();
+      return false;
+    } else if (_bankOpeningDateController.text.isEmpty) {
+      showToast_Error("Please Enter Bank Opening Date");
+      _bankOpeningDateFocus.requestFocus();
+      return false;
+    } else if (selectedAccountType == null ||
+        selectedAccountType!.isEmpty ||
+        selectedAccountType!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Account Type");
+      return false;
+    } else if (bankAddress == null || bankAddress!.isEmpty) {
+      showToast_Error("Bank Address is Null");
+      return false;
+    } else if (bankAccHolder == null || bankAccHolder!.isEmpty) {
+      showToast_Error("Account Holder is Null");
+      return false;
+    }
+    return true;
+  }
+
+  bool _stepFiveValidations() {
+    if (femselectedGender == null ||
+        femselectedGender!.isEmpty ||
+        femselectedGender!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Gender");
+      return false;
+    } else if (femselectedRelationWithBorrower == null ||
+        femselectedRelationWithBorrower!.isEmpty ||
+        femselectedRelationWithBorrower!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Relation with Borrower");
+      return false;
+    } else if (femselectedHealth == null ||
+        femselectedHealth!.isEmpty ||
+        femselectedHealth!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Health Status");
+      return false;
+    } else if (femselectedEducation == null ||
+        femselectedEducation!.isEmpty ||
+        femselectedEducation!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Education Level");
+      return false;
+    } else if (femselectedSchoolType == null ||
+        femselectedSchoolType!.isEmpty ||
+        femselectedSchoolType!.toLowerCase() == 'select') {
+      showToast_Error("Please Select School Type");
+      return false;
+    } else if (femselectedBusiness == null ||
+        femselectedBusiness!.isEmpty ||
+        femselectedBusiness!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Business");
+      return false;
+    } else if (femselectedBusinessType == null ||
+        femselectedBusinessType!.isEmpty ||
+        femselectedBusinessType!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Business Type");
+      return false;
+    } else if (femselectedIncomeType == null ||
+        femselectedIncomeType!.isEmpty ||
+        femselectedIncomeType!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Income Type");
+      return false;
+    } else if (_femNameController.text.isEmpty) {
+      showToast_Error("Please Enter Name");
+      _femNameFocus.requestFocus();
+      return false;
+    } else if (_AgeController.text.isEmpty) {
+      showToast_Error("Please Enter Age");
+      _AgeFocus.requestFocus();
+      return false;
+    } else if (_IncomeController.text.isEmpty) {
+      showToast_Error("Please Enter Income");
+      _IncomeFocus.requestFocus();
+      return false;
+    }
+    return true;
+  }
+
+  bool _stepSixValidations() {
+    if (_aadharIdController.text.isEmpty) {
+      showToast_Error("Please Enter Aadhar ID");
+      _aadharIdFocus.requestFocus();
+      return false;
+    } else if (selectedTitle== null || selectedTitle!.isEmpty || selectedTitle!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Title");
+      return false;
+    } else if (_fnameController.text.isEmpty) {
+      showToast_Error("Please Enter First Name");
+      _fnameFocus.requestFocus();
+      return false;
+    } /*else if (_mnameController.text.isEmpty) {
+      showToast_Error("Please Enter Middle Name");
+      _mnameFocus.requestFocus();
+      return false;
+    } else if (_lnameController.text.isEmpty) {
+      showToast_Error("Please Enter Last Name");
+      _lnameFocus.requestFocus();
+      return false;
+    }*/ else if (_phoneController.text.isEmpty) {
+      showToast_Error("Please Enter Phone Number");
+      _phoneFocus.requestFocus();
+      return false;
+    } else if (_dobController.text.isEmpty) {
+      showToast_Error("Please Enter Date of Birth");
+      _dobFocus.requestFocus();
+      return false;
+    } else if (_ageController.text.isEmpty) {
+      showToast_Error("Please Enter Age");
+      _ageFocus.requestFocus();
+      return false;
+    } /*if (_voterController.text.isEmpty) {
+      if (_panController.text.isEmpty) {
+        showToast_Error("Please Enter PAN");
+        _panFocus.requestFocus();
+        return false;
+      } else if (_dlController.text.isEmpty) {
+        showToast_Error("Please Enter Driving License");
+        _dlFocus.requestFocus();
+        return false;
+      }
+      return false;
+    }*/ else if (_p_Address1Controller.text.isEmpty) {
+      showToast_Error("Please Enter Address Line 1");
+      _p_Address1Focus.requestFocus();
+      return false;
+    } /*else if (_p_Address2Controller.text.isEmpty) {
+      showToast_Error("Please Enter Address Line 2");
+      _p_Address2Focus.requestFocus();
+      return false;
+    } else if (_p_Address3Controller.text.isEmpty) {
+      showToast_Error("Please Enter Address Line 3");
+      _p_Address3Focus.requestFocus();
+      return false;
+    }*/ else if (_p_CityController.text.isEmpty) {
+      showToast_Error("Please Enter Permanent City");
+      _p_CityFocus.requestFocus();
+      return false;
+    } else if (_pincodeController.text.isEmpty||_pincodeController.text.length!=6) {
+      showToast_Error("Please Enter Correct Pincode");
+      _pincodeFocus.requestFocus();
+      return false;
+    } else if (stateselected == null || stateselected!.isEmpty || stateselected!.toLowerCase() == 'select') {
+      showToast_Error("Please Select State");
+      return false;
+    } else if (relationselected == null || relationselected!.isEmpty || relationselected!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Relation");
+      return false;
+    } else if (genderselected == null || genderselected!.isEmpty || genderselected!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Gender");
+      return false;
+    } else if (religionselected == null || religionselected!.isEmpty || religionselected!.toLowerCase() == 'select') {
+      showToast_Error("Please Select Religion");
+      return false;
+    }else if (_imageFile == null) {
+      showToast_Error("Gurrantor Image Is Null");
       return false;
     }
     return true;

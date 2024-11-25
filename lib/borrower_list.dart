@@ -74,7 +74,7 @@ print("object++12");
           /*:*/ Column(
         children: [
           SizedBox(height: 50),
-          /*Padding(padding: EdgeInsets.all(8),
+          Padding(padding: EdgeInsets.all(8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,23 +96,23 @@ print("object++12");
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                ),*/
+                ),
                 Center(
                   child: Image.asset(
-                    'assets/Images/paisa_logo.png', // Replace with your logo asset path
+                    'assets/Images/logo_white.png', // Replace with your logo asset path
                     height: 50,
                   ),
                 ),
-                /*Container(
+                Container(
                   height: 40,
                   width: 40,
                   alignment: Alignment.center,
                 ),
               ],
             ),
-          ),*/
+          ),
           Card(
-            margin: EdgeInsets.only(bottom: 10, top: 0, left: 10, right: 10),
+            margin: EdgeInsets.only(bottom: 0, top: 0, left: 10, right: 10),
             elevation: 8,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
