@@ -5,6 +5,7 @@ import 'package:flutter_sourcing_app/Models/BankNamesModel.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
 import 'package:flutter_sourcing_app/Models/common_int_model.dart';
+import 'package:flutter_sourcing_app/Models/leaderboardModel.dart';
 import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
 import 'package:flutter_sourcing_app/Models/target_response_model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -387,6 +388,12 @@ abstract class ApiService {
       @Query("Otp") String otp
       );
 
-
+  @GET("Tracklocations/GetAchievementDetails")
+  Future<LeaderboardModel> leaderboardList(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("Type") String Type,
+      @Query("Fromdate") String Fromdate,
+      @Query("Todate") String Todate);
 
 }

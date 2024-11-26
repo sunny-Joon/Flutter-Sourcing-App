@@ -1307,7 +1307,6 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-
           children: [
             Expanded(child: Container(
               color: Colors.white,
@@ -2839,6 +2838,7 @@ bool checkIdMendate(){
     } catch (e) {
       print("Error: $e");
     }
+  }
 
   Future<void> mobileOtp(BuildContext context, String mobileNo) async {
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
@@ -2975,30 +2975,30 @@ bool checkIdMendate(){
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
 
 
-    return await api.otpVerify(GlobalClass.token,GlobalClass.dbName, _mobileNoController.text,pin).then((value) {
-
+    return await api.otpVerify(
+        GlobalClass.token, GlobalClass.dbName, _mobileNoController.text, pin)
+        .then((value) {
       if (value.statuscode == 200) {
-      showToast_Error("OTP Verified...");
-      setState(() {
-        otpVerified=true;
-      });
-      Navigator.of(contextDialog).pop();
-      }else{
+        showToast_Error("OTP Verified...");
         setState(() {
-          otpVerified=false;
+          otpVerified = true;
         });
-        GlobalClass.showSnackBar(context, "OTP is not verified \nPlease Enter Correct OTP");
+        Navigator.of(contextDialog).pop();
+      } else {
+        setState(() {
+          otpVerified = false;
+        });
+        GlobalClass.showSnackBar(
+            context, "OTP is not verified \nPlease Enter Correct OTP");
       }
       EasyLoading.dismiss();
-    }).catchError((err){
+    }).catchError((err) {
       setState(() {
-        otpVerified=false;
+        otpVerified = false;
       });
       GlobalClass.showSnackBar(context, err);
       EasyLoading.dismiss();
-
     });
-
   }
 
 

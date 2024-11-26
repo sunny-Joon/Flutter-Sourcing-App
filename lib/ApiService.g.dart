@@ -1924,6 +1924,53 @@ class _ApiService implements ApiService {
     return _value;
   }
 
+  @override
+  Future<LeaderboardModel> leaderboardList(
+    String token,
+    String dbName,
+    String Type,
+    String Fromdate,
+    String Todate,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'Type': Type,
+      r'Fromdate': Fromdate,
+      r'Todate': Todate,
+    };
+    final _headers = <String, dynamic>{
+      r'Authorization': token,
+      r'dbname': dbName,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<LeaderboardModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'Tracklocations/GetAchievementDetails',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late LeaderboardModel _value;
+    try {
+      _value = LeaderboardModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

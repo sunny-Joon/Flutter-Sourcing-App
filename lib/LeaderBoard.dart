@@ -1,10 +1,7 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-
-import 'Collection.dart';
-import 'HomePage.dart';
-import 'OnBoarding.dart';
-import 'Profile.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'ApiService.dart';
+import 'GlobalClass.dart';
 import 'const/appcolors.dart';
 
 
@@ -14,11 +11,14 @@ class LeaderBoard extends StatefulWidget {
 }
 
 class _LeaderBoardState extends State<LeaderBoard> {
-
-
-  int _page = 0;
+  
   AppColors appColors = new AppColors();
 
+  @override
+  void initState() {
+    super.initState();
+    leaderboardData(context);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,5 +76,25 @@ class _LeaderBoardState extends State<LeaderBoard> {
       )
       )
     );
+  }
+
+  Future<void> leaderboardData(BuildContext contextDialog) async {
+    EasyLoading.show(status: "Loading...");
+
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+
+
+    return await api.leaderboardList(GlobalClass.token, GlobalClass.dbName, "1","2024-10-20","2024-11-20")
+        .then((value) {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+
+      } else {
+
+      }
+      EasyLoading.dismiss();
+    }).catchError((err) {
+      EasyLoading.dismiss();
+    });
   }
 }
