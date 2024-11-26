@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/Models/BankNamesModel.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
+import 'package:flutter_sourcing_app/Models/common_int_model.dart';
 import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
 import 'package:flutter_sourcing_app/Models/target_response_model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -19,6 +20,7 @@ import 'Models/docsVerify.dart';
 import 'Models/getAllModel.dart';
 import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
+import 'Models/ocr_response_model.dart';
 part 'ApiService.g.dart';
 
 
@@ -29,6 +31,8 @@ class ApiConfig {
   static const String baseUrl3 = 'https://ifsc.razorpay.com/';
   static const String baseUrl4 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
   static const String baseUrl5 = 'https://erpservice.paisalo.in:980/PDL.KYC.API/api/';
+  static const String baseUrl6 = 'https://ocr.paisalo.in:950/api/';
+
 }
 
 
@@ -68,7 +72,8 @@ abstract class ApiService {
       );
 
   @POST("Masters/SendSms")
-  Future<GlobalModel> mobileOtpSend(
+  Future<CommonIntModel> mobileOtpSend(
+      @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body,
       );
 
@@ -121,7 +126,6 @@ abstract class ApiService {
       @Part( name:"Loan_Duration") String loan_Duration,
       @Part( name:"Loan_amount") String loan_amount,
       @Part( name:"Loan_Reason") String loan_Reason,
-
       @Part( name: "Picture") File Picture);
 
   @POST("FiSourcing/FiDocsUploadSingleFile")
@@ -365,6 +369,23 @@ abstract class ApiService {
       @Query("StateCode") String stateCode,
       );
 
+
+
+  @POST("OCR/DocVerifyforSpaceOCR")
+  @MultiPart()
+  Future<OcrResponse> uploadDocument(
+      @Query("imgType") String imgType,
+      @Part(name: "file") File file,
+      );
+
+
+  @GET("Masters/OTPVerify")
+  Future<CommonIntModel> otpVerify(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("MobileNo") String mobileNo,
+      @Query("Otp") String otp
+      );
 
 
 

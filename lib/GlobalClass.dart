@@ -38,7 +38,7 @@ class GlobalClass {
 
 
   // Method to show a success alert
-  void showSuccessAlert(BuildContext context) {
+  static void showSuccessAlert(BuildContext context) {
     showAlert(
       context,
       'Successful',
@@ -48,7 +48,7 @@ class GlobalClass {
   }
 
   // Method to show an unsuccessful alert
-  void showUnsuccessfulAlert(BuildContext context) {
+  static void showUnsuccessfulAlert(BuildContext context) {
     showAlert(
       context,
       'Unsuccessful',
@@ -58,7 +58,7 @@ class GlobalClass {
   }
 
   // Method to show a network error alert
-  void showErrorAlert(BuildContext context) {
+  static void showErrorAlert(BuildContext context) {
     showAlert(
       context,
       'Error',
@@ -68,7 +68,7 @@ class GlobalClass {
   }
 
   // Private method to show an alert dialog
-  void showAlert(BuildContext context, String title, String message, Color color) {
+ static void showAlert(BuildContext context, String title, String message, Color color) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -81,8 +81,8 @@ class GlobalClass {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.of(context).pop(); // Close the page
+                // Navigator.of(context).pop(); // Close the dialog
+                // Navigator.of(context).pop(); // Close the page
               },
               child: Text('OK'),
             ),
@@ -107,5 +107,10 @@ class GlobalClass {
     return pickedImage != null ? File(pickedImage.path) : null;
   }
 
+  static void showSnackBar(BuildContext context,String message){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("$message")),
+    );
+  }
 
 }
