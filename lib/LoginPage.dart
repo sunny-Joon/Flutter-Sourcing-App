@@ -422,7 +422,6 @@ class _LoginPageState extends State<LoginPage> {
             print('object');
             GlobalClass.target = value.data.foImei[0].targetCommAmt;
             GlobalClass.creator = value.data.foImei[0].creator ?? '';
-          //  GlobalClass.creator='HOAGRA';
             GlobalClass.mobile=value.data.foImei[0].mobNo;
             GlobalClass.userName=value.data.foImei[0].name;
             GlobalClass.designation=value.data.foImei[0].designation;

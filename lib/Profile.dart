@@ -106,16 +106,69 @@ class _ProfileState extends State<Profile> {
             child: Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.width / 2 - 40),
+                SizedBox(height: 20),
+
                 _buildProfilePicture(),
                 SizedBox(height: 20),
                 _buildUserDetailsCard(),
-                _buildActionCard('Get QR Payment Details'),
-                _buildActionCard('Get Collection Report'),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SizedBox(
+                    height: 300, // Specify a height for the grid view
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3, // Number of columns
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: 4, // Number of grid items
+                      itemBuilder: (context, index) {
+                        // Define your grid items here
+                        if (index == 0) {
+                          return _buildGridItem('QR Payment Details', Icons.qr_code);
+                        } else if (index == 1) {
+                          return _buildGridItem('Get Collection Report', Icons.report);
+                        } else if (index == 2) {
+                          return _buildGridItem('Another Report', Icons.analytics);
+                        } else {
+                          return _buildGridItem('More Reports', Icons.insert_chart);
+                        }
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
           _buildUserIdDisplay(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildGridItem(String title, IconData icon) {
+    return Card(
+      margin: EdgeInsets.all(8),
+      child: InkWell(
+        onTap: () {
+          // Add your action here
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 40, color: Colors.grey[700]),
+            SizedBox(height: 10),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[700],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -139,7 +192,7 @@ class _ProfileState extends State<Profile> {
 
   Widget _buildAppBar(BuildContext context) {
     return Positioned(
-      top: 10,
+      top: 35,
       left: 10,
       right: 10,
       child: Padding(
@@ -170,7 +223,7 @@ class _ProfileState extends State<Profile> {
       onTap: () {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
       },
-      child: _buildIconContainer(Icons.logout, color: Colors.red),
+      child: _buildIconContainer(Icons.logout, color: Color(0xFFD42D3F)),
     );
   }
 
@@ -199,7 +252,7 @@ class _ProfileState extends State<Profile> {
     return Center(
       child: CircleAvatar(
         radius: 50.0,
-        backgroundImage: AssetImage('assets/Images/profileimage.png'),
+        backgroundImage: AssetImage('assets/Images/profileimage.webp'),
       ),
     );
   }
@@ -231,14 +284,14 @@ class _ProfileState extends State<Profile> {
   Widget _buildDetailRow(IconData icon, String label, TextEditingController controller) {
     return Row(
       children: [
-        Icon(icon, color: Colors.red),
+        Icon(icon, color: Color(0xFFD42D3F)),
         SizedBox(width: 8.0),
         Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(width: 8.0),
         Expanded(
           child: Text(
             controller.text,
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Color(0xFFD42D3F)),
           ),
         ),
       ],
@@ -248,14 +301,14 @@ class _ProfileState extends State<Profile> {
   Widget _buildTimerRow(IconData icon, String label, String timerDisplay) {
     return Row(
       children: [
-        Icon(icon, color: Colors.red),
+        Icon(icon, color: Color(0xFFD42D3F)),
         SizedBox(width: 8.0),
         Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(width: 8.0),
         Expanded(
           child: Text(
             timerDisplay,
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Color(0xFFD42D3F)),
           ),
         ),
       ],
@@ -293,4 +346,6 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
+
+
 }

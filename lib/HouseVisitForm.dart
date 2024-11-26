@@ -109,10 +109,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('House Visit Form'),
-        backgroundColor: Color(0xFF940C1B),
-      ),
+
       backgroundColor: Color(0xFFD42D3F),
       body: SingleChildScrollView(
         child: Form(
@@ -120,7 +117,56 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              children: <Widget>[
+              children:
+              <Widget>[
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border:
+                          Border.all(width: 1, color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                        ),
+                        height: 40,
+                        width: 40,
+                        alignment: Alignment.center,
+                        child: Center(
+                          child: Icon(Icons.arrow_back_ios_sharp, size: 13),
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    Center(
+                      /*child: Image.asset(
+                          'assets/Images/paisa_logo.png',
+                          // Replace with your logo asset path
+                          height: 50,
+                        ),*/
+                        child: Expanded(
+                          child: Text(
+                            "HOUSE VISIT",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24 // Make the text bold
+                            ),
+                          ),
+                        )),
+                    Container(
+                      height: 40,
+                      width: 40,
+                      alignment: Alignment.center,
+                    ),
+                  ],
+                ),
+
                 _buildTextField2('शाखा', _BranchNameController, TextInputType.number),
                 _buildTextField2('क्षेत्र', _AreaCodeController, TextInputType.number),
                 _buildTextField2('AreaName', _AreaNameController, TextInputType.number),
@@ -413,9 +459,6 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     });
   }
 
-
- // _buildTextField2('Any Current EMI', _any_current_EMIController, TextInputType.number),
-
   Widget _buildTextField2(String label, TextEditingController controller, TextInputType inputType) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -427,20 +470,21 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
             label,
             style: TextStyle(
               fontSize: 16,
-              color: Colors.white
+              color: Colors.white,
             ),
           ),
-          SizedBox(height: 1),
+          SizedBox(height: 8), // Adjust height to provide better spacing
           Container(
             width: double.infinity, // Set the desired width
-            height: 45,
-            color: Colors.white,// Set the desired height
+           // height: 45, // Set the desired height
+            color: Colors.white,
             child: Center(
               child: TextFormField(
                 controller: controller,
                 keyboardType: inputType, // Set the input type
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 8),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -454,6 +498,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         ],
       ),
     );
+
   }
 
   Widget checkboxes(String label, String value, ValueChanged<String> onChanged) {
@@ -467,36 +512,45 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            Container(
-            width: double.infinity, // Set the desired width
-            height: 45,
-            color: Colors.white,// Set the desired height
-            child: Row(
-                children: [
-                  Checkbox(
-                    value: _isChecked,
-                    checkColor: Colors.red,
-                    fillColor: MaterialStateProperty.all(Colors.white),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
+              Container(
+                width: double.infinity, // Full width of the parent
+                color: Colors.white, // Background color
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Checkbox Row with label
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _isChecked,
+                          checkColor: Colors.red,
+                          fillColor: MaterialStateProperty.all(Colors.white),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          onChanged: (bool? newValue) {
+                            setState(() {
+                              _isChecked = newValue ?? false;
+                              onChanged(_isChecked ? 'True' : 'False');
+                            });
+                          },
+                        ),
+                        Flexible( // Ensures the Text widget takes the remaining space
+                          child: Text(
+                            label,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                            maxLines: null, // Allow text to wrap to multiple lines
+                            softWrap: true, // Allow soft wrapping of the text
+                          ),
+                        ),
+                      ],
                     ),
-                    onChanged: (bool? newValue) {
-                      setState(() {
-                        _isChecked = newValue ?? false;
-                        onChanged(_isChecked ? 'True' : 'False');
-                      });
-                    },
-                  ),
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
             ],
           ),
         );

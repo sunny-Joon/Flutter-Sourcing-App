@@ -93,9 +93,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
   List<String> loanDuration = ['Select', '12', '24', '36', '48'];
   List<String> trueFalse = ['Select', 'Yes', 'No'];
 
-  Color iconPan = Colors.red;
-  Color iconDl = Colors.red;
-  Color iconVoter = Colors.red;
+  Color iconPan = Color(0xFFD42D3F);
+  Color iconDl = Color(0xFFD42D3F);
+  Color iconVoter = Color(0xFFD42D3F);
 
 
 //FIEXTRA
@@ -270,6 +270,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   @override
   void initState() {
     super.initState();
+    getAllDataApi(context);
     FIID = widget.selectedData.id;
     GetDocs(context);
     initializeData(); // Fetch initial data
@@ -1344,7 +1345,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             }
           },
           child: Card(
-            color: path != null ? Colors.green : Colors.red,
+            color: path != null ? Colors.green : Color(0xFFD42D3F),
             // Set color based on path
             margin: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
             child: Padding(
@@ -1571,7 +1572,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       listItems.add(
         Center(
           child: CircularProgressIndicator(
-            color: Colors.red,
+            color: Color(0xFFD42D3F),
           ),
         ),
       );
@@ -1673,7 +1674,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           style: TextStyle(
               color: isCompleted
                   ? Colors.white
-                  : (isActive ? Colors.red : Colors.grey)),
+                  : (isActive ? Color(0xFFD42D3F) : Colors.grey)),
         ),
       ),
     );
@@ -3455,7 +3456,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             padding: EdgeInsets.all(0), // Padding of 10 from each side
             decoration: BoxDecoration(
               color: Colors.white, // Background color of the container
-              border: Border.all(color: Colors.red), // Red border color
+              border: Border.all(color: Color(0xFFD42D3F)), // Red border color
               borderRadius: BorderRadius.circular(10), // Circular corners
             ),
             child: Center(
@@ -3479,7 +3480,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white, // Text color
                         backgroundColor:
-                            Colors.red, // Background color of the button
+                            Color(0xFFD42D3F), // Background color of the button
                         padding: EdgeInsets.symmetric(vertical: 0.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero, // Rectangular shape
@@ -4276,7 +4277,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             padding: EdgeInsets.all(0), // Padding of 10 from each side
             decoration: BoxDecoration(
               color: Color(0xFFF8F8DA), // Custom grey color
-              border: Border.all(color: Colors.red), // Red border color
+              border: Border.all(color: Color(0xFFD42D3F)), // Red border color
               borderRadius: BorderRadius.circular(10), // Circular corners
             ),
             child: Center(
@@ -4352,7 +4353,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     'OR',
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.red, // Set the text color to red
+                      color: Color(0xFFD42D3F), // Set the text color to red
                     ),
                     textAlign: TextAlign.center, // Center the text
                   ),
@@ -4468,7 +4469,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   )
                 : Center(
                     child: CircularProgressIndicator(
-                      color: Colors.red,
+                      color: Color(0xFFD42D3F),
                     ),
                   ),
           )),
@@ -4811,6 +4812,25 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
+
+  Future<void> getAllDataApi(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
+
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .getAllData(GlobalClass.token, GlobalClass.dbName,FIID)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+
+      } else {
+        EasyLoading.dismiss();
+        showToast_Error("All Data not fetched");
+      }
+    });
+  }
+
   bool _stepOneValidations() {
     if (emailIdController.text.isEmpty) {
       showToast_Error("Please enter Email ID");
@@ -4878,7 +4898,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFFD42D3F),
         textColor: Colors.white,
         fontSize: 13.0);
   }
