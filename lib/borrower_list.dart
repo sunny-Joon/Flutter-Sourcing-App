@@ -100,7 +100,7 @@ print("object++12");
                 Center(
                   child: Image.asset(
                     'assets/Images/logo_white.png', // Replace with your logo asset path
-                    height: 50,
+                    height: 40,
                   ),
                 ),
                 Container(

@@ -93,8 +93,8 @@ class _BranchListPageState extends State<BranchListPage> {
                 ),
                 Center(
                   child: Image.asset(
-                    'assets/Images/paisa_logo.png', // Replace with your logo asset path
-                    height: 50,
+                    'assets/Images/logo_white.png', // Replace with your logo asset path
+                    height: 40,
                   ),
                 ),
                 Container(

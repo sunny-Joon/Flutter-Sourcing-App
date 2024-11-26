@@ -37,10 +37,10 @@ class _KYCPageState extends State<KYCPage> {
   int _timeLeft = 60; // Timer starting at 60 seconds
   Timer? _timer;
 
-  Color iconPan = Colors.red;
-  Color iconDl = Colors.red;
-  Color iconVoter = Colors.red;
-  Color iconPassport = Colors.red;
+  Color iconPan = Color(0xFFD42D3F);
+  Color iconDl = Color(0xFFD42D3F);
+  Color iconVoter = Color(0xFFD42D3F);
+  Color iconPassport = Color(0xFFD42D3F);
 
   int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
@@ -467,7 +467,7 @@ class _KYCPageState extends State<KYCPage> {
       msg: "$message",
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.CENTER,
-      backgroundColor: Colors.redAccent,
+      backgroundColor: Color(0xFFD42D3F),
       textColor: Colors.white,
       fontSize: 16.0,
     );
@@ -979,7 +979,7 @@ class _KYCPageState extends State<KYCPage> {
           style: TextStyle(
               color: isCompleted
                   ? Colors.white
-                  : (isActive ? Colors.red : Colors.grey)),
+                  : (isActive ? Color(0xFFD42D3F) : Colors.grey)),
         ),
       ),
     );
@@ -2429,7 +2429,7 @@ class _KYCPageState extends State<KYCPage> {
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Button color
+                      backgroundColor: Color(0xFFD42D3F), // Button color
                     ),
                     child: Text(
                       'Submit',
