@@ -17,6 +17,7 @@ import 'Models/KycUpdateModel.dart';
 import 'Models/RangeCategoryModel.dart';
 import 'Models/branch_model.dart';
 import 'Models/docsVerify.dart';
+import 'Models/getAllModel.dart';
 import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
 import 'Models/ocr_response_model.dart';
@@ -218,6 +219,12 @@ abstract class ApiService {
   Future<BranchModel> getBranchList(
       @Header("dbname") String dbname,
       @Query("Creator") String Creator);
+
+  @GET("FiSourcing/GetAllFiData")
+  Future<GetAllModel> getAllData(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Query("FI_ID") int FI_ID);
 
   @GET("Masters/GetGroupCode")
   Future<GroupModel> getGroupList(

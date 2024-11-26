@@ -38,11 +38,9 @@ class _KYCPageState extends State<KYCPage> {
 
    int _timeLeft = 60; // Timer starting at 60 seconds
   Timer? _timer;
+
   int imageStartIndex = 0;
-  Color iconPan = Colors.red;
-  Color iconDl = Colors.red;
-  Color iconVoter = Colors.red;
-  Color iconPassport = Colors.red;
+
 
   int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
@@ -561,7 +559,7 @@ class _KYCPageState extends State<KYCPage> {
       msg: "$message",
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.CENTER,
-      backgroundColor: Colors.redAccent,
+      backgroundColor: Color(0xFFD42D3F),
       textColor: Colors.white,
       fontSize: 16.0,
     );
@@ -1276,7 +1274,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
           style: TextStyle(
               color: isCompleted
                   ? Colors.white
-                  : (isActive ? Colors.red : Colors.grey)),
+                  : (isActive ? Color(0xFFD42D3F) : Colors.grey)),
         ),
       ),
     );
@@ -2841,6 +2839,69 @@ bool checkIdMendate(){
     }
   }
 
+
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Row(
+                children: [
+                  Text(
+                    'OTP',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(), // Pushes the timer and icon to the right
+                  Text(
+                    '$_timeLeft',
+                    style: TextStyle(color: Colors.green, fontSize: 16),
+                  ),
+                  SizedBox(width: 5),
+                  Icon(Icons.timer, color: Colors.green),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _otpController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter OTP',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Handle submit action
+                      String otp = _otpController.text;
+                      print('OTP submitted: $otp');
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFD42D3F), // Button color
+                    ),
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                )
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
 
   Future<void> mobileOtp(BuildContext context, String mobileNo) async {

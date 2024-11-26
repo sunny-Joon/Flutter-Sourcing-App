@@ -1,9 +1,15 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:provider/provider.dart';
 
 import 'ApiService.dart';
+import 'Collection.dart';
+import 'LeaderBoard.dart';
+import 'OnBoarding.dart';
+import 'Profile.dart';
 import 'TargetCarGif.dart';
+import 'const/appcolors.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,6 +19,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentSliderValue = 2500; // Initial value in thousands
   int _displayValue = 0; // Display value for the text
+  int _page = 0;
+  AppColors appColors = new AppColors();
 
   @override
   void initState() {
@@ -233,21 +241,30 @@ class _HomePageState extends State<HomePage> {
                   MaterialPageRoute(builder: (context) => TargetCarGif()),
                 );
               },
-              child: Text(
-                'TAP To KNOW YOUR PROGRESS >>>',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Color(0xFFC5C3C3),
-                  shadows: [
-                    Shadow(
-                      blurRadius: 10.0,
-                      color: Colors.black,
-                      offset: Offset(2.0, 2.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'TAP TO KNOW YOUR PROGRESS',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Color(0xFFC5C3C3),
+                      shadows: [
+                       /* Shadow(
+                          blurRadius: 10.0,
+                          color: Colors.black,
+                        ),*/
+                      ],
                     ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
-              ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Icon(
+                    Icons.double_arrow_outlined,
+                    color: Color(0xFFC5C3C3),
+                  ),
+                ],
+              )
+
             ),
             SizedBox(height: 10), // Add space before the row
             Row(
@@ -265,21 +282,19 @@ class _HomePageState extends State<HomePage> {
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center, // Center vertically
                             children: [
                               Text(
                                 'Current Earning',
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 16,
                                   color: Color(0xFF6D6D6D),
                                 ),
                               ),
-
-                              // Dynamic text with controller
                               TextField(
-                                controller: TextEditingController(text: '\$8000'),
+                                controller: TextEditingController(text: '\₹0000'),
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 16,
                                   color: Color(0xFF6D6D6D),
                                 ),
                                 textAlign: TextAlign.center,
@@ -291,7 +306,7 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 '10 People are earning more commission',
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 16,
                                   color: Color(0xFF6D6D6D),
                                 ),
                                 textAlign: TextAlign.center,
@@ -303,7 +318,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-
                 Expanded(
                   child: Container(
                     height: MediaQuery.of(context).size.height / 4,
@@ -318,12 +332,12 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.all(15.0),
                         child: Center(
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center, // Center vertically
                             children: [
                               Text(
-                                'Earn Maximum Comission',
+                                'Earn Maximum Commission',
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 16,
                                   color: Colors.white,
                                 ),
                                 textAlign: TextAlign.center,
@@ -332,20 +346,16 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 'AB RUKNA NAHI',
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 16,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign.center,
-                              ),SizedBox(height: 10),
-                              Text(
-                                '-->>',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 10),
+                              Icon(
+                                Icons.double_arrow_outlined,
+                                color: Color(0xFFC5C3C3),
                               ),
                             ],
                           ),
@@ -356,6 +366,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+
             SizedBox(height: 20), // Add some space at the bottom
           ],
         ),

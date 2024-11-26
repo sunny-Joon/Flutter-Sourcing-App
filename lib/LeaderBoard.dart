@@ -1,17 +1,80 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
-class LeaderBoard extends StatelessWidget {
+import 'Collection.dart';
+import 'HomePage.dart';
+import 'OnBoarding.dart';
+import 'Profile.dart';
+import 'const/appcolors.dart';
+
+
+class LeaderBoard extends StatefulWidget {
+  @override
+  _LeaderBoardState createState() => _LeaderBoardState();
+}
+
+class _LeaderBoardState extends State<LeaderBoard> {
+
+
+  int _page = 0;
+  AppColors appColors = new AppColors();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-      appBar: AppBar(
-        title: Text('LeaderBoard'),
-        backgroundColor: Colors.red,
+      body: SingleChildScrollView(
+    child:Center(
+        child: Padding(padding:
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+
+      child: Column(
+        children: [
+        Padding(
+          padding: EdgeInsets.only(left: 10,top: 20,right: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(
+                        width: 1, color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                  ),
+                  height: 40,
+                  width: 40,
+                  alignment: Alignment.center,
+                  child: Center(
+                    child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    Navigator.pop(context);                  });
+                },
+              ),
+              Center(
+                child: Image.asset(
+                  'assets/Images/logo_white.png',
+                  // Replace with your logo asset path
+                  height: 30,
+                ),
+              ),
+              Container(
+                height: 40,
+                width: 40,
+                alignment: Alignment.center,
+              ),
+            ],
+          ),
+        ),
+      ],)
       ),
-      body: Center(
-        child: Text('This is Page 2', style: TextStyle(fontSize: 24, color: Colors.white)),
-      ),
+      )
+      )
     );
   }
 }
