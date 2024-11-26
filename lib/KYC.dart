@@ -46,7 +46,7 @@ class _KYCPageState extends State<KYCPage> {
 
   int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
-  String? panCardHolderName;
+  String  panCardHolderName="Please search PAN card holder name for verification";
   String? dlCardHolderName;
   String? voterCardHolderName;
   List<RangeCategoryDataModel> states = [];
@@ -2132,13 +2132,9 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
               ),
             ],
           ),
-          panCardHolderName == null
-              ? Text(
-                  "Please search PAN card holder name for verification",
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
-                )
-              : Text(panCardHolderName!,
-                  style: TextStyle(color: Colors.green, fontSize: 14)),
+
+               Text(panCardHolderName,
+                  style: TextStyle(color: !panVerified?Colors.grey.shade400: Colors.green, fontSize: !panVerified?11:14)),
           Row(
             children: [
               Flexible(
@@ -2366,9 +2362,15 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
         // Parse JSON object if it’s a map
         if (type == "pancard") {
           setState(() {
-            panCardHolderName =
-                "${responseData['first_name']} ${responseData['last_name']}";
-            panVerified = true;
+            if(response["error"]==null){
+              panCardHolderName =
+              "${responseData['first_name']} ${responseData['last_name']}";
+              panVerified = true;
+            }else{
+              panCardHolderName = "PAN no. is wrong please check";
+              panVerified = false;
+            }
+
           });
         } else if (type == "drivinglicense") {
           setState(() {
