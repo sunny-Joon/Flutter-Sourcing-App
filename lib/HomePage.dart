@@ -263,14 +263,14 @@ class _HomePageState extends State<HomePage> {
                       margin: EdgeInsets.all(10),
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(15.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
                                 'Current Earning',
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 13,
                                   color: Color(0xFF6D6D6D),
                                 ),
                               ),
@@ -279,7 +279,7 @@ class _HomePageState extends State<HomePage> {
                               TextField(
                                 controller: TextEditingController(text: '\$8000'),
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 13,
                                   color: Color(0xFF6D6D6D),
                                 ),
                                 textAlign: TextAlign.center,
@@ -291,10 +291,10 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 '10 People are earning more commission',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 13,
                                   color: Color(0xFF6D6D6D),
                                 ),
-                                textAlign: TextAlign.left,
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
@@ -323,16 +323,16 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 'Earn Maximum Comission',
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 13,
                                   color: Colors.white,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 5),
                               Text(
                                 'AB RUKNA NAHI',
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 13,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
