@@ -311,6 +311,7 @@ class _KYCPageState extends State<KYCPage> {
         if(type=="dob"){
           _selectedDate = picked;
           _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
+          dlDob = DateFormat('dd-MM-yyyy').format(picked);
           _calculateAge();
         }else if(type=="passExp"){
        _passportExpiryController.text=DateFormat('yyyy-MM-dd').format(picked);
@@ -319,7 +320,7 @@ class _KYCPageState extends State<KYCPage> {
           _dlExpiryController.text = DateFormat('yyyy-MM-dd').format(picked);
 
 
-          dlDob = DateFormat('dd-MM-yyyy').format(picked);
+
         }
 
 
@@ -2132,7 +2133,6 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
               ),
             ],
           ),
-
                Text(panCardHolderName,
                   style: TextStyle(color: !panVerified?Colors.grey.shade400: Colors.green, fontSize: !panVerified?11:14)),
           Row(
@@ -2147,8 +2147,8 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                 padding: EdgeInsets.only(top: 20),
                 child: GestureDetector(
                   onTap: () {
-                    if (_drivingLicenseController.text.isEmpty) {
-                      showToast_Error("Please Enter Driving License");
+                    if (_drivingLicenseController.text.isEmpty || _drivingLicenseController.text.length<10) {
+                      showToast_Error("Please Enter Correct Driving License");
                     } else {
                       dlVerifyByProtean(GlobalClass.id,
                           _drivingLicenseController.text, dlDob!);
@@ -2549,33 +2549,33 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
         },*/
         onPressed: () {
 
-          //  if (_currentStep == 0) {
-          //    if(firstPageFieldVelidate()){
-          //      saveFiMethod(context);
-          //
-          //    }
-          //
-          // } else if (_currentStep == 1) {
-          //     if(secondPageFieldValidate()){
-          //       saveIDsMethod(context);
-          //     }
-          //
-          // } else if (_currentStep > 1) {
-          //   showKycDoneDialog(context);
-          // }
+           if (_currentStep == 0) {
+             if(firstPageFieldVelidate()){
+               saveFiMethod(context);
 
-          if (_currentStep ==0) {
-            setState(() {
-              _currentStep += 1;
-            });
+             }
+
           } else if (_currentStep == 1) {
-            if(secondPageFieldValidate()){
-                    saveIDsMethod(context);
-                  }
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Form submitted successfully")),
-            );
+              if(secondPageFieldValidate()){
+                saveIDsMethod(context);
+              }
+
+          } else if (_currentStep > 1) {
+            showKycDoneDialog(context);
           }
+
+          // if (_currentStep ==0) {
+          //   setState(() {
+          //     _currentStep += 1;
+          //   });
+          // } else if (_currentStep == 1) {
+          //   if(secondPageFieldValidate()){
+          //           saveIDsMethod(context);
+          //         }
+          //   ScaffoldMessenger.of(context).showSnackBar(
+          //     SnackBar(content: Text("Form submitted successfully")),
+          //   );
+          // }
         },
         child: Text(
           "SUBMIT",
@@ -2642,6 +2642,10 @@ bool secondPageFieldValidate(){
        if(_drivingLicenseController.text.isNotEmpty){
       if(!dlVerified){
         showToast_Error("Please verify driving license");
+        return false;
+      }
+      if(_dlExpiryController.text.isEmpty){
+        showToast_Error("Please Enter Expiry date of Driving License");
         return false;
       }
     }
