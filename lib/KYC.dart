@@ -2835,9 +2835,6 @@ bool checkIdMendate(){
     } catch (e) {
       print("Error: $e");
     }
-  }
-
-
 
     showDialog(
       context: context,
