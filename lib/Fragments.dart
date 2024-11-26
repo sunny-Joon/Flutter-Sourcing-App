@@ -198,14 +198,14 @@ class _FragmentsState extends State<Fragments> {
         }
 
         // Handle successful data update
-        GlobalClass().showSuccessAlert(context);
+        GlobalClass.showSuccessAlert(context);
     //    EasyLoading.dismiss();
 
       } else {
         // Handle failed data update
    //     EasyLoading.dismiss();
 
-        GlobalClass().showUnsuccessfulAlert(context);
+        GlobalClass.showUnsuccessfulAlert(context);
       }
     } else {
       // If data exists, no need to make the API call

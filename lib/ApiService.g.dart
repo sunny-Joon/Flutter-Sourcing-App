@@ -56,13 +56,17 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<GlobalModel> mobileOtpSend(Map<String, dynamic> body) async {
+  Future<CommonIntModel> mobileOtpSend(
+    String dbname,
+    Map<String, dynamic> body,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'dbname': dbname};
+    _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<GlobalModel>(Options(
+    final _options = _setStreamType<CommonIntModel>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -79,9 +83,9 @@ class _ApiService implements ApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late GlobalModel _value;
+    late CommonIntModel _value;
     try {
-      _value = GlobalModel.fromJson(_result.data!);
+      _value = CommonIntModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -293,27 +297,27 @@ class _ApiService implements ApiService {
       longitude.toString(),
     ));
     _data.fields.add(MapEntry(
-      'current_Address1',
+      'P_Address1',
       currentAddress1,
     ));
     _data.fields.add(MapEntry(
-      'current_Address2',
+      'P_Address2',
       currentAddress2,
     ));
     _data.fields.add(MapEntry(
-      'current_Address3',
+      'P_Address3',
       currentAddress3,
     ));
     _data.fields.add(MapEntry(
-      'current_City',
+      'P_City',
       currentCity,
     ));
     _data.fields.add(MapEntry(
-      'current_Pincode',
+      'P_Pincode',
       currentPincode,
     ));
     _data.fields.add(MapEntry(
-      'current_State',
+      'P_State',
       currentState,
     ));
     _data.fields.add(MapEntry(
@@ -1745,6 +1749,51 @@ class _ApiService implements ApiService {
     late OcrResponse _value;
     try {
       _value = OcrResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<CommonIntModel> otpVerify(
+    String token,
+    String dbName,
+    String mobileNo,
+    String otp,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'MobileNo': mobileNo,
+      r'Otp': otp,
+    };
+    final _headers = <String, dynamic>{
+      r'Authorization': token,
+      r'dbname': dbName,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<CommonIntModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'Masters/OTPVerify',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late CommonIntModel _value;
+    try {
+      _value = CommonIntModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

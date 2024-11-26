@@ -3,15 +3,17 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
+import 'package:flutter_sourcing_app/const/validators.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
+import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
 import 'DATABASE/DatabaseHelper.dart';
@@ -34,10 +36,9 @@ class _KYCPageState extends State<KYCPage> {
   late ApiService apiService_protean;
   late ApiService apiService_OCR;
 
-  final TextEditingController _otpController = TextEditingController();
-  int _timeLeft = 60; // Timer starting at 60 seconds
+   int _timeLeft = 60; // Timer starting at 60 seconds
   Timer? _timer;
-
+  int imageStartIndex = 0;
   Color iconPan = Colors.red;
   Color iconDl = Colors.red;
   Color iconVoter = Colors.red;
@@ -85,6 +86,7 @@ class _KYCPageState extends State<KYCPage> {
   String? selectedloanDuration;
   String? _locationMessage;
   Position? position;
+  bool otpVerified=false;
 
   @override
   void initState() {
@@ -93,15 +95,22 @@ class _KYCPageState extends State<KYCPage> {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
-
+    _focusNodeAdhaarId.addListener(_validateOnFocusChange);
+    _mobileNoController.text="9910238307";
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
 
     // selectedTitle = titleList.isNotEmpty ? titleList[0] : null;
 
     super.initState();
-    geolocator();
+    geolocator(context);
 // Fetch states using the required cat_key
+  }
+  @override
+  void dispose() {
+    _focusNodeAdhaarId.removeListener(_validateOnFocusChange); // Remove listener
+    _focusNodeAdhaarId.dispose(); // Dispose FocusNode when widget is disposed
+    super.dispose();
   }
 
   Future<void> fetchData() async {
@@ -242,6 +251,8 @@ class _KYCPageState extends State<KYCPage> {
       isPassportVerified = false;
 
   get isChecked => null;
+  final FocusNode _focusNodeAdhaarId = FocusNode();
+  String _errorMessageAadhaar="";
 
   void _pickImage() async {
     File? pickedImage = await GlobalClass().pickImage();
@@ -253,23 +264,42 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   Widget _buildDatePickerField(BuildContext context, String labelText,
-      TextEditingController controller) {
+      TextEditingController controller,String type) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
+        
         controller: controller,
         readOnly: true,
-        onTap: () => _selectDate(context, controller),
+        onTap: () => _selectDate(context, controller,type),
         decoration: InputDecoration(
           labelText: labelText,
           border: OutlineInputBorder(),
+          suffixIcon:   Icon(Icons.calendar_today),
+
+
         ),
       ),
     );
   }
-
+  void _validateOnFocusChange() {
+    if (!_focusNodeAdhaarId.hasFocus) {
+      // Validate the input when the text field loses focus
+      setState(() {
+        if (_aadharIdController.text.isEmpty) {
+          _errorMessageAadhaar = 'Aadhaar Id field cannot be empty!';
+        } else if (_aadharIdController.text.length !=12) {
+          _errorMessageAadhaar = 'Aadhaar must be 12 characters long.';
+        } else if(!Validators.validateVerhoeff(_aadharIdController.text)){
+          _errorMessageAadhaar = 'Aadhaar id is not valid';
+        }else{
+          _errorMessageAadhaar="";
+        }
+      });
+    }
+  }
   void _selectDate(
-      BuildContext context, TextEditingController controller) async {
+      BuildContext context, TextEditingController controller,String type) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -278,10 +308,23 @@ class _KYCPageState extends State<KYCPage> {
     );
     if (picked != null) {
       setState(() {
-        _selectedDate = picked;
-        _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
-        dlDob = DateFormat('dd-MM-yyyy').format(picked);
-        _calculateAge();
+        if(type=="dob"){
+          _selectedDate = picked;
+          _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
+          _calculateAge();
+        }else if(type=="passExp"){
+       _passportExpiryController.text=DateFormat('yyyy-MM-dd').format(picked);
+
+        }else if(type=="dlExp"){
+          _dlExpiryController.text = DateFormat('yyyy-MM-dd').format(picked);
+
+
+          dlDob = DateFormat('dd-MM-yyyy').format(picked);
+        }
+
+
+
+
       });
     }
     // if (controller == _dobController) {
@@ -330,15 +373,17 @@ class _KYCPageState extends State<KYCPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(child: Scaffold(
+
       backgroundColor: Color(0xFFD42D3F),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
             child: Column(
               children: [
+                SizedBox(height: 20,),
                 Padding(
                   padding: EdgeInsets.all(8),
                   child: Row(
@@ -382,7 +427,7 @@ class _KYCPageState extends State<KYCPage> {
                 //  _buildProgressIndicator(),
                 SizedBox(height: 30),
                 Container(
-                  height: MediaQuery.of(context).size.height - 220,
+                  height: MediaQuery.of(context).size.height - 244,
                   child: Flexible(
                     child: Stack(
                       clipBehavior: Clip.none,
@@ -411,45 +456,66 @@ class _KYCPageState extends State<KYCPage> {
                             child: Center(
                               child: _imageFile == null
                                   ? InkWell(
-                                      child: ClipOval(
-                                        child: Container(
-                                          width: 70,
-                                          height: 70,
-                                          color: Colors.blue,
-                                          child: Icon(
-                                            Icons.person,
-                                            size: 50.0,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                      onTap: _pickImage,
-                                    )
-                                  : InkWell(
-                                      child: ClipOval(
-                                        child: Image.file(
-                                          File(_imageFile!.path),
-                                          width: 70,
-                                          height: 70,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      onTap: _pickImage,
+                                onTap: _pickImage,
+                                child: ClipOval(
+                                  child: Container(
+                                    width: 70,
+                                    height: 70,
+                                    color: Colors.grey,
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 50.0,
+                                      color: Colors.white,
                                     ),
+                                  ),
+                                ),
+                              )
+                                  : InkWell(
+                                child: ClipOval(
+                                  child: Image.file(
+                                    File(_imageFile!.path),
+                                    width: 70,
+                                    height: 70,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                onTap: _pickImage,
+                              ),
                             )),
                       ],
                     ),
                   ),
                 ),
+                SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(children: [
+                      Icon(Icons.location_on_outlined,color: Colors.white,),
+                      Text("${_locationMessage}",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
 
-                SizedBox(height: 20),
+                    ],),
+                    InkWell(
+                      onTap: (){geolocator(context);},
+
+                      child:  Card(
+                        elevation: 5,
+                        shape: CircleBorder(),
+                        child: Padding(padding: EdgeInsets.all(3),child: Icon(Icons.refresh,size: 30,color: Color(0xffb41d2d),),),
+                      ),
+                    )
+
+
+                  ],
+                ),
+                SizedBox(height: 10),
                 _buildNextButton(context),
               ],
             ),
           ),
         ),
       ),
-    );
+    ), onWillPop: _onWillPop);
   }
 
   int calculateAgeFromString(String dateString,
@@ -526,6 +592,7 @@ class _KYCPageState extends State<KYCPage> {
               width: double.infinity, // Set the desired width
               child: Center(
                 child: TextFormField(
+
                   controller: controller,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -544,10 +611,11 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   Future<void> saveFiMethod(BuildContext context) async {
+    try {
+      EasyLoading.show(status: 'Loading...');
 
-    EasyLoading.show(status: 'Loading...',);
       String adhaarid = _aadharIdController.text.toString();
-      String title = selectedTitle??"";
+      String title = selectedTitle ?? "";
       String name = _nameController.text.toString();
       String middlename = _nameMController.text.toString();
       String lastname = _nameLController.text.toString();
@@ -562,7 +630,7 @@ class _KYCPageState extends State<KYCPage> {
       String spouseM = _spouseMiddleNameController.text.toString();
       String spouseL = _spouseLastNameController.text.toString();
       expense = _expenseController.text;
-      income = _expenseController.text;
+      income = _incomeController.text;
       lati = _latitudeController.text;
       longi = _longitudeController.text;
       int Expense =
@@ -577,13 +645,12 @@ class _KYCPageState extends State<KYCPage> {
       String add3 = _address3Controller.text.toString();
       String city = _cityController.text.toString();
       String pin = _pincodeController.text.toString();
-      String state = stateselected.toString();
+      String state = stateselected!.code.toString();
       bool ismarried = selectedMarritalStatus.toString() == 'Married';
       String gCode = widget.GroupData.groupCode;
       String bCode = widget.data.branchCode.toString();
 
       String relation_with_Borrower = relationwithBorrowerselected;
-
       String bank_name = bankselected;
       String loan_Duration = selectedloanDuration!;
       String loan_amount = _loan_amountController.text.toString();
@@ -594,61 +661,76 @@ class _KYCPageState extends State<KYCPage> {
 
       final api = Provider.of<ApiService>(context, listen: false);
 
-      return await api
+      await api
           .saveFi(
-
-          GlobalClass.token,
-          GlobalClass.dbName,
-          adhaarid,
-          title,
-          name,
-          middlename,
-          lastname,
-          dob,
-          age,
-          gendre,
-          mobile,
-          fatherF,
-          fatherM,
-          fatherL,
-          spouseF,
-          spouseM,
-          spouseL,
-          GlobalClass.creator,
-          Expense,
-          Income,
-          latitude,
-          longitude,
-          add1,
-          add2,
-          add3,
-          city,
-          pin,
-          state,
-          ismarried,
-          gCode,
-          bCode,
-          relation_with_Borrower,
-          bank_name,
-          loan_Duration,
-          loan_amount,
-          selectedLoanReason!,
-          _imageFile!)
-
+        GlobalClass.token,
+        GlobalClass.dbName,
+        adhaarid,
+        title,
+        name,
+        middlename,
+        lastname,
+        dob,
+        age,
+        gendre,
+        mobile,
+        fatherF,
+        fatherM,
+        fatherL,
+        spouseF,
+        spouseM,
+        spouseL,
+        GlobalClass.creator,
+        Expense,
+        Income,
+        latitude,
+        longitude,
+        add1,
+        add2,
+        add3,
+        city,
+        pin,
+        state,
+        ismarried,
+        gCode,
+        bCode,
+        relation_with_Borrower,
+        bank_name,
+        loan_Duration,
+        loan_amount,
+        selectedLoanReason!,
+        _imageFile!,
+      )
           .then((value) async {
         if (value.statuscode == 200) {
+          getPlace("city", stateselected!.code, "", "");
+          getPlace("district", stateselected!.code, "", "");
           setState(() {
             _currentStep += 1;
             Fi_Id = value.data[0].fiId.toString();
           });
-          EasyLoading.dismiss();
-
-        } else {
-          EasyLoading.dismiss();
-
+        } else if (value.statuscode == 201) {
+          print("status code 201");
+          GlobalClass.showAlert(
+            context,
+            value.message,
+            value.data[0].errormsg,
+            Colors.red,
+          );
+        } else if (value.statuscode == 400) {
+          GlobalClass.showSnackBar(context, "Something went wrong in API");
         }
+        EasyLoading.dismiss();
+      }).catchError((error) {
+        GlobalClass.showSnackBar(context, "Error: ${error.toString()}");
+        EasyLoading.dismiss();
       });
+    } catch (e) {
+      GlobalClass.showSnackBar(context, "An unexpected error occurred: ${e.toString()}");
+      EasyLoading.dismiss();
+    }
   }
+
 
   Future<void> saveIDsMethod(BuildContext context) async {
     EasyLoading.show(status: 'Loading...',);
@@ -722,7 +804,7 @@ class _KYCPageState extends State<KYCPage> {
   void saveDataMethod() {}
 
   Widget _buildTextField2(
-      String label, TextEditingController controller, TextInputType inputType) {
+      String label, TextEditingController controller, TextInputType inputType,int maxlength) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -741,10 +823,13 @@ class _KYCPageState extends State<KYCPage> {
             width: double.infinity, // Set the desired width
             child: Center(
               child: TextFormField(
+
+                maxLength: maxlength,
                 controller: controller,
                 keyboardType: inputType, // Set the input type
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
+                  counterText: ""
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -752,6 +837,15 @@ class _KYCPageState extends State<KYCPage> {
                   }
                   return null;
                 },
+                inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                  TextInputFormatter.withFunction(
+                        (oldValue, newValue) => TextEditingValue(
+                      text: newValue.text.toUpperCase(),
+                      selection: newValue.selection,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -798,7 +892,7 @@ class _KYCPageState extends State<KYCPage> {
                   width: double.infinity, // Match the width of the dialog
                   child: TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop(); // Optional: close the dialog
+                      getDataFromOCR("adharBack",context);
                     },
                     child: Text(
                       'Adhaar Back',
@@ -825,17 +919,22 @@ class _KYCPageState extends State<KYCPage> {
                             builder: (context) => QRViewExample()),
                       );
 
-                      if (result != null) {
-                        BigInt bigIntScanData = BigInt.parse(result);
-                        List<int> byteScanData = bigIntToBytes(bigIntScanData);
 
-                        List<int> decompByteScanData =
-                            decompressData(byteScanData);
-                        List<List<int>> parts =
-                            separateData(decompByteScanData, 255, 15);
-                        String qrResult = decodeData(parts);
-
-                        onResult(qrResult);
+                        if (result != null) {
+                          //
+                          // BigInt bigIntScanData = BigInt.parse(result);
+                          // List<int> byteScanData = bigIntToBytes(bigIntScanData);
+                          //
+                          // List<int> decompByteScanData = decompressData(byteScanData);
+                          // List<List<int>>  parts =separateData(decompByteScanData, 255, 15);
+                          //
+                          // setState(() {
+                          //
+                          //   qrResult= decodeData(parts);
+                          // });
+                          print(result);
+                      setQRData(result);
+                     //   onResult(qrResult);
                       }
 
                       Navigator.of(context).pop();
@@ -860,10 +959,10 @@ class _KYCPageState extends State<KYCPage> {
       },
     );
   }
-  String formatDate(String date) {
+  String formatDate(String date,dateFormat) {
     try {
       // Parse the input string to a DateTime object
-      DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
+      DateTime parsedDate = DateFormat(dateFormat).parse(date);
       setState(() {
         _selectedDate=parsedDate;
         _calculateAge();
@@ -906,21 +1005,82 @@ class _KYCPageState extends State<KYCPage> {
                 _nameLController.text = nameParts.last;
                 _nameMController.text = nameParts.sublist(1, nameParts.length - 1).join(' ');
               }
-              _dobController.text=formatDate(response.data.dob);
+              _dobController.text=formatDate(response.data.dob,'dd/MM/yyyy');
               genderselected = aadhar_gender.firstWhere((item) => item.descriptionEn.toLowerCase() == response.data.gender.toLowerCase()).descriptionEn;
               if(genderselected=="Male"){
                 selectedTitle="Mr.";
               }else{
                 selectedTitle="Mrs.";
               }
-
             });
-
-
             Navigator.of(context).pop();
+          }else if(type=="adharBack"){
+            _pincodeController.text=response.data.pincode;
+            if(response.data.relation.toLowerCase()=="father"){
+              _gurNameController.text=response.data.guardianName;
+              setState(() {
+                relationwithBorrowerselected="Father";
+
+              });
+              _cityController.text=response.data.cityName;
+              List<String> addressParts = response.data.address1.trim().split(" ");
+              if (addressParts.length == 1) {
+                _address1Controller.text = addressParts[0];
+              } else if (addressParts.length == 2) {
+                _address1Controller.text = addressParts[0];
+                _address2Controller.text = addressParts[1];
+              } else {
+                  _address1Controller.text = addressParts.first;
+                  _address2Controller.text = addressParts.last;
+                _address3Controller.text = addressParts.sublist(1, addressParts.length - 1).join(' ');
+              }
+List<String> guarNameParts = response.data.guardianName.trim().split(" ");
+              if (guarNameParts.length == 1) {
+                _fatherFirstNameController.text = guarNameParts[0];
+              } else if (guarNameParts.length == 2) {
+                _fatherFirstNameController.text = guarNameParts[0];
+                _fatherLastNameController.text = guarNameParts[1];
+              } else {
+                  _fatherFirstNameController.text = guarNameParts.first;
+                  _fatherLastNameController.text = guarNameParts.last;
+                _fatherMiddleNameController.text = guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+              }
+
+            }
+            else if(response.data.relation.toLowerCase()=="husband"){
+              _gurNameController.text=response.data.guardianName;
+              setState(() {
+                relationwithBorrowerselected="Husband";
+                selectedMarritalStatus="Married";
+              });
+              _cityController.text=response.data.cityName;
+              List<String> addressParts = response.data.address1.trim().split(" ");
+              if (addressParts.length == 1) {
+                _address1Controller.text = addressParts[0];
+              } else if (addressParts.length == 2) {
+                _address1Controller.text = addressParts[0];
+                _address2Controller.text = addressParts[1];
+              } else {
+                  _address1Controller.text = addressParts.first;
+                  _address2Controller.text = addressParts.last;
+                _address3Controller.text = addressParts.sublist(1, addressParts.length - 1).join(' ');
+              }
+            List<String> guarNameParts = response.data.guardianName.trim().split(" ");
+              if (guarNameParts.length == 1) {
+                _spouseFirstNameController.text = guarNameParts[0];
+              } else if (guarNameParts.length == 2) {
+                _spouseFirstNameController.text = guarNameParts[0];
+                _spouseLastNameController.text = guarNameParts[1];
+              } else {
+                _spouseFirstNameController.text = guarNameParts.first;
+                _spouseLastNameController.text = guarNameParts.last;
+                _spouseMiddleNameController.text = guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+              }
+
+            }
+
           }
           EasyLoading.dismiss();
-
         }else{
           showToast_Error("Data not fetched from this Aadhaar card please check the image");
           Navigator.of(context).pop();
@@ -935,33 +1095,7 @@ class _KYCPageState extends State<KYCPage> {
       }
     }
   }
-  List<int> bigIntToBytes(BigInt bigInt) {
-    // Convert BigInt to a byte array (List<int>)
-    List<int> byteArray = [];
-    while (bigInt > BigInt.zero) {
-      byteArray.add((bigInt & BigInt.from(0xFF)).toInt());
-      bigInt = bigInt >> 8; // Shift right by 8 bits
-    }
-    return byteArray.reversed.toList(); // Reverse to maintain byte order
-  }
-
-  List<int> decompressData(List<int> byteScanData) {
-    try {
-      // Decompress the GZIP data
-      List<int> decompressedData = GZipDecoder().decodeBytes(byteScanData);
-
-      return decompressedData; // Return decompressed data as List<int>
-    } catch (e) {
-      print('Exception: Decompressing QRcode failed: $e');
-      // Handle error appropriately (e.g., throw a custom exception)
-      return []; // Returning an empty List<int> on error
-    }
-  }
-
-  List<List<int>> separateData(
-      List<int> source, int separatorByte, int vtcIndex) {
-    int imageStartIndex = 0;
-
+  List<List<int>> separateData(List<int> source, int separatorByte, int vtcIndex) {
     List<List<int>> separatedParts = [];
     int begin = 0;
 
@@ -987,27 +1121,59 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   String decodeData(List<List<int>> encodedData) {
-    String test = "";
+    String test="";
     List<String> decodedData = [];
 
     for (var byteArray in encodedData) {
       // Decode using ISO-8859-1
-      String decodedString =
-          utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
+      String decodedString = utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
       decodedData.add(decodedString);
-      test += decodedString;
+
+      test+=decodedString;
+      print(test);
+
+
+
     }
 
     return test;
   }
+  List<int> bigIntToBytes(BigInt bigInt) {
+    // Convert BigInt to a byte array (List<int>)
+    List<int> byteArray = [];
+    while (bigInt > BigInt.zero) {
+      byteArray.add((bigInt & BigInt.from(0xFF)).toInt());
+      bigInt = bigInt >> 8; // Shift right by 8 bits
+    }
+    return byteArray.reversed.toList(); // Reverse to maintain byte order
+  }
 
-  Future<void> geolocator() async {
+  List<int> decompressData(List<int> byteScanData) {
+    print(" Prints the first few bytes"); // Prints the first few bytes
+    // Print data in hexadecimal format for better debugging
+    String hexData = byteScanData.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join(' ');
+    print('Data in hexadecimal: $hexData'); // Prints the first few bytes
+    try {
+      // Decompress the GZIP data
+      List<int> decompressedData = GZipDecoder().decodeBytes(byteScanData);
+
+      return decompressedData; // Return decompressed data as List<int>
+    } catch (e) {
+      print('Exception: Decompressing QRcode failed: $e');
+      // Handle error appropriately (e.g., throw a custom exception)
+      return []; // Returning an empty List<int> on error
+    }
+  }
+
+
+  Future<void> geolocator(BuildContext context) async {
+    EasyLoading.show(status: "Location Fetching...");
     try {
       position = await _getCurrentPosition();
       setState(() {
         if (position != null) {
           _locationMessage =
-              "Latitude: ${position!.latitude}, Longitude: ${position!.longitude}";
+          "${position!.latitude},${position!.longitude}";
           print("Geolocation: $_locationMessage");
           _latitudeController.text = position!.latitude.toString();
           _longitudeController.text = position!.longitude.toString();
@@ -1016,13 +1182,42 @@ class _KYCPageState extends State<KYCPage> {
     } catch (e) {
       setState(() {
         _locationMessage = e.toString();
+        _latitudeController.clear();
+        _longitudeController.clear();
       });
       print("Geolocation Error: $_locationMessage");
-      _latitudeController.clear();
-      _longitudeController.clear();
-    }
-  }
 
+      _showRefreshDialog(context);
+    }
+    EasyLoading.dismiss();
+  }
+  void _showRefreshDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Location Error'),
+          content: Text(
+              'Unable to fetch the location. Would you like to try again?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                geolocator(context); // Retry fetching the location
+              },
+              child: Text('Retry'),
+            ),
+          ],
+        );
+      },
+    );
+  }
   Future<Position> _getCurrentPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -1048,7 +1243,7 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   void _onRefreshButtonClick() async {
-    await geolocator(); // Call to get location and update fields
+    await geolocator(context); // Call to get location and update fields
   }
 
   /*Widget _buildProgressIndicator() {
@@ -1112,8 +1307,45 @@ class _KYCPageState extends State<KYCPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+
           children: [
-            Expanded(child: _buildTextField('Aadhaar Id', _aadharIdController)),
+            Expanded(child: Container(
+              color: Colors.white,
+              margin: EdgeInsets.symmetric(vertical: 0),
+              padding: EdgeInsets.all(0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Aadhaar ID",
+                    style: TextStyle(fontSize: 16, height: 2),
+                  ),
+                  SizedBox(height: 1),
+                  Container(
+                      padding: EdgeInsets.zero,
+                      width: double.infinity, // Set the desired width
+                      child: Center(
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          maxLength: 12,
+                          focusNode: _focusNodeAdhaarId,
+                          controller: _aadharIdController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            errorText: _errorMessageAadhaar.isEmpty ? null : _errorMessageAadhaar,
+                            counterText: ""
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter Aadhaar ID';
+                            }
+                            return null;
+                          },
+                        ),
+                      )),
+                ],
+              ),
+            )),
             Padding(
               padding: EdgeInsets.only(top: 20),
               // Add 10px padding from above
@@ -1189,19 +1421,19 @@ class _KYCPageState extends State<KYCPage> {
             SizedBox(width: 10),
             // Add spacing between Title dropdown and Name field if needed
             Expanded(
-              child: _buildTextField('Name', _nameController),
+              child: _buildTextField2('Name', _nameController,TextInputType.name,30),
             ),
           ],
         ),
         Row(
           children: [
-            Expanded(child: _buildTextField('Middle Name', _nameMController)),
+            Expanded(child: _buildTextField2('Middle Name', _nameMController,TextInputType.name,30)),
             SizedBox(width: 10),
             // Add spacing between the text fields if needed
-            Expanded(child: _buildTextField('Last Name', _nameLController)),
+            Expanded(child: _buildTextField2('Last Name', _nameLController,TextInputType.name,30)),
           ],
         ),
-        _buildTextField('Guardian Name', _gurNameController),
+        _buildTextField2('Guardian Name', _gurNameController,TextInputType.name,60),
         Row(
           children: [
             Expanded(
@@ -1322,41 +1554,38 @@ class _KYCPageState extends State<KYCPage> {
         Row(
           children: [
             Expanded(
-              child: _buildTextField('Mobile no', _mobileNoController),
+              child: _buildTextField2('Mobile no', _mobileNoController,TextInputType.number,10),
             ),
-            SizedBox(width: 10),
+            SizedBox(width:5),
             // Add spacing between the text field and the button
             Padding(
               padding: EdgeInsets.only(top: 20),
               // Add 10px padding from above
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_mobileNoController.text.isEmpty) {
-                    showToast_Error("Please enter mobile number");
+              child:  InkWell(
+                onTap: (){
+                  {
 
-                  }else{
-                      //getOTPByMobileNo(_mobileNoController.text);
-                    mobileOtp(context,_mobileNoController.text);
-                    _showOTPDialog(context);
-                    _timeLeft = 60;
-                    _startTimer();
+                    if (_mobileNoController.text.isEmpty) {
+                      showToast_Error("Please enter mobile number");
 
+                    }else{
+                        //getOTPByMobileNo(_mobileNoController.text);
+                      mobileOtp(context,_mobileNoController.text);
+
+
+
+
+                    }
+                    // Implement OTP verification logic here
                   }
-                  // Implement OTP verification logic here
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFA60A19), // Button color
-                  minimumSize: Size(100, 45), // Fixed size for the button
+                child: Card(
+                  elevation: 4,
+                  color:otpVerified?Colors.green: Colors.grey,
+                  shape: CircleBorder(),
+                  child: Padding(padding: EdgeInsets.all(9),child: Icon(otpVerified?Icons.verified:Icons.sms,color: Colors.white,),),
                 ),
-                child: /*Text(
-                  'Verify',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),*/
-                Text(
-                  '$_timeLeft',
-                  style: TextStyle(color: Colors.green, fontSize: 16),
-                ),
-              ),
+              )
             ),
           ],
         ),
@@ -1410,7 +1639,7 @@ class _KYCPageState extends State<KYCPage> {
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
                           icon: Icon(Icons.calendar_today),
-                          onPressed: () => _selectDate(context, _dobController),
+                          onPressed: () => _selectDate(context, _dobController,"dob"),
                         ),
                         border: OutlineInputBorder(),
                       ),
@@ -1422,17 +1651,17 @@ class _KYCPageState extends State<KYCPage> {
             ),
           ],
         ),
-        _buildTextField('Father First Name', _fatherFirstNameController),
+        _buildTextField2('Father First Name', _fatherFirstNameController,TextInputType.text,30),
         Row(
           children: [
             Expanded(
               child:
-                  _buildTextField('Middle Name', _fatherMiddleNameController),
+                  _buildTextField2('Middle Name', _fatherMiddleNameController,TextInputType.text,30),
             ),
             SizedBox(width: 8),
             // Add spacing between the text fields if needed
             Expanded(
-                child: _buildTextField('Last Name', _fatherLastNameController)),
+                child: _buildTextField2('Last Name', _fatherLastNameController,TextInputType.text,30)),
           ],
         ),
         SizedBox(
@@ -1487,20 +1716,20 @@ class _KYCPageState extends State<KYCPage> {
           ),
         ),
         // Conditionally show the spouse fields only when isMarried is true
-        if (equals(selectedMarritalStatus.toString(), 'Married'))
+        if (selectedMarritalStatus.toString()== 'Married')
           Column(
             children: [
-              _buildTextField('Spouse First Name', _spouseFirstNameController),
+              _buildTextField2('Spouse First Name', _spouseFirstNameController,TextInputType.text,30),
               Row(
                 children: [
                   Expanded(
-                    child: _buildTextField(
-                        'Middle Name', _spouseMiddleNameController),
+                    child: _buildTextField2(
+                        'Middle Name', _spouseMiddleNameController,TextInputType.text,30),
                   ),
                   SizedBox(width: 8),
                   Expanded(
                     child:
-                        _buildTextField('Last Name', _spouseLastNameController),
+                        _buildTextField2('Last Name', _spouseLastNameController,TextInputType.text,30),
                   ),
                 ],
               ),
@@ -1509,11 +1738,11 @@ class _KYCPageState extends State<KYCPage> {
         Row(
           children: [
             Expanded(
-                child: _buildTextField('Monthly Expense', _incomeController)),
+                child: _buildTextField2('Monthly Expense', _incomeController,TextInputType.number,7),),
             SizedBox(width: 8),
             // Add spacing between the text fields if needed
             Expanded(
-                child: _buildTextField('Monthly Income', _expenseController)),
+                child: _buildTextField2('Monthly Income', _expenseController,TextInputType.number,7),),
           ],
         ),
         _buildTextField('Address1', _address1Controller),
@@ -1521,9 +1750,9 @@ class _KYCPageState extends State<KYCPage> {
         _buildTextField('Address3', _address3Controller),
         Row(
           children: [
-            Expanded(child: _buildTextField('City', _cityController)),
+            Expanded(child: _buildTextField2('City', _cityController,TextInputType.text,30),),
             SizedBox(width: 16),
-            Expanded(child: _buildTextField('Pincode', _pincodeController)),
+            Expanded(child: _buildTextField2('Pincode', _pincodeController,TextInputType.number,6),),
           ],
         ),
         SizedBox(
@@ -1535,12 +1764,11 @@ class _KYCPageState extends State<KYCPage> {
             (RangeCategoryDataModel? newValue) {
           setState(() {
             stateselected = newValue;
-            getPlace("city", stateselected!.code, "", "");
-            getPlace("district", stateselected!.code, "", "");
+
           });
         }, String),
         _buildTextField2(
-            'Loan Amount', _loan_amountController, TextInputType.number),
+            'Loan Amount', _loan_amountController, TextInputType.number,7),
 
         SizedBox(
           height: 4,
@@ -1696,52 +1924,174 @@ class _KYCPageState extends State<KYCPage> {
             ),
           ],
         ),
-        Row(
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildTextField('Latitude', _latitudeController),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 8),
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildTextField('Longitude', _longitudeController),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 8),
-            Padding(
-              padding: EdgeInsets.only(top: 20),
-              // Add 10px padding from above
-              child: SizedBox(
-                height: 40, // Smaller height for compact button
-                width: 40, // Smaller width for compact button
-                child: ElevatedButton(
-                  onPressed: geolocator,
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(0),
-                    // Remove padding for smaller size
-                    minimumSize: Size(40, 40), // Ensure button remains compact
-                  ),
-                  child: Icon(
-                    Icons.refresh,
-                    size: 18, // Smaller icon size for compact look
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
+        // Row(
+        //   children: [
+        //     Expanded(
+        //       child: Row(
+        //         children: [
+        //           Expanded(
+        //             child: _buildTextField('Latitude', _latitudeController),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     SizedBox(width: 8),
+        //     Expanded(
+        //       child: Row(
+        //         children: [
+        //           Expanded(
+        //             child: _buildTextField('Longitude', _longitudeController),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     SizedBox(width: 8),
+        //     Padding(
+        //       padding: EdgeInsets.only(top: 20),
+        //       // Add 10px padding from above
+        //       child: SizedBox(
+        //         height: 40, // Smaller height for compact button
+        //         width: 40, // Smaller width for compact button
+        //         child: ElevatedButton(
+        //           onPressed: geolocator,
+        //           style: ElevatedButton.styleFrom(
+        //             padding: EdgeInsets.all(0),
+        //             // Remove padding for smaller size
+        //             minimumSize: Size(40, 40), // Ensure button remains compact
+        //           ),
+        //           child: Icon(
+        //             Icons.refresh,
+        //             size: 18, // Smaller icon size for compact look
+        //           ),
+        //         ),
+        //       ),
+        //     )
+        //   ],
+        // ),
       ],
     ));
+  }
+  void _showOTPDialog(BuildContext context) {
+    Timer? countdownTimer;
+    int remainingTime = 10;
+    bool cancelButtonVisible=false;
+    String pinCode="";
+    void startCountdown(StateSetter setState) {
+      countdownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+        if (remainingTime > 0) {
+          setState(() {
+            remainingTime--;
+          });
+        } else {
+          countdownTimer?.cancel();
+          setState((){
+            cancelButtonVisible=true;
+          });
+        }
+      });
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissal by tapping outside
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+
+          builder: (context, setState) {
+            // Start timer once the dialog opens
+            if (countdownTimer == null) startCountdown(setState);
+
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              title: Row(
+                children: [
+                  Text(
+                    'Please Enter OTP Here',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Pinput(
+                    length: 6, // Number of PIN digits
+                    onCompleted: (pin) {
+                      pinCode = pin;
+                    },
+                    defaultPinTheme: PinTheme(
+                      width: 40,
+                      height:40,
+                      textStyle: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey),
+
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Visibility(
+                      visible: !cancelButtonVisible,
+                      child: Text(
+                    'Resend OTP in $remainingTime seconds',
+                    style: TextStyle(color: Colors.red),
+                  ))
+                  ,
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    countdownTimer?.cancel(); // Stop timer when submitting
+                     
+                    if(pinCode.isEmpty || pinCode.length!=6){
+                      showToast_Error("Please Enter OTP Properly");
+                    }else{
+                      submitOtp(pinCode,context);
+                    }
+
+
+
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green, // Button color
+                  ),
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+               Visibility(child:  ElevatedButton(
+                 onPressed: () {
+                   countdownTimer?.cancel(); // Stop timer when closing
+                   Navigator.of(context).pop(); // Close the dialog
+                 },
+                 style: ElevatedButton.styleFrom(
+                   backgroundColor: Colors.red, // Button color
+                 ),
+                 child: Text(
+                   'Close',
+                   style: TextStyle(color: Colors.white),
+                 ),
+               ),visible: cancelButtonVisible,),
+              ],
+            );
+          },
+        );
+      },
+    ).then((_) {
+      countdownTimer?.cancel(); // Cleanup when dialog is closed
+    });
   }
 
   Widget _buildStepTwo(BuildContext context) {
@@ -1753,7 +2103,7 @@ class _KYCPageState extends State<KYCPage> {
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField('PAN No', _panNoController),
+                child: _buildTextField2('PAN No', _panNoController,TextInputType.text,10),
               ),
               SizedBox(width: 10),
               Padding(
@@ -1761,8 +2111,8 @@ class _KYCPageState extends State<KYCPage> {
                 child: InkWell(
                   enableFeedback: true,
                   onTap: () {
-                    if (_panNoController.text.isEmpty) {
-                      showToast_Error("Please Enter PAN No.");
+                    if (_panNoController.text.isEmpty || _panNoController.text.length!=10) {
+                      showToast_Error("Please Enter Correct PAN No.");
                     } else {
                       docVerifyIDC("pancard", _panNoController.text, "", "");
                     }
@@ -1793,8 +2143,8 @@ class _KYCPageState extends State<KYCPage> {
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField(
-                    'Driving License', _drivingLicenseController),
+                child: _buildTextField2(
+                    'Driving License', _drivingLicenseController,TextInputType.text,18),
               ),
               SizedBox(width: 10),
               Padding(
@@ -1831,12 +2181,12 @@ class _KYCPageState extends State<KYCPage> {
               : Text(dlCardHolderName!,
                   style: TextStyle(color: Colors.green, fontSize: 14)),
           _buildDatePickerField(
-              context, 'Driving License Expiry Date', _dlExpiryController),
+              context, 'Driving License Expiry Date', _dlExpiryController,"dlExp"),
           Row(
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField('Voter Id', _voterIdController),
+                child: _buildTextField2('Voter Id', _voterIdController,TextInputType.text,17),
               ),
               SizedBox(width: 10),
               Padding(
@@ -1881,7 +2231,7 @@ class _KYCPageState extends State<KYCPage> {
             ],
           ),
           _buildDatePickerField(
-              context, 'Passport Expiry Date', _passportExpiryController),
+              context, 'Passport Expiry Date', _passportExpiryController,"passExp"),
           _buildLabeledDropdownField(
               'Select City', 'Cities', listCityCodes, selectedCityCode,
               (PlaceData? newValue) {
@@ -1997,6 +2347,7 @@ class _KYCPageState extends State<KYCPage> {
 
   void docVerifyIDC(
       String type, String txnNumber, String ifsc, String dob) async {
+    EasyLoading.show(status: 'Loading...',);
     try {
       Map<String, dynamic> requestBody = {
         "type": type,
@@ -2052,6 +2403,7 @@ class _KYCPageState extends State<KYCPage> {
         EasyLoading.dismiss();
 
       }
+      EasyLoading.dismiss();
     } catch (e) {
       showToast_Error("An error occurred: $e");
 
@@ -2071,7 +2423,7 @@ class _KYCPageState extends State<KYCPage> {
           voterVerified = false;
         });
       }
-      // Handle errors
+      EasyLoading.dismiss();
     }
   }
 
@@ -2116,13 +2468,14 @@ class _KYCPageState extends State<KYCPage> {
       } else {
         docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
             _dobController.text);
-        EasyLoading.dismiss();
       }
     } catch (e) {
       // Handle errors
       docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
           _dobController.text);
     }
+    EasyLoading.dismiss();
+
   }
 
 
@@ -2164,6 +2517,8 @@ class _KYCPageState extends State<KYCPage> {
       // Handle errors
       docVerifyIDC("voterid", _voterIdController.text, "", "");
     }
+    EasyLoading.show(status: 'Loading...',);
+
   }
 
   Widget _buildNextButton(BuildContext context) {
@@ -2192,30 +2547,33 @@ class _KYCPageState extends State<KYCPage> {
         },*/
         onPressed: () {
 
-           if (_currentStep == 0) {
-             if(firstPageFieldVelidate()){
-               saveFiMethod(context);
+          //  if (_currentStep == 0) {
+          //    if(firstPageFieldVelidate()){
+          //      saveFiMethod(context);
+          //
+          //    }
+          //
+          // } else if (_currentStep == 1) {
+          //     if(secondPageFieldValidate()){
+          //       saveIDsMethod(context);
+          //     }
+          //
+          // } else if (_currentStep > 1) {
+          //   showKycDoneDialog(context);
+          // }
 
-             }
-
-          } else if (_currentStep == 1) {
-              if(secondPageFieldValidate()){
-                saveIDsMethod(context);
-              }
-
-          } else if (_currentStep > 1) {
-            showKycDoneDialog(context);
-          }
-
-          /*if (_currentStep < 2) {
+          if (_currentStep ==0) {
             setState(() {
               _currentStep += 1;
             });
-          } else if (_currentStep == 2) {
+          } else if (_currentStep == 1) {
+            if(secondPageFieldValidate()){
+                    saveIDsMethod(context);
+                  }
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Form submitted successfully")),
             );
-          }*/
+          }
         },
         child: Text(
           "SUBMIT",
@@ -2274,7 +2632,7 @@ bool secondPageFieldValidate(){
     }
   }
     if(_voterIdController.text.isNotEmpty){
-      if(!voterVerified){
+      if(voterCardHolderName==null){
         showToast_Error("Please verify voter id");
         return false;
       }
@@ -2369,10 +2727,7 @@ bool checkIdMendate(){
     } else if (_address1Controller.text.isEmpty) {
       showToast_Error("Please enter address 1");
       return false;
-    } else if (_address2Controller.text.isEmpty) {
-      showToast_Error("Please enter address 2");
-      return false;
-    } else if (_cityController.text.isEmpty) {
+    }  else if (_cityController.text.isEmpty) {
       showToast_Error("Please enter city");
       return false;
     } else if (_pincodeController.text.isEmpty ||
@@ -2401,9 +2756,14 @@ bool checkIdMendate(){
     } else if (_imageFile == null) {
       showToast_Error("Please capture borrower profile picture");
       return false;
+    } else if (!otpVerified) {
+      showToast_Error("Please Verify Mobile number with OTP!!");
+      return false;
     }
-
       return true;
+
+
+
   }
 
   void getOTPByMobileNo(String text) {
@@ -2478,90 +2838,8 @@ bool checkIdMendate(){
       print("Error: $e");
     }
   }
-  void _showOTPDialog(BuildContext context) {
-    _timeLeft = 60;
-    _startTimer();
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Row(
-                children: [
-                  Text(
-                    'OTP',
-                    style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Spacer(), // Pushes the timer and icon to the right
-                  Text(
-                    '$_timeLeft',
-                    style: TextStyle(color: Colors.green, fontSize: 16),
-                  ),
-                  SizedBox(width: 5),
-                  Icon(Icons.timer, color: Colors.green),
-                ],
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: _otpController,
-                    decoration: InputDecoration(
-                      labelText: 'Enter OTP',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Handle submit action
-                      String otp = _otpController.text;
-                      print('OTP submitted: $otp');
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Button color
-                    ),
-                    child: Text(
-                      'Submit',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                )
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
 
-  void _startTimer() {
-    EasyLoading.dismiss();
-
-    Stopwatch stopwatch = Stopwatch();
-    stopwatch.start();
-
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (_timeLeft > 0) {
-       // setState(() {
-          _timeLeft = 60 - stopwatch.elapsed.inSeconds;
-          EasyLoading.dismiss();
-
-        //  });
-      } else {
-        _timer?.cancel();
-        stopwatch.stop();
-        EasyLoading.dismiss();
-
-      }
-    });
-  }
 
   Future<void> mobileOtp(BuildContext context, String mobileNo) async {
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
@@ -2571,16 +2849,186 @@ bool checkIdMendate(){
       "ContentId": "1007458689942092806",
     };
 
-    return await api.mobileOtpSend(requestBody).then((value) {
+    return await api.mobileOtpSend( GlobalClass.dbName,requestBody).then((value) {
 
       if (value.statuscode == 200) {
-        setState(() {
 
-        });
+          _showOTPDialog(context);
+
 
       }
     });
 
   }
+
+  void setQRData(result) {
+  List<String> dataList=result.split(",");
+    if(dataList.length>14){
+      _aadharIdController.text=dataList[2];
+      List<String> nameParts = dataList[3].split(" ");
+      if (nameParts.length == 1) {
+        _nameController.text = nameParts[0];
+      } else if (nameParts.length == 2) {
+        _nameController.text = nameParts[0];
+        _nameLController.text = nameParts[1];
+      } else {
+        _nameController.text = nameParts.first;
+        _nameLController.text = nameParts.last;
+        _nameMController.text = nameParts.sublist(1, nameParts.length - 1).join(' ');
+      }
+
+      _dobController.text=formatDate(dataList[4],'dd-MM-yyyy');
+      setState(() {
+
+        if(dataList[5].toLowerCase()=="m"){
+        genderselected="Male";
+        selectedTitle="Mr.";
+        }else if(dataList[5].toLowerCase()=="f"){
+          genderselected="Female";
+          selectedTitle="Mrs.";
+
+        }
+      });
+      if(dataList[6].toLowerCase().contains("s/o") || dataList[6].toLowerCase().contains("d/o")){
+        setState(() {
+          relationwithBorrowerselected="Father";
+          List<String> guarNameParts = replaceCharFromName(dataList[6]).split(" ");
+          if (guarNameParts.length == 1) {
+            _fatherFirstNameController.text = guarNameParts[0];
+          } else if (guarNameParts.length == 2) {
+            _fatherFirstNameController.text = guarNameParts[0];
+            _fatherLastNameController.text = guarNameParts[1];
+          } else {
+            _fatherFirstNameController.text = guarNameParts.first;
+            _fatherLastNameController.text = guarNameParts.last;
+            _fatherMiddleNameController.text = guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+          }
+
+
+        });
+      } else if(dataList[6].toLowerCase().contains("w/o")){
+        setState(() {
+          relationwithBorrowerselected="Husband";
+          List<String> guarNameParts = replaceCharFromName(dataList[6]).split(" ");
+          if (guarNameParts.length == 1) {
+            _spouseFirstNameController.text = guarNameParts[0];
+          } else if (guarNameParts.length == 2) {
+            _spouseFirstNameController.text = guarNameParts[0];
+            _spouseLastNameController.text = guarNameParts[1];
+          } else {
+            _spouseFirstNameController.text = guarNameParts.first;
+            _spouseLastNameController.text = guarNameParts.last;
+            _spouseMiddleNameController.text = guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+          }
+        });
+      }
+      _cityController.text=dataList[7];
+      _gurNameController.text=replaceCharFromName(dataList[6]);
+
+      if(dataList[0].toLowerCase()=='v2'){
+        _pincodeController.text=dataList[11];
+        stateselected = states.firstWhere((item) => item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+        String address="${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
+        List<String> addressParts = address.trim().split(",");
+        if (addressParts.length == 1) {
+          _address1Controller.text = addressParts[0];
+        } else if (addressParts.length == 2) {
+          _address1Controller.text = addressParts[0];
+          _address2Controller.text = addressParts[1];
+        } else {
+          _address1Controller.text = addressParts.first;
+          _address2Controller.text = addressParts.last;
+          _address3Controller.text = addressParts.sublist(1, addressParts.length - 1).join(' ');
+        }
+
+      }else if(dataList[0].toLowerCase()=='v4'){
+        stateselected = states.firstWhere((item) => item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
+        _pincodeController.text=dataList[12];
+        String address="${dataList[10]},${dataList[11]},${dataList[13]},${dataList[15]},${dataList[16]}";
+
+        List<String> addressParts = address.trim().split(",");
+        if (addressParts.length == 1) {
+          _address1Controller.text = addressParts[0];
+        } else if (addressParts.length == 2) {
+          _address1Controller.text = addressParts[0];
+          _address2Controller.text = addressParts[1];
+        } else {
+          _address1Controller.text = addressParts.first;
+          _address2Controller.text = addressParts.last;
+          _address3Controller.text = addressParts.sublist(1, addressParts.length - 1).join(' ');
+        }
+      }
+
+    }
+
+  }
+  String replaceCharFromName(String gurName){
+
+  return gurName.replaceAll("S/O ", "").replaceAll("S/O: ", "").replaceAll("D/O ", "").replaceAll("D/O: ", "").replaceAll("W/O ", "").replaceAll("W/O: ", "");
+
+  }
+
+
+
+  Future<void> submitOtp(pin,BuildContext contextDialog) async {
+    EasyLoading.show(status: "OTP verifying...");
+
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+
+
+    return await api.otpVerify(GlobalClass.token,GlobalClass.dbName, _mobileNoController.text,pin).then((value) {
+
+      if (value.statuscode == 200) {
+      showToast_Error("OTP Verified...");
+      setState(() {
+        otpVerified=true;
+      });
+      Navigator.of(contextDialog).pop();
+      }else{
+        setState(() {
+          otpVerified=false;
+        });
+        GlobalClass.showSnackBar(context, "OTP is not verified \nPlease Enter Correct OTP");
+      }
+      EasyLoading.dismiss();
+    }).catchError((err){
+      setState(() {
+        otpVerified=false;
+      });
+      GlobalClass.showSnackBar(context, err);
+      EasyLoading.dismiss();
+
+    });
+
+  }
+
+
+  Future<bool> _onWillPop() async {
+    // Show a confirmation dialog
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Are you sure?'),
+        content: Text('Do you want to close KYC page?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false), // Stay in the app
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              EasyLoading.dismiss();
+              Navigator.of(context).pop(true);
+            }, // Exit the app
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    ) ?? false; // Default to false if dialog is dismissed
+
+
+
+  }
+
 }
 

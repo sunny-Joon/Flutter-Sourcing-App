@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
+import 'package:flutter_sourcing_app/Models/common_int_model.dart';
 import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
 import 'package:flutter_sourcing_app/Models/target_response_model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -69,7 +70,8 @@ abstract class ApiService {
       );
 
   @POST("Masters/SendSms")
-  Future<GlobalModel> mobileOtpSend(
+  Future<CommonIntModel> mobileOtpSend(
+      @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body,
       );
 
@@ -107,12 +109,12 @@ abstract class ApiService {
       @Part( name:"income") int income,
       @Part( name:"latitude") double latitude,
       @Part( name:"longitude") double longitude,
-      @Part( name:"current_Address1") String currentAddress1,
-      @Part( name:"current_Address2") String currentAddress2,
-      @Part( name:"current_Address3") String currentAddress3,
-      @Part( name:"current_City") String currentCity,
-      @Part( name:"current_Pincode") String currentPincode,
-      @Part( name:"current_State") String currentState,
+      @Part( name:"P_Address1") String currentAddress1,
+      @Part( name:"P_Address2") String currentAddress2,
+      @Part( name:"P_Address3") String currentAddress3,
+      @Part( name:"P_City") String currentCity,
+      @Part( name:"P_Pincode") String currentPincode,
+      @Part( name:"P_State") String currentState,
       @Part( name:"IsMarried") bool isMarried,
       @Part( name:"GroupCode") String groupCode,
       @Part( name:"BranchCode") String branchCode,
@@ -122,7 +124,6 @@ abstract class ApiService {
       @Part( name:"Loan_Duration") String loan_Duration,
       @Part( name:"Loan_amount") String loan_amount,
       @Part( name:"Loan_Reason") String loan_Reason,
-
       @Part( name: "Picture") File Picture);
 
   @POST("FiSourcing/FiDocsUploadSingleFile")
@@ -348,11 +349,23 @@ abstract class ApiService {
       @Query("DistrictCode") String? districtCode,
       @Query("StateCode") String stateCode,
       );
+
+
+
   @POST("OCR/DocVerifyforSpaceOCR")
   @MultiPart()
   Future<OcrResponse> uploadDocument(
       @Query("imgType") String imgType,
       @Part(name: "file") File file,
+      );
+
+
+  @GET("Masters/OTPVerify")
+  Future<CommonIntModel> otpVerify(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("MobileNo") String mobileNo,
+      @Query("Otp") String otp
       );
 
 
