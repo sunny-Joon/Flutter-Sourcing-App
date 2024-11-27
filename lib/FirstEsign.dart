@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/BorrowerListModel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
@@ -195,7 +196,12 @@ class _FirstEsignState extends State<FirstEsign> {
                  flex: 1,
                  child:   InkWell(
                    onTap: (){
-                     showFullPageDialog(context);
+                     if(widget.selectedData.aadhar_no!=null){
+                       showFullPageDialog(context);
+                     }else{
+                       GlobalClass.showToast_Error("Borrower's Aadhaar number is missing");
+                     }
+
                    },
                child:Card(
                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -226,7 +232,7 @@ class _FirstEsignState extends State<FirstEsign> {
       pageBuilder: (context, animation, secondaryAnimation) {
         return SafeArea(
           child: Center(
-            child: DialogContent(),
+            child: DialogContent(borrowerAdharNumber: widget.selectedData.aadhar_no,),
           ),
         );
       },
@@ -242,6 +248,9 @@ class _FirstEsignState extends State<FirstEsign> {
 }
 
 class DialogContent extends StatefulWidget {
+  final String borrowerAdharNumber;
+
+  const DialogContent({super.key, required this.borrowerAdharNumber});
   @override
   _DialogContentState createState() => _DialogContentState();
 }
@@ -253,7 +262,7 @@ class _DialogContentState extends State<DialogContent> {
   @override
   void initState() {
     super.initState();
-    _dialogAdharController.text = "6085595809930";
+    _dialogAdharController.text = widget.borrowerAdharNumber;
   }
 
   @override
@@ -358,16 +367,7 @@ class _DialogContentState extends State<DialogContent> {
       ),
     );
   }
-  void showToast_Error(String message) {
-    Fluttertoast.showToast(
-      msg: "$message",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      backgroundColor: Colors.redAccent,
-      textColor: Colors.white,
-      fontSize: 16.0,
-    );
-  }
+
   Widget consentText() {
     return RichText(
       text: TextSpan(

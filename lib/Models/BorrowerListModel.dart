@@ -50,6 +50,7 @@ class BorrowerListDataModel {
   String errormsg;
   bool isvalide;
   String downloadLink;
+  String aadhar_no;
 
   BorrowerListDataModel({
     required this.id,
@@ -69,6 +70,7 @@ class BorrowerListDataModel {
     required this.errormsg,
     required this.isvalide,
     required this.downloadLink,
+    required this.aadhar_no,
   });
 
   factory BorrowerListDataModel.fromJson(Map<String, dynamic> json) => BorrowerListDataModel(
@@ -89,6 +91,7 @@ class BorrowerListDataModel {
     errormsg: json["errormsg"],
     isvalide: json["isvalid"],
     downloadLink: json["downloadLink"]??"",
+    aadhar_no: json["aadhar_no"]??"",
   );
 
   Map<String, dynamic> toJson() => {
@@ -109,5 +112,6 @@ class BorrowerListDataModel {
     "errormsg": errormsg,
     "isvalide": isvalide,
     "downloadLink": downloadLink,
+    "aadhar_no": aadhar_no,
   };
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GlobalClass {
@@ -12,7 +13,7 @@ class GlobalClass {
   }
 
   static String id = "";
-  static String creator = "BAREILLY";
+  static String creator = "";
   static String address = "";
   static String mobile = "";
   static String designation = "";
@@ -110,6 +111,16 @@ class GlobalClass {
   static void showSnackBar(BuildContext context,String message){
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("$message")),
+    );
+  }
+  static void showToast_Error(String message) {
+    Fluttertoast.showToast(
+      msg: "$message",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.redAccent,
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
   }
 

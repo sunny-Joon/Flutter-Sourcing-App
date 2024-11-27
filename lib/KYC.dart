@@ -2762,10 +2762,11 @@ bool checkIdMendate(){
     } else if (_imageFile == null) {
       showToast_Error("Please capture borrower profile picture");
       return false;
-    } else if (!otpVerified) {
-      showToast_Error("Please Verify Mobile number with OTP!!");
-      return false;
     }
+    // else if (!otpVerified) {
+    //   showToast_Error("Please Verify Mobile number with OTP!!");
+    //   return false;
+    // }
       return true;
 
 

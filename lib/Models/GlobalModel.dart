@@ -33,12 +33,12 @@ class GlobalDataModel {
   String errormsg;
   String financialStatus;
   int fiCode;
-  bool isvalide;
+  bool isvalid;
 
   GlobalDataModel({
     required this.fiId,
     required this.errormsg,
-    required this.isvalide,
+    required this.isvalid,
     required this.financialStatus,
     required this.fiCode,
   });
@@ -46,7 +46,7 @@ class GlobalDataModel {
   factory GlobalDataModel.fromJson(Map<String, dynamic> json) => GlobalDataModel(
     fiId: json["fi_Id"]??0,
     errormsg: json["errormsg"]??"",
-    isvalide: json["isvalide"],
+    isvalid: json["isvalide"],
     financialStatus: json["financialStatus"]??"",
     fiCode: json["fiCode"]??0,
   );
@@ -54,7 +54,7 @@ class GlobalDataModel {
   Map<String, dynamic> toJson() => {
     "fi_Id": fiId,
     "errormsg": errormsg,
-    "isvalide": isvalide,
+    "isvalide": isvalid,
     "fiCode": fiCode,
     "financialStatus": financialStatus,
   };
