@@ -38,37 +38,40 @@ class GlobalClass {
 
 
   // Method to show a success alert
-  static void showSuccessAlert(BuildContext context) {
+  static void showSuccessAlert(BuildContext context,String Message,int a) {
     showAlert(
       context,
       'Successful',
-      'Data saved successfully.',
+      Message,
       Colors.green,
+      a
     );
   }
 
   // Method to show an unsuccessful alert
-  static void showUnsuccessfulAlert(BuildContext context) {
+  static void showUnsuccessfulAlert(BuildContext context,String Message,int a) {
     showAlert(
       context,
       'Unsuccessful',
-      'Data not saved.',
+      Message,
       Colors.red,
+      a
     );
   }
 
   // Method to show a network error alert
-  static void showErrorAlert(BuildContext context) {
+  static void showErrorAlert(BuildContext context,String Message,int a) {
     showAlert(
       context,
       'Error',
-      'Network loss.',
+      Message,
       Colors.orange,
+      a
     );
   }
 
   // Private method to show an alert dialog
- static void showAlert(BuildContext context, String title, String message, Color color) {
+ static void showAlert(BuildContext context, String title, String message, Color color,int a) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -81,8 +84,12 @@ class GlobalClass {
           actions: [
             TextButton(
               onPressed: () {
-                // Navigator.of(context).pop(); // Close the dialog
-                // Navigator.of(context).pop(); // Close the page
+                if(a==1){
+                  Navigator.of(context).pop(); // Close the dialog
+                }else{
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
+                } // Close the page
               },
               child: Text('OK'),
             ),

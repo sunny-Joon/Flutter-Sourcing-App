@@ -5,14 +5,15 @@ import 'package:flutter_sourcing_app/Models/BankNamesModel.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
 import 'package:flutter_sourcing_app/Models/common_int_model.dart';
+import 'package:flutter_sourcing_app/Models/leaderboardModel.dart';
 import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
-import 'package:flutter_sourcing_app/Models/target_response_model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
 import 'Models/BorrowerListModel.dart';
 import 'Models/CreatorListModel.dart';
 import 'Models/GlobalModel.dart';
+import 'Models/GlobalModel2.dart';
 import 'Models/KycUpdateModel.dart';
 import 'Models/RangeCategoryModel.dart';
 import 'Models/branch_model.dart';
@@ -64,6 +65,35 @@ abstract class ApiService {
   }
 
 
+  @POST("Account/GetToken")
+  Future<LoginModel> getLogins(
+      @Header("devid") String devid,
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body);
+
+  @POST("IMEIMapping/InsertDevicedata")
+  Future<GlobalModel> getImeiMappingReq(
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body);
+
+  @POST("FiSourcing/InsertMonthlyTarget")
+  Future<GlobalModel> insertMonthlytarget(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body);
+
+  @GET("Tracklocations/GetAppLink")
+  Future<GlobalModel2> VersionCheck(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("version") String version,
+      @Query("AppName") String AppName,
+      @Query("action") String action);
+
+  @GET("Masters/GetRangeCategories")
+  Future<RangeCategoryModel> RangeCategory(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName);
 
 
   @POST("IdentityVerification/Get")
@@ -80,11 +110,7 @@ abstract class ApiService {
   @GET("{ifsc}")
   Future<Ifcsc> ifscVerify (@Path("ifsc") String ifsc);
 
-  @POST("Account/GetToken")
-  Future<LoginModel> getLogins(
-      @Header("devid") String devid,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+
 
   @POST("FiSourcing/InsertFiSourcedata")
   @MultiPart()
@@ -233,15 +259,9 @@ abstract class ApiService {
       @Query("Creator") String Creator,
       @Query("BranchCode") String BranchCode);
 
-  @POST("IMEIMapping/InsertDevicedata")
-  Future<GlobalModel> getImeiMappingReq(
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
 
-  @GET("Masters/GetRangeCategories")
-  Future<RangeCategoryModel> RangeCategory(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbName);
+
+
 
   @POST("FiSourcing/AddFiExtraDetail")
   Future<GlobalModel> updatePersonalDetails(
@@ -387,6 +407,12 @@ abstract class ApiService {
       @Query("Otp") String otp
       );
 
-
+  @GET("Tracklocations/GetAchievementDetails")
+  Future<LeaderboardModel> leaderboardList(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("Type") String Type,
+      @Query("Fromdate") String Fromdate,
+      @Query("Todate") String Todate);
 
 }

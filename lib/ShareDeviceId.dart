@@ -656,12 +656,17 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
 
-        PopupDialog.showPopup(
-            context, value.statuscode.toString(), value.message);
+        if (value.data[0].errormsg == null || value.data[0].errormsg.isEmpty) {
+          GlobalClass.showSuccessAlert(
+              context, value.message,2);
+        } else {
+          GlobalClass.showUnsuccessfulAlert(
+              context, value.data[0].errormsg,1);
+        }
       } else {
         EasyLoading.dismiss();
-        PopupDialog.showPopup(
-            context, value.statuscode.toString(), value.message);
+        GlobalClass.showErrorAlert(
+            context,value.message,1);
       }
     });
   }
