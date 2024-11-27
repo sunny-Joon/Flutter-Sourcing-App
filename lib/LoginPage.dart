@@ -18,6 +18,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
 
   late String refToken, target;
+  bool _isObscure = true;
  /* bool _isExpanded = false;
   late AnimationController _controller;
   late Animation<double> _animation;*/
@@ -154,13 +155,22 @@ class _LoginPageState extends State<LoginPage> {
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: '*****',
-                                hintStyle: TextStyle(color: Colors.grey.shade400), // Hint color greyS
+                                hintStyle: TextStyle(color: Colors.grey.shade400),
                               ),
-                              obscureText: true,
+                              obscureText: _isObscure,
                               style: TextStyle(fontSize: 18),
                             ),
                           ),
-                          Icon(Icons.visibility),
+                          IconButton(
+                            icon: Icon(
+                              _isObscure ? Icons.visibility : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isObscure = !_isObscure;
+                              });
+                            },
+                          ),
                           // Placeholder for Lottie animation
                         ],
                       ),
