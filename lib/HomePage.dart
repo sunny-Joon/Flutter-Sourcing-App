@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:provider/provider.dart';
 
@@ -44,8 +45,10 @@ class _HomePageState extends State<HomePage> {
               backgroundColor: Colors.transparent,
               contentPadding: EdgeInsets.zero,
               content: Container(
-                height: MediaQuery.of(context).size.height / 2.2,
-                padding: EdgeInsets.all(30.0),
+                height: MediaQuery.of(context).size.height / 2,
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.all(0),
+                padding: EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
                   image: DecorationImage(
@@ -54,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 15),
@@ -64,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 15),
+                      padding: const EdgeInsets.only(top: 10),
                       child: Image.asset(
                         'assets/Images/rupees.png',
                         height: 30,
@@ -93,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.only(top: 10),
                       child: Slider(
                         value: _currentSliderValue.toDouble(),
                         min: 0,
@@ -375,32 +378,37 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _setTarget(BuildContext context, int target) async {
-    final api2 = Provider.of<ApiService>(context, listen: false);
 
-    // Convert target to integer before sending
     int targetAmount = target.toInt()*1000;
 
-    // Prepare the request body
+    final api = Provider.of<ApiService>(context, listen: false);
+
     Map<String, dynamic> requestBody = {
-      "id": 0,
-      "kO_ID": GlobalClass.id,
-      "targetCommAmt": targetAmount, // Use integer here
-      "month": "Sep",
-      "year": 2024,
-      // Include the required `targetObj` field if needed
-      // "targetObj": someValue
+      "TargetCommAmt": targetAmount,
     };
 
-    /*try {
-      final response = await api2.setTarget(GlobalClass.token, GlobalClass.dbName, requestBody);
-      if (response.statusCode == 200) {
-        print('PASS to Save Target');
+    return await api
+        .insertMonthlytarget(GlobalClass.token,GlobalClass.dbName, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+
+        if (value.data[0].errormsg == null || value.data[0].errormsg.isEmpty) {
+          GlobalClass.showSuccessAlert(
+              context, value.message,1);
+          setState(() {
+            _displayValue = targetAmount;
+          });
+        } else {
+          GlobalClass.showUnsuccessfulAlert(
+              context, value.data[0].errormsg,1);
+        }
       } else {
-        print('Failed to Save Target');
+        EasyLoading.dismiss();
+        GlobalClass.showErrorAlert(
+            context,value.message,1);
       }
-    } catch (e) {
-      print('Error: $e');
-    }*/
+    });
   }
 }
 

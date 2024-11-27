@@ -84,7 +84,7 @@ class BorrowerListDataModel {
     branchCode: json["branch_code"]??"",
     borrSignStatus: json["borrSignStatus"],
     errormsg: json["errormsg"],
-    isvalide: json["isvalide"],
+    isvalide: json["isvalid"],
     downloadLink: json["downloadLink"]??"",
   );
 

@@ -1,6 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
 import 'GlobalClass.dart';
@@ -174,7 +175,7 @@ class _FragmentsState extends State<Fragments> {
   }
 
   Future<void> RangeCategory(BuildContext context) async {
-   // EasyLoading.show(status: 'Loading...',);
+    EasyLoading.show(status: 'Loading...',);
 
     final api2 = Provider.of<ApiService>(context, listen: false);
     final dbHelper = DatabaseHelper();
@@ -196,16 +197,19 @@ class _FragmentsState extends State<Fragments> {
         for (var datum in rangeCategoryModel.data) {
           await dbHelper.insertRangeCategory(datum);
         }
-
+        Fluttertoast.showToast(msg: "App is ready to use",toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: 16.0,);
         // Handle successful data update
-        GlobalClass.showSuccessAlert(context);
-    //    EasyLoading.dismiss();
+
+        EasyLoading.dismiss();
 
       } else {
         // Handle failed data update
-   //     EasyLoading.dismiss();
+       EasyLoading.dismiss();
 
-        GlobalClass.showUnsuccessfulAlert(context);
+        GlobalClass.showUnsuccessfulAlert(context,"Backend Data Not Saved",1);
       }
     } else {
       // If data exists, no need to make the API call

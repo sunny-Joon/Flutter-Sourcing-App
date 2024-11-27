@@ -478,14 +478,14 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         Image!).then((response) {
       if (response.statuscode == 200) {
         EasyLoading.dismiss();
-        GlobalClass.showSuccessAlert(context);
+        GlobalClass.showSuccessAlert(context,response.message,2);
       } else {
         EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(context);
+        GlobalClass.showUnsuccessfulAlert(context,response.message,1);
       }
     }).catchError((error) {
       EasyLoading.dismiss();
-      GlobalClass.showErrorAlert(context);
+      GlobalClass.showErrorAlert(context,"Server Error",1);
     });
   }
 

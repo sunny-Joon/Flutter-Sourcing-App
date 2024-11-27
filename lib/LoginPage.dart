@@ -23,6 +23,13 @@ class _LoginPageState extends State<LoginPage> {
   late Animation<double> _animation;*/
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _versionCheck(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Define your custom color
     const Color customColor = Color(0xFFD42D3F);
@@ -465,6 +472,29 @@ class _LoginPageState extends State<LoginPage> {
       }
     });
   }*/
+  Future<void> _versionCheck(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
 
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .VersionCheck(GlobalClass.token,GlobalClass.dbName, "1.6.14","S","1")
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+
+        if (!value.data.isvalid) {
+          EasyLoading.dismiss();
+
+        }
+      } else {
+        EasyLoading.dismiss();
+        GlobalClass.showErrorAlert(
+            context,value.message,2);
+      }
+    });
+  }
 
 }
