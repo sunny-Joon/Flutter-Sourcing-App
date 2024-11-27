@@ -97,83 +97,121 @@ class _ProfileState extends State<Profile> {
     _timer?.cancel();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          _buildBackground(),
-          _buildAppBar(context),
+          // Background sphere
+          Positioned(
+            top: -MediaQuery.of(context).size.width - 50,
+            left: -50,
+            right: -50,
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/Images/sphere.png'),
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
 
-           Column(
+          // Header with back, logo, and logout buttons
+          Positioned(
+            top: 35,
+            left: 10,
+            right: 10,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildBackButton(context),
+                  _buildCenterLogo(),
+                  _buildLogoutButton(context),
+                ],
+              ),
+            ),
+          ),
+
+          // Main content: Profile picture, user details, and action cards
+          Positioned.fill(
+            child: Column(
               children: [
-                SizedBox(height: MediaQuery.of(context).size.width / 4),
+                SizedBox(height: MediaQuery.of(context).size.width / 2),
                 _buildProfilePicture(),
                 _buildUserDetailsCard(),
                 Card(
                   clipBehavior: Clip.antiAlias,
                   child: Container(
-                    color:     Color(0xFFD42D3F),
-                  width: MediaQuery.of(context).size.width-50,
-                  child: InkWell(
-                    onTap: (){
-                      punchInOut(context);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text(
-                        tabName,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                    color: Color(0xFFD42D3F),
+                    width: MediaQuery.of(context).size.width - 50,
+                    child: InkWell(
+                      onTap: () {
+                        punchInOut(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        alignment: Alignment.center,
+                        child: Text(
+                          tabName,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),alignment: Alignment.center,
+                      ),
                     ),
                   ),
                 ),
-                ),
-
-
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SizedBox(
-                   // height: 250, // Specify a height for the grid view
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3, // Number of columns
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
+                Container(
+                  height: MediaQuery.of(context).size.height/3.8,
+                  child:       Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: SingleChildScrollView(
+                      // height: 250, // Uncomment and adjust if needed
+                      child: GridView.builder(
+                        padding: EdgeInsets.all(0),
+                        shrinkWrap: true, // Ensure the grid view doesn't expand infinitely
+                        physics: NeverScrollableScrollPhysics(), // Disable scrolling for GridView
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3, // Number of columns
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 5,
+                        ),
+                        itemCount: 4, // Number of grid items
+                        itemBuilder: (context, index) {
+                          // Define your grid items here
+                          if (index == 0) {
+                            return _buildGridItem('QR Payment Details', Icons.qr_code);
+                          } else if (index == 1) {
+                            return _buildGridItem('Get Collection Report', Icons.report);
+                          } else if (index == 2) {
+                            return _buildGridItem('Another Report', Icons.analytics);
+                          } else {
+                            return _buildGridItem('More Reports', Icons.insert_chart);
+                          }
+                        },
                       ),
-                      itemCount: 4, // Number of grid items
-                      itemBuilder: (context, index) {
-                        // Define your grid items here
-                        if (index == 0) {
-                          return _buildGridItem('QR Payment Details', Icons.qr_code);
-                        } else if (index == 1) {
-                          return _buildGridItem('Get Collection Report', Icons.report);
-                        } else if (index == 2) {
-                          return _buildGridItem('Another Report', Icons.analytics);
-                        } else {
-                          return _buildGridItem('More Reports', Icons.insert_chart);
-                        }
-                      },
                     ),
                   ),
                 ),
               ],
             ),
-
-          //_buildUserIdDisplay(),
+          ),
         ],
       ),
     );
   }
 
+
   Widget _buildGridItem(String title, IconData icon) {
     return Card(
+      elevation: 6,
       margin: EdgeInsets.all(8),
       child: InkWell(
         onTap: () {
@@ -182,14 +220,14 @@ class _ProfileState extends State<Profile> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 40, color: Colors.grey[700]),
+            Icon(icon, size: 20, color: Colors.grey),
             Text(
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[700],
+                fontWeight: FontWeight.normal,
+                color: Colors.black,
               ),
             ),
           ],
@@ -198,41 +236,9 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildBackground() {
-    return Positioned(
-      top: -MediaQuery.of(context).size.width - 50,
-      left: -50,
-      right: -50,
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/Images/sphere.png'),
-            fit: BoxFit.contain,
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget _buildAppBar(BuildContext context) {
-    return Positioned(
-      top: 35,
-      left: 10,
-      right: 10,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildBackButton(context),
-            _buildCenterLogo(),
-            _buildLogoutButton(context),
-          ],
-        ),
-      ),
-    );
-  }
+
+
 
   Widget _buildBackButton(BuildContext context) {
     return InkWell(
@@ -277,7 +283,7 @@ class _ProfileState extends State<Profile> {
     return Center(
       child: CircleAvatar(
         radius: 50.0,
-        backgroundImage: AssetImage('assets/Images/profileimage.webp'),
+        backgroundImage: AssetImage('assets/Images/user_ic.png'),
       ),
     );
   }
@@ -291,17 +297,17 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow(Icons.perm_identity, 'ID', _idController),
+            _buildDetailRow(Icons.perm_identity, 'ID ', _idController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.person, 'Name', _nameController),
+            _buildDetailRow(Icons.person, 'Name ', _nameController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.phone, 'Mobile No', _mobileNoController),
+            _buildDetailRow(Icons.phone, 'Mobile No ', _mobileNoController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.work, 'Designation', _designationController),
+            _buildDetailRow(Icons.work, 'Designation ', _designationController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.map, 'Creator', _creatorController),
+            _buildDetailRow(Icons.map, 'Creator ', _creatorController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildTimerRow(Icons.timer, 'Time Remaining', _timeDisplay),
+            _buildTimerRow(Icons.timer, 'Time Remaining ', _timeDisplay),
           ],
         ),
       ),

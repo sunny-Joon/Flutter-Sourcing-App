@@ -447,15 +447,17 @@ class _LoginPageState extends State<LoginPage> {
             PopupDialog.showPopup(
                 context, value.statuscode.toString(), value.message);
           }
+          EasyLoading.dismiss();
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => Fragments()));
         }
-        EasyLoading.dismiss();
+
       } else {
+        EasyLoading.dismiss();
         PopupDialog.showPopup(
             context, value.statuscode.toString(), value.message);
         //  _showErrorDialog(context);
-        EasyLoading.dismiss();
+
       }
 
     });
@@ -504,6 +506,9 @@ class _LoginPageState extends State<LoginPage> {
         GlobalClass.showErrorAlert(
             context,value.message,2);
       }
+    }).catchError((onError){
+      EasyLoading.dismiss();
+
     });
   }
 
