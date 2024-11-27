@@ -96,7 +96,7 @@ class _KYCPageState extends State<KYCPage> {
     apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     _focusNodeAdhaarId.addListener(_validateOnFocusChange);
-    _mobileNoController.text="9910238307";
+//    _mobileNoController.text="9910238307";
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
 
@@ -407,7 +407,12 @@ class _KYCPageState extends State<KYCPage> {
                           ),
                         ),
                         onTap: () {
-                          Navigator.of(context).pop();
+                          if(_currentStep==1){
+                            _currentStep--;
+
+                          }
+                          /*Navigator.of(context).pop();*/
+
                         },
                       ),
                       Center(
@@ -716,7 +721,7 @@ class _KYCPageState extends State<KYCPage> {
             context,
             value.message,
             value.data[0].errormsg,
-            Colors.red,
+            Colors.red,1,
           );
         } else if (value.statuscode == 400) {
           GlobalClass.showSnackBar(context, "Something went wrong in API");
@@ -740,15 +745,15 @@ class _KYCPageState extends State<KYCPage> {
     String fiid = Fi_Id.toString();
     String pan_no = _panNoController.text.toString();
     String dl = _drivingLicenseController.text.toString();
-    String DLExpireDate = _dlExpiryController.text.toString();
+    String? DLExpireDate = _dlExpiryController.text.toString().isEmpty?null:_dlExpiryController.text.toString();
     String voter_id = _voterIdController.text.toString();
     String passport = _passportController.text.toString();
-    String PassportExpireDate = _passportExpiryController.text.toString();
+    String? PassportExpireDate = _passportExpiryController.text.toString().isEmpty?null:_passportExpiryController.text;
     int isAadharVerified = 1;
     int is_phnno_verified = 1;
     int isNameVerify = 1;
 
-    var fields = {
+    /*var fields = {
       "Pan No.": pan_no,
       "Driving License": dl,
       "DL Expire Date": DLExpireDate,
@@ -763,39 +768,46 @@ class _KYCPageState extends State<KYCPage> {
         return;
       }
     }
-
+*/
     final api = Provider.of<ApiService>(context, listen: false);
 
     Map<String, dynamic> requestBody = {
       //"Fi_ID": fiid,
-      "Fi_ID": 1144,
+      "Fi_ID": fiid,
       "pan_no": pan_no,
       "dl": dl,
-      "DLExpireDate": DLExpireDate,
       "voter_id": voter_id,
       "passport": passport,
       "PassportExpireDate": PassportExpireDate,
       "isAadharVerified": isAadharVerified,
       "is_phnno_verified": is_phnno_verified,
-      "VILLAGE_CODE": isNameVerify,
-      "CITY_CODE": isNameVerify,
-      "SUB_DIST_CODE": isNameVerify,
-      "DIST_CODE": isNameVerify,
-      "STATE_CODE": isNameVerify,
+      "isNameVerify":isNameVerify,
+      "Pan_Name": "",
+      "VoterId_Name": "Jaspreet kaur",
+      "Aadhar_Name": "Jaspreet kaur",
+      "DrivingLic_Name": "",
+      "VILLAGE_CODE": selectedVillageCode!.villageCode,
+      "CITY_CODE": selectedCityCode!.cityCode,
+      "SUB_DIST_CODE": selectedSubDistrictCode!.subDistCode,
+      "DIST_CODE": selectedDistrictCode!.distCode,
+      "STATE_CODE": stateselected!.code,
+      "DLExpireDate": DLExpireDate,
+
     };
 
     return await api
         .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
-        setState(() {
+        /*setState(() {
           _currentStep += 1;
-        });
+        });*/
         EasyLoading.dismiss();
+        GlobalClass.showSuccessAlert(context, fiid, 2);
 
       } else {
         EasyLoading.dismiss();
-
+        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
       }
     });
   }
@@ -1308,7 +1320,6 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-
           children: [
             Expanded(child: Container(
               color: Colors.white,
@@ -1379,9 +1390,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                     'Title',
                     style: TextStyle(fontSize: 16),
                   ),
-                  SizedBox(
-                    height: 8,
-                  ),
+
                   Container(
                     alignment: Alignment.center,
 
@@ -2555,14 +2564,15 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
 
              }
 
+
           } else if (_currentStep == 1) {
               if(secondPageFieldValidate()){
                 saveIDsMethod(context);
               }
 
-          } else if (_currentStep > 1) {
+       /*   } else if (_currentStep > 1) {
             showKycDoneDialog(context);
-          }
+          }*/
 
           // if (_currentStep ==0) {
           //   setState(() {
@@ -2576,6 +2586,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
           //     SnackBar(content: Text("Form submitted successfully")),
           //   );
           // }
+
         },
         child: Text(
           "SUBMIT",
@@ -2605,7 +2616,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
     );
   }
 
-  void showKycDoneDialog(BuildContext context) {
+  /*void showKycDoneDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -2624,7 +2635,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
         );
       },
     );
-  }
+  }*/
 bool secondPageFieldValidate(){
 
   if(_panNoController.text.isNotEmpty){
@@ -2652,7 +2663,7 @@ bool secondPageFieldValidate(){
 
 
     if(!panVerified && !voterVerified && !dlVerified){
-      showToast_Error("Please enter and verify minimum any two IDs or voter Id");
+      showToast_Error("Please enter and verify any two IDs or voter Id");
       return false;
     }else if(checkIdMendate()==false){
       showToast_Error("Please enter and verify either voter Id or Any other two Ids");
@@ -2846,8 +2857,6 @@ bool checkIdMendate(){
     }
   }
 
-
-
   Future<void> mobileOtp(BuildContext context, String mobileNo) async {
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     Map<String, dynamic> requestBody = {
@@ -2983,30 +2992,30 @@ bool checkIdMendate(){
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
 
 
-    return await api.otpVerify(GlobalClass.token,GlobalClass.dbName, _mobileNoController.text,pin).then((value) {
-
+    return await api.otpVerify(
+        GlobalClass.token, GlobalClass.dbName, _mobileNoController.text, pin)
+        .then((value) {
       if (value.statuscode == 200) {
-      showToast_Error("OTP Verified...");
-      setState(() {
-        otpVerified=true;
-      });
-      Navigator.of(contextDialog).pop();
-      }else{
+        showToast_Error("OTP Verified...");
         setState(() {
-          otpVerified=false;
+          otpVerified = true;
         });
-        GlobalClass.showSnackBar(context, "OTP is not verified \nPlease Enter Correct OTP");
+        Navigator.of(contextDialog).pop();
+      } else {
+        setState(() {
+          otpVerified = false;
+        });
+        GlobalClass.showSnackBar(
+            context, "OTP is not verified \nPlease Enter Correct OTP");
       }
       EasyLoading.dismiss();
-    }).catchError((err){
+    }).catchError((err) {
       setState(() {
-        otpVerified=false;
+        otpVerified = false;
       });
       GlobalClass.showSnackBar(context, err);
       EasyLoading.dismiss();
-
     });
-
   }
 
 
@@ -3038,4 +3047,3 @@ bool checkIdMendate(){
   }
 
 }
-

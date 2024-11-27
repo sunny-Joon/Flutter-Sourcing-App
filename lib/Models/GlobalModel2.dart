@@ -1,47 +1,46 @@
 // To parse this JSON data, do
 //
-//     final globalModel = globalModelFromJson(jsonString);
+//     final globalModel2 = globalModel2FromJson(jsonString);
 
 import 'dart:convert';
 
-GlobalModel globalModelFromJson(String str) => GlobalModel.fromJson(json.decode(str));
+GlobalModel2 globalModel2FromJson(String str) => GlobalModel2.fromJson(json.decode(str));
 
-String globalModelToJson(GlobalModel data) => json.encode(data.toJson());
+String globalModel2ToJson(GlobalModel2 data) => json.encode(data.toJson());
 
-class GlobalModel {
+class GlobalModel2 {
   int statuscode;
   String message;
-  List<GlobalDataModel> data;
+  Data data;
 
-  GlobalModel({
+  GlobalModel2({
     required this.statuscode,
     required this.message,
     required this.data,
   });
 
-  factory GlobalModel.fromJson(Map<String, dynamic> json) => GlobalModel(
+  factory GlobalModel2.fromJson(Map<String, dynamic> json) => GlobalModel2(
     statuscode: json["statuscode"],
     message: json["message"],
-    data: List<GlobalDataModel>.from(json["data"].map((x) => GlobalDataModel.fromJson(x))),
+    data: Data.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
     "statuscode": statuscode,
     "message": message,
-    "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    "data": data.toJson(),
   };
 }
 
-class GlobalDataModel {
+class Data {
   int fiId;
   String errormsg;
   bool isvalid;
   dynamic financialStatus;
   dynamic fiCode;
-  dynamic appLink;
+  String appLink;
 
-
-  GlobalDataModel({
+  Data({
     required this.fiId,
     required this.errormsg,
     required this.isvalid,
@@ -50,15 +49,13 @@ class GlobalDataModel {
     required this.appLink,
   });
 
-  factory GlobalDataModel.fromJson(Map<String, dynamic> json) => GlobalDataModel(
-
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
     fiId: json["fi_Id"],
     errormsg: json["errormsg"],
     isvalid: json["isvalid"],
     financialStatus: json["financialStatus"],
     fiCode: json["fiCode"],
     appLink: json["appLink"],
-
   );
 
   Map<String, dynamic> toJson() => {
