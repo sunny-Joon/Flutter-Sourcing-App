@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/LoginPage.dart';
+
+import 'ApiService.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -16,6 +19,7 @@ class _ProfileState extends State<Profile> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _designationController = TextEditingController();
 
+  String tabName = "Punch In";
   Duration _remainingTime = Duration();
   String _timeDisplay = '';
   Timer? _timer;
@@ -102,19 +106,41 @@ class _ProfileState extends State<Profile> {
         children: [
           _buildBackground(),
           _buildAppBar(context),
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.width / 2 - 40),
-                SizedBox(height: 20),
 
+           Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.width / 4),
                 _buildProfilePicture(),
-                SizedBox(height: 20),
                 _buildUserDetailsCard(),
+                Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: Container(
+                    color:     Color(0xFFD42D3F),
+                  width: MediaQuery.of(context).size.width-50,
+                  child: InkWell(
+                    onTap: (){
+                      punchInOut(context);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text(
+                        tabName,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),alignment: Alignment.center,
+                    ),
+                  ),
+                ),
+                ),
+
+
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: SizedBox(
-                    height: 300, // Specify a height for the grid view
+                   // height: 250, // Specify a height for the grid view
                     child: GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3, // Number of columns
@@ -139,8 +165,8 @@ class _ProfileState extends State<Profile> {
                 ),
               ],
             ),
-          ),
-          _buildUserIdDisplay(),
+
+          //_buildUserIdDisplay(),
         ],
       ),
     );
@@ -157,7 +183,6 @@ class _ProfileState extends State<Profile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 40, color: Colors.grey[700]),
-            SizedBox(height: 10),
             Text(
               title,
               textAlign: TextAlign.center,
@@ -266,6 +291,8 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildDetailRow(Icons.perm_identity, 'ID', _idController),
+            Divider(thickness: 2, indent: 16, endIndent: 16),
             _buildDetailRow(Icons.person, 'Name', _nameController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
             _buildDetailRow(Icons.phone, 'Mobile No', _mobileNoController),
@@ -285,9 +312,7 @@ class _ProfileState extends State<Profile> {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
-        SizedBox(width: 8.0),
         Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        SizedBox(width: 8.0),
         Expanded(
           child: Text(
             controller.text,
@@ -302,9 +327,7 @@ class _ProfileState extends State<Profile> {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
-        SizedBox(width: 8.0),
         Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        SizedBox(width: 8.0),
         Expanded(
           child: Text(
             timerDisplay,
@@ -331,21 +354,30 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildUserIdDisplay() {
-    return Positioned(
-      top: MediaQuery.of(context).size.width / 4,
-      left: 0,
-      right: 0,
-      child: Container(
-        height: 45,
-        alignment: Alignment.center,
-        child: Text(
-          _idController.text,
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-      ),
+  Future<void> punchInOut(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
     );
-  }
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+    Map<String, dynamic> requestBody = {
+      "location": "100745868994",
+    };
+String type = "PUNCHOUT";
+    return await api.punchInOut( GlobalClass.token,GlobalClass.dbName,requestBody,type).then((value) {
 
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        setState(() {
+          tabName = "PUNCH OUT";
+        });
+        GlobalClass.showSuccessAlert(context, value.message, 1);
+      }else{
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
+
+      }
+    });
+
+  }
 
 }

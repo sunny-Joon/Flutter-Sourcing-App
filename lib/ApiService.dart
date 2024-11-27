@@ -101,6 +101,13 @@ abstract class ApiService {
       @Body() Map<String, dynamic> body,
       );
 
+  @POST("Masters/CreatePunchInOrOut")
+  Future<GlobalModel> punchInOut(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body,
+      @Query("type") String type);
+
   @POST("Masters/SendSms")
   Future<CommonIntModel> mobileOtpSend(
       @Header("dbname") String dbname,

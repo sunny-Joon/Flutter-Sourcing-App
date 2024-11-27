@@ -2564,12 +2564,11 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
 
              }
 
-
           } else if (_currentStep == 1) {
-              if(secondPageFieldValidate()){
-                saveIDsMethod(context);
-              }
-
+             if (secondPageFieldValidate()) {
+               saveIDsMethod(context);
+             }
+           }
        /*   } else if (_currentStep > 1) {
             showKycDoneDialog(context);
           }*/
