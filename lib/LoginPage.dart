@@ -417,7 +417,7 @@ class _LoginPageState extends State<LoginPage> {
         refToken = value.data.tokenDetails.token.toString();
         if (value.message == 'Login Successfully !!') {
           // Assign values to GlobalClass static members
-          print(refToken);
+
           GlobalClass.token = 'Bearer ' + refToken;
           GlobalClass.deviceId = value.data.tokenDetails.deviceSrNo;
           GlobalClass.id = value.data.tokenDetails.userName;

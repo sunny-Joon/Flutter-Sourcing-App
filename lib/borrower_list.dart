@@ -132,7 +132,7 @@ print("object++12");
                 final item = _borrowerItems[index];
                 return BorrowerListItem(
                   name: item.fullName,
-                  fiCode: item.id.toString(),
+                  fiCode: item.fiCode.toString(),
                   mobile: item.pPhone,
                   creator: item.creator,
                   address: item.currentAddress,

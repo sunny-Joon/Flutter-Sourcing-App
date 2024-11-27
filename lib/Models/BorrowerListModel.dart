@@ -35,6 +35,7 @@ class BorrowerListModel {
 class BorrowerListDataModel {
   int id;
   String creator;
+  int fiCode;
   DateTime dob;
   String gender;
   String title;
@@ -49,10 +50,12 @@ class BorrowerListDataModel {
   String errormsg;
   bool isvalide;
   String downloadLink;
+  String aadhar_no;
 
   BorrowerListDataModel({
     required this.id,
     required this.creator,
+    required this.fiCode,
     required this.dob,
     required this.gender,
     required this.title,
@@ -67,11 +70,13 @@ class BorrowerListDataModel {
     required this.errormsg,
     required this.isvalide,
     required this.downloadLink,
+    required this.aadhar_no,
   });
 
   factory BorrowerListDataModel.fromJson(Map<String, dynamic> json) => BorrowerListDataModel(
     id: json["id"],
     creator: json["creator"],
+    fiCode: json["fiCode"],
     dob: DateTime.parse(json["dob"]),
     gender: json["gender"],
     title: json["title"],
@@ -86,11 +91,13 @@ class BorrowerListDataModel {
     errormsg: json["errormsg"],
     isvalide: json["isvalid"],
     downloadLink: json["downloadLink"]??"",
+    aadhar_no: json["aadhar_no"]??"",
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "creator": creator,
+    "fiCode": fiCode,
     "dob": dob.toIso8601String(),
     "gender": gender,
     "title": title,
@@ -105,5 +112,6 @@ class BorrowerListDataModel {
     "errormsg": errormsg,
     "isvalide": isvalide,
     "downloadLink": downloadLink,
+    "aadhar_no": aadhar_no,
   };
 }

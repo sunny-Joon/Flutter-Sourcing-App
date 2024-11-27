@@ -21,7 +21,7 @@ class BranchListPage extends StatefulWidget {
 class _BranchListPageState extends State<BranchListPage> {
   List<BranchDataModel> _items = [];
   String _searchText = '';
-  bool _isLoading = true;
+
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _BranchListPageState extends State<BranchListPage> {
         if (response.statuscode == 200) {
           setState(() {
             _items = response.data; // Store the response data
-            _isLoading = false;
+
           });
           EasyLoading.dismiss();
 
@@ -48,9 +48,11 @@ class _BranchListPageState extends State<BranchListPage> {
 
           print('Failed to retrieve branch list');
           setState(() {
-            _isLoading = false;
+
           });
         }
+      }).catchError((err){
+        EasyLoading.dismiss();
       });
   }
 
@@ -63,9 +65,7 @@ class _BranchListPageState extends State<BranchListPage> {
     return Scaffold(
 
       backgroundColor: Color(0xFFD42D3F),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Column(
+      body: Column(
         children: [
           SizedBox(height: 50),
           Padding(padding: EdgeInsets.all(8),
@@ -131,14 +131,14 @@ class _BranchListPageState extends State<BranchListPage> {
                   onTap: () {
                     final selectedItem = filteredItems[index];
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GroupListPage(
-                                Branchdata: selectedItem,
-                                intentFrom:widget.intentFrom),
-                          ),
-                        );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GroupListPage(
+                            Branchdata: selectedItem,
+                            intentFrom:widget.intentFrom),
+                      ),
+                    );
                   },
                   child: BranchRecyclerItem(item: filteredItems[index]),
                 );
@@ -146,7 +146,7 @@ class _BranchListPageState extends State<BranchListPage> {
             ),
           ),
         ],
-      ),
+      )
     );
   }
 

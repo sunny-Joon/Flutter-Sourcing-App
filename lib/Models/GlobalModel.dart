@@ -40,6 +40,7 @@ class GlobalDataModel {
   dynamic fiCode;
   dynamic appLink;
 
+
   GlobalDataModel({
     required this.fiId,
     required this.errormsg,
@@ -50,12 +51,14 @@ class GlobalDataModel {
   });
 
   factory GlobalDataModel.fromJson(Map<String, dynamic> json) => GlobalDataModel(
+
     fiId: json["fi_Id"],
     errormsg: json["errormsg"],
     isvalid: json["isvalid"],
     financialStatus: json["financialStatus"],
     fiCode: json["fiCode"],
     appLink: json["appLink"],
+
   );
 
   Map<String, dynamic> toJson() => {
