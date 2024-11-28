@@ -1,5 +1,8 @@
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:flutter_sourcing_app/ApiService.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/BorrowerListModel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -258,10 +261,13 @@ class DialogContent extends StatefulWidget {
 class _DialogContentState extends State<DialogContent> {
   TextEditingController _dialogAdharController = TextEditingController();
   bool _isChecked = false;
-
+  late ApiService _apiServiceForESign;
   @override
   void initState() {
+
     super.initState();
+    _apiServiceForESign=ApiService.create(baseUrl: ApiConfig.baseUrl7);
+
     _dialogAdharController.text = widget.borrowerAdharNumber;
   }
 
@@ -344,7 +350,7 @@ class _DialogContentState extends State<DialogContent> {
                       child: InkWell(
 
                         onTap: (){
-
+                          hitSaveAgreementsAPI();
                         },
                         child:Card(
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -366,6 +372,36 @@ class _DialogContentState extends State<DialogContent> {
         ),
       ),
     );
+  }
+  Future<void> hitSaveAgreementsAPI() async {
+    try {
+      // API call
+      String xmlResponse = await _apiServiceForESign.saveAgreements(
+        "250069", // Ficode
+        "hoagra", // Creator
+        "test",   // ConsentText
+        "1",      // authMode
+        "1",      // F_Id
+        "1",      // SignType
+      );
+
+      // Parse XML response
+
+      final intent = AndroidIntent(
+        action: 'com.nsdl.egov.esign.rdservice.fp.CAPTURE',
+        arguments: <String, dynamic>{
+          'msg': xmlResponse,
+          'env': 'PROD',
+          'returnUrl': 'https://erpservice.paisalo.in:980/EsignTest/api/DocSignIn/XMLReaponse',
+        },
+        flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
+      );
+
+    await intent.launch();
+
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   Widget consentText() {
@@ -465,4 +501,6 @@ class _DialogContentState extends State<DialogContent> {
       ),
     );
   }
+
+
 }

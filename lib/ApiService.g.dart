@@ -2103,6 +2103,71 @@ class _ApiService implements ApiService {
     return _value;
   }
 
+  @override
+  Future<String> saveAgreements(
+    String ficode,
+    String creator,
+    String consentText,
+    String authMode,
+    String fId,
+    String signType,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.fields.add(MapEntry(
+      'Ficode',
+      ficode,
+    ));
+    _data.fields.add(MapEntry(
+      'Creator',
+      creator,
+    ));
+    _data.fields.add(MapEntry(
+      'ConsentText',
+      consentText,
+    ));
+    _data.fields.add(MapEntry(
+      'authMode',
+      authMode,
+    ));
+    _data.fields.add(MapEntry(
+      'F_Id',
+      fId,
+    ));
+    _data.fields.add(MapEntry(
+      'SignType',
+      signType,
+    ));
+    final _options = _setStreamType<String>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'multipart/form-data',
+    )
+        .compose(
+          _dio.options,
+          'e_SignMobile/SaveAgreements',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
+    try {
+      _value = _result.data!;
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||
