@@ -410,8 +410,10 @@ class _KYCPageState extends State<KYCPage> {
                           if(_currentStep==1){
                             _currentStep--;
 
+                          }else{
+                            Navigator.of(context).pop();
                           }
-                          /*Navigator.of(context).pop();*/
+
 
                         },
                       ),
@@ -2340,7 +2342,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
 
               return DropdownMenuItem<T>(
                 value: value,
-                child: Text(setdata), // Convert the value to string for display
+                child: Text(setdata,style: TextStyle(fontSize: 14,fontWeight: FontWeight.normal),), // Convert the value to string for display
               );
             }).toList(),
             onChanged: onChanged,

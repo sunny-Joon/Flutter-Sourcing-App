@@ -14,18 +14,11 @@ import 'Collection.dart';
 import 'DATABASE/DatabaseHelper.dart';
 import 'const/appcolors.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Fragments(),
-    );
-  }
-}
 
 class Fragments extends StatefulWidget {
+
+
+
   @override
   _FragmentsState createState() => _FragmentsState();
 }
@@ -212,6 +205,7 @@ class _FragmentsState extends State<Fragments> {
         GlobalClass.showUnsuccessfulAlert(context,"Backend Data Not Saved",1);
       }
     } else {
+      EasyLoading.dismiss();
       // If data exists, no need to make the API call
       print('Data already exists in the database.');
     }

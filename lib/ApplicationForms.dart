@@ -169,6 +169,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? selectedBusinessExperience;
   String? selectedOtherEMI;
   final _future_IncomeController = TextEditingController();
+  final _currentEMIController = TextEditingController();
   final _agriculture_incomeController = TextEditingController();
   final _other_IncomeController = TextEditingController();
   final _annuaL_INCOMEController = TextEditingController();
@@ -245,6 +246,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final FocusNode _IncomeFocus = FocusNode();
   final FocusNode _AgeFocus = FocusNode();
   final FocusNode _future_IncomeFocus = FocusNode();
+  final FocusNode _currentEMIFocus = FocusNode();
   final FocusNode _agriculture_incomeFocus = FocusNode();
   final FocusNode _other_IncomeFocus = FocusNode();
   final FocusNode _annuaL_INCOMEFocus = FocusNode();
@@ -264,13 +266,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final FocusNode _bank_AcFocus = FocusNode();
   final FocusNode _bank_IFCSFocus = FocusNode();
   final FocusNode _bankOpeningDateFocus = FocusNode();
-
+late ApiService apiService_idc;
   late int FIID;
 
   @override
   void initState() {
     super.initState();
     getAllDataApi(context);
+    apiService_idc=ApiService.create(baseUrl: ApiConfig.baseUrl4);
     FIID = widget.selectedData.id;
     GetDocs(context);
     initializeData(); // Fetch initial data
@@ -689,7 +692,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       TextInputType inputType, bool saved, FocusNode FN) {
     return Container(
       color: Colors.white,
-      margin: EdgeInsets.symmetric(vertical: 4),
+      margin: EdgeInsets.symmetric(vertical: 0),
       padding: EdgeInsets.all(4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -751,12 +754,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "handicap_type": selectedspecialAbility,
       "is_house_rental": B.toString(),
       "property_area": selectedProperty,
-      "p_Address1": address1ControllerP.text,
-      "p_Address2": address2ControllerP.text,
-      "p_Address3": address3ControllerP.text,
-      "p_City": cityControllerP.text,
-      "p_State": selectedStateextraP,
-      "p_Pincode": pincodeControllerP.text,
+      "O_Address1": address1ControllerP.text,
+      "O_Address2": address2ControllerP.text,
+      "O_Address3": address3ControllerP.text,
+      "O_City": cityControllerP.text,
+      "O_State": selectedStateextraP,
+      "O_Pincode": pincodeControllerP.text,
       "current_Address1": address1ControllerC.text,
       "current_Address2": address2ControllerC.text,
       "current_Address3": address3ControllerC.text,
@@ -770,7 +773,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "Present_House_Owner": selectedPresentHouseOwner
     };
 
-    if (DataValidate(context, requestBody)) {
+
       await api
           .updatePersonalDetails(
               GlobalClass.dbName, GlobalClass.token, requestBody)
@@ -788,7 +791,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               context, "Failed to update details. Please try again.");
         }
       });
-    }
+
   }
 
   bool DataValidate(BuildContext context, Map<String, dynamic> requestBody) {
@@ -857,7 +860,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "otherDependents": otherDependents
     };
 
-    if (DataValidate(context, requestBody)) {
+
       return await api.FiFamilyDetail(
               GlobalClass.token, GlobalClass.dbName, requestBody)
           .then((value) async {
@@ -870,7 +873,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           EasyLoading.dismiss();
         }
       });
-    }
+
   }
 
   Future<void> AddFinancialInfo(BuildContext context) async {
@@ -948,7 +951,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "IncomeType": IncomeType
     };
 
-    if (DataValidate(context, requestBody)) {
+
       return await api.FIFamilyIncome(
               GlobalClass.token, GlobalClass.dbName, requestBody)
           .then((value) async {
@@ -961,7 +964,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           EasyLoading.dismiss();
         }
       });
-    }
+
   }
 
   Future<void> AddFiIncomeAndExpense(BuildContext context) async {
@@ -972,7 +975,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String fi_ID = FIID.toString();
     String occupation = selectedOccupation.toString();
     String business_Detail = selectedBusiness.toString();
-    int any_current_EMI = int.parse(selectedOtherEMI.toString());
+    String any_current_EMI = _currentEMIController.text;
     String homeType = selectedHomeType.toString();
     String homeRoofType = selectedRoofType.toString();
     String toiletType = selectedToiletType.toString();
@@ -1035,7 +1038,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "docs_path": docs_path
     };
 
-    if (DataValidate(context, requestBody)) {
+
       return await api.AddFiIncomeAndExpense(
               GlobalClass.token, GlobalClass.dbName, requestBody)
           .then((value) async {
@@ -1048,7 +1051,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           EasyLoading.dismiss();
         }
       });
-    }
+
   }
 
   Future<void> saveGuarantorMethod(BuildContext context) async {
@@ -1716,15 +1719,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 keyboardType: TextInputType.emailAddress,
               ),
             )),
+        SizedBox(height: 10),
+
         _buildTextField('Place of Birth', placeOfBirthController,
             fixtraEditable, _placeOfBirthFocus),
+        SizedBox(height: 10),
+
 
         Row(
           children: [
             // Dependent Persons Column
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(right: 5.0),
+                padding: const EdgeInsets.only(right: 0.0),
                 // Gap of 5 to the right for the first column
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1735,10 +1742,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                       textAlign: TextAlign.left,
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 1),
                     // Add some spacing between the Text and Container
                     Container(
-                      //  //height: 45,
+                      height: 55,
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -1782,7 +1789,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // Align children to the start of the column
                   children: [
-                    _buildTextField('Res. Category', resCatController,
+                    _buildTextField('Reservation Category', resCatController,
                         fixtraEditable, _resCatFocus),
                   ],
                 ),
@@ -1790,6 +1797,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
+        SizedBox(height: 10),
 
         Row(
           children: [
@@ -1807,7 +1815,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                       textAlign: TextAlign.left,
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 1),
                     // Add some spacing between the Text and Container
                     Container(
                       //height: 45,
@@ -1861,7 +1869,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                       textAlign: TextAlign.left,
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 1),
                     // Add some spacing between the Text and Container
                     Container(
                       //height: 45,
@@ -1929,12 +1937,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 keyboardType: TextInputType.phone,
               ),
             )),
+        SizedBox(height: 10),
+
         Row(
           children: [
             // Is Handicap Column
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(left: 5.0),
+                padding: const EdgeInsets.only(left:0.0),
                 // Gap of 5 to the left for the second column
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1945,7 +1955,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                       textAlign: TextAlign.left, // Align text to the left
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 1),
                     // Add some spacing between the Text and Container
                     Container(
                       //height: 45,
@@ -1997,7 +2007,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                       textAlign: TextAlign.left, // Align text to the left
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 1),
                     // Add some spacing between the Text and Container
                     Container(
                       //height: 45,
@@ -2037,6 +2047,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
+        SizedBox(height: 10),
+
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -2044,6 +2056,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               'Special Social Category',
               style: TextStyle(fontSize: 13),
             ),
+            SizedBox(height: 1),
+
             Container(
               width: MediaQuery.of(context).size.width,
               //height: 45,
@@ -2099,12 +2113,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ),
         ),
+        SizedBox(height: 10),
+
         _buildTextField(
             'Address1', address1ControllerP, fixtraEditable, _address1FocusP),
+        SizedBox(height: 10),
+
         _buildTextField(
             'Address2', address2ControllerP, fixtraEditable, _address2FocusP),
+        SizedBox(height: 10),
+
         _buildTextField(
             'Address3', address3ControllerP, fixtraEditable, _address3FocusP),
+        SizedBox(height: 10),
+
 
         Text(
           'State',
@@ -2147,6 +2169,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             }).toList(),
           ),
         ),
+        SizedBox(height: 10),
 
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -2228,10 +2251,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
         _buildTextField(
             'Address1', address1ControllerC, fixtraEditable, _address1FocusC),
+        SizedBox(height: 10),
+
         _buildTextField(
             'Address2', address2ControllerC, fixtraEditable, _address2FocusC),
+        SizedBox(height: 10),
+
         _buildTextField(
             'Address3', address3ControllerC, fixtraEditable, _address3FocusC),
+        SizedBox(height: 10),
+
 
         Text(
           'State',
@@ -2274,6 +2303,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
             }).toList(),
           ),
         ),
+        SizedBox(height: 10),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -2314,12 +2345,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
+        SizedBox(height: 10),
 
         Row(
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(left: 5.0),
+                padding: const EdgeInsets.only(left: 0.0),
                 // Gap of 5 to the left for the second column
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -2330,7 +2362,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       style: TextStyle(fontSize: 13),
                       textAlign: TextAlign.left, // Align text to the left
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 1),
                     // Add some spacing between the Text and Container
                     Container(
                       //height: 45,
@@ -2428,7 +2460,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       'Village',
                       style: TextStyle(fontSize: 13),
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 1),
                     Container(
                       //height: 45,
                       padding: EdgeInsets.symmetric(horizontal: 12),
@@ -2673,6 +2705,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       children: [
         _buildTextField(
             'Mother name', _motherFController, FiIncomeEditable, _motherFFocus),
+        SizedBox(height: 10,),
         Row(
           children: [
             Expanded(
@@ -2685,10 +2718,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     FiFamilyEditable, _motherLFocus)),
           ],
         ),
+        SizedBox(height: 10,),
+
         Text(
           'No. of Children',
           style: TextStyle(fontSize: 13),
         ),
+        SizedBox(height: 1,),
+
         Container(
           width: MediaQuery.of(context).size.width,
           // Adjust the width as needed
@@ -2723,10 +2760,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
             }).toList(),
           ),
         ),
+        SizedBox(height: 10,),
+
         Text(
           'Schooling Children',
           style: TextStyle(fontSize: 13),
         ),
+        SizedBox(height: 1 ,),
+
         Container(
           width: MediaQuery.of(context).size.width,
           // Adjust the width as needed
@@ -2761,6 +2802,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
             }).toList(),
           ),
         ),
+        SizedBox(height: 10,),
+
         Text(
           'Other Dependents',
           style: TextStyle(fontSize: 13),
@@ -2806,12 +2849,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Widget _buildStepThree() {
     return SingleChildScrollView(
         child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(height:15,),
         Row(
           children: [
-            Expanded(
+            Flexible(
+              flex: 1,
               child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Occupation',
@@ -2855,8 +2901,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ),
             SizedBox(width: 10), // Spacing between the two columns
-            Expanded(
+            Flexible(
+              flex: 1,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Business Detail',
@@ -2901,52 +2949,21 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
+        SizedBox(height:10,),
         Row(
           children: [
             Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    'Any Current EMI',
-                    style: TextStyle(fontSize: 13),
-                    textAlign: TextAlign.left,
-                  ),
-                  Container(
-                    //  //height: 45,
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<String>(
-                      value: selectedOtherEMI,
-                      isExpanded: true,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(color: Colors.black, fontSize: 13),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.transparent,
-                      ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedOtherEMI = newValue!;
-                        });
-                      },
-                      items: trueFalse.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
+              child: _buildTextField2(
+                  'Current EMI Amount',
+                  _currentEMIController,
+                  TextInputType.number,
+                  FiIncomeEditable,
+                  _currentEMIFocus),
             ),
             SizedBox(width: 10), // Spacing between the two columns
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Home Type',
@@ -2954,7 +2971,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     textAlign: TextAlign.left,
                   ),
                   Container(
-                    //  //height: 45,
+                     height: 55,
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -2988,10 +3005,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
+        SizedBox(height:10,),
         Row(
           children: [
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Roof Type',
@@ -3034,6 +3053,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             SizedBox(width: 10), // Spacing between the two columns
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Toilet Type',
@@ -3075,10 +3095,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
+        SizedBox(height:10,),
         Row(
           children: [
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Living With Spouse',
@@ -3121,9 +3143,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
             SizedBox(width: 10), // Spacing between the two columns
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Earning Members (count)',
+                    'No of Earning Member',
                     style: TextStyle(fontSize: 13),
                     textAlign: TextAlign.left,
                   ),
@@ -3162,6 +3185,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
+        SizedBox(height:10,),
         Text(
           'Business Experience',
           style: TextStyle(fontSize: 13),
@@ -3262,11 +3286,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Expanded(
                   child: _buildTextField2(
-                      'Not Agricultural Income',
-                      _otheR_THAN_AGRICULTURAL_INCOMEController,
+                      'Other Income',
+                      _other_IncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
-                      _otheR_THAN_AGRICULTURAL_INCOMEFocus),
+                      _other_IncomeFocus),
                 ),
                 Expanded(
                   child: _buildTextField2(
@@ -3281,12 +3305,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
             Row(
               children: [
                 Expanded(
-                  child: _buildTextField2(
-                      'Other Income',
-                      _other_IncomeController,
-                      TextInputType.number,
-                      FiIncomeEditable,
-                      _other_IncomeFocus),
+                  child:  _buildTextField2(
+    'Other than Agricultural Income',
+    _otheR_THAN_AGRICULTURAL_INCOMEController,
+    TextInputType.number,
+    FiIncomeEditable,
+    _otheR_THAN_AGRICULTURAL_INCOMEFocus),
                 ),
               ],
             ),
@@ -3487,12 +3511,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         ),
                       ),
                       onPressed: () {
-                        if (bankAccHolder == null) {
-                          verifyDocs(context, _bank_AcController.text,
-                              "bankaccount", _bank_IFCSController.text, "");
-                        } else {
-                          ifscVerify(context, _bank_IFCSController.text);
+                        if(_bank_AcController.text.isEmpty || _bank_IFCSController.text.isEmpty){
+                          showToast_Error("Please Enter Bank Account number and IFSC code");
+                        }else{
+
+                            docVerifyIDC("bankaccount", _bank_AcController.text,
+                                _bank_IFCSController.text, "");
+
+                            ifscVerify(context, _bank_IFCSController.text);
+
                         }
+
                       },
                       child: Text(
                         bankAccHolder == null
@@ -3508,7 +3537,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           SizedBox(height: 10), // Adds space between the fields
 
-          Text.rich(
+          bankAccHolder!=null?Text.rich(
             TextSpan(
               children: [
                 TextSpan(
@@ -3524,8 +3553,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 ),
               ],
             ),
-          ),
-          Text.rich(
+          ):SizedBox(),
+          bankAddress!=null? Text.rich(
             TextSpan(
               children: [
                 TextSpan(
@@ -3541,7 +3570,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 ),
               ],
             ),
-          ),
+          ):SizedBox(),
 
           SizedBox(height: 10),
 
@@ -3578,6 +3607,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         children: [
           _buildTextField(
               'Name', _femNameController, femMemIncomeEditable, _femNameFocus),
+          SizedBox(height: 10,),
           Row(
             children: [
               Expanded(
@@ -3591,6 +3621,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ],
           ),
+          SizedBox(height: 10,),
           Row(
             children: [
               Expanded(
@@ -3685,6 +3716,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ],
           ),
+          SizedBox(height: 10,),
+
           Row(
             children: [
               Expanded(
@@ -3780,6 +3813,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ],
           ),
+          SizedBox(height: 10,),
+
           Row(
             children: [
               Expanded(
@@ -3875,6 +3910,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ],
           ),
+          SizedBox(height: 10,),
+
           Row(
             children: [
               Expanded(
@@ -4393,20 +4430,28 @@ class _ApplicationPageState extends State<ApplicationPage> {
             )),
           ),
           SizedBox(height: 10),
-          _buildTextField('Address1', _p_Address1Controller, GuarantorEditable,
+          _buildTextField('Address 1', _p_Address1Controller, GuarantorEditable,
               _p_Address1Focus),
-          _buildTextField('Address2', _p_Address2Controller, GuarantorEditable,
+          SizedBox(height: 10),
+
+          _buildTextField('Address 2', _p_Address2Controller, GuarantorEditable,
               _p_Address2Focus),
-          _buildTextField('Address3', _p_Address3Controller, GuarantorEditable,
+          SizedBox(height: 10),
+
+          _buildTextField('Address 3', _p_Address3Controller, GuarantorEditable,
               _p_Address3Focus),
+          SizedBox(height: 10),
+
           Text(
             'State Name',
             style: TextStyle(fontSize: 13),
           ),
+          SizedBox(height: 1),
+
           Container(
             width: MediaQuery.of(context).size.width,
             // Adjust the width as needed
-            //height: 45,
+            height: 55,
             // Fixed height
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
@@ -4440,6 +4485,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               }).toList(),
             ),
           ),
+          SizedBox(height: 10),
+
           Row(
             children: [
               Expanded(
@@ -4767,6 +4814,53 @@ class _ApplicationPageState extends State<ApplicationPage> {
       }
     });
   }
+  void docVerifyIDC(
+      String type, String txnNumber, String ifsc, String dob) async {
+    EasyLoading.show(status: 'Loading...',);
+    try {
+      Map<String, dynamic> requestBody = {
+        "type": type,
+        "txtnumber": txnNumber,
+        "ifsc": ifsc,
+        "userdob": dob,
+        "key": "1",
+      };
+
+      // Hit the API
+      final response = await apiService_idc.verifyIdentity(requestBody);
+
+      // Handle response
+      if (response is Map<String, dynamic>) {
+        Map<String, dynamic> responseData = response["data"];
+        // Parse JSON object if it’s a map
+        if (type == "bankaccount") {
+          setState(() {
+            if(response["error"]==null){
+              bankAccHolder =
+              "${responseData['full_name']}";
+
+            }else{
+              bankAccHolder = "Account no. is Not Verified!!";
+
+            }
+
+          });
+        } else{
+
+        }
+        showToast_Error("Unexpected Response: $response");
+        print("Unexpected Response: $response");
+        EasyLoading.dismiss();
+
+      }
+      EasyLoading.dismiss();
+    } catch (e) {
+      showToast_Error("An error occurred: $e");
+
+
+      EasyLoading.dismiss();
+    }
+  }
 
   Future<void> ifscVerify(BuildContext context, String ifsc) async {
     EasyLoading.show(
@@ -4896,7 +4990,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
+        gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
         backgroundColor: Color(0xFFD42D3F),
         textColor: Colors.white,
@@ -4909,8 +5003,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _motherFFocus.requestFocus();
       return false;
     } else if (selectednumOfChildren == null ||
-        selectednumOfChildren!.isEmpty ||
-        selectedOccupation!.toLowerCase() == 'select') {
+        selectednumOfChildren!.toLowerCase() == 'select') {
       showToast_Error("Please Select Number of Children");
       return false;
     } else if (selectedschoolingChildren == null ||
@@ -4968,10 +5061,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedBusinessExperience!.toLowerCase() == 'select') {
       showToast_Error("Please Select Business Experience");
       return false;
-    } else if (selectedOtherEMI == null ||
-        selectedOtherEMI!.isEmpty ||
-        selectedOtherEMI!.toLowerCase() == 'select') {
-      showToast_Error("Please Select Other EMI");
+    } else if (_currentEMIController.text.isEmpty) {
+      showToast_Error("Please Enter Current EMIs Amount");
       return false;
     } else if (_future_IncomeController.text.isEmpty) {
       showToast_Error("Please Enter Future Income");
@@ -5046,17 +5137,26 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please Select Account Type");
       return false;
     } else if (bankAddress == null || bankAddress!.isEmpty) {
-      showToast_Error("Bank Address is Null");
+      showToast_Error("Please check bank address not found with this IFSC");
       return false;
     } else if (bankAccHolder == null || bankAccHolder!.isEmpty) {
-      showToast_Error("Account Holder is Null");
+      showToast_Error("Account Holder name is not found");
       return false;
     }
     return true;
   }
 
   bool _stepFiveValidations() {
-    if (femselectedGender == null ||
+    if(_femNameController.text.isEmpty){
+      showToast_Error("Please Enter Family Member Name");
+      return false;
+    }else    if(_AgeController.text.isEmpty){
+      showToast_Error("Please Enter Family Member Age");
+      return false;
+    }else  if(_IncomeController.text.isEmpty){
+      showToast_Error("Please Enter Family Member Income");
+      return false;
+    }else  if (femselectedGender == null ||
         femselectedGender!.isEmpty ||
         femselectedGender!.toLowerCase() == 'select') {
       showToast_Error("Please Select Gender");

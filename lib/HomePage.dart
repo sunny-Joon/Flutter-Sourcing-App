@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
+import 'package:flutter_sourcing_app/targetsetpage.dart';
 import 'package:provider/provider.dart';
 
 import 'ApiService.dart';
@@ -48,7 +49,7 @@ class _HomePageState extends State<HomePage> {
                 height: MediaQuery.of(context).size.height / 2,
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.all(0),
-                padding: EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
                   image: DecorationImage(
@@ -215,12 +216,19 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onPressed: () async {
-                      final selectedValue = await _showAlertDialog(context); // Same functionality
-                      if (selectedValue != null) {
-                        setState(() {
-                          _displayValue = selectedValue * 1000; // Convert to the actual value
-                        });
-                      }
+                      // final selectedValue = await _showAlertDialog(context); // Same functionality
+                      // if (selectedValue != null) {
+                      //   setState(() {
+                      //     _displayValue = selectedValue * 1000; // Convert to the actual value
+                      //   });
+                      // }
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TargetSetPage(
+
+                            )),
+                      );
                     },
                     child: Text(
                       'Reset target',
