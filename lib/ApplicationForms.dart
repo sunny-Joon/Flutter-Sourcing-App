@@ -44,7 +44,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
   bool _isEditing = false;
-  bool fixtraEditable = true;
+  bool personalInfoEditable = true;
   bool FiIncomeEditable = true;
   bool FinancialInfoEditable = true;
   bool GuarantorEditable = true;
@@ -80,6 +80,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
   List<RangeCategoryDataModel> schoolType = [];
   List<RangeCategoryDataModel> occupationType = [];
 
+  List<RangeCategoryDataModel> roofType = [];
+  List<RangeCategoryDataModel> toiletType = [];
+  List<RangeCategoryDataModel> houseType = [];
+
   List<String> titleList = ["Select", "Mr.", "Mrs.", "Miss"];
   List<String> accType = ["Select", "Current", "Savings", "Salary"];
   String titleselected = "Select";
@@ -87,16 +91,29 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String income = "";
   String lati = "";
   String longi = "";
+  String roofTypeSelected = "";
+  String toiletTypeSelected = "";
+  String houseTypeSelected = "";
 
   //fiextra
-  List<String> onetonine = ['Select', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  List<String> onetonine = [
+    'Select',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9'
+  ];
   List<String> loanDuration = ['Select', '12', '24', '36', '48'];
   List<String> trueFalse = ['Select', 'Yes', 'No'];
 
   Color iconPan = Color(0xFFD42D3F);
   Color iconDl = Color(0xFFD42D3F);
   Color iconVoter = Color(0xFFD42D3F);
-
 
 //FIEXTRA
   String? selectedDependent;
@@ -266,15 +283,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final FocusNode _bank_AcFocus = FocusNode();
   final FocusNode _bank_IFCSFocus = FocusNode();
   final FocusNode _bankOpeningDateFocus = FocusNode();
-late ApiService apiService_idc;
+  late ApiService apiService_idc;
   late int FIID;
 
   @override
   void initState() {
     super.initState();
-    getAllDataApi(context);
-    apiService_idc=ApiService.create(baseUrl: ApiConfig.baseUrl4);
     FIID = widget.selectedData.id;
+
+    getAllDataApi(context);
+    // apiService_idc=ApiService.create(baseUrl: ApiConfig.baseUrl4);
     GetDocs(context);
     initializeData(); // Fetch initial data
     _BabnkNamesAPI(context);
@@ -327,6 +345,10 @@ late ApiService apiService_idc;
     schoolType = await DatabaseHelper().selectRangeCatData("school-type");
     occupationType = await DatabaseHelper().selectRangeCatData("business-type");
 
+    roofType = await DatabaseHelper().selectRangeCatData("house-roof-type");
+    toiletType = await DatabaseHelper().selectRangeCatData("toilet-type");
+    houseType = await DatabaseHelper().selectRangeCatData("house-type");
+    ;
     setState(() {
       states.insert(
           0,
@@ -431,7 +453,7 @@ late ApiService apiService_idc;
     }); // Refresh the UI
   }
 
- // final _formKeys = List.generate(6, (index) => GlobalKey<FormState>());
+  // final _formKeys = List.generate(6, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
 
   String? selectedBank;
@@ -508,142 +530,142 @@ late ApiService apiService_idc;
       backgroundColor: Color(0xFFD42D3F),
       body: SingleChildScrollView(
         child: Center(
-          child:Padding(
-        padding:
-        const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-    child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    InkWell(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border:
-                              Border.all(width: 1, color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                                width: 1, color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                          ),
+                          height: 40,
+                          width: 40,
+                          alignment: Alignment.center,
+                          child: Center(
+                            child: Icon(Icons.arrow_back_ios_sharp, size: 13),
+                          ),
                         ),
-                        height: 40,
-                        width: 40,
-                        alignment: Alignment.center,
-                        child: Center(
-                          child: Icon(Icons.arrow_back_ios_sharp, size: 13),
-                        ),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    Center(
-                        /*child: Image.asset(
+                      Center(
+                          /*child: Image.asset(
                           'assets/Images/paisa_logo.png',
                           // Replace with your logo asset path
                           height: 50,
                         ),*/
-                        child: Expanded(
-                      child: Text(
-                        pageTitle,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24 // Make the text bold
-                            ),
-                      ),
-                    )),
-                    Container(
-                      height: 40,
-                      width: 40,
-                      alignment: Alignment.center,
-                    ),
-                  ],
-                ),
-              ),
-              _buildProgressIndicator(),
-              SizedBox(height: 50),
-        Container(
-          height: MediaQuery.of(context).size.height - 240,
-          child: Flexible(
-            child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    //height: MediaQuery.of(context).size.height - 230,
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(13),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.shade300,
-                          blurRadius: 10,
-                          //   spreadRadius: 5,
-                        ),
-                      ],
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: _getStepContent(),
-                    ),
-                  ),
-                  Positioned(
-                      top: -35, // Adjust the position as needed
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: _imageFile == null
-                            ? InkWell(
-                          child: ClipOval(
-                            child: Container(
-                              width: 70,
-                              height: 70,
-                              color: Colors.blue,
-                              child: Icon(
-                                Icons.person,
-                                size: 50.0,
-                                color: Colors.white,
+                          child: Expanded(
+                        child: Text(
+                          pageTitle,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24 // Make the text bold
                               ),
-                            ),
-                          ),
-                          onTap: _pickImage,
-                        )
-                            : InkWell(
-                          child: ClipOval(
-                            child: Image.file(
-                              File(_imageFile!.path),
-                              width: 70,
-                              height: 70,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          onTap: _pickImage,
                         ),
                       )),
-                  ]
+                      Container(
+                        height: 40,
+                        width: 40,
+                        alignment: Alignment.center,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-        ),
-              SizedBox(height: 10),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                child: Row(
-                  children: [
-                    _buildPreviousButton(),
-                    SizedBox(width: 8),
-                    _buildEditButton(),
-                    SizedBox(width: 8),
-                    _buildNextButton(),
-                  ],
+                _buildProgressIndicator(),
+                SizedBox(height: 50),
+                Container(
+                  height: MediaQuery.of(context).size.height - 240,
+                  child: Flexible(
+                    child: Stack(clipBehavior: Clip.none, children: [
+                      Container(
+                        //height: MediaQuery.of(context).size.height - 230,
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(13),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade300,
+                              blurRadius: 10,
+                              //   spreadRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: Form(
+                          key: _formKey,
+                          child: _getStepContent(),
+                        ),
+                      ),
+                      Positioned(
+                          top: -35, // Adjust the position as needed
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: _imageFile == null
+                                ? InkWell(
+                                    child: ClipOval(
+                                      child: Container(
+                                        width: 70,
+                                        height: 70,
+                                        color: Colors.grey,
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 50.0,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    onTap: _pickImage,
+                                  )
+                                : InkWell(
+                                    child: ClipOval(
+                                      child: Image.file(
+                                        File(_imageFile!.path),
+                                        width: 70,
+                                        height: 70,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    onTap: _pickImage,
+                                  ),
+                          )),
+                    ]),
+                  ),
                 ),
-              )
-            ],
+                SizedBox(height: 10),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                  child: Row(
+                    children: [
+                      _buildPreviousButton(),
+                      SizedBox(width: 8),
+                      _buildEditButton(),
+                      SizedBox(width: 8),
+                      _buildNextButton(),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }
@@ -773,25 +795,22 @@ late ApiService apiService_idc;
       "Present_House_Owner": selectedPresentHouseOwner
     };
 
+    await api
+        .updatePersonalDetails(
+            GlobalClass.dbName, GlobalClass.token, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          _currentStep += 1;
+        });
+        EasyLoading.dismiss();
+      } else {
+        EasyLoading.dismiss();
 
-      await api
-          .updatePersonalDetails(
-              GlobalClass.dbName, GlobalClass.token, requestBody)
-          .then((value) async {
-        if (value.statuscode == 200) {
-          setState(() {
-            _currentStep += 1;
-          });
-          EasyLoading.dismiss();
-        } else {
-          EasyLoading.dismiss();
-
-          // Handle failure
-          showAlertDialog(
-              context, "Failed to update details. Please try again.");
-        }
-      });
-
+        // Handle failure
+        showAlertDialog(context, "Failed to update details. Please try again.");
+      }
+    });
   }
 
   bool DataValidate(BuildContext context, Map<String, dynamic> requestBody) {
@@ -860,20 +879,18 @@ late ApiService apiService_idc;
       "otherDependents": otherDependents
     };
 
-
-      return await api.FiFamilyDetail(
-              GlobalClass.token, GlobalClass.dbName, requestBody)
-          .then((value) async {
-        if (value.statuscode == 200) {
-          setState(() {
-            _currentStep += 1;
-          });
-          EasyLoading.dismiss();
-        } else {
-          EasyLoading.dismiss();
-        }
-      });
-
+    return await api.FiFamilyDetail(
+            GlobalClass.token, GlobalClass.dbName, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          _currentStep += 1;
+        });
+        EasyLoading.dismiss();
+      } else {
+        EasyLoading.dismiss();
+      }
+    });
   }
 
   Future<void> AddFinancialInfo(BuildContext context) async {
@@ -951,20 +968,18 @@ late ApiService apiService_idc;
       "IncomeType": IncomeType
     };
 
-
-      return await api.FIFamilyIncome(
-              GlobalClass.token, GlobalClass.dbName, requestBody)
-          .then((value) async {
-        if (value.statuscode == 200) {
-          setState(() {
-            _currentStep += 1;
-          });
-          EasyLoading.dismiss();
-        } else {
-          EasyLoading.dismiss();
-        }
-      });
-
+    return await api.FIFamilyIncome(
+            GlobalClass.token, GlobalClass.dbName, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          _currentStep += 1;
+        });
+        EasyLoading.dismiss();
+      } else {
+        EasyLoading.dismiss();
+      }
+    });
   }
 
   Future<void> AddFiIncomeAndExpense(BuildContext context) async {
@@ -1038,20 +1053,18 @@ late ApiService apiService_idc;
       "docs_path": docs_path
     };
 
-
-      return await api.AddFiIncomeAndExpense(
-              GlobalClass.token, GlobalClass.dbName, requestBody)
-          .then((value) async {
-        if (value.statuscode == 200) {
-          setState(() {
-            _currentStep += 1;
-          });
-          EasyLoading.dismiss();
-        } else {
-          EasyLoading.dismiss();
-        }
-      });
-
+    return await api.AddFiIncomeAndExpense(
+            GlobalClass.token, GlobalClass.dbName, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          _currentStep += 1;
+        });
+        EasyLoading.dismiss();
+      } else {
+        EasyLoading.dismiss();
+      }
+    });
   }
 
   Future<void> saveGuarantorMethod(BuildContext context) async {
@@ -1120,13 +1133,14 @@ late ApiService apiService_idc;
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
-          Fi_Id = value.data[0].fiId.toString();
+          GetDocs(context);
         });
       } else {}
     });
   }
 
   Future<void> GetDocs(BuildContext context) async {
+    print("111object");
     EasyLoading.show(
       status: 'Loading...',
     );
@@ -1479,6 +1493,16 @@ late ApiService apiService_idc;
               dlFront = file;
             }));
       }
+      if (doc.passportExists == true) {
+        listItems.add(_buildListItem(
+            title: "Passport",
+            path: doc.passportPath,
+            id: doc.passportCheckListId,
+            GrNo: '0',
+            onImagePicked: (File file) {
+              passport = file;
+            }));
+      }
 
       if (doc.passBookExists == true) {
         listItems.add(_buildListItem(
@@ -1488,14 +1512,6 @@ late ApiService apiService_idc;
             GrNo: '0',
             onImagePicked: (File file) {
               passbook = file;
-            }));
-        listItems.add(_buildListItem(
-            title: "Passport",
-            path: doc.passportPath,
-            id: doc.passportCheckListId,
-            GrNo: '0',
-            onImagePicked: (File file) {
-              passport = file;
             }));
       }
 
@@ -1709,7 +1725,7 @@ late ApiService apiService_idc;
             //   //height: 45, // Set the desired height
             child: Center(
               child: TextFormField(
-                enabled: fixtraEditable,
+                enabled: personalInfoEditable,
                 controller: emailIdController,
                 focusNode: _emailIdFocus,
                 decoration: InputDecoration(
@@ -1722,9 +1738,10 @@ late ApiService apiService_idc;
         SizedBox(height: 10),
 
         _buildTextField('Place of Birth', placeOfBirthController,
-            fixtraEditable, _placeOfBirthFocus),
+            personalInfoEditable, _placeOfBirthFocus),
         SizedBox(height: 10),
 
+        // Control this flag to enable/disable fields
 
         Row(
           children: [
@@ -1761,11 +1778,13 @@ late ApiService apiService_idc;
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedDependent = newValue!;
-                          });
-                        },
+                        onChanged: personalInfoEditable
+                            ? (String? newValue) {
+                                setState(() {
+                                  selectedDependent = newValue!;
+                                });
+                              }
+                            : null, // Disable onChanged when isEnabled is false
                         items: onetonine.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -1789,14 +1808,19 @@ late ApiService apiService_idc;
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // Align children to the start of the column
                   children: [
-                    _buildTextField('Reservation Category', resCatController,
-                        fixtraEditable, _resCatFocus),
+                    _buildTextField(
+                      'Reservation Category',
+                      resCatController,
+                      personalInfoEditable,
+                      _resCatFocus,
+                    ),
                   ],
                 ),
               ),
             ),
           ],
         ),
+
         SizedBox(height: 10),
 
         Row(
@@ -1834,13 +1858,14 @@ late ApiService apiService_idc;
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: personalInfoEditable
+                            ?(String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               selectedReligionextra = newValue;
                             });
                           }
-                        },
+                        }: null,
                         items: religion.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -1889,14 +1914,15 @@ late ApiService apiService_idc;
                           color: Colors
                               .transparent, // Set to transparent to remove default underline
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: personalInfoEditable
+                            ?(String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               selectedCast =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }: null,
                         items: cast.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -1927,7 +1953,7 @@ late ApiService apiService_idc;
             //   //height: 45, // Set the desired height
             child: Center(
               child: TextFormField(
-                enabled: fixtraEditable,
+                enabled: personalInfoEditable,
                 controller: mobileController,
                 focusNode: _mobileFocusNode,
                 decoration: InputDecoration(
@@ -1944,7 +1970,7 @@ late ApiService apiService_idc;
             // Is Handicap Column
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(left:0.0),
+                padding: const EdgeInsets.only(left: 0.0),
                 // Gap of 5 to the left for the second column
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1974,11 +2000,12 @@ late ApiService apiService_idc;
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: personalInfoEditable
+                            ?(String? newValue) {
                           setState(() {
                             selectedIsHandicap = newValue!;
                           });
-                        },
+                        }: null,
                         items: trueFalse.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -2026,13 +2053,14 @@ late ApiService apiService_idc;
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: personalInfoEditable
+                            ?(String? newValue) {
                           setState(() {
                             selectedspecialAbility = newValue!;
                             isSpecialSocialCategoryVisible =
                                 (newValue == 'Yes'); // Update visibility
                           });
-                        },
+                        }: null,
                         items: trueFalse.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -2057,7 +2085,6 @@ late ApiService apiService_idc;
               style: TextStyle(fontSize: 13),
             ),
             SizedBox(height: 1),
-
             Container(
               width: MediaQuery.of(context).size.width,
               //height: 45,
@@ -2076,11 +2103,12 @@ late ApiService apiService_idc;
                   height: 2,
                   color: Colors.transparent,
                 ),
-                onChanged: (String? newValue) {
+                onChanged: personalInfoEditable
+                    ?(String? newValue) {
                   setState(() {
                     selectedSpecialSocialCategory = newValue!;
                   });
-                },
+                }: null,
                 items: trueFalse.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -2115,18 +2143,17 @@ late ApiService apiService_idc;
         ),
         SizedBox(height: 10),
 
-        _buildTextField(
-            'Address1', address1ControllerP, fixtraEditable, _address1FocusP),
+        _buildTextField('Address1', address1ControllerP, personalInfoEditable,
+            _address1FocusP),
         SizedBox(height: 10),
 
-        _buildTextField(
-            'Address2', address2ControllerP, fixtraEditable, _address2FocusP),
+        _buildTextField('Address2', address2ControllerP, personalInfoEditable,
+            _address2FocusP),
         SizedBox(height: 10),
 
-        _buildTextField(
-            'Address3', address3ControllerP, fixtraEditable, _address3FocusP),
+        _buildTextField('Address3', address3ControllerP, personalInfoEditable,
+            _address3FocusP),
         SizedBox(height: 10),
-
 
         Text(
           'State',
@@ -2153,13 +2180,14 @@ late ApiService apiService_idc;
               color: Colors
                   .transparent, // Set to transparent to remove default underline
             ),
-            onChanged: (String? newValue) {
+            onChanged: personalInfoEditable
+                ?(String? newValue) {
               if (newValue != null) {
                 setState(() {
                   selectedStateextraP = newValue; // Update the selected value
                 });
               }
-            },
+            }: null,
             items: states
                 .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
               return DropdownMenuItem<String>(
@@ -2177,7 +2205,7 @@ late ApiService apiService_idc;
             // City TextField
             Expanded(
               child: _buildTextField(
-                  'City', cityControllerP, fixtraEditable, _cityFocusP),
+                  'City', cityControllerP, personalInfoEditable, _cityFocusP),
             ),
             SizedBox(width: 10),
             // Add some space between the City TextField and Pin Code Text
@@ -2196,7 +2224,7 @@ late ApiService apiService_idc;
                   Container(
                     width: double.infinity, // Set the desired width
                     child: TextFormField(
-                      enabled: fixtraEditable,
+                      enabled: personalInfoEditable,
                       controller: pincodeControllerP,
                       focusNode: _pinFocusNodeP,
                       decoration: InputDecoration(
@@ -2249,18 +2277,17 @@ late ApiService apiService_idc;
             ),
           ],
         ),
-        _buildTextField(
-            'Address1', address1ControllerC, fixtraEditable, _address1FocusC),
+        _buildTextField('Address1', address1ControllerC, personalInfoEditable,
+            _address1FocusC),
         SizedBox(height: 10),
 
-        _buildTextField(
-            'Address2', address2ControllerC, fixtraEditable, _address2FocusC),
+        _buildTextField('Address2', address2ControllerC, personalInfoEditable,
+            _address2FocusC),
         SizedBox(height: 10),
 
-        _buildTextField(
-            'Address3', address3ControllerC, fixtraEditable, _address3FocusC),
+        _buildTextField('Address3', address3ControllerC, personalInfoEditable,
+            _address3FocusC),
         SizedBox(height: 10),
-
 
         Text(
           'State',
@@ -2287,13 +2314,14 @@ late ApiService apiService_idc;
               color: Colors
                   .transparent, // Set to transparent to remove default underline
             ),
-            onChanged: (String? newValue) {
+            onChanged: personalInfoEditable
+                ?(String? newValue) {
               if (newValue != null) {
                 setState(() {
                   selectedStateextraC = newValue; // Update the selected value
                 });
               }
-            },
+            }: null,
             items: states
                 .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
               return DropdownMenuItem<String>(
@@ -2311,7 +2339,7 @@ late ApiService apiService_idc;
             // City TextField
             Expanded(
               child: _buildTextField(
-                  'City', cityControllerC, fixtraEditable, _cityFocusC),
+                  'City', cityControllerC, personalInfoEditable, _cityFocusC),
             ),
             SizedBox(width: 10),
             // Add some space between the City TextField and Pin Code Text
@@ -2330,7 +2358,7 @@ late ApiService apiService_idc;
                   Container(
                     width: double.infinity, // Set the desired width
                     child: TextFormField(
-                      enabled: fixtraEditable,
+                      enabled: personalInfoEditable,
                       controller: pincodeControllerC,
                       focusNode: _pinFocusNodeC,
                       decoration: InputDecoration(
@@ -2381,11 +2409,12 @@ late ApiService apiService_idc;
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: personalInfoEditable
+                            ?(String? newValue) {
                           setState(() {
                             selectedIsHouseRental = newValue!;
                           });
-                        },
+                        }: null,
                         items: trueFalse.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -2435,14 +2464,15 @@ late ApiService apiService_idc;
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged:personalInfoEditable
+                            ? (String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               selectedDistrict =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }: null,
                         items: states.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -2478,14 +2508,15 @@ late ApiService apiService_idc;
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged:personalInfoEditable
+                            ? (String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               selectedVillage =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }: null,
                         items: states.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -2530,14 +2561,15 @@ late ApiService apiService_idc;
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: personalInfoEditable
+                            ?(String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               selectedSubDistrict =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }: null,
                         items: trueFalse.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -2571,11 +2603,12 @@ late ApiService apiService_idc;
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: personalInfoEditable
+                            ?(String? newValue) {
                           setState(() {
                             selectedResidingFor = newValue!;
                           });
-                        },
+                        }: null,
                         items: onetonine.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -2592,106 +2625,105 @@ late ApiService apiService_idc;
         ),
         SizedBox(height: 10),
         Row(
-
           children: [
             Flexible(
               flex: 1,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Text(
-                  'Property (In Acres)',
-                  style: TextStyle(fontSize: 13),
-                ),
-                Container(
-                  //width: 150,
-                  // Adjust the width as needed
-                  //height: 45,
-                  // Fixed height
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5),
+                  Text(
+                    'Property (In Acres)',
+                    style: TextStyle(fontSize: 13),
                   ),
-                  child: DropdownButton<String>(
-                    value: selectedProperty,
-                    isExpanded: true,
-                    iconSize: 24,
-                    elevation: 16,
-                    style: TextStyle(color: Colors.black, fontSize: 13),
-                    underline: Container(
-                      height: 2,
-                      color: Colors
-                          .transparent, // Set to transparent to remove default underline
+                  Container(
+                    //width: 150,
+                    // Adjust the width as needed
+                    //height: 45,
+                    // Fixed height
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
                     ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedProperty = newValue!;
-                      });
-                    },
-                    items: onetonine.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
+                    child: DropdownButton<String>(
+                      value: selectedProperty,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 13),
+                      underline: Container(
+                        height: 2,
+                        color: Colors
+                            .transparent, // Set to transparent to remove default underline
+                      ),
+                      onChanged: personalInfoEditable
+                          ?(String? newValue) {
+                        setState(() {
+                          selectedProperty = newValue!;
+                        });
+                      }: null,
+                      items: onetonine.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
             ),
             SizedBox(width: 10),
             Flexible(
-              flex: 1,
-              child:Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-
-                children: [
-                Text(
-                  'House Owner',
-                  style: TextStyle(fontSize: 13),
-                ),
-                Container(
-                  //width: 150,
-                  // Adjust the width as needed
-                  //height: 45,
-                  // Fixed height
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: DropdownButton<String>(
-                    value: selectedPresentHouseOwner,
-                    isExpanded: true,
-                    iconSize: 24,
-                    elevation: 16,
-                    style: TextStyle(color: Colors.black, fontSize: 13),
-                    underline: Container(
-                      height: 2,
-                      color: Colors
-                          .transparent, // Set to transparent to remove default underline
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'House Owner',
+                      style: TextStyle(fontSize: 13),
                     ),
-                    onChanged: (String? newValue) {
-                      if (newValue != null) {
-                        setState(() {
-                          selectedPresentHouseOwner =
-                              newValue; // Update the selected value
-                        });
-                      }
-                    },
-                    items: landOwner.map<DropdownMenuItem<String>>(
-                        (RangeCategoryDataModel state) {
-                      return DropdownMenuItem<String>(
-                        value: state.code,
-                        child: Text(state.descriptionEn),
-                      );
-                    }).toList(),
-                  ),
-                )
-              ],
-            )
-            )
+                    Container(
+                      //width: 150,
+                      // Adjust the width as needed
+                      //height: 45,
+                      // Fixed height
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedPresentHouseOwner,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors
+                              .transparent, // Set to transparent to remove default underline
+                        ),
+                        onChanged: personalInfoEditable
+                            ?(String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              selectedPresentHouseOwner =
+                                  newValue; // Update the selected value
+                            });
+                          }
+                        }: null,
+                        items: landOwner.map<DropdownMenuItem<String>>(
+                            (RangeCategoryDataModel state) {
+                          return DropdownMenuItem<String>(
+                            value: state.code,
+                            child: Text(state.descriptionEn),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  ],
+                ))
           ],
         )
       ],
@@ -2705,7 +2737,9 @@ late ApiService apiService_idc;
       children: [
         _buildTextField(
             'Mother name', _motherFController, FiIncomeEditable, _motherFFocus),
-        SizedBox(height: 10,),
+        SizedBox(
+          height: 10,
+        ),
         Row(
           children: [
             Expanded(
@@ -2718,14 +2752,16 @@ late ApiService apiService_idc;
                     FiFamilyEditable, _motherLFocus)),
           ],
         ),
-        SizedBox(height: 10,),
-
+        SizedBox(
+          height: 10,
+        ),
         Text(
           'No. of Children',
           style: TextStyle(fontSize: 13),
         ),
-        SizedBox(height: 1,),
-
+        SizedBox(
+          height: 1,
+        ),
         Container(
           width: MediaQuery.of(context).size.width,
           // Adjust the width as needed
@@ -2760,14 +2796,16 @@ late ApiService apiService_idc;
             }).toList(),
           ),
         ),
-        SizedBox(height: 10,),
-
+        SizedBox(
+          height: 10,
+        ),
         Text(
           'Schooling Children',
           style: TextStyle(fontSize: 13),
         ),
-        SizedBox(height: 1 ,),
-
+        SizedBox(
+          height: 1,
+        ),
         Container(
           width: MediaQuery.of(context).size.width,
           // Adjust the width as needed
@@ -2802,8 +2840,9 @@ late ApiService apiService_idc;
             }).toList(),
           ),
         ),
-        SizedBox(height: 10,),
-
+        SizedBox(
+          height: 10,
+        ),
         Text(
           'Other Dependents',
           style: TextStyle(fontSize: 13),
@@ -2849,15 +2888,17 @@ late ApiService apiService_idc;
   Widget _buildStepThree() {
     return SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height:15,),
+        SizedBox(
+          height: 15,
+        ),
         Row(
           children: [
             Flexible(
               flex: 1,
               child: Column(
-                 crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Occupation',
@@ -2949,7 +2990,9 @@ late ApiService apiService_idc;
             ),
           ],
         ),
-        SizedBox(height:10,),
+        SizedBox(
+          height: 10,
+        ),
         Row(
           children: [
             Expanded(
@@ -2971,7 +3014,7 @@ late ApiService apiService_idc;
                     textAlign: TextAlign.left,
                   ),
                   Container(
-                     height: 55,
+                    height: 55,
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -2992,10 +3035,11 @@ late ApiService apiService_idc;
                           selectedHomeType = newValue!;
                         });
                       },
-                      items: onetonine.map((String value) {
+                      items: houseType.map<DropdownMenuItem<String>>(
+                          (RangeCategoryDataModel state) {
                         return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
+                          value: state.code,
+                          child: Text(state.descriptionEn),
                         );
                       }).toList(),
                     ),
@@ -3005,7 +3049,9 @@ late ApiService apiService_idc;
             ),
           ],
         ),
-        SizedBox(height:10,),
+        SizedBox(
+          height: 10,
+        ),
         Row(
           children: [
             Expanded(
@@ -3039,10 +3085,11 @@ late ApiService apiService_idc;
                           selectedRoofType = newValue!;
                         });
                       },
-                      items: onetonine.map((String value) {
+                      items: roofType.map<DropdownMenuItem<String>>(
+                          (RangeCategoryDataModel state) {
                         return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
+                          value: state.code,
+                          child: Text(state.descriptionEn),
                         );
                       }).toList(),
                     ),
@@ -3082,10 +3129,11 @@ late ApiService apiService_idc;
                           selectedToiletType = newValue!;
                         });
                       },
-                      items: onetonine.map((String value) {
+                      items: toiletType.map<DropdownMenuItem<String>>(
+                          (RangeCategoryDataModel state) {
                         return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
+                          value: state.code,
+                          child: Text(state.descriptionEn),
                         );
                       }).toList(),
                     ),
@@ -3095,7 +3143,9 @@ late ApiService apiService_idc;
             ),
           ],
         ),
-        SizedBox(height:10,),
+        SizedBox(
+          height: 10,
+        ),
         Row(
           children: [
             Expanded(
@@ -3185,7 +3235,9 @@ late ApiService apiService_idc;
             ),
           ],
         ),
-        SizedBox(height:10,),
+        SizedBox(
+          height: 10,
+        ),
         Text(
           'Business Experience',
           style: TextStyle(fontSize: 13),
@@ -3305,12 +3357,12 @@ late ApiService apiService_idc;
             Row(
               children: [
                 Expanded(
-                  child:  _buildTextField2(
-    'Other than Agricultural Income',
-    _otheR_THAN_AGRICULTURAL_INCOMEController,
-    TextInputType.number,
-    FiIncomeEditable,
-    _otheR_THAN_AGRICULTURAL_INCOMEFocus),
+                  child: _buildTextField2(
+                      'Other than Agricultural Income',
+                      _otheR_THAN_AGRICULTURAL_INCOMEController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _otheR_THAN_AGRICULTURAL_INCOMEFocus),
                 ),
               ],
             ),
@@ -3511,17 +3563,16 @@ late ApiService apiService_idc;
                         ),
                       ),
                       onPressed: () {
-                        if(_bank_AcController.text.isEmpty || _bank_IFCSController.text.isEmpty){
-                          showToast_Error("Please Enter Bank Account number and IFSC code");
-                        }else{
+                        if (_bank_AcController.text.isEmpty ||
+                            _bank_IFCSController.text.isEmpty) {
+                          showToast_Error(
+                              "Please Enter Bank Account number and IFSC code");
+                        } else {
+                          docVerifyIDC("bankaccount", _bank_AcController.text,
+                              _bank_IFCSController.text, "");
 
-                            docVerifyIDC("bankaccount", _bank_AcController.text,
-                                _bank_IFCSController.text, "");
-
-                            ifscVerify(context, _bank_IFCSController.text);
-
+                          ifscVerify(context, _bank_IFCSController.text);
                         }
-
                       },
                       child: Text(
                         bankAccHolder == null
@@ -3537,40 +3588,44 @@ late ApiService apiService_idc;
           ),
           SizedBox(height: 10), // Adds space between the fields
 
-          bankAccHolder!=null?Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: 'ACC. HOLDER NAME:',
-                  style: TextStyle(color: Colors.black, fontSize: 13),
-                ),
-                TextSpan(
-                  text: " ${bankAccHolder}",
-                  style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ):SizedBox(),
-          bankAddress!=null? Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: 'BANK ADDRESS:',
-                  style: TextStyle(color: Colors.black, fontSize: 13),
-                ),
-                TextSpan(
-                  text: " ${bankAddress}",
-                  style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ):SizedBox(),
+          bankAccHolder != null
+              ? Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'ACC. HOLDER NAME:',
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                      ),
+                      TextSpan(
+                        text: " ${bankAccHolder}",
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                )
+              : SizedBox(),
+          bankAddress != null
+              ? Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'BANK ADDRESS:',
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                      ),
+                      TextSpan(
+                        text: " ${bankAddress}",
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                )
+              : SizedBox(),
 
           SizedBox(height: 10),
 
@@ -3607,7 +3662,9 @@ late ApiService apiService_idc;
         children: [
           _buildTextField(
               'Name', _femNameController, femMemIncomeEditable, _femNameFocus),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Row(
             children: [
               Expanded(
@@ -3621,7 +3678,9 @@ late ApiService apiService_idc;
               ),
             ],
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Row(
             children: [
               Expanded(
@@ -3716,8 +3775,9 @@ late ApiService apiService_idc;
               ),
             ],
           ),
-          SizedBox(height: 10,),
-
+          SizedBox(
+            height: 10,
+          ),
           Row(
             children: [
               Expanded(
@@ -3813,8 +3873,9 @@ late ApiService apiService_idc;
               ),
             ],
           ),
-          SizedBox(height: 10,),
-
+          SizedBox(
+            height: 10,
+          ),
           Row(
             children: [
               Expanded(
@@ -3910,8 +3971,9 @@ late ApiService apiService_idc;
               ),
             ],
           ),
-          SizedBox(height: 10,),
-
+          SizedBox(
+            height: 10,
+          ),
           Row(
             children: [
               Expanded(
@@ -4020,8 +4082,8 @@ late ApiService apiService_idc;
           Row(
             children: [
               Expanded(
-                  child: _buildTextField2('Aadhaar Id', _aadharIdController,TextInputType.number,
-                      GuarantorEditable, _aadharIdFocus)),
+                  child: _buildTextField2('Aadhaar Id', _aadharIdController,
+                      TextInputType.number, GuarantorEditable, _aadharIdFocus)),
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 // Add 10px padding from above
@@ -4253,8 +4315,8 @@ late ApiService apiService_idc;
               }).toList(),
             ),
           ),
-          _buildTextField2(
-              'Mobile no', _phoneController,TextInputType.number, GuarantorEditable, _phoneFocus),
+          _buildTextField2('Mobile no', _phoneController, TextInputType.number,
+              GuarantorEditable, _phoneFocus),
           Row(
             children: [
               // Age Box
@@ -4433,21 +4495,17 @@ late ApiService apiService_idc;
           _buildTextField('Address 1', _p_Address1Controller, GuarantorEditable,
               _p_Address1Focus),
           SizedBox(height: 10),
-
           _buildTextField('Address 2', _p_Address2Controller, GuarantorEditable,
               _p_Address2Focus),
           SizedBox(height: 10),
-
           _buildTextField('Address 3', _p_Address3Controller, GuarantorEditable,
               _p_Address3Focus),
           SizedBox(height: 10),
-
           Text(
             'State Name',
             style: TextStyle(fontSize: 13),
           ),
           SizedBox(height: 1),
-
           Container(
             width: MediaQuery.of(context).size.width,
             // Adjust the width as needed
@@ -4486,7 +4544,6 @@ late ApiService apiService_idc;
             ),
           ),
           SizedBox(height: 10),
-
           Row(
             children: [
               Expanded(
@@ -4494,8 +4551,8 @@ late ApiService apiService_idc;
                       GuarantorEditable, _p_CityFocus)),
               SizedBox(width: 10),
               Expanded(
-                  child: _buildTextField2('Pincode', _pincodeController,TextInputType.number,
-                      GuarantorEditable, _pincodeFocus)),
+                  child: _buildTextField2('Pincode', _pincodeController,
+                      TextInputType.number, GuarantorEditable, _pincodeFocus)),
             ],
           ),
         ],
@@ -4536,13 +4593,43 @@ late ApiService apiService_idc;
           ),
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
+        //  fixtraEditable,FiIncomeEditable,FinancialInfoEditable,GuarantorEditable,UploadFiDocsEditable,FiFamilyEditable,femMemIncomeEditable
         onPressed: () {
-          if (_currentStep > 0) {
+          if (_currentStep == 0) {
+            setState(() {});
+          } else if (_currentStep == 1) {
             setState(() {
+              pageTitle = "Personal Info";
+              _currentStep -= 1;
+            });
+          } else if (_currentStep == 2) {
+            setState(() {
+              pageTitle = "Family Details";
+              _currentStep -= 1;
+            });
+          } else if (_currentStep == 3) {
+            setState(() {
+              pageTitle = "Income & Expense";
+              _currentStep -= 1;
+            });
+          } else if (_currentStep == 4) {
+            setState(() {
+              pageTitle = "Financial Info.";
+              _currentStep -= 1;
+            });
+          } else if (_currentStep == 5) {
+            setState(() {
+              _currentStep -= 1;
+              pageTitle = "Family Income";
+            });
+          } else if (_currentStep == 6) {
+            setState(() {
+              pageTitle = "Guarantor Form";
               _currentStep -= 1;
             });
           }
         },
+
         child: Text(
           "PREVIOUS",
           style: TextStyle(color: Colors.white, fontSize: 13),
@@ -4580,81 +4667,65 @@ late ApiService apiService_idc;
           ),
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
-       /* onPressed: () {
-          if (_currentStep < 6) {
-            setState(() {
-              _currentStep += 1;
-            });
-          } else if (_currentStep == 6) {
-            GetDocs(context, FIID);
-            setState(() {
-              _currentStep += 1;
-            });
-          } else if (_formKey.currentState?.validate() ?? false) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Form submitted successfully")),
-            );
-          }
-        },*/
-
-        /*if (_currentStep < 7) {
-            setState(() {
-              _currentStep += 1;
-            });
-          } else if (_currentStep == 7) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Form submitted successfully")),
-            );
-          }*/
+        //  fixtraEditable,FiIncomeEditable,FinancialInfoEditable,GuarantorEditable,UploadFiDocsEditable,FiFamilyEditable,femMemIncomeEditable
 
         onPressed: () {
           if (_currentStep == 0) {
-              setState(() {
-                pageTitle = "Personal Info.";
-              });
-              if (_stepOneValidations()) {
-              AddFiExtraDetail(context);
-            }
-          } else if (_currentStep == 1) {
             setState(() {
               pageTitle = "Family Details";
+              _currentStep += 1;
+              personalInfoEditable = false;
             });
-            if (_stepTwoValidations()) {
-              AddFiFamilyDetail(context);
-            }
-          } else if (_currentStep == 2) {
+            /*if (_stepOneValidations()) {
+              AddFiExtraDetail(context);
+            }*/
+          } else if (_currentStep == 1) {
             setState(() {
               pageTitle = "Income & Expense";
+              _currentStep += 1;
+              FiFamilyEditable = false;
             });
-            if(_stepThreeValidations()) {
+            /*if (_stepTwoValidations()) {
+              AddFiFamilyDetail(context);
+            }*/
+          } else if (_currentStep == 2) {
+            setState(() {
+              _currentStep += 1;
+              pageTitle = "Financial Info.";
+              FiIncomeEditable = false;
+            });
+            /*if(_stepThreeValidations()) {
               AddFiIncomeAndExpense(context);
-            }
+            }*/
           } else if (_currentStep == 3) {
             setState(() {
-              pageTitle = "Financial Info.";
+              pageTitle = "Family Income";
+              _currentStep += 1;
+              FinancialInfoEditable = false;
             });
-            if(_stepFourValidations()){
+            /*if(_stepFourValidations()){
               AddFinancialInfo(context);
-            }
+            }*/
           } else if (_currentStep == 4) {
             setState(() {
-              pageTitle = "Family Income";
+              pageTitle = "Guarantor Form";
+              _currentStep += 1;
+              femMemIncomeEditable = false;
             });
-            if(_stepFiveValidations()) {
+            /*if(_stepFiveValidations()) {
               FiFemMemIncome(context);
-            }
+            }*/
           } else if (_currentStep == 5) {
             setState(() {
-              pageTitle = "Guarantor Form";
-            });
-            if(_stepSixValidations()) {
-              saveGuarantorMethod(context);
-            }
-          } else if (_currentStep == 6) {
-            setState(() {
               pageTitle = "Docs Upload";
+              _currentStep += 1;
+              GuarantorEditable = false;
             });
-            // UploadFiDocs(context, FIID.toString());
+            /*if(_stepSixValidations()) {
+              saveGuarantorMethod(context);
+            }*/
+          } else if (_currentStep == 6) {
+            setState(() {});
           }
         },
         child: Text(
@@ -4814,9 +4885,12 @@ late ApiService apiService_idc;
       }
     });
   }
+
   void docVerifyIDC(
       String type, String txnNumber, String ifsc, String dob) async {
-    EasyLoading.show(status: 'Loading...',);
+    EasyLoading.show(
+      status: 'Loading...',
+    );
     try {
       Map<String, dynamic> requestBody = {
         "type": type,
@@ -4835,28 +4909,20 @@ late ApiService apiService_idc;
         // Parse JSON object if it’s a map
         if (type == "bankaccount") {
           setState(() {
-            if(response["error"]==null){
-              bankAccHolder =
-              "${responseData['full_name']}";
-
-            }else{
+            if (response["error"] == null) {
+              bankAccHolder = "${responseData['full_name']}";
+            } else {
               bankAccHolder = "Account no. is Not Verified!!";
-
             }
-
           });
-        } else{
-
-        }
+        } else {}
         showToast_Error("Unexpected Response: $response");
         print("Unexpected Response: $response");
         EasyLoading.dismiss();
-
       }
       EasyLoading.dismiss();
     } catch (e) {
       showToast_Error("An error occurred: $e");
-
 
       EasyLoading.dismiss();
     }
@@ -4906,22 +4972,78 @@ late ApiService apiService_idc;
     });
   }
 
-
   Future<void> getAllDataApi(BuildContext context) async {
     EasyLoading.show(status: 'Loading...');
 
     final api = Provider.of<ApiService>(context, listen: false);
 
     return await api
-        .getAllData(GlobalClass.token, GlobalClass.dbName,FIID)
+        .dataByFIID(GlobalClass.token, GlobalClass.dbName, FIID)
         .then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
 
+        /* if (value.data[0].errormsg.isEmpty) {
+          print("object112222");
+
+          if (value.data[0].panNo.isEmpty &&
+              value.data[0].dl.isEmpty &&
+              value.data[0].voterId.isEmpty) {
+            print("object112233");
+            setState(() {
+              print("object112244");
+
+              FiType = "OLD";
+
+              Fi_Id = value.data[0].fiId.toString();
+              // selectedTitle = value.data[0].title;
+              _nameController.text = value.data[0].fName;
+              _nameMController.text = value.data[0].mName;
+              _nameLController.text = value.data[0].lName;
+              // genderselected = value.data[0].gender;
+              //relationwithBorrowerselected = value.data[0].rela;
+              _mobileNoController.text = value.data[0].pPhone;
+              _dobController.text = value.data[0].dob.toString();
+              // _ageController.text =value.data[0].;
+              _fatherFirstNameController.text = value.data[0].fatheRFirstName;
+              _fatherMiddleNameController.text = value.data[0].fatheRMiddleName;
+              _fatherLastNameController.text = value.data[0].fatheRLastName;
+              // selectedMarritalStatus = value.data[0].maritaLStatus;
+              _spouseFirstNameController.text = value.data[0].spousEFirstName;
+              _spouseMiddleNameController.text = value.data[0].spousEMiddleName;
+              _spouseLastNameController.text = value.data[0].spousELastName;
+              //  _expenseController.text =value.data[0].;
+              //  _incomeController.text =value.data[0].;
+              _latitudeController.text =value.data[0].latitude;
+              _longitudeController.text =value.data[0].longitude;
+              _address1Controller.text =value.data[0].pAddress1;
+              _address2Controller.text =value.data[0].pAddress2;
+              _address3Controller.text =value.data[0].pAddress3;
+              _cityController.text =value.data[0].pCity;
+              _pincodeController.text =value.data[0].pPincode;
+              */
+        /*stateselected = states.firstWhere((item) =>
+              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/
+        /*
+              _loan_amountController.text =value.data[0].loanAmount.toString();
+              // selectedLoanReason = value.data[0].;
+              //  selectedloanDuration = value.data[0].loanDuration;
+              //    bankselected = value.data[0].bankName;
+              EasyLoading.dismiss();
+
+            });
+          } else {
+            String A = value.data[0].fiCode.toString();
+            GlobalClass.showErrorAlert(context,
+                "Kyc is Already Done on this Adhaar Id(FiCode is $A)", 2);
+          }
+        }*/
       } else {
-        EasyLoading.dismiss();
-        showToast_Error("All Data not fetched");
+        setState(() {});
       }
+    }).catchError((err) {
+      print("ERRORRRR$err");
+      EasyLoading.dismiss();
     });
   }
 
@@ -5147,16 +5269,16 @@ late ApiService apiService_idc;
   }
 
   bool _stepFiveValidations() {
-    if(_femNameController.text.isEmpty){
+    if (_femNameController.text.isEmpty) {
       showToast_Error("Please Enter Family Member Name");
       return false;
-    }else    if(_AgeController.text.isEmpty){
+    } else if (_AgeController.text.isEmpty) {
       showToast_Error("Please Enter Family Member Age");
       return false;
-    }else  if(_IncomeController.text.isEmpty){
+    } else if (_IncomeController.text.isEmpty) {
       showToast_Error("Please Enter Family Member Income");
       return false;
-    }else  if (femselectedGender == null ||
+    } else if (femselectedGender == null ||
         femselectedGender!.isEmpty ||
         femselectedGender!.toLowerCase() == 'select') {
       showToast_Error("Please Select Gender");
@@ -5217,7 +5339,9 @@ late ApiService apiService_idc;
       showToast_Error("Please Enter Aadhar ID");
       _aadharIdFocus.requestFocus();
       return false;
-    } else if (selectedTitle== null || selectedTitle!.isEmpty || selectedTitle!.toLowerCase() == 'select') {
+    } else if (selectedTitle == null ||
+        selectedTitle!.isEmpty ||
+        selectedTitle!.toLowerCase() == 'select') {
       showToast_Error("Please Select Title");
       return false;
     } else if (_fnameController.text.isEmpty) {
@@ -5232,7 +5356,8 @@ late ApiService apiService_idc;
       showToast_Error("Please Enter Last Name");
       _lnameFocus.requestFocus();
       return false;
-    }*/ else if (_phoneController.text.isEmpty) {
+    }*/
+    else if (_phoneController.text.isEmpty) {
       showToast_Error("Please Enter Phone Number");
       _phoneFocus.requestFocus();
       return false;
@@ -5255,7 +5380,8 @@ late ApiService apiService_idc;
         return false;
       }
       return false;
-    }*/ else if (_p_Address1Controller.text.isEmpty) {
+    }*/
+    else if (_p_Address1Controller.text.isEmpty) {
       showToast_Error("Please Enter Address Line 1");
       _p_Address1Focus.requestFocus();
       return false;
@@ -5267,30 +5393,120 @@ late ApiService apiService_idc;
       showToast_Error("Please Enter Address Line 3");
       _p_Address3Focus.requestFocus();
       return false;
-    }*/ else if (_p_CityController.text.isEmpty) {
+    }*/
+    else if (_p_CityController.text.isEmpty) {
       showToast_Error("Please Enter Permanent City");
       _p_CityFocus.requestFocus();
       return false;
-    } else if (_pincodeController.text.isEmpty||_pincodeController.text.length!=6) {
+    } else if (_pincodeController.text.isEmpty ||
+        _pincodeController.text.length != 6) {
       showToast_Error("Please Enter Correct Pincode");
       _pincodeFocus.requestFocus();
       return false;
-    } else if (stateselected == null || stateselected!.isEmpty || stateselected!.toLowerCase() == 'select') {
+    } else if (stateselected == null ||
+        stateselected!.isEmpty ||
+        stateselected!.toLowerCase() == 'select') {
       showToast_Error("Please Select State");
       return false;
-    } else if (relationselected == null || relationselected!.isEmpty || relationselected!.toLowerCase() == 'select') {
+    } else if (relationselected == null ||
+        relationselected!.isEmpty ||
+        relationselected!.toLowerCase() == 'select') {
       showToast_Error("Please Select Relation");
       return false;
-    } else if (genderselected == null || genderselected!.isEmpty || genderselected!.toLowerCase() == 'select') {
+    } else if (genderselected == null ||
+        genderselected!.isEmpty ||
+        genderselected!.toLowerCase() == 'select') {
       showToast_Error("Please Select Gender");
       return false;
-    } else if (religionselected == null || religionselected!.isEmpty || religionselected!.toLowerCase() == 'select') {
+    } else if (religionselected == null ||
+        religionselected!.isEmpty ||
+        religionselected!.toLowerCase() == 'select') {
       showToast_Error("Please Select Religion");
       return false;
-    }else if (_imageFile == null) {
+    } else if (_imageFile == null) {
       showToast_Error("Gurrantor Image Is Null");
       return false;
     }
     return true;
+  }
+
+  Future<void> fiAllData(BuildContext contextDialog) async {
+    EasyLoading.show(status: "Adhaar Hoistory...");
+    print("object112211");
+
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+
+    return await api
+        .dataByFIID(
+      GlobalClass.token,
+      GlobalClass.dbName,
+      FIID,
+    )
+        .then((value) {
+      if (value.statuscode == 200) {
+        print("object112211");
+
+        /* if (value.data[0].errormsg.isEmpty) {
+          print("object112222");
+
+          if (value.data[0].panNo.isEmpty &&
+              value.data[0].dl.isEmpty &&
+              value.data[0].voterId.isEmpty) {
+            print("object112233");
+            setState(() {
+              print("object112244");
+
+              FiType = "OLD";
+
+              Fi_Id = value.data[0].fiId.toString();
+              // selectedTitle = value.data[0].title;
+              _nameController.text = value.data[0].fName;
+              _nameMController.text = value.data[0].mName;
+              _nameLController.text = value.data[0].lName;
+              // genderselected = value.data[0].gender;
+              //relationwithBorrowerselected = value.data[0].rela;
+              _mobileNoController.text = value.data[0].pPhone;
+              _dobController.text = value.data[0].dob.toString();
+              // _ageController.text =value.data[0].;
+              _fatherFirstNameController.text = value.data[0].fatheRFirstName;
+              _fatherMiddleNameController.text = value.data[0].fatheRMiddleName;
+              _fatherLastNameController.text = value.data[0].fatheRLastName;
+              // selectedMarritalStatus = value.data[0].maritaLStatus;
+              _spouseFirstNameController.text = value.data[0].spousEFirstName;
+              _spouseMiddleNameController.text = value.data[0].spousEMiddleName;
+              _spouseLastNameController.text = value.data[0].spousELastName;
+              //  _expenseController.text =value.data[0].;
+              //  _incomeController.text =value.data[0].;
+              _latitudeController.text =value.data[0].latitude;
+              _longitudeController.text =value.data[0].longitude;
+              _address1Controller.text =value.data[0].pAddress1;
+              _address2Controller.text =value.data[0].pAddress2;
+              _address3Controller.text =value.data[0].pAddress3;
+              _cityController.text =value.data[0].pCity;
+              _pincodeController.text =value.data[0].pPincode;
+              */
+        /*stateselected = states.firstWhere((item) =>
+              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/
+        /*
+              _loan_amountController.text =value.data[0].loanAmount.toString();
+              // selectedLoanReason = value.data[0].;
+              //  selectedloanDuration = value.data[0].loanDuration;
+              //    bankselected = value.data[0].bankName;
+              EasyLoading.dismiss();
+
+            });
+          } else {
+            String A = value.data[0].fiCode.toString();
+            GlobalClass.showErrorAlert(context,
+                "Kyc is Already Done on this Adhaar Id(FiCode is $A)", 2);
+          }
+        }*/
+      } else {
+        setState(() {});
+      }
+    }).catchError((err) {
+      print("ERRORRRR$err");
+      EasyLoading.dismiss();
+    });
   }
 }

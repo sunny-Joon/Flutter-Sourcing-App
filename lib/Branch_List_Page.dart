@@ -125,6 +125,7 @@ class _BranchListPageState extends State<BranchListPage> {
           ),
           Expanded(
             child: ListView.builder(
+              padding: EdgeInsets.zero,
               itemCount: filteredItems.length,
               itemBuilder: (context, index) {
                 return GestureDetector(

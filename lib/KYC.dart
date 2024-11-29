@@ -37,7 +37,8 @@ class _KYCPageState extends State<KYCPage> {
   late ApiService apiService_protean;
   late ApiService apiService_OCR;
 
-   int _timeLeft = 60; // Timer starting at 60 seconds
+  String FiType ="NEW";
+  int _timeLeft = 60; // Timer starting at 60 seconds
   Timer? _timer;
   int imageStartIndex = 0;
   Color iconPan = Colors.red;
@@ -47,7 +48,8 @@ class _KYCPageState extends State<KYCPage> {
 
   int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
-  String  panCardHolderName="Please search PAN card holder name for verification";
+  String panCardHolderName =
+      "Please search PAN card holder name for verification";
   String? dlCardHolderName;
   String? voterCardHolderName;
   List<RangeCategoryDataModel> states = [];
@@ -87,11 +89,10 @@ class _KYCPageState extends State<KYCPage> {
   String? selectedloanDuration;
   String? _locationMessage;
   Position? position;
-  bool otpVerified=false;
+  bool otpVerified = false;
 
   @override
   void initState() {
-
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
@@ -107,9 +108,11 @@ class _KYCPageState extends State<KYCPage> {
     geolocator(context);
 // Fetch states using the required cat_key
   }
+
   @override
   void dispose() {
-    _focusNodeAdhaarId.removeListener(_validateOnFocusChange); // Remove listener
+    _focusNodeAdhaarId
+        .removeListener(_validateOnFocusChange); // Remove listener
     _focusNodeAdhaarId.dispose(); // Dispose FocusNode when widget is disposed
     super.dispose();
   }
@@ -194,36 +197,34 @@ class _KYCPageState extends State<KYCPage> {
     }); // Refresh the UI
   }
 
- // final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
+  // final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
 
   // TextEditingControllers for all input fields
   final _aadharIdController = TextEditingController();
-  final _nameController = TextEditingController();
-  final _nameMController = TextEditingController();
-  final _nameLController = TextEditingController();
-  final _ageController = TextEditingController();
-  final _dobController = TextEditingController();
-  final _mobileNoController = TextEditingController();
-  final _gurNameController = TextEditingController();
-  final _fatherFirstNameController = TextEditingController();
-  final _fatherMiddleNameController = TextEditingController();
-  final _fatherLastNameController = TextEditingController();
-  final _spouseFirstNameController = TextEditingController();
-  final _spouseMiddleNameController = TextEditingController();
-  final _spouseLastNameController = TextEditingController();
-  final _expenseController = TextEditingController();
-  final _incomeController = TextEditingController();
-  final _latitudeController = TextEditingController();
-  final _longitudeController = TextEditingController();
-  final _address1Controller = TextEditingController();
-  final _address2Controller = TextEditingController();
-  final _address3Controller = TextEditingController();
-  final _cityController = TextEditingController();
-  final _pincodeController = TextEditingController();
-  final _groupCodeController = TextEditingController();
-  final _branchCodeController = TextEditingController();
-  final _loan_amountController = TextEditingController();
+  late var _nameController = TextEditingController();
+  late var _nameMController = TextEditingController();
+  late var _nameLController = TextEditingController();
+  late var _ageController = TextEditingController();
+  late var _dobController = TextEditingController();
+  late var _mobileNoController = TextEditingController();
+  late var _gurNameController = TextEditingController();
+  late var _fatherFirstNameController = TextEditingController();
+  late var _fatherMiddleNameController = TextEditingController();
+  late var _fatherLastNameController = TextEditingController();
+  late var _spouseFirstNameController = TextEditingController();
+  late var _spouseMiddleNameController = TextEditingController();
+  late var _spouseLastNameController = TextEditingController();
+  late var _expenseController = TextEditingController();
+  late var _incomeController = TextEditingController();
+  late var _latitudeController = TextEditingController();
+  late var _longitudeController = TextEditingController();
+  late var _address1Controller = TextEditingController();
+  late var _address2Controller = TextEditingController();
+  late var _address3Controller = TextEditingController();
+  late var _cityController = TextEditingController();
+  late var _pincodeController = TextEditingController();
+  late var _loan_amountController = TextEditingController();
 
   final _voterIdController = TextEditingController();
   final _passportController = TextEditingController();
@@ -253,7 +254,9 @@ class _KYCPageState extends State<KYCPage> {
 
   get isChecked => null;
   final FocusNode _focusNodeAdhaarId = FocusNode();
+
    String _errorMessageAadhaar="";
+
 
   void _pickImage() async {
     File? pickedImage = await GlobalClass().pickImage();
@@ -265,42 +268,44 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   Widget _buildDatePickerField(BuildContext context, String labelText,
-      TextEditingController controller,String type) {
+      TextEditingController controller, String type) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
-
         controller: controller,
         readOnly: true,
-        onTap: () => _selectDate(context, controller,type),
+        onTap: () => _selectDate(context, controller, type),
         decoration: InputDecoration(
           labelText: labelText,
           border: OutlineInputBorder(),
-          suffixIcon:   Icon(Icons.calendar_today),
-
-
+          suffixIcon: Icon(Icons.calendar_today),
         ),
       ),
     );
   }
+
   void _validateOnFocusChange() {
     if (!_focusNodeAdhaarId.hasFocus) {
       // Validate the input when the text field loses focus
       setState(() {
         if (_aadharIdController.text.isEmpty) {
           _errorMessageAadhaar = 'Aadhaar Id field cannot be empty!';
-        } else if (_aadharIdController.text.length !=12) {
+        } else if (_aadharIdController.text.length != 12) {
           _errorMessageAadhaar = 'Aadhaar must be 12 characters long.';
-        } else if(!Validators.validateVerhoeff(_aadharIdController.text)){
+        } else if (!Validators.validateVerhoeff(_aadharIdController.text)) {
           _errorMessageAadhaar = 'Aadhaar id is not valid';
-        }else{
-          _errorMessageAadhaar="";
+        } else {
+          _errorMessageAadhaar = "";
         }
       });
+      if (_aadharIdController.text.length == 12) {
+        adhaarAllData(context);
+      }
     }
   }
-  void _selectDate(
-      BuildContext context, TextEditingController controller,String type) async {
+
+  void _selectDate(BuildContext context, TextEditingController controller,
+      String type) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -309,24 +314,17 @@ class _KYCPageState extends State<KYCPage> {
     );
     if (picked != null) {
       setState(() {
-        if(type=="dob"){
+        if (type == "dob") {
           _selectedDate = picked;
           _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
           dlDob = DateFormat('dd-MM-yyyy').format(picked);
           _calculateAge();
-        }else if(type=="passExp"){
-       _passportExpiryController.text=DateFormat('yyyy-MM-dd').format(picked);
-
-        }else if(type=="dlExp"){
+        } else if (type == "passExp") {
+          _passportExpiryController.text =
+              DateFormat('yyyy-MM-dd').format(picked);
+        } else if (type == "dlExp") {
           _dlExpiryController.text = DateFormat('yyyy-MM-dd').format(picked);
-
-
-
         }
-
-
-
-
       });
     }
     // if (controller == _dobController) {
@@ -372,165 +370,181 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(child: Scaffold(
-
-      backgroundColor: Color(0xFFD42D3F),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-            child: Column(
-              children: [
-                SizedBox(height: 20,),
-                Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                                width: 1, color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
+    return WillPopScope(
+        child: Scaffold(
+          backgroundColor: Color(0xFFD42D3F),
+          body: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 24.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                    width: 1, color: Colors.grey.shade300),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                              ),
+                              height: 40,
+                              width: 40,
+                              alignment: Alignment.center,
+                              child: Center(
+                                child:
+                                    Icon(Icons.arrow_back_ios_sharp, size: 16),
+                              ),
+                            ),
+                            onTap: () {
+                              if (_currentStep == 1) {
+                                _currentStep--;
+                              } else {
+                                Navigator.of(context).pop();
+                              }
+                            },
                           ),
-                          height: 40,
-                          width: 40,
-                          alignment: Alignment.center,
-                          child: Center(
-                            child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                          Center(
+                            child: Image.asset(
+                              'assets/Images/logo_white.png',
+                              // Replace with your logo asset path
+                              height: 30,
+                            ),
                           ),
+                          Container(
+                            height: 40,
+                            width: 40,
+                            alignment: Alignment.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                    //  _buildProgressIndicator(),
+                    SizedBox(height: 30),
+                    Container(
+                      height: MediaQuery.of(context).size.height - 244,
+                      child: Flexible(
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    blurRadius: 7,
+                                  ),
+                                ],
+                              ),
+                              child: Form(
+                                key: _formKey,
+                                child: _getStepContent(context),
+                              ),
+                            ),
+                            Positioned(
+                                top: -35, // Adjust the position as needed
+                                left: 0,
+                                right: 0,
+                                child: Center(
+                                  child: _imageFile == null
+                                      ? InkWell(
+                                          onTap: _pickImage,
+                                          child: ClipOval(
+                                            child: Container(
+                                              width: 70,
+                                              height: 70,
+                                              color: Colors.grey,
+                                              child: Icon(
+                                                Icons.person,
+                                                size: 50.0,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          child: ClipOval(
+                                            child: Image.file(
+                                              File(_imageFile!.path),
+                                              width: 70,
+                                              height: 70,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          onTap: _pickImage,
+                                        ),
+                                )),
+                          ],
                         ),
-                        onTap: () {
-                          if(_currentStep==1){
-                            _currentStep--;
-
-                          }else{
-                            Navigator.of(context).pop();
-                          }
-
-
-                        },
                       ),
-                      Center(
-                        child: Image.asset(
-                          'assets/Images/logo_white.png',
-                          // Replace with your logo asset path
-                          height: 30,
-                        ),
-                      ),
-                      Container(
-                        height: 40,
-                        width: 40,
-                        alignment: Alignment.center,
-                      ),
-                    ],
-                  ),
-                ),
-                //  _buildProgressIndicator(),
-                SizedBox(height: 30),
-                Container(
-                  height: MediaQuery.of(context).size.height - 244,
-                  child: Flexible(
-                    child: Stack(
-                      clipBehavior: Clip.none,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black,
-                                blurRadius: 7,
-                              ),
-                            ],
-                          ),
-                          child: Form(
-                            key: _formKey,
-                            child: _getStepContent(context),
-                          ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on_outlined,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              "${_locationMessage}",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                        Positioned(
-                            top: -35, // Adjust the position as needed
-                            left: 0,
-                            right: 0,
-                            child: Center(
-                              child: _imageFile == null
-                                  ? InkWell(
-                                onTap: _pickImage,
-                                child: ClipOval(
-                                  child: Container(
-                                    width: 70,
-                                    height: 70,
-                                    color: Colors.grey,
-                                    child: Icon(
-                                      Icons.person,
-                                      size: 50.0,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              )
-                                  : InkWell(
-                                child: ClipOval(
-                                  child: Image.file(
-                                    File(_imageFile!.path),
-                                    width: 70,
-                                    height: 70,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                onTap: _pickImage,
+                        InkWell(
+                          onTap: () {
+                            geolocator(context);
+                          },
+                          child: Card(
+                            elevation: 5,
+                            shape: CircleBorder(),
+                            child: Padding(
+                              padding: EdgeInsets.all(3),
+                              child: Icon(
+                                Icons.refresh,
+                                size: 30,
+                                color: Color(0xffb41d2d),
                               ),
-                            )),
+                            ),
+                          ),
+                        )
                       ],
                     ),
-                  ),
-                ),
-                SizedBox(height: 10,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      Icon(Icons.location_on_outlined,color: Colors.white,),
-                      Text("${_locationMessage}",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
-
-                    ],),
-                    InkWell(
-                      onTap: (){geolocator(context);},
-
-                      child:  Card(
-                        elevation: 5,
-                        shape: CircleBorder(),
-                        child: Padding(padding: EdgeInsets.all(3),child: Icon(Icons.refresh,size: 30,color: Color(0xffb41d2d),),),
-                      ),
-                    )
-
-
+                    SizedBox(height: 10),
+                    _buildNextButton(context),
                   ],
                 ),
-                SizedBox(height: 10),
-                _buildNextButton(context),
-              ],
+              ),
             ),
           ),
         ),
-      ),
-    ), onWillPop: _onWillPop);
+        onWillPop: _onWillPop);
   }
 
   int calculateAgeFromString(String dateString,
       {String format = "yyyy-MM-dd"}) {
-
-
     try {
       // Parse the string date
       DateTime birthDate = DateFormat(format).parse(dateString);
@@ -582,7 +596,6 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-
   Widget _buildTextField(String label, TextEditingController controller) {
     return Container(
       color: Colors.white,
@@ -601,7 +614,6 @@ class _KYCPageState extends State<KYCPage> {
               width: double.infinity, // Set the desired width
               child: Center(
                 child: TextFormField(
-
                   controller: controller,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -643,12 +655,13 @@ class _KYCPageState extends State<KYCPage> {
       lati = _latitudeController.text;
       longi = _longitudeController.text;
       int Expense =
-      (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
-      int Income = (income != null && income.isNotEmpty) ? int.parse(income) : 0;
+          (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
+      int Income =
+          (income != null && income.isNotEmpty) ? int.parse(income) : 0;
       double latitude =
-      (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
+          (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
       double longitude =
-      (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
+          (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
       String add1 = _address1Controller.text.toString();
       String add2 = _address2Controller.text.toString();
       String add3 = _address3Controller.text.toString();
@@ -724,7 +737,8 @@ class _KYCPageState extends State<KYCPage> {
             context,
             value.message,
             value.data[0].errormsg,
-            Colors.red,1,
+            Colors.red,
+            1,
           );
         } else if (value.statuscode == 400) {
           GlobalClass.showSnackBar(context, "Something went wrong in API");
@@ -735,23 +749,30 @@ class _KYCPageState extends State<KYCPage> {
         EasyLoading.dismiss();
       });
     } catch (e) {
-      GlobalClass.showSnackBar(context, "An unexpected error occurred: ${e.toString()}");
+      GlobalClass.showSnackBar(
+          context, "An unexpected error occurred: ${e.toString()}");
       EasyLoading.dismiss();
     }
   }
 
-
   Future<void> saveIDsMethod(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...',);
+    EasyLoading.show(
+      status: 'Loading...',
+    );
 
     print("object");
     String fiid = Fi_Id.toString();
     String pan_no = _panNoController.text.toString();
     String dl = _drivingLicenseController.text.toString();
-    String? DLExpireDate = _dlExpiryController.text.toString().isEmpty?null:_dlExpiryController.text.toString();
+    String? DLExpireDate = _dlExpiryController.text.toString().isEmpty
+        ? null
+        : _dlExpiryController.text.toString();
     String voter_id = _voterIdController.text.toString();
     String passport = _passportController.text.toString();
-    String? PassportExpireDate = _passportExpiryController.text.toString().isEmpty?null:_passportExpiryController.text;
+    String? PassportExpireDate =
+        _passportExpiryController.text.toString().isEmpty
+            ? null
+            : _passportExpiryController.text;
     int isAadharVerified = 1;
     int is_phnno_verified = 1;
     int isNameVerify = 1;
@@ -784,7 +805,7 @@ class _KYCPageState extends State<KYCPage> {
       "PassportExpireDate": PassportExpireDate,
       "isAadharVerified": isAadharVerified,
       "is_phnno_verified": is_phnno_verified,
-      "isNameVerify":isNameVerify,
+      "isNameVerify": isNameVerify,
       "Pan_Name": "",
       "VoterId_Name": "Jaspreet kaur",
       "Aadhar_Name": "Jaspreet kaur",
@@ -795,7 +816,6 @@ class _KYCPageState extends State<KYCPage> {
       "DIST_CODE": selectedDistrictCode!.distCode,
       "STATE_CODE": stateselected!.code,
       "DLExpireDate": DLExpireDate,
-
     };
 
     return await api
@@ -806,7 +826,9 @@ class _KYCPageState extends State<KYCPage> {
           _currentStep += 1;
         });*/
         EasyLoading.dismiss();
+
         GlobalClass.showSuccessAlert(context, "KYC Saved with ${value.data[0].fiCode} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process", 2);
+
 
       } else {
         EasyLoading.dismiss();
@@ -822,8 +844,8 @@ class _KYCPageState extends State<KYCPage> {
 
   void saveDataMethod() {}
 
-  Widget _buildTextField2(
-      String label, TextEditingController controller, TextInputType inputType,int maxlength) {
+  Widget _buildTextField2(String label, TextEditingController controller,
+      TextInputType inputType, int maxlength) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -842,14 +864,11 @@ class _KYCPageState extends State<KYCPage> {
             width: double.infinity, // Set the desired width
             child: Center(
               child: TextFormField(
-
                 maxLength: maxlength,
                 controller: controller,
                 keyboardType: inputType, // Set the input type
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  counterText: ""
-                ),
+                    border: OutlineInputBorder(), counterText: ""),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter $label';
@@ -857,9 +876,10 @@ class _KYCPageState extends State<KYCPage> {
                   return null;
                 },
                 inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                  FilteringTextInputFormatter.allow(RegExp(
+                      '[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
                   TextInputFormatter.withFunction(
-                        (oldValue, newValue) => TextEditingValue(
+                    (oldValue, newValue) => TextEditingValue(
                       text: newValue.text.toUpperCase(),
                       selection: newValue.selection,
                     ),
@@ -889,8 +909,7 @@ class _KYCPageState extends State<KYCPage> {
                   width: double.infinity, // Match the width of the dialog
                   child: TextButton(
                     onPressed: () async {
-                        getDataFromOCR("adharFront",context);
-
+                      getDataFromOCR("adharFront", context);
                     },
                     child: Text(
                       'Adhaar Front',
@@ -911,7 +930,7 @@ class _KYCPageState extends State<KYCPage> {
                   width: double.infinity, // Match the width of the dialog
                   child: TextButton(
                     onPressed: () {
-                      getDataFromOCR("adharBack",context);
+                      getDataFromOCR("adharBack", context);
                     },
                     child: Text(
                       'Adhaar Back',
@@ -938,22 +957,21 @@ class _KYCPageState extends State<KYCPage> {
                             builder: (context) => QRViewExample()),
                       );
 
-
-                        if (result != null) {
-                          //
-                          // BigInt bigIntScanData = BigInt.parse(result);
-                          // List<int> byteScanData = bigIntToBytes(bigIntScanData);
-                          //
-                          // List<int> decompByteScanData = decompressData(byteScanData);
-                          // List<List<int>>  parts =separateData(decompByteScanData, 255, 15);
-                          //
-                          // setState(() {
-                          //
-                          //   qrResult= decodeData(parts);
-                          // });
-                          print(result);
-                      setQRData(result);
-                     //   onResult(qrResult);
+                      if (result != null) {
+                        //
+                        // BigInt bigIntScanData = BigInt.parse(result);
+                        // List<int> byteScanData = bigIntToBytes(bigIntScanData);
+                        //
+                        // List<int> decompByteScanData = decompressData(byteScanData);
+                        // List<List<int>>  parts =separateData(decompByteScanData, 255, 15);
+                        //
+                        // setState(() {
+                        //
+                        //   qrResult= decodeData(parts);
+                        // });
+                        print(result);
+                        setQRData(result);
+                        //   onResult(qrResult);
                       }
 
                       Navigator.of(context).pop();
@@ -978,12 +996,13 @@ class _KYCPageState extends State<KYCPage> {
       },
     );
   }
-  String formatDate(String date,dateFormat) {
+
+  String formatDate(String date, dateFormat) {
     try {
       // Parse the input string to a DateTime object
       DateTime parsedDate = DateFormat(dateFormat).parse(date);
       setState(() {
-        _selectedDate=parsedDate;
+        _selectedDate = parsedDate;
         _calculateAge();
       });
 
@@ -994,25 +1013,21 @@ class _KYCPageState extends State<KYCPage> {
       return 'Invalid Date';
     }
   }
-  Future<void> getDataFromOCR(String type,BuildContext context) async {
+
+  Future<void> getDataFromOCR(String type, BuildContext context) async {
     EasyLoading.show();
     File? pickedImage = await GlobalClass().pickImage();
 
     if (pickedImage != null) {
-
-
-
-      try{
-
+      try {
         final response = await apiService_OCR.uploadDocument(
           type, // imgType
           pickedImage!, // File
         );
-        if(response.statusCode==200){
-
-          if(type=="adharFront"){
+        if (response.statusCode == 200) {
+          if (type == "adharFront") {
             setState(() {
-              _aadharIdController.text=response.data.adharId;
+              _aadharIdController.text = response.data.adharId;
               List<String> nameParts = response.data.name.trim().split(" ");
               if (nameParts.length == 1) {
                 _nameController.text = nameParts[0];
@@ -1022,69 +1037,79 @@ class _KYCPageState extends State<KYCPage> {
               } else {
                 _nameController.text = nameParts.first;
                 _nameLController.text = nameParts.last;
-                _nameMController.text = nameParts.sublist(1, nameParts.length - 1).join(' ');
+                _nameMController.text =
+                    nameParts.sublist(1, nameParts.length - 1).join(' ');
               }
-              _dobController.text=formatDate(response.data.dob,'dd/MM/yyyy');
-              genderselected = aadhar_gender.firstWhere((item) => item.descriptionEn.toLowerCase() == response.data.gender.toLowerCase()).descriptionEn;
-              if(genderselected=="Male"){
-                selectedTitle="Mr.";
-              }else{
-                selectedTitle="Mrs.";
+              _dobController.text = formatDate(response.data.dob, 'dd/MM/yyyy');
+              genderselected = aadhar_gender
+                  .firstWhere((item) =>
+                      item.descriptionEn.toLowerCase() ==
+                      response.data.gender.toLowerCase())
+                  .descriptionEn;
+              if (genderselected == "Male") {
+                selectedTitle = "Mr.";
+              } else {
+                selectedTitle = "Mrs.";
               }
             });
             Navigator.of(context).pop();
-          }else if(type=="adharBack"){
-            _pincodeController.text=response.data.pincode;
-            if(response.data.relation.toLowerCase()=="father"){
-              _gurNameController.text=response.data.guardianName;
+          } else if (type == "adharBack") {
+            _pincodeController.text = response.data.pincode;
+            if (response.data.relation.toLowerCase() == "father") {
+              _gurNameController.text = response.data.guardianName;
               setState(() {
-                relationwithBorrowerselected="Father";
-
+                relationwithBorrowerselected = "Father";
               });
-              _cityController.text=response.data.cityName;
-              List<String> addressParts = response.data.address1.trim().split(" ");
+              _cityController.text = response.data.cityName;
+              List<String> addressParts =
+                  response.data.address1.trim().split(" ");
               if (addressParts.length == 1) {
                 _address1Controller.text = addressParts[0];
               } else if (addressParts.length == 2) {
                 _address1Controller.text = addressParts[0];
                 _address2Controller.text = addressParts[1];
               } else {
-                  _address1Controller.text = addressParts.first;
-                  _address2Controller.text = addressParts.last;
-                _address3Controller.text = addressParts.sublist(1, addressParts.length - 1).join(' ');
+                _address1Controller.text = addressParts.first;
+                _address2Controller.text = addressParts.last;
+                _address3Controller.text =
+                    addressParts.sublist(1, addressParts.length - 1).join(' ');
               }
-List<String> guarNameParts = response.data.guardianName.trim().split(" ");
+              List<String> guarNameParts =
+                  response.data.guardianName.trim().split(" ");
               if (guarNameParts.length == 1) {
                 _fatherFirstNameController.text = guarNameParts[0];
               } else if (guarNameParts.length == 2) {
                 _fatherFirstNameController.text = guarNameParts[0];
                 _fatherLastNameController.text = guarNameParts[1];
               } else {
-                  _fatherFirstNameController.text = guarNameParts.first;
-                  _fatherLastNameController.text = guarNameParts.last;
-                _fatherMiddleNameController.text = guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+                _fatherFirstNameController.text = guarNameParts.first;
+                _fatherLastNameController.text = guarNameParts.last;
+                _fatherMiddleNameController.text = guarNameParts
+                    .sublist(1, guarNameParts.length - 1)
+                    .join(' ');
               }
-
-            }
-            else if(response.data.relation.toLowerCase()=="husband"){
-              _gurNameController.text=response.data.guardianName;
+            } else if (response.data.relation.toLowerCase() == "husband") {
+              _gurNameController.text = response.data.guardianName;
               setState(() {
-                relationwithBorrowerselected="Husband";
-                selectedMarritalStatus="Married";
+                relationwithBorrowerselected = "Husband";
+                selectedMarritalStatus = "Married";
               });
-              _cityController.text=response.data.cityName;
-              List<String> addressParts = response.data.address1.trim().split(" ");
+              _cityController.text = response.data.cityName;
+              List<String> addressParts =
+                  response.data.address1.trim().split(" ");
               if (addressParts.length == 1) {
                 _address1Controller.text = addressParts[0];
               } else if (addressParts.length == 2) {
                 _address1Controller.text = addressParts[0];
                 _address2Controller.text = addressParts[1];
               } else {
-                  _address1Controller.text = addressParts.first;
-                  _address2Controller.text = addressParts.last;
-                _address3Controller.text = addressParts.sublist(1, addressParts.length - 1).join(' ');
+                _address1Controller.text = addressParts.first;
+                _address2Controller.text = addressParts.last;
+                _address3Controller.text =
+                    addressParts.sublist(1, addressParts.length - 1).join(' ');
               }
-            List<String> guarNameParts = response.data.guardianName.trim().split(" ");
+              List<String> guarNameParts =
+                  response.data.guardianName.trim().split(" ");
               if (guarNameParts.length == 1) {
                 _spouseFirstNameController.text = guarNameParts[0];
               } else if (guarNameParts.length == 2) {
@@ -1093,28 +1118,30 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
               } else {
                 _spouseFirstNameController.text = guarNameParts.first;
                 _spouseLastNameController.text = guarNameParts.last;
-                _spouseMiddleNameController.text = guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+                _spouseMiddleNameController.text = guarNameParts
+                    .sublist(1, guarNameParts.length - 1)
+                    .join(' ');
               }
-
             }
-
           }
           EasyLoading.dismiss();
-        }else{
-          showToast_Error("Data not fetched from this Aadhaar card please check the image");
+        } else {
+          showToast_Error(
+              "Data not fetched from this Aadhaar card please check the image");
           Navigator.of(context).pop();
           EasyLoading.dismiss();
         }
-
-      }catch(_){
-        showToast_Error("Data not fetched from this Aadhaar card please check the image");
+      } catch (_) {
+        showToast_Error(
+            "Data not fetched from this Aadhaar card please check the image");
         Navigator.of(context).pop();
         EasyLoading.dismiss();
-
       }
     }
   }
-  List<List<int>> separateData(List<int> source, int separatorByte, int vtcIndex) {
+
+  List<List<int>> separateData(
+      List<int> source, int separatorByte, int vtcIndex) {
     List<List<int>> separatedParts = [];
     int begin = 0;
 
@@ -1140,23 +1167,22 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
   }
 
   String decodeData(List<List<int>> encodedData) {
-    String test="";
+    String test = "";
     List<String> decodedData = [];
 
     for (var byteArray in encodedData) {
       // Decode using ISO-8859-1
-      String decodedString = utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
+      String decodedString =
+          utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
       decodedData.add(decodedString);
 
-      test+=decodedString;
+      test += decodedString;
       print(test);
-
-
-
     }
 
     return test;
   }
+
   List<int> bigIntToBytes(BigInt bigInt) {
     // Convert BigInt to a byte array (List<int>)
     List<int> byteArray = [];
@@ -1170,7 +1196,9 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
   List<int> decompressData(List<int> byteScanData) {
     print(" Prints the first few bytes"); // Prints the first few bytes
     // Print data in hexadecimal format for better debugging
-    String hexData = byteScanData.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join(' ');
+    String hexData = byteScanData
+        .map((byte) => byte.toRadixString(16).padLeft(2, '0'))
+        .join(' ');
     print('Data in hexadecimal: $hexData'); // Prints the first few bytes
     try {
       // Decompress the GZIP data
@@ -1184,15 +1212,13 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
     }
   }
 
-
   Future<void> geolocator(BuildContext context) async {
     EasyLoading.show(status: "Location Fetching...");
     try {
       position = await _getCurrentPosition();
       setState(() {
         if (position != null) {
-          _locationMessage =
-          "${position!.latitude},${position!.longitude}";
+          _locationMessage = "${position!.latitude},${position!.longitude}";
           print("Geolocation: $_locationMessage");
           _latitudeController.text = position!.latitude.toString();
           _longitudeController.text = position!.longitude.toString();
@@ -1210,6 +1236,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
     }
     EasyLoading.dismiss();
   }
+
   void _showRefreshDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -1237,6 +1264,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
       },
     );
   }
+
   Future<Position> _getCurrentPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -1327,7 +1355,8 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
       children: [
         Row(
           children: [
-            Expanded(child: Container(
+            Expanded(
+                child: Container(
               color: Colors.white,
               margin: EdgeInsets.symmetric(vertical: 0),
               padding: EdgeInsets.all(0),
@@ -1349,10 +1378,11 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                           focusNode: _focusNodeAdhaarId,
                           controller: _aadharIdController,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            errorText: _errorMessageAadhaar.isEmpty ? null : _errorMessageAadhaar,
-                            counterText: ""
-                          ),
+                              border: OutlineInputBorder(),
+                              errorText: _errorMessageAadhaar.isEmpty
+                                  ? null
+                                  : _errorMessageAadhaar,
+                              counterText: ""),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter Aadhaar ID';
@@ -1396,7 +1426,6 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                     'Title',
                     style: TextStyle(fontSize: 16),
                   ),
-
                   Container(
                     alignment: Alignment.center,
 
@@ -1437,19 +1466,25 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
             SizedBox(width: 10),
             // Add spacing between Title dropdown and Name field if needed
             Expanded(
-              child: _buildTextField2('Name', _nameController,TextInputType.name,30),
+              child: _buildTextField2(
+                  'Name', _nameController, TextInputType.name, 30),
             ),
           ],
         ),
         Row(
           children: [
-            Expanded(child: _buildTextField2('Middle Name', _nameMController,TextInputType.name,30)),
+            Expanded(
+                child: _buildTextField2(
+                    'Middle Name', _nameMController, TextInputType.name, 30)),
             SizedBox(width: 10),
             // Add spacing between the text fields if needed
-            Expanded(child: _buildTextField2('Last Name', _nameLController,TextInputType.name,30)),
+            Expanded(
+                child: _buildTextField2(
+                    'Last Name', _nameLController, TextInputType.name, 30)),
           ],
         ),
-        _buildTextField2('Guardian Name', _gurNameController,TextInputType.name,60),
+        _buildTextField2(
+            'Guardian Name', _gurNameController, TextInputType.name, 60),
         Row(
           children: [
             Expanded(
@@ -1486,17 +1521,19 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                     style: TextStyle(color: Colors.black, fontSize: 16),
                     underline: Container(
                       height: 2,
-                      color: Colors.transparent, // Set to transparent to remove default underline
+                      color: Colors
+                          .transparent, // Set to transparent to remove default underline
                     ),
                     onChanged: (String? newValue) {
                       if (newValue != null) {
                         setState(() {
-                          genderselected = newValue; // Update the selected value
+                          genderselected =
+                              newValue; // Update the selected value
                         });
                       }
                     },
                     items: aadhar_gender.map<DropdownMenuItem<String>>(
-                          (RangeCategoryDataModel state) {
+                      (RangeCategoryDataModel state) {
                         return DropdownMenuItem<String>(
                           value: state.code,
                           child: Text(state.descriptionEn),
@@ -1570,39 +1607,39 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
         Row(
           children: [
             Expanded(
-              child: _buildTextField2('Mobile no', _mobileNoController,TextInputType.number,10),
+              child: _buildTextField2(
+                  'Mobile no', _mobileNoController, TextInputType.number, 10),
             ),
-            SizedBox(width:5),
+            SizedBox(width: 5),
             // Add spacing between the text field and the button
             Padding(
-              padding: EdgeInsets.only(top: 20),
-              // Add 10px padding from above
-              child:  InkWell(
-                onTap: (){
-                  {
-
-                    if (_mobileNoController.text.isEmpty) {
-                      showToast_Error("Please enter mobile number");
-
-                    }else{
+                padding: EdgeInsets.only(top: 20),
+                // Add 10px padding from above
+                child: InkWell(
+                  onTap: () {
+                    {
+                      if (_mobileNoController.text.isEmpty) {
+                        showToast_Error("Please enter mobile number");
+                      } else {
                         //getOTPByMobileNo(_mobileNoController.text);
-                      mobileOtp(context,_mobileNoController.text);
-
-
-
-
+                        mobileOtp(context, _mobileNoController.text);
+                      }
+                      // Implement OTP verification logic here
                     }
-                    // Implement OTP verification logic here
-                  }
-                },
-                child: Card(
-                  elevation: 4,
-                  color:otpVerified?Colors.green: Colors.grey,
-                  shape: CircleBorder(),
-                  child: Padding(padding: EdgeInsets.all(9),child: Icon(otpVerified?Icons.verified:Icons.sms,color: Colors.white,),),
-                ),
-              )
-            ),
+                  },
+                  child: Card(
+                    elevation: 4,
+                    color: otpVerified ? Colors.green : Colors.grey,
+                    shape: CircleBorder(),
+                    child: Padding(
+                      padding: EdgeInsets.all(9),
+                      child: Icon(
+                        otpVerified ? Icons.verified : Icons.sms,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )),
           ],
         ),
         Row(
@@ -1655,7 +1692,8 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
                           icon: Icon(Icons.calendar_today),
-                          onPressed: () => _selectDate(context, _dobController,"dob"),
+                          onPressed: () =>
+                              _selectDate(context, _dobController, "dob"),
                         ),
                         border: OutlineInputBorder(),
                       ),
@@ -1667,17 +1705,19 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
             ),
           ],
         ),
-        _buildTextField2('Father First Name', _fatherFirstNameController,TextInputType.text,30),
+        _buildTextField2('Father First Name', _fatherFirstNameController,
+            TextInputType.text, 30),
         Row(
           children: [
             Expanded(
-              child:
-                  _buildTextField2('Middle Name', _fatherMiddleNameController,TextInputType.text,30),
+              child: _buildTextField2('Middle Name',
+                  _fatherMiddleNameController, TextInputType.text, 30),
             ),
             SizedBox(width: 8),
             // Add spacing between the text fields if needed
             Expanded(
-                child: _buildTextField2('Last Name', _fatherLastNameController,TextInputType.text,30)),
+                child: _buildTextField2('Last Name', _fatherLastNameController,
+                    TextInputType.text, 30)),
           ],
         ),
         SizedBox(
@@ -1732,20 +1772,21 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
           ),
         ),
         // Conditionally show the spouse fields only when isMarried is true
-        if (selectedMarritalStatus.toString()== 'Married')
+        if (selectedMarritalStatus.toString() == 'Married')
           Column(
             children: [
-              _buildTextField2('Spouse First Name', _spouseFirstNameController,TextInputType.text,30),
+              _buildTextField2('Spouse First Name', _spouseFirstNameController,
+                  TextInputType.text, 30),
               Row(
                 children: [
                   Expanded(
-                    child: _buildTextField2(
-                        'Middle Name', _spouseMiddleNameController,TextInputType.text,30),
+                    child: _buildTextField2('Middle Name',
+                        _spouseMiddleNameController, TextInputType.text, 30),
                   ),
                   SizedBox(width: 8),
                   Expanded(
-                    child:
-                        _buildTextField2('Last Name', _spouseLastNameController,TextInputType.text,30),
+                    child: _buildTextField2('Last Name',
+                        _spouseLastNameController, TextInputType.text, 30),
                   ),
                 ],
               ),
@@ -1754,11 +1795,15 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
         Row(
           children: [
             Expanded(
-                child: _buildTextField2('Monthly Expense', _incomeController,TextInputType.number,7),),
+              child: _buildTextField2('Monthly Expense', _incomeController,
+                  TextInputType.number, 7),
+            ),
             SizedBox(width: 8),
             // Add spacing between the text fields if needed
             Expanded(
-                child: _buildTextField2('Monthly Income', _expenseController,TextInputType.number,7),),
+              child: _buildTextField2('Monthly Income', _expenseController,
+                  TextInputType.number, 7),
+            ),
           ],
         ),
         _buildTextField('Address1', _address1Controller),
@@ -1766,9 +1811,15 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
         _buildTextField('Address3', _address3Controller),
         Row(
           children: [
-            Expanded(child: _buildTextField2('City', _cityController,TextInputType.text,30),),
+            Expanded(
+              child: _buildTextField2(
+                  'City', _cityController, TextInputType.text, 30),
+            ),
             SizedBox(width: 16),
-            Expanded(child: _buildTextField2('Pincode', _pincodeController,TextInputType.number,6),),
+            Expanded(
+              child: _buildTextField2(
+                  'Pincode', _pincodeController, TextInputType.number, 6),
+            ),
           ],
         ),
         SizedBox(
@@ -1780,11 +1831,10 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
             (RangeCategoryDataModel? newValue) {
           setState(() {
             stateselected = newValue;
-
           });
         }, String),
         _buildTextField2(
-            'Loan Amount', _loan_amountController, TextInputType.number,7),
+            'Loan Amount', _loan_amountController, TextInputType.number, 7),
 
         SizedBox(
           height: 4,
@@ -1987,11 +2037,12 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
       ],
     ));
   }
+
   void _showOTPDialog(BuildContext context) {
     Timer? countdownTimer;
     int remainingTime = 10;
-    bool cancelButtonVisible=false;
-    String pinCode="";
+    bool cancelButtonVisible = false;
+    String pinCode = "";
     void startCountdown(StateSetter setState) {
       countdownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
         if (remainingTime > 0) {
@@ -2000,8 +2051,8 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
           });
         } else {
           countdownTimer?.cancel();
-          setState((){
-            cancelButtonVisible=true;
+          setState(() {
+            cancelButtonVisible = true;
           });
         }
       });
@@ -2012,7 +2063,6 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
       barrierDismissible: false, // Prevent dismissal by tapping outside
       builder: (BuildContext context) {
         return StatefulBuilder(
-
           builder: (context, setState) {
             // Start timer once the dialog opens
             if (countdownTimer == null) startCountdown(setState);
@@ -2041,17 +2091,15 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                     },
                     defaultPinTheme: PinTheme(
                       width: 40,
-                      height:40,
+                      height: 40,
                       textStyle: const TextStyle(
                         fontSize: 15,
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
-
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey),
-
                       ),
                     ),
                   ),
@@ -2059,10 +2107,9 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                   Visibility(
                       visible: !cancelButtonVisible,
                       child: Text(
-                    'Resend OTP in $remainingTime seconds',
-                    style: TextStyle(color: Colors.red),
-                  ))
-                  ,
+                        'Resend OTP in $remainingTime seconds',
+                        style: TextStyle(color: Colors.red),
+                      )),
                 ],
               ),
               actions: [
@@ -2070,14 +2117,11 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                   onPressed: () {
                     countdownTimer?.cancel(); // Stop timer when submitting
 
-                    if(pinCode.isEmpty || pinCode.length!=6){
+                    if (pinCode.isEmpty || pinCode.length != 6) {
                       showToast_Error("Please Enter OTP Properly");
-                    }else{
-                      submitOtp(pinCode,context);
+                    } else {
+                      submitOtp(pinCode, context);
                     }
-
-
-
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green, // Button color
@@ -2087,19 +2131,22 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-               Visibility(child:  ElevatedButton(
-                 onPressed: () {
-                   countdownTimer?.cancel(); // Stop timer when closing
-                   Navigator.of(context).pop(); // Close the dialog
-                 },
-                 style: ElevatedButton.styleFrom(
-                   backgroundColor: Colors.red, // Button color
-                 ),
-                 child: Text(
-                   'Close',
-                   style: TextStyle(color: Colors.white),
-                 ),
-               ),visible: cancelButtonVisible,),
+                Visibility(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      countdownTimer?.cancel(); // Stop timer when closing
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Button color
+                    ),
+                    child: Text(
+                      'Close',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  visible: cancelButtonVisible,
+                ),
               ],
             );
           },
@@ -2119,6 +2166,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
             children: [
               Flexible(
                 flex: 2,
+
                 child: Container(
                   color: Colors.white,
                   margin: EdgeInsets.symmetric(vertical: 4),
@@ -2165,6 +2213,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                     ],
                   ),
                 ),
+
               ),
               SizedBox(width: 10),
               Padding(
@@ -2172,7 +2221,8 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                 child: InkWell(
                   enableFeedback: true,
                   onTap: () {
-                    if (_panNoController.text.isEmpty || _panNoController.text.length!=10) {
+                    if (_panNoController.text.isEmpty ||
+                        _panNoController.text.length != 10) {
                       showToast_Error("Please Enter Correct PAN No.");
                     } else {
                       docVerifyIDC("pancard", _panNoController.text, "", "");
@@ -2193,21 +2243,24 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
               ),
             ],
           ),
-               Text(panCardHolderName,
-                  style: TextStyle(color: !panVerified?Colors.grey.shade400: Colors.green, fontSize: !panVerified?11:14)),
+          Text(panCardHolderName,
+              style: TextStyle(
+                  color: !panVerified ? Colors.grey.shade400 : Colors.green,
+                  fontSize: !panVerified ? 11 : 14)),
           Row(
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField2(
-                    'Driving License', _drivingLicenseController,TextInputType.text,18),
+                child: _buildTextField2('Driving License',
+                    _drivingLicenseController, TextInputType.text, 18),
               ),
               SizedBox(width: 10),
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 child: GestureDetector(
                   onTap: () {
-                    if (_drivingLicenseController.text.isEmpty || _drivingLicenseController.text.length<10) {
+                    if (_drivingLicenseController.text.isEmpty ||
+                        _drivingLicenseController.text.length < 10) {
                       showToast_Error("Please Enter Correct Driving License");
                     } else {
                       dlVerifyByProtean(GlobalClass.id,
@@ -2236,13 +2289,14 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                 )
               : Text(dlCardHolderName!,
                   style: TextStyle(color: Colors.green, fontSize: 14)),
-          _buildDatePickerField(
-              context, 'Driving License Expiry Date', _dlExpiryController,"dlExp"),
+          _buildDatePickerField(context, 'Driving License Expiry Date',
+              _dlExpiryController, "dlExp"),
           Row(
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField2('Voter Id', _voterIdController,TextInputType.text,17),
+                child: _buildTextField2(
+                    'Voter Id', _voterIdController, TextInputType.text, 17),
               ),
               SizedBox(width: 10),
               Padding(
@@ -2286,8 +2340,8 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
               ),
             ],
           ),
-          _buildDatePickerField(
-              context, 'Passport Expiry Date', _passportExpiryController,"passExp"),
+          _buildDatePickerField(context, 'Passport Expiry Date',
+              _passportExpiryController, "passExp"),
           _buildLabeledDropdownField(
               'Select City', 'Cities', listCityCodes, selectedCityCode,
               (PlaceData? newValue) {
@@ -2301,7 +2355,8 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
               listDistrictCodes, selectedDistrictCode, (PlaceData? newValue) {
             setState(() {
               selectedDistrictCode = newValue;
-               getPlace("subdistrict",stateselected!.code,selectedDistrictCode!.distCode!,"");
+              getPlace("subdistrict", stateselected!.code,
+                  selectedDistrictCode!.distCode!, "");
               // getPlace("district",stateselected!.code,"","");
             });
           }, String),
@@ -2312,7 +2367,11 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
               selectedSubDistrictCode, (PlaceData? newValue) {
             setState(() {
               selectedSubDistrictCode = newValue;
-               getPlace("village",stateselected!.code,selectedDistrictCode!.distCode!,selectedSubDistrictCode!.subDistCode!);
+              getPlace(
+                  "village",
+                  stateselected!.code,
+                  selectedDistrictCode!.distCode!,
+                  selectedSubDistrictCode!.subDistCode!);
               // getPlace("district",stateselected!.code,"","");
             });
           }, String),
@@ -2391,7 +2450,10 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
 
               return DropdownMenuItem<T>(
                 value: value,
-                child: Text(setdata,style: TextStyle(fontSize: 14,fontWeight: FontWeight.normal),), // Convert the value to string for display
+                child: Text(
+                  setdata,
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                ), // Convert the value to string for display
               );
             }).toList(),
             onChanged: onChanged,
@@ -2403,7 +2465,9 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
 
   void docVerifyIDC(
       String type, String txnNumber, String ifsc, String dob) async {
-    EasyLoading.show(status: 'Loading...',);
+    EasyLoading.show(
+      status: 'Loading...',
+    );
     try {
       Map<String, dynamic> requestBody = {
         "type": type,
@@ -2422,17 +2486,14 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
         // Parse JSON object if it’s a map
         if (type == "pancard") {
           setState(() {
-            if(response["error"]==null){
+            if (response["error"] == null) {
               panCardHolderName =
-              "${responseData['first_name']} ${responseData['last_name']}";
+                  "${responseData['first_name']} ${responseData['last_name']}";
               panVerified = true;
-
-
             }else{
               panCardHolderName = "PAN no. is wrong please check";
               panVerified = false;
             }
-
           });
           if(!isCKYCNumberFound){
             isCKYCNumberFound= await CkycRepository().searchCkyc(_aadharIdController.text, _panNoController.text, _voterIdController.text, _dobController.text, genderselected, _nameController.text + " " + _nameMController.text + " " + _nameLController.text);
@@ -2474,7 +2535,6 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
         showToast_Error("Unexpected Response: $response");
         print("Unexpected Response: $response");
         EasyLoading.dismiss();
-
       }
       EasyLoading.dismiss();
     } catch (e) {
@@ -2500,10 +2560,10 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
     }
   }
 
-
-  void dlVerifyByProtean(String userid,String dlNo,String dob) async {
-    EasyLoading.show(status: 'Loading...',);
-
+  void dlVerifyByProtean(String userid, String dlNo, String dob) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
 
     try {
       // Initialize Dio
@@ -2519,10 +2579,12 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
 
       // Hit the API
 
-      final response = await apiService_protean.getDLDetailsProtean(requestBody);
+      final response =
+          await apiService_protean.getDLDetailsProtean(requestBody);
 
-      EasyLoading.show(status: 'Loading...',);
-
+      EasyLoading.show(
+        status: 'Loading...',
+      );
 
       // Handle response
       if (response is Map<String, dynamic>) {
@@ -2537,7 +2599,6 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
                 _dobController.text);
           }
         });
-
       } else {
         docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
             _dobController.text);
@@ -2548,12 +2609,12 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
           _dobController.text);
     }
     EasyLoading.dismiss();
-
   }
 
-
-  void voterVerifyByProtean(String userid,String voterNo) async {
-    EasyLoading.show(status: 'Loading...',);
+  void voterVerifyByProtean(String userid, String voterNo) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
 
     try {
       // Initialize Dio
@@ -2568,7 +2629,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
 
       // Hit the API
       final response =
-      await apiService_protean.getVoteretailsProtean(requestBody);
+          await apiService_protean.getVoteretailsProtean(requestBody);
 
       // Handle response
       if (response is Map<String, dynamic>) {
@@ -2577,7 +2638,7 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
         setState(() {
           if (responseData['result'].responseData['name'] != null) {
             voterCardHolderName =
-            "${responseData['result'].responseData['name']}";
+                "${responseData['result'].responseData['name']}";
             voterVerified = true;
           } else {
             docVerifyIDC("voterid", _voterIdController.text, "", "");
@@ -2590,8 +2651,9 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
       // Handle errors
       docVerifyIDC("voterid", _voterIdController.text, "", "");
     }
-    EasyLoading.show(status: 'Loading...',);
-
+    EasyLoading.show(
+      status: 'Loading...',
+    );
   }
 
   Widget _buildNextButton(BuildContext context) {
@@ -2619,19 +2681,22 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
           }
         },*/
         onPressed: () {
-
-           if (_currentStep == 0) {
-             if(firstPageFieldVelidate()){
-               saveFiMethod(context);
-
-             }
-
+          if (_currentStep == 0) {
+            if(FiType == "NEW") {
+            if (firstPageFieldVelidate()) {
+                saveFiMethod(context);
+              }
+            }else{
+              setState(() {
+                _currentStep += 1;
+              });
+            }
           } else if (_currentStep == 1) {
-             if (secondPageFieldValidate()) {
-               saveIDsMethod(context);
-             }
-           }
-       /*   } else if (_currentStep > 1) {
+            if (secondPageFieldValidate()) {
+              saveIDsMethod(context);
+            }
+          }
+          /*   } else if (_currentStep > 1) {
             showKycDoneDialog(context);
           }*/
 
@@ -2647,7 +2712,6 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
           //     SnackBar(content: Text("Form submitted successfully")),
           //   );
           // }
-
         },
         child: Text(
           "SUBMIT",
@@ -2697,66 +2761,67 @@ List<String> guarNameParts = response.data.guardianName.trim().split(" ");
       },
     );
   }*/
-bool secondPageFieldValidate(){
-
-  if(_panNoController.text.isNotEmpty){
-    if(!panVerified){
-      showToast_Error("Please verify PAN");
-      return false;
+  bool secondPageFieldValidate() {
+    if (_panNoController.text.isNotEmpty) {
+      if (!panVerified) {
+        showToast_Error("Please verify PAN");
+        return false;
+      }
     }
-  }
-    if(_voterIdController.text.isNotEmpty){
-      if(voterCardHolderName==null){
+    if (_voterIdController.text.isNotEmpty) {
+      if (voterCardHolderName == null) {
         showToast_Error("Please verify voter id");
         return false;
       }
     }
-       if(_drivingLicenseController.text.isNotEmpty){
-      if(!dlVerified){
+    if (_drivingLicenseController.text.isNotEmpty) {
+      if (!dlVerified) {
         showToast_Error("Please verify driving license");
         return false;
       }
-      if(_dlExpiryController.text.isEmpty){
+      if (_dlExpiryController.text.isEmpty) {
         showToast_Error("Please Enter Expiry date of Driving License");
         return false;
       }
     }
 
-
-    if(!panVerified && !voterVerified && !dlVerified){
+    if (!panVerified && !voterVerified && !dlVerified) {
       showToast_Error("Please enter and verify any two IDs or voter Id");
       return false;
-    }else if(checkIdMendate()==false){
-      showToast_Error("Please enter and verify either voter Id or Any other two Ids");
+    } else if (checkIdMendate() == false) {
+      showToast_Error(
+          "Please enter and verify either voter Id or Any other two Ids");
       return false;
-    }else if(selectedCityCode==null){
+    } else if (selectedCityCode == null) {
       showToast_Error("Please select city");
       return false;
-    } else if(selectedDistrictCode==null){
+    } else if (selectedDistrictCode == null) {
       showToast_Error("Please select district");
       return false;
-    } else if(selectedSubDistrictCode==null){
+    } else if (selectedSubDistrictCode == null) {
       showToast_Error("Please select subdistrict");
       return false;
-    } else if(selectedVillageCode==null){
+    } else if (selectedVillageCode == null) {
       showToast_Error("Please select village");
       return false;
     }
 
     return true;
-}
+  }
+
 
 bool checkIdMendate(){
   print("voterCardHolderName $voterCardHolderName");
     if(voterVerified || voterCardHolderName!=null){
+
       return true;
-    }else if(panVerified && dlVerified){
+    } else if (panVerified && dlVerified) {
       return true;
-    }else{
+    } else {
       return false;
     }
+  }
 
-}
   bool firstPageFieldVelidate() {
     if (_aadharIdController.text.isEmpty) {
       showToast_Error("Please enter correct aadhaar id");
@@ -2806,7 +2871,7 @@ bool checkIdMendate(){
     } else if (_address1Controller.text.isEmpty) {
       showToast_Error("Please enter address 1");
       return false;
-    }  else if (_cityController.text.isEmpty) {
+    } else if (_cityController.text.isEmpty) {
       showToast_Error("Please enter city");
       return false;
     } else if (_pincodeController.text.isEmpty ||
@@ -2840,17 +2905,13 @@ bool checkIdMendate(){
     //   showToast_Error("Please Verify Mobile number with OTP!!");
     //   return false;
     // }
-      return true;
-
-
-
+    return true;
   }
 
   void getOTPByMobileNo(String text) {
     // Handle OTP submission here
     debugPrint("Submitted OTP: $text");
   }
-
 
   Future<void> verifyDocs(BuildContext context, String idNoController,
       String type, String ifsc, String dob) async {
@@ -2884,7 +2945,6 @@ bool checkIdMendate(){
       }
     });
   }
-
 
   void getPlace(String type, String stateCode, String districtCode,
       String subDistrictCode) async {
@@ -2927,22 +2987,19 @@ bool checkIdMendate(){
       "ContentId": "1007458689942092806",
     };
 
-    return await api.mobileOtpSend( GlobalClass.dbName,requestBody).then((value) {
-
+    return await api
+        .mobileOtpSend(GlobalClass.dbName, requestBody)
+        .then((value) {
       if (value.statuscode == 200) {
-
-          _showOTPDialog(context);
-
-
+        _showOTPDialog(context);
       }
     });
-
   }
 
   void setQRData(result) {
-  List<String> dataList=result.split(",");
-    if(dataList.length>14){
-      _aadharIdController.text=dataList[2];
+    List<String> dataList = result.split(",");
+    if (dataList.length > 14) {
+      _aadharIdController.text = dataList[2];
       List<String> nameParts = dataList[3].split(" ");
       if (nameParts.length == 1) {
         _nameController.text = nameParts[0];
@@ -2952,25 +3009,26 @@ bool checkIdMendate(){
       } else {
         _nameController.text = nameParts.first;
         _nameLController.text = nameParts.last;
-        _nameMController.text = nameParts.sublist(1, nameParts.length - 1).join(' ');
+        _nameMController.text =
+            nameParts.sublist(1, nameParts.length - 1).join(' ');
       }
 
-      _dobController.text=formatDate(dataList[4],'dd-MM-yyyy');
+      _dobController.text = formatDate(dataList[4], 'dd-MM-yyyy');
       setState(() {
-
-        if(dataList[5].toLowerCase()=="m"){
-        genderselected="Male";
-        selectedTitle="Mr.";
-        }else if(dataList[5].toLowerCase()=="f"){
-          genderselected="Female";
-          selectedTitle="Mrs.";
-
+        if (dataList[5].toLowerCase() == "m") {
+          genderselected = "Male";
+          selectedTitle = "Mr.";
+        } else if (dataList[5].toLowerCase() == "f") {
+          genderselected = "Female";
+          selectedTitle = "Mrs.";
         }
       });
-      if(dataList[6].toLowerCase().contains("s/o") || dataList[6].toLowerCase().contains("d/o")){
+      if (dataList[6].toLowerCase().contains("s/o") ||
+          dataList[6].toLowerCase().contains("d/o")) {
         setState(() {
-          relationwithBorrowerselected="Father";
-          List<String> guarNameParts = replaceCharFromName(dataList[6]).split(" ");
+          relationwithBorrowerselected = "Father";
+          List<String> guarNameParts =
+              replaceCharFromName(dataList[6]).split(" ");
           if (guarNameParts.length == 1) {
             _fatherFirstNameController.text = guarNameParts[0];
           } else if (guarNameParts.length == 2) {
@@ -2979,15 +3037,15 @@ bool checkIdMendate(){
           } else {
             _fatherFirstNameController.text = guarNameParts.first;
             _fatherLastNameController.text = guarNameParts.last;
-            _fatherMiddleNameController.text = guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+            _fatherMiddleNameController.text =
+                guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
           }
-
-
         });
-      } else if(dataList[6].toLowerCase().contains("w/o")){
+      } else if (dataList[6].toLowerCase().contains("w/o")) {
         setState(() {
-          relationwithBorrowerselected="Husband";
-          List<String> guarNameParts = replaceCharFromName(dataList[6]).split(" ");
+          relationwithBorrowerselected = "Husband";
+          List<String> guarNameParts =
+              replaceCharFromName(dataList[6]).split(" ");
           if (guarNameParts.length == 1) {
             _spouseFirstNameController.text = guarNameParts[0];
           } else if (guarNameParts.length == 2) {
@@ -2996,17 +3054,20 @@ bool checkIdMendate(){
           } else {
             _spouseFirstNameController.text = guarNameParts.first;
             _spouseLastNameController.text = guarNameParts.last;
-            _spouseMiddleNameController.text = guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+            _spouseMiddleNameController.text =
+                guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
           }
         });
       }
-      _cityController.text=dataList[7];
-      _gurNameController.text=replaceCharFromName(dataList[6]);
+      _cityController.text = dataList[7];
+      _gurNameController.text = replaceCharFromName(dataList[6]);
 
-      if(dataList[0].toLowerCase()=='v2'){
-        _pincodeController.text=dataList[11];
-        stateselected = states.firstWhere((item) => item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
-        String address="${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
+      if (dataList[0].toLowerCase() == 'v2') {
+        _pincodeController.text = dataList[11];
+        stateselected = states.firstWhere((item) =>
+            item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+        String address =
+            "${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
         List<String> addressParts = address.trim().split(",");
         if (addressParts.length == 1) {
           _address1Controller.text = addressParts[0];
@@ -3016,13 +3077,15 @@ bool checkIdMendate(){
         } else {
           _address1Controller.text = addressParts.first;
           _address2Controller.text = addressParts.last;
-          _address3Controller.text = addressParts.sublist(1, addressParts.length - 1).join(' ');
+          _address3Controller.text =
+              addressParts.sublist(1, addressParts.length - 1).join(' ');
         }
-
-      }else if(dataList[0].toLowerCase()=='v4'){
-        stateselected = states.firstWhere((item) => item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
-        _pincodeController.text=dataList[12];
-        String address="${dataList[10]},${dataList[11]},${dataList[13]},${dataList[15]},${dataList[16]}";
+      } else if (dataList[0].toLowerCase() == 'v4') {
+        stateselected = states.firstWhere((item) =>
+            item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
+        _pincodeController.text = dataList[12];
+        String address =
+            "${dataList[10]},${dataList[11]},${dataList[13]},${dataList[15]},${dataList[16]}";
 
         List<String> addressParts = address.trim().split(",");
         if (addressParts.length == 1) {
@@ -3033,29 +3096,31 @@ bool checkIdMendate(){
         } else {
           _address1Controller.text = addressParts.first;
           _address2Controller.text = addressParts.last;
-          _address3Controller.text = addressParts.sublist(1, addressParts.length - 1).join(' ');
+          _address3Controller.text =
+              addressParts.sublist(1, addressParts.length - 1).join(' ');
         }
       }
-
     }
-
-  }
-  String replaceCharFromName(String gurName){
-
-  return gurName.replaceAll("S/O ", "").replaceAll("S/O: ", "").replaceAll("D/O ", "").replaceAll("D/O: ", "").replaceAll("W/O ", "").replaceAll("W/O: ", "");
-
   }
 
+  String replaceCharFromName(String gurName) {
+    return gurName
+        .replaceAll("S/O ", "")
+        .replaceAll("S/O: ", "")
+        .replaceAll("D/O ", "")
+        .replaceAll("D/O: ", "")
+        .replaceAll("W/O ", "")
+        .replaceAll("W/O: ", "");
+  }
 
-
-  Future<void> submitOtp(pin,BuildContext contextDialog) async {
+  Future<void> submitOtp(pin, BuildContext contextDialog) async {
     EasyLoading.show(status: "OTP verifying...");
 
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
 
-
-    return await api.otpVerify(
-        GlobalClass.token, GlobalClass.dbName, _mobileNoController.text, pin)
+    return await api
+        .otpVerify(GlobalClass.token, GlobalClass.dbName,
+            _mobileNoController.text, pin)
         .then((value) {
       if (value.statuscode == 200) {
         showToast_Error("OTP Verified...");
@@ -3080,32 +3145,107 @@ bool checkIdMendate(){
     });
   }
 
-
   Future<bool> _onWillPop() async {
     // Show a confirmation dialog
     return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Are you sure?'),
-        content: Text('Do you want to close KYC page?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false), // Stay in the app
-            child: Text('No'),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('Do you want to close KYC page?'),
+            actions: [
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(false), // Stay in the app
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () {
+                  EasyLoading.dismiss();
+                  Navigator.of(context).pop(true);
+                }, // Exit the app
+                child: Text('Yes'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              EasyLoading.dismiss();
-              Navigator.of(context).pop(true);
-            }, // Exit the app
-            child: Text('Yes'),
-          ),
-        ],
-      ),
-    ) ?? false; // Default to false if dialog is dismissed
-
-
-
+        ) ??
+        false; // Default to false if dialog is dismissed
   }
 
+  Future<void> adhaarAllData(BuildContext contextDialog) async {
+    EasyLoading.show(status: "Adhaar Hoistory...");
+    print("object112211");
+
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+
+    return await api
+        .dataByAdhaar(
+      GlobalClass.token,
+      GlobalClass.dbName,
+      _aadharIdController.text,
+    )
+        .then((value) {
+      if (value.statuscode == 200) {
+        print("object112211");
+
+        if (value.data[0].errormsg.isEmpty) {
+          print("object112222");
+
+          if (value.data[0].panNo.isEmpty &&
+              value.data[0].dl.isEmpty &&
+              value.data[0].voterId.isEmpty) {
+            print("object112233");
+            setState(() {
+              print("object112244");
+
+              FiType = "OLD";
+
+              Fi_Id = value.data[0].fiId.toString();
+             // selectedTitle = value.data[0].title;
+              _nameController.text = value.data[0].fName;
+              _nameMController.text = value.data[0].mName;
+              _nameLController.text = value.data[0].lName;
+             // genderselected = value.data[0].gender;
+              //relationwithBorrowerselected = value.data[0].rela;
+              _mobileNoController.text = value.data[0].pPhone;
+              _dobController.text = value.data[0].dob.toString();
+              // _ageController.text =value.data[0].;
+              _fatherFirstNameController.text = value.data[0].fatheRFirstName;
+              _fatherMiddleNameController.text = value.data[0].fatheRMiddleName;
+              _fatherLastNameController.text = value.data[0].fatheRLastName;
+             // selectedMarritalStatus = value.data[0].maritaLStatus;
+              _spouseFirstNameController.text = value.data[0].spousEFirstName;
+              _spouseMiddleNameController.text = value.data[0].spousEMiddleName;
+              _spouseLastNameController.text = value.data[0].spousELastName;
+            //  _expenseController.text =value.data[0].;
+            //  _incomeController.text =value.data[0].;
+              _latitudeController.text =value.data[0].latitude;
+              _longitudeController.text =value.data[0].longitude;
+              _address1Controller.text =value.data[0].pAddress1;
+              _address2Controller.text =value.data[0].pAddress2;
+              _address3Controller.text =value.data[0].pAddress3;
+              _cityController.text =value.data[0].pCity;
+              _pincodeController.text =value.data[0].pPincode;
+              /*stateselected = states.firstWhere((item) =>
+              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/
+              _loan_amountController.text =value.data[0].loanAmount.toString();
+             // selectedLoanReason = value.data[0].;
+            //  selectedloanDuration = value.data[0].loanDuration;
+          //    bankselected = value.data[0].bankName;
+              EasyLoading.dismiss();
+
+            });
+          } else {
+            String A = value.data[0].fiCode.toString();
+            GlobalClass.showErrorAlert(context,
+                "Kyc is Already Done on this Adhaar Id(FiCode is $A)", 2);
+          }
+        }
+      } else {
+        setState(() {});
+      }
+    }).catchError((err) {
+      print("ERRORRRR$err");
+      EasyLoading.dismiss();
+    });
+  }
 }

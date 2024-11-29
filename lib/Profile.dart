@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/LoginPage.dart';
+import 'package:flutter_sourcing_app/qr_PaymentReports.dart';
+import 'package:provider/provider.dart';
 
 import 'ApiService.dart';
 
@@ -49,8 +51,13 @@ class _ProfileState extends State<Profile> {
           int hours = int.parse(timeParts[0]);
           int minutes = int.parse(timeParts[1]);
           int seconds = int.parse(timeParts[2]);
-          if (hours >= 0 && minutes >= 0 && seconds >= 0 && minutes < 60 && seconds < 60) {
-            _remainingTime = Duration(hours: hours, minutes: minutes, seconds: seconds);
+          if (hours >= 0 &&
+              minutes >= 0 &&
+              seconds >= 0 &&
+              minutes < 60 &&
+              seconds < 60) {
+            _remainingTime =
+                Duration(hours: hours, minutes: minutes, seconds: seconds);
             _timeDisplay = _formatTime(_remainingTime);
             _timer = Timer.periodic(Duration(seconds: 1), (timer) {
               if (_remainingTime.inSeconds > 0) {
@@ -97,6 +104,7 @@ class _ProfileState extends State<Profile> {
     _timer?.cancel();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,8 +149,11 @@ class _ProfileState extends State<Profile> {
           Positioned.fill(
             child: Column(
               children: [
-                SizedBox(height: MediaQuery.of(context).size.width / 2),
+                SizedBox(height: MediaQuery.of(context).size.width / 3.5),
                 _buildProfilePicture(),
+                SizedBox(
+                  height: 10,
+                ),
                 _buildUserDetailsCard(),
                 Card(
                   clipBehavior: Clip.antiAlias,
@@ -169,15 +180,16 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height/3.8,
-                  child:       Padding(
+                  height: MediaQuery.of(context).size.height / 3.8,
+                  child: Padding(
                     padding: const EdgeInsets.all(1.0),
                     child: SingleChildScrollView(
-                      // height: 250, // Uncomment and adjust if needed
                       child: GridView.builder(
                         padding: EdgeInsets.all(0),
-                        shrinkWrap: true, // Ensure the grid view doesn't expand infinitely
-                        physics: NeverScrollableScrollPhysics(), // Disable scrolling for GridView
+                        shrinkWrap:
+                            true, // Ensure the grid view doesn't expand infinitely
+                        physics:
+                            NeverScrollableScrollPhysics(), // Disable scrolling for GridView
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3, // Number of columns
                           crossAxisSpacing: 5,
@@ -185,15 +197,39 @@ class _ProfileState extends State<Profile> {
                         ),
                         itemCount: 4, // Number of grid items
                         itemBuilder: (context, index) {
-                          // Define your grid items here
                           if (index == 0) {
-                            return _buildGridItem('QR Payment Details', Icons.qr_code);
+                            return _buildGridItem(
+                                'QR Payment Details', Icons.qr_code, () {
+                              // Action for QR Payment Details
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => QrPaymentReports(),
+                                ),
+                              );
+                              // Add navigation or other actions here
+                            });
                           } else if (index == 1) {
-                            return _buildGridItem('Get Collection Report', Icons.report);
+                            return _buildGridItem(
+                                'Get Collection Report', Icons.report, () {
+                              // Action for Get Collection Report
+                              print('Get Collection Report Clicked');
+                              // Add navigation or other actions here
+                            });
                           } else if (index == 2) {
-                            return _buildGridItem('Another Report', Icons.analytics);
+                            return _buildGridItem(
+                                'Another Report', Icons.analytics, () {
+                              // Action for Another Report
+                              print('Another Report Clicked');
+                              // Add navigation or other actions here
+                            });
                           } else {
-                            return _buildGridItem('More Reports', Icons.insert_chart);
+                            return _buildGridItem(
+                                'More Reports', Icons.insert_chart, () {
+                              // Action for More Reports
+                              print('More Reports Clicked');
+                              // Add navigation or other actions here
+                            });
                           }
                         },
                       ),
@@ -208,15 +244,12 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-
-  Widget _buildGridItem(String title, IconData icon) {
+  Widget _buildGridItem(String title, IconData icon, VoidCallback onTap) {
     return Card(
       elevation: 6,
       margin: EdgeInsets.all(8),
       child: InkWell(
-        onTap: () {
-          // Add your action here
-        },
+        onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -236,10 +269,6 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-
-
-
-
   Widget _buildBackButton(BuildContext context) {
     return InkWell(
       onTap: () {
@@ -252,7 +281,8 @@ class _ProfileState extends State<Profile> {
   Widget _buildLogoutButton(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
       },
       child: _buildIconContainer(Icons.logout, color: Color(0xFFD42D3F)),
     );
@@ -314,11 +344,13 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildDetailRow(IconData icon, String label, TextEditingController controller) {
+  Widget _buildDetailRow(
+      IconData icon, String label, TextEditingController controller) {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
-        Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(label,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         Expanded(
           child: Text(
             controller.text,
@@ -333,7 +365,8 @@ class _ProfileState extends State<Profile> {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
-        Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(label,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         Expanded(
           child: Text(
             timerDisplay,
@@ -350,7 +383,10 @@ class _ProfileState extends State<Profile> {
       child: ListTile(
         title: Text(
           title,
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey[700]),
+          style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[700]),
         ),
         trailing: Icon(Icons.arrow_forward),
         onTap: () {
@@ -368,22 +404,21 @@ class _ProfileState extends State<Profile> {
     Map<String, dynamic> requestBody = {
       "location": "100745868994",
     };
-String type = "PUNCHOUT";
-    return await api.punchInOut( GlobalClass.token,GlobalClass.dbName,requestBody,type).then((value) {
-
+    String type = "PUNCHOUT";
+    return await api
+        .punchInOut(GlobalClass.token, GlobalClass.dbName, requestBody, type)
+        .then((value) {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
         setState(() {
           tabName = "PUNCH OUT";
         });
         GlobalClass.showSuccessAlert(context, value.message, 1);
-      }else{
+      } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
-
       }
     });
-
   }
 
 }

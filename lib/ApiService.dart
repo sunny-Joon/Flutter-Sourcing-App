@@ -7,6 +7,7 @@ import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
 import 'package:flutter_sourcing_app/Models/common_int_model.dart';
 import 'package:flutter_sourcing_app/Models/leaderboardModel.dart';
 import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
+import 'package:flutter_sourcing_app/Models/qr_payments_model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
@@ -16,6 +17,7 @@ import 'Models/GlobalModel.dart';
 import 'Models/GlobalModel2.dart';
 import 'Models/KycUpdateModel.dart';
 import 'Models/RangeCategoryModel.dart';
+import 'Models/adhaarModel.dart';
 import 'Models/branch_model.dart';
 import 'Models/docsVerify.dart';
 import 'Models/getAllModel.dart';
@@ -255,7 +257,7 @@ abstract class ApiService {
       @Query("Creator") String Creator);
 
   @GET("FiSourcing/GetAllFiData")
-  Future<GetAllModel> getAllData(
+  Future<GetAllModel> dataByFIID(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Query("FI_ID") int FI_ID);
@@ -266,6 +268,14 @@ abstract class ApiService {
       @Header("dbname") String dbname,
       @Query("Creator") String Creator,
       @Query("BranchCode") String BranchCode);
+
+  @GET("Collection/GetQrPaymentsBySmcode")
+  Future<QrPaymentsModel> qrPayments(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Query("SmCode") String SmCode,
+      @Query("userid") String userid,
+      @Query("type") String type);
 
 
 
@@ -413,6 +423,13 @@ abstract class ApiService {
       @Header("dbname") String dbName,
       @Query("MobileNo") String mobileNo,
       @Query("Otp") String otp
+      );
+
+  @GET("FiSourcing/GetAllAdharData")
+  Future<AdhaarModel> dataByAdhaar(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("AdharCard") String AdharCard
       );
 
   @GET("Tracklocations/GetAchievementDetails")
