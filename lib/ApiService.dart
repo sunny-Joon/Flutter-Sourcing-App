@@ -435,4 +435,23 @@ abstract class ApiService {
       @Part(name: "SignType") String signType,
       );
 
+  @FormUrlEncoded()
+  @POST("E_Sign/XMLReaponseNew")
+  Future<HttpResponse> sendXMLtoServer(
+      @Field("msg") String msg,
+      );
+
+
+  @POST("Ckyc/SearchCkycNoByAadhar")
+  Future<GlobalModel> searchCkycNoByAadhar(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+    @Query("AadharId")  String aadharId,
+    @Query("PanNo")  String panNo,
+    @Query("VoterId") String voterId,
+    @Query("DOB")  String dob,
+    @Query("Gender")  String gender,
+    @Query("Name")  String name,
+  );
+
 }
