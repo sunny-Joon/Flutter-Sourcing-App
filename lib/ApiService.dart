@@ -35,6 +35,7 @@ class ApiConfig {
   static const String baseUrl4 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
   static const String baseUrl5 = 'https://erpservice.paisalo.in:980/PDL.KYC.API/api/';
   static const String baseUrl6 = 'https://ocr.paisalo.in:950/api/';
+  static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
 
 }
 
@@ -438,5 +439,36 @@ abstract class ApiService {
       @Query("Type") String Type,
       @Query("Fromdate") String Fromdate,
       @Query("Todate") String Todate);
+
+
+  @POST("e_SignMobile/SaveAgreements")
+  @MultiPart()
+  Future<String> saveAgreements(
+      @Part(name: "Ficode") String ficode,
+      @Part(name: "Creator") String creator,
+      @Part(name: "ConsentText") String consentText,
+      @Part(name: "authMode") String authMode,
+      @Part(name: "F_Id") String fId,
+      @Part(name: "SignType") String signType,
+      );
+
+  @FormUrlEncoded()
+  @POST("E_Sign/XMLReaponseNew")
+  Future<HttpResponse> sendXMLtoServer(
+      @Field("msg") String msg,
+      );
+
+
+  @POST("Ckyc/SearchCkycNoByAadhar")
+  Future<GlobalModel> searchCkycNoByAadhar(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+    @Query("AadharId")  String aadharId,
+    @Query("PanNo")  String panNo,
+    @Query("VoterId") String voterId,
+    @Query("DOB")  String dob,
+    @Query("Gender")  String gender,
+    @Query("Name")  String name,
+  );
 
 }

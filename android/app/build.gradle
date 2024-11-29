@@ -50,6 +50,19 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    // Add your dependencies block here
+    dependencies {
+        // AndroidX Activity library for handling activity results
+        implementation 'androidx.activity:activity:1.7.0'  // Updated version
+        implementation 'androidx.activity:activity-ktx:1.7.0'  // Updated version
+
+        // AndroidX AppCompat library for backward compatibility
+        implementation 'androidx.appcompat:appcompat:1.6.0'  // Updated version
+
+        // AndroidX Fragment library for fragment handling
+        implementation 'androidx.fragment:fragment:1.6.0'  // Updated version
+    }
+
 }
 
 flutter {

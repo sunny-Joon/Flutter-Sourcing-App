@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
+import 'package:flutter_sourcing_app/MasterAPIs/ckyc_repository.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
@@ -68,7 +69,7 @@ class _KYCPageState extends State<KYCPage> {
   PlaceData? selectedDistrictCode;
   PlaceData? selectedSubDistrictCode;
   PlaceData? selectedVillageCode;
-
+  bool isCKYCNumberFound=false;
   List<String> loanDuration = ['12', '24', '36', '48'];
 
   List<String> titleList = ["Mr.", "Mrs.", "Miss"];
@@ -97,7 +98,7 @@ class _KYCPageState extends State<KYCPage> {
     apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     _focusNodeAdhaarId.addListener(_validateOnFocusChange);
-//    _mobileNoController.text="9910238307";
+ //    _mobileNoController.text="9910238307";
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
 
@@ -253,7 +254,9 @@ class _KYCPageState extends State<KYCPage> {
 
   get isChecked => null;
   final FocusNode _focusNodeAdhaarId = FocusNode();
-  String _errorMessageAadhaar = "";
+
+   String _errorMessageAadhaar="";
+
 
   void _pickImage() async {
     File? pickedImage = await GlobalClass().pickImage();
@@ -823,11 +826,17 @@ class _KYCPageState extends State<KYCPage> {
           _currentStep += 1;
         });*/
         EasyLoading.dismiss();
-        GlobalClass.showSuccessAlert(context, fiid, 2);
+
+        GlobalClass.showSuccessAlert(context, "KYC Saved with ${value.data[0].fiCode} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process", 2);
+
+
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
       }
+    }).catchError((onError){
+      EasyLoading.dismiss();
+      GlobalClass.showErrorAlert(context, onError, 1);
     });
   }
 
@@ -2157,8 +2166,54 @@ class _KYCPageState extends State<KYCPage> {
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField2(
-                    'PAN No', _panNoController, TextInputType.text, 10),
+
+                child: Container(
+                  color: Colors.white,
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  padding: EdgeInsets.all(4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "PAN No.",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      SizedBox(height: 1),
+                      Container(
+                        width: double.infinity, // Set the desired width
+                        child: Center(
+                          child: TextFormField(
+                             maxLength: 10,
+                            controller: _panNoController,
+                            keyboardType: TextInputType.text, // Set the input type
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                counterText: ""
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please Enter PAN Number';
+                              }
+                              return null;
+                            },
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                              TextInputFormatter.withFunction(
+                                    (oldValue, newValue) => TextEditingValue(
+                                  text: newValue.text.toUpperCase(),
+                                  selection: newValue.selection,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
               ),
               SizedBox(width: 10),
               Padding(
@@ -2435,11 +2490,15 @@ class _KYCPageState extends State<KYCPage> {
               panCardHolderName =
                   "${responseData['first_name']} ${responseData['last_name']}";
               panVerified = true;
-            } else {
+            }else{
               panCardHolderName = "PAN no. is wrong please check";
               panVerified = false;
             }
           });
+          if(!isCKYCNumberFound){
+            isCKYCNumberFound= await CkycRepository().searchCkyc(_aadharIdController.text, _panNoController.text, _voterIdController.text, _dobController.text, genderselected, _nameController.text + " " + _nameMController.text + " " + _nameLController.text);
+
+          }
         } else if (type == "drivinglicense") {
           setState(() {
             dlCardHolderName = "${responseData['name']}";
@@ -2449,7 +2508,12 @@ class _KYCPageState extends State<KYCPage> {
           setState(() {
             voterCardHolderName = "${responseData['name']}";
             voterVerified = true;
+
           });
+          if(!isCKYCNumberFound){
+            isCKYCNumberFound= await CkycRepository().searchCkyc(_aadharIdController.text, _panNoController.text, _voterIdController.text, _dobController.text, genderselected, _nameController.text + " " + _nameMController.text + " " + _nameLController.text);
+
+          }
         }
       } else {
         if (type == "pancard") {
@@ -2745,8 +2809,11 @@ class _KYCPageState extends State<KYCPage> {
     return true;
   }
 
-  bool checkIdMendate() {
-    if (voterVerified) {
+
+bool checkIdMendate(){
+  print("voterCardHolderName $voterCardHolderName");
+    if(voterVerified || voterCardHolderName!=null){
+
       return true;
     } else if (panVerified && dlVerified) {
       return true;

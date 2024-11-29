@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:xml/xml.dart';
 
 class GlobalClass {
   // Singleton pattern to ensure only one instance of GlobalClass
@@ -13,7 +14,7 @@ class GlobalClass {
   }
 
   static String id = "";
-  static String creator = "";
+  static String creator = "BAREILLY";
   static String address = "";
   static String mobile = "";
   static String designation = "";
@@ -53,9 +54,9 @@ class GlobalClass {
   static void showUnsuccessfulAlert(BuildContext context,String Message,int a) {
     showAlert(
       context,
-      'Unsuccessful',
+      'Faliure',
       Message,
-      Colors.red,
+      Colors.blue,
       a
     );
   }
@@ -66,40 +67,66 @@ class GlobalClass {
       context,
       'Error',
       Message,
-      Colors.orange,
+        Color(0xFFD42D3F),
       a
     );
   }
 
   // Private method to show an alert dialog
- static void showAlert(BuildContext context, String title, String message, Color color,int a) {
+  static void showAlert(BuildContext context, String title, String message, Color color, int a) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
-            title,
-            style: TextStyle(color: color),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
           ),
-          content: Text(message),
+          title: Row(
+            children: [
+              Icon(Icons.info, color: color, size: 28),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            message,
+            style: TextStyle(fontSize: 16, color: Colors.black87),
+          ),
           actions: [
-            TextButton(
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: color, // Button background color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
               onPressed: () {
-                if(a==1){
+                if (a == 1) {
                   Navigator.of(context).pop(); // Close the dialog
-                }else{
+                } else {
                   Navigator.of(context).pop(); // Close the dialog
-                  Navigator.of(context).pop();
-                } // Close the page
+                  Navigator.of(context).pop(); // Close the page
+                }
               },
-              child: Text('OK'),
+              child: Text(
+                'OK',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
       },
     );
   }
-
   int calculateAge(DateTime birthDate) {
     DateTime today = DateTime.now();
     int age = today.year - birthDate.year;
@@ -129,6 +156,22 @@ class GlobalClass {
       textColor: Colors.white,
       fontSize: 16.0,
     );
+  }
+  static bool isXml(String data) {
+    // Trim whitespace to ensure valid checking
+    final trimmedData = data.trim();
+
+    // Check if it starts with "<" and ends with ">"
+    if (trimmedData.startsWith('<') && trimmedData.endsWith('>')) {
+      try {
+        // Try parsing the string using XML parser
+        final xmlDoc = XmlDocument.parse(trimmedData);
+        return true; // Successfully parsed, so it's valid XML
+      } catch (e) {
+        return false; // Parsing failed, so it's not valid XML
+      }
+    }
+    return false; // Does not start and end with < and >
   }
 
 }
