@@ -138,6 +138,8 @@ class _GroupListPageState extends State<GroupListPage> {
           ),
           Expanded(
             child: ListView.builder(
+              padding: EdgeInsets.zero,
+
               itemCount: filteredItems.length,
               itemBuilder: (context, index) {
                 return GestureDetector(

@@ -50,6 +50,7 @@ class BorrowerListDataModel {
   String errormsg;
   bool isvalide;
   String downloadLink;
+  String profilePic;
   String aadhar_no;
 
   BorrowerListDataModel({
@@ -70,6 +71,7 @@ class BorrowerListDataModel {
     required this.errormsg,
     required this.isvalide,
     required this.downloadLink,
+    required this.profilePic,
     required this.aadhar_no,
   });
 
@@ -91,6 +93,7 @@ class BorrowerListDataModel {
     errormsg: json["errormsg"],
     isvalide: json["isvalid"],
     downloadLink: json["downloadLink"]??"",
+    profilePic: json["profilePic"]??"",
     aadhar_no: json["aadhar_no"]??"",
   );
 
@@ -112,6 +115,7 @@ class BorrowerListDataModel {
     "errormsg": errormsg,
     "isvalide": isvalide,
     "downloadLink": downloadLink,
+    "profilePic": profilePic,
     "aadhar_no": aadhar_no,
   };
 }

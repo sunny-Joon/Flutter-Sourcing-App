@@ -133,9 +133,10 @@ print("object++12");
                 return BorrowerListItem(
                   name: item.fullName,
                   fiCode: item.fiCode.toString(),
-                  mobile: item.pPhone,
+                  //mobile: item.pPhone,
                   creator: item.creator,
-                  address: item.currentAddress,
+                 // address: item.currentAddress,
+                  pic:item.profilePic,
                   onTap: () {
                     switch (widget.page) {
                       case 'APPLICATION FORM':
