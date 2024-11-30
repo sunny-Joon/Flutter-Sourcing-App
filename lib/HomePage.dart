@@ -146,7 +146,7 @@ class _HomePageState extends State<HomePage> {
             Container(
               width: MediaQuery.of(context).size.width - 30,
               margin: EdgeInsets.symmetric(horizontal: 15.0), // 15dp margin on left and right
-              padding: EdgeInsets.all(30.0),
+              padding: EdgeInsets.only(left: 30.0,right: 30,top: 30,bottom: 50),
               decoration: BoxDecoration(
                 color: Color(0xFFD42D3F),
                 borderRadius: BorderRadius.circular(18),
@@ -227,10 +227,11 @@ class _HomePageState extends State<HomePage> {
                       'Reset target',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+
                   ),
                 ],
               ),
@@ -271,7 +272,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 10), // Add space before the row
             Row(
               children: [
-                Expanded(
+                Flexible(
                   child: Container(
                     height: MediaQuery.of(context).size.height / 4,
                     child: Card(
@@ -293,18 +294,22 @@ class _HomePageState extends State<HomePage> {
                                   color: Color(0xFF6D6D6D),
                                 ),
                               ),
-                              TextField(
-                                controller: TextEditingController(text: '\₹0000'),
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xFF6D6D6D),
-                                ),
-                                textAlign: TextAlign.center,
-                                readOnly: true, // Make it read-only
-                                decoration: InputDecoration(
-                                  border: InputBorder.none, // Remove underline
+                              SizedBox(height: 10), // Add some spacing
+                              Flexible(
+                                child: TextField(
+                                  controller: TextEditingController(text: '\₹0000'),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFF6D6D6D),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  readOnly: true, // Make it read-only
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none, // Remove underline
+                                  ),
                                 ),
                               ),
+                              SizedBox(height: 10), // Add some spacing
                               Text(
                                 '10 People are earning more commission',
                                 style: TextStyle(
@@ -320,7 +325,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                Expanded(
+
+
+                Flexible(
                   child: Container(
                     height: MediaQuery.of(context).size.height / 4,
                     child: Card(
