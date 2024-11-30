@@ -41,6 +41,8 @@ class ApplicationPage extends StatefulWidget {
 
 class _ApplicationPageState extends State<ApplicationPage> {
   late KycScanningModel getData;
+  late ApiService apiService_OCR;
+
   bool _isPageLoading = false;
   int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
@@ -209,6 +211,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final _fnameController = TextEditingController();
   final _mnameController = TextEditingController();
   final _lnameController = TextEditingController();
+  final _guardianController = TextEditingController();
   final _phoneController = TextEditingController();
   final _dobController = TextEditingController();
   final _ageController = TextEditingController();
@@ -242,6 +245,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final FocusNode _dlFocus = FocusNode();
   final FocusNode _voterFocus = FocusNode();
   final FocusNode _aadharIdFocus = FocusNode();
+  final FocusNode _guardianFocus = FocusNode();
   final FocusNode _emailIdFocus = FocusNode();
   final FocusNode _placeOfBirthFocus = FocusNode();
   final FocusNode _resCatFocus = FocusNode();
@@ -292,6 +296,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void initState() {
     super.initState();
     FIID = widget.selectedData.id;
+    apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
 
     getAllDataApi(context);
     // apiService_idc=ApiService.create(baseUrl: ApiConfig.baseUrl4);
@@ -1081,6 +1086,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String fname = _fnameController.text.toString();
     String mname = _mnameController.text.toString();
     String lname = _lnameController.text.toString();
+    String guardianName = _guardianController.text.toString();
     String relation_with_Borrower = relationselected.toString();
     String p_Address1 = _p_Address1Controller.text.toString();
     String p_Address2 = _p_Address2Controller.text.toString();
@@ -1112,6 +1118,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             fname,
             mname,
             lname,
+            guardianName,
             relation_with_Borrower,
             p_Address1,
             p_Address2,
@@ -1181,7 +1188,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   width: double.infinity, // Match the width of the dialog
                   child: TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      getDataFromOCR("adharFront", context);
                     },
                     child: Text(
                       'Adhaar Front',
@@ -1202,7 +1209,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   width: double.infinity, // Match the width of the dialog
                   child: TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop(); // Optional: close the dialog
+                      getDataFromOCR("adharBack", context);
                     },
                     child: Text(
                       'Adhaar Back',
@@ -1230,16 +1237,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       );
 
                       if (result != null) {
-                        BigInt bigIntScanData = BigInt.parse(result);
-                        List<int> byteScanData = bigIntToBytes(bigIntScanData);
+                        setQRData(result);
 
-                        List<int> decompByteScanData =
-                            decompressData(byteScanData);
-                        List<List<int>> parts =
-                            separateData(decompByteScanData, 255, 15);
-                        String qrResult = decodeData(parts);
-
-                        onResult(qrResult);
                       }
 
                       Navigator.of(context).pop();
@@ -4174,6 +4173,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       GuarantorEditable, _lnameFocus)),
             ],
           ),
+    _buildTextField2('Guardian Name', _guardianController,
+    TextInputType.name, GuarantorEditable, _guardianFocus),
           Row(
             children: [
               Flexible(
@@ -5461,4 +5462,262 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void financialInfo(getAllDataModel data) {}
 
+    Future<void> getDataFromOCR(String type, BuildContext context) async {
+    EasyLoading.show();
+    File? pickedImage = await GlobalClass().pickImage();
+
+    if (pickedImage != null) {
+      try {
+        final response = await apiService_OCR.uploadDocument(
+          type, // imgType
+          pickedImage!, // File
+        );
+        if (response.statusCode == 200) {
+          if (type == "adharFront") {
+            setState(() {
+              _aadharIdController.text = response.data.adharId;
+              List<String> nameParts = response.data.name.trim().split(" ");
+              if (nameParts.length == 1) {
+                _fnameController.text = nameParts[0];
+              } else if (nameParts.length == 2) {
+                _fnameController.text = nameParts[0];
+                _lnameController.text = nameParts[1];
+              } else {
+                _fnameController.text = nameParts.first;
+                _lnameController.text = nameParts.last;
+                _mnameController.text =
+                    nameParts.sublist(1, nameParts.length - 1).join(' ');
+              }
+              _dobController.text = formatDate(response.data.dob, 'dd/MM/yyyy');
+              genderselected = aadhar_gender
+                  .firstWhere((item) =>
+              item.descriptionEn.toLowerCase() ==
+                  response.data.gender.toLowerCase())
+                  .descriptionEn;
+              if (genderselected == "Male") {
+                selectedTitle = "Mr.";
+              } else {
+                selectedTitle = "Mrs.";
+              }
+            });
+            Navigator.of(context).pop();
+          } else if (type == "adharBack") {
+            _pincodeController.text = response.data.pincode;
+            if (response.data.relation.toLowerCase() == "father") {
+              _guardianController.text = response.data.guardianName;
+              setState(() {
+                relationselected = "Father";
+              });
+              _p_CityController.text = response.data.cityName;
+              List<String> addressParts =
+              response.data.address1.trim().split(" ");
+              if (addressParts.length == 1) {
+                _p_Address1Controller.text = addressParts[0];
+              } else if (addressParts.length == 2) {
+                _p_Address1Controller.text = addressParts[0];
+                _p_Address2Controller.text = addressParts[1];
+              } else {
+                _p_Address1Controller.text = addressParts.first;
+                _p_Address2Controller.text = addressParts.last;
+                _p_Address3Controller.text =
+                    addressParts.sublist(1, addressParts.length - 1).join(' ');
+              }
+              /*List<String> guarNameParts =
+              response.data.guardianName.trim().split(" ");
+              if (guarNameParts.length == 1) {
+                _fatherFirstNameController.text = guarNameParts[0];
+              } else if (guarNameParts.length == 2) {
+                _fatherFirstNameController.text = guarNameParts[0];
+                _fatherLastNameController.text = guarNameParts[1];
+              } else {
+                _fatherFirstNameController.text = guarNameParts.first;
+                _fatherLastNameController.text = guarNameParts.last;
+                _fatherMiddleNameController.text = guarNameParts
+                    .sublist(1, guarNameParts.length - 1)
+                    .join(' ');
+              }*/
+            } else if (response.data.relation.toLowerCase() == "husband") {
+              _guardianController.text = response.data.guardianName;
+              setState(() {
+                relationselected = "Husband";
+              //  selectedMarritalStatus = "Married";
+              });
+              _p_CityController.text = response.data.cityName;
+              List<String> addressParts =
+              response.data.address1.trim().split(" ");
+              if (addressParts.length == 1) {
+                _p_Address1Controller.text = addressParts[0];
+              } else if (addressParts.length == 2) {
+                _p_Address1Controller.text = addressParts[0];
+                _p_Address2Controller.text = addressParts[1];
+              } else {
+                _p_Address1Controller.text = addressParts.first;
+                _p_Address2Controller.text = addressParts.last;
+                _p_Address3Controller.text =
+                    addressParts.sublist(1, addressParts.length - 1).join(' ');
+              }
+              /*List<String> guarNameParts =
+              response.data.guardianName.trim().split(" ");
+              if (guarNameParts.length == 1) {
+                _spouseFirstNameController.text = guarNameParts[0];
+              } else if (guarNameParts.length == 2) {
+                _spouseFirstNameController.text = guarNameParts[0];
+                _spouseLastNameController.text = guarNameParts[1];
+              } else {
+                _spouseFirstNameController.text = guarNameParts.first;
+                _spouseLastNameController.text = guarNameParts.last;
+                _spouseMiddleNameController.text = guarNameParts
+                    .sublist(1, guarNameParts.length - 1)
+                    .join(' ');
+              }*/
+            }
+          }
+          EasyLoading.dismiss();
+        } else {
+          showToast_Error(
+              "Data not fetched from this Aadhaar card please check the image");
+          Navigator.of(context).pop();
+          EasyLoading.dismiss();
+        }
+      } catch (_) {
+        showToast_Error(
+            "Data not fetched from this Aadhaar card please check the image");
+        Navigator.of(context).pop();
+        EasyLoading.dismiss();
+      }
+    }
+  }
+
+  void setQRData(result) {
+    List<String> dataList = result.split(",");
+    if (dataList.length > 14) {
+      _aadharIdController.text = dataList[2];
+      List<String> nameParts = dataList[3].split(" ");
+      if (nameParts.length == 1) {
+        _fnameController.text = nameParts[0];
+      } else if (nameParts.length == 2) {
+        _fnameController.text = nameParts[0];
+        _mnameController.text = nameParts[1];
+      } else {
+        _fnameController.text = nameParts.first;
+        _lnameController.text = nameParts.last;
+        _mnameController.text =
+            nameParts.sublist(1, nameParts.length - 1).join(' ');
+      }
+
+      _dobController.text = formatDate(dataList[4], 'dd-MM-yyyy');
+      setState(() {
+        if (dataList[5].toLowerCase() == "m") {
+          genderselected = "Male";
+          selectedTitle = "Mr.";
+        } else if (dataList[5].toLowerCase() == "f") {
+          genderselected = "Female";
+          selectedTitle = "Mrs.";
+        }
+      });
+      if (dataList[6].toLowerCase().contains("s/o") ||
+          dataList[6].toLowerCase().contains("d/o")) {
+        setState(() {
+          relationselected = "Father";
+          List<String> guarNameParts =
+          replaceCharFromName(dataList[6]).split(" ");
+          if (guarNameParts.length == 1) {
+         //   _fatherFirstNameController.text = guarNameParts[0];
+          } else if (guarNameParts.length == 2) {
+          //  _fatherFirstNameController.text = guarNameParts[0];
+         //   _fatherLastNameController.text = guarNameParts[1];
+          } else {
+         //   _fatherFirstNameController.text = guarNameParts.first;
+         //   _fatherLastNameController.text = guarNameParts.last;
+         //   _fatherMiddleNameController.text =
+                guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+          }
+        });
+      } else if (dataList[6].toLowerCase().contains("w/o")) {
+        setState(() {
+          relationselected = "Husband";
+          List<String> guarNameParts =
+          replaceCharFromName(dataList[6]).split(" ");
+          if (guarNameParts.length == 1) {
+        //    _spouseFirstNameController.text = guarNameParts[0];
+          } else if (guarNameParts.length == 2) {
+       //     _spouseFirstNameController.text = guarNameParts[0];
+      //      _spouseLastNameController.text = guarNameParts[1];
+          } else {
+      //      _spouseFirstNameController.text = guarNameParts.first;
+      //      _spouseLastNameController.text = guarNameParts.last;
+       //     _spouseMiddleNameController.text =
+                guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+          }
+        });
+      }
+      _p_CityController.text = dataList[7];
+   //   _gurNameController.text = replaceCharFromName(dataList[6]);
+
+      if (dataList[0].toLowerCase() == 'v2') {
+        _pincodeController.text = dataList[11];
+        // stateselected = states.firstWhere((item) =>
+        // item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+        String address =
+            "${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
+        List<String> addressParts = address.trim().split(",");
+        if (addressParts.length == 1) {
+          _p_Address1Controller.text = addressParts[0];
+        } else if (addressParts.length == 2) {
+          _p_Address1Controller.text = addressParts[0];
+          _p_Address2Controller.text = addressParts[1];
+        } else {
+          _p_Address1Controller.text = addressParts.first;
+          _p_Address2Controller.text = addressParts.last;
+          _p_Address3Controller.text =
+              addressParts.sublist(1, addressParts.length - 1).join(' ');
+        }
+      } else if (dataList[0].toLowerCase() == 'v4') {
+        // stateselected = states.firstWhere((item) =>
+        // item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
+        _pincodeController.text = dataList[12];
+        String address =
+            "${dataList[10]},${dataList[11]},${dataList[13]},${dataList[15]},${dataList[16]}";
+
+        List<String> addressParts = address.trim().split(",");
+        if (addressParts.length == 1) {
+          _p_Address1Controller.text = addressParts[0];
+        } else if (addressParts.length == 2) {
+          _p_Address1Controller.text = addressParts[0];
+          _p_Address2Controller.text = addressParts[1];
+        } else {
+          _p_Address1Controller.text = addressParts.first;
+          _p_Address2Controller.text = addressParts.last;
+          _p_Address3Controller.text =
+              addressParts.sublist(1, addressParts.length - 1).join(' ');
+        }
+      }
+    }
+  }
+
+  String formatDate(String date, dateFormat) {
+    try {
+      // Parse the input string to a DateTime object
+      DateTime parsedDate = DateFormat(dateFormat).parse(date);
+      setState(() {
+        _selectedDate = parsedDate;
+        _calculateAge();
+      });
+
+      // Return the formatted date string in yyyy-MM-dd format
+      return DateFormat('yyyy-MM-dd').format(parsedDate);
+    } catch (e) {
+      // Handle any invalid format
+      return 'Invalid Date';
+    }
+  }
+  String replaceCharFromName(String gurName) {
+    return gurName
+        .replaceAll("S/O ", "")
+        .replaceAll("S/O: ", "")
+        .replaceAll("D/O ", "")
+        .replaceAll("D/O: ", "")
+        .replaceAll("W/O ", "")
+        .replaceAll("W/O: ", "");
+  }
 }
