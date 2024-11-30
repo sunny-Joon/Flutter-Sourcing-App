@@ -120,11 +120,15 @@ class _GroupListPageState extends State<GroupListPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 0,top: 0,left: 10,right: 10),
+            padding: const EdgeInsets.only(bottom: 0,top: 0,left: 6,right: 6),
             child: Card(
-              elevation: 8,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              elevation: 20,
               child: TextField(
+
                 decoration: InputDecoration(
+                  alignLabelWithHint: true,
                   hintText: 'Search',
                   prefixIcon: Icon(Icons.search),
                 ),

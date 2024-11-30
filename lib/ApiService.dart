@@ -24,6 +24,7 @@ import 'Models/getAllModel.dart';
 import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
 import 'Models/ocr_response_model.dart';
+import 'Models/track_location_request.dart';
 part 'ApiService.g.dart';
 
 
@@ -86,8 +87,8 @@ abstract class ApiService {
       @Body() Map<String, dynamic> body);
 
   @GET("Tracklocations/GetAppLink")
-  Future<GlobalModel2> VersionCheck(
-      @Header("Authorization") String token,
+  Future<GlobalModel> VersionCheck(
+
       @Header("dbname") String dbName,
       @Query("version") String version,
       @Query("AppName") String AppName,
@@ -471,5 +472,12 @@ abstract class ApiService {
     @Query("Gender")  String gender,
     @Query("Name")  String name,
   );
+
+  @POST("Tracklocations/CreateLiveTrack")
+  Future<GlobalModel> createLiveTrack(
+      @Body() TrackLocationRequest request,
+      @Header("dbname") String dbname,
+      @Header("Authorization") String authorization,
+      );
 
 }

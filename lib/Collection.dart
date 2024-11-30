@@ -19,30 +19,30 @@ class _CollectionState extends State<Collection>{
                   child: Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(left: 10,top: 20,right: 10),
+                        padding: EdgeInsets.only(left: 10,top: 50,right: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             InkWell(
                               child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                      width: 1, color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                                ),
+                                // decoration: BoxDecoration(
+                                //   color: Colors.white,
+                                //   border: Border.all(
+                                //       width: 1, color: Colors.grey.shade300),
+                                //   borderRadius: BorderRadius.all(Radius.circular(5)),
+                                // ),
                                 height: 40,
                                 width: 40,
                                 alignment: Alignment.center,
-                                child: Center(
-                                  child: Icon(Icons.arrow_back_ios_sharp, size: 16),
-                                ),
+                                // child: Center(
+                                //   child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                                // ),
                               ),
-                              onTap: () {
-                                setState(() {
-                                  Navigator.pop(context);                  });
-                              },
+                              // onTap: () {
+                              //   setState(() {
+                              //     Navigator.pop(context);                  });
+                              // },
                             ),
                             Center(
                               child: Image.asset(

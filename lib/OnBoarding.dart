@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sourcing_app/visit_report_page.dart';
 import 'kyc.dart';
 import 'Branch_List_Page.dart';
 
@@ -26,23 +27,23 @@ class _OnboardingState extends State<OnBoarding>{
                 children: [
                   InkWell(
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                            width: 1, color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                      ),
+                      // decoration: BoxDecoration(
+                      //   color: Colors.white,
+                      //   border: Border.all(
+                      //       width: 1, color: Colors.grey.shade300),
+                      //   borderRadius: BorderRadius.all(Radius.circular(5)),
+                      // ),
                       height: 40,
                       width: 40,
-                      alignment: Alignment.center,
-                      child: Center(
-                        child: Icon(Icons.arrow_back_ios_sharp, size: 16),
-                      ),
+                      // alignment: Alignment.center,
+                      // child: Center(
+                      //   child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                      // ),
                     ),
-                    onTap: () {
-                      setState(() {
-                        Navigator.pop(context);                  });
-                    },
+                    // onTap: () {
+                    //   setState(() {
+                    //     Navigator.pop(context);                  });
+                    // },
                   ),
                   Center(
                     child: Text(
@@ -120,7 +121,7 @@ class _OnboardingState extends State<OnBoarding>{
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BranchListPage(intentFrom: 'Visit Report'),
+                              builder: (context) => VisitReportPage(),
                             ),
                           );
                         }),

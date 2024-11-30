@@ -282,7 +282,7 @@ EasyLoading.show(status: "Please wait...");
           //     context, value.message,1);
           setState(() {
           GlobalClass.target=target;
-          Navigator.push(
+          Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Fragments()));
           });
         } else {

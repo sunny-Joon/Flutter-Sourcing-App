@@ -58,10 +58,10 @@ class GroupRecyclerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-      child:  Container(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.15),
@@ -71,33 +71,28 @@ class GroupRecyclerItem extends StatelessWidget {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
             height: 50,
             decoration: BoxDecoration(
-              // Gradient Background for Visual Appeal
               gradient: LinearGradient(
                 colors: [Colors.white, Colors.grey.shade500],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(5),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(0.0),
+              padding: const EdgeInsets.all(4.0),
               child: Row(
                 children: [
-                  // Stylish Group Code Box with Gradient Background
+                  // Stylish Branch Code Box with Gradient Background
                   Container(
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-/*
-                        colors: [Color(0xFF9A2434), Color(0xFFF06A76)],
-*/
                         colors: [Colors.red.shade900, Colors.redAccent.shade200],
-
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -114,15 +109,15 @@ class GroupRecyclerItem extends StatelessWidget {
                       child: Text(
                         '${item.groupCode}',
                         style: GoogleFonts.roboto(
-                          fontSize: 14,
+                          fontSize:14,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 0),
-                  // Group Name with Gradient Overlay and Bold Text - Centered
+                  SizedBox(width: 20),
+                  // Branch Name with Gradient Overlay and Bold Text - Centered
                   Expanded(
                     child: Align(
                       alignment: Alignment.center,
@@ -131,7 +126,7 @@ class GroupRecyclerItem extends StatelessWidget {
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Color(0xFFD42D3F),
                         ),
                         textAlign: TextAlign.center,
                       ),

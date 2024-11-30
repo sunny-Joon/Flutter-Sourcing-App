@@ -108,7 +108,8 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFFD42D3F),
+
       body: Stack(
         children: [
           // Background sphere
@@ -137,7 +138,8 @@ class _ProfileState extends State<Profile> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildBackButton(context),
+                 // _buildBackButton(context),
+                  SizedBox(width: 50,),
                   _buildCenterLogo(),
                   _buildLogoutButton(context),
                 ],
@@ -148,41 +150,19 @@ class _ProfileState extends State<Profile> {
           // Main content: Profile picture, user details, and action cards
           Positioned.fill(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.width / 3.5),
+                SizedBox(height: MediaQuery.of(context).size.width / 3.6),
                 _buildProfilePicture(),
                 SizedBox(
-                  height: 10,
+                  height: 30,
                 ),
                 _buildUserDetailsCard(),
-                Card(
-                  clipBehavior: Clip.antiAlias,
-                  child: Container(
-                    color: Color(0xFFD42D3F),
-                    width: MediaQuery.of(context).size.width - 50,
-                    child: InkWell(
-                      onTap: () {
-                        punchInOut(context);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        alignment: Alignment.center,
-                        child: Text(
-                          tabName,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+
                 Container(
-                  height: MediaQuery.of(context).size.height / 3.8,
+                  height: MediaQuery.of(context).size.height / 5,
                   child: Padding(
-                    padding: const EdgeInsets.all(1.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: SingleChildScrollView(
                       child: GridView.builder(
                         padding: EdgeInsets.all(0),
@@ -192,14 +172,14 @@ class _ProfileState extends State<Profile> {
                             NeverScrollableScrollPhysics(), // Disable scrolling for GridView
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3, // Number of columns
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 5,
+                          crossAxisSpacing: 1,
+                          mainAxisSpacing: 1,
                         ),
-                        itemCount: 4, // Number of grid items
+                        itemCount: 3, // Number of grid items
                         itemBuilder: (context, index) {
                           if (index == 0) {
                             return _buildGridItem(
-                                'QR Payment Details', Icons.qr_code, () {
+                                'QR Payment Report', Icons.qr_code, () {
                               // Action for QR Payment Details
                               Navigator.push(
                                 context,
@@ -211,14 +191,14 @@ class _ProfileState extends State<Profile> {
                             });
                           } else if (index == 1) {
                             return _buildGridItem(
-                                'Get Collection Report', Icons.report, () {
+                                'Collection Report', Icons.currency_rupee, () {
                               // Action for Get Collection Report
                               print('Get Collection Report Clicked');
                               // Add navigation or other actions here
                             });
                           } else if (index == 2) {
                             return _buildGridItem(
-                                'Another Report', Icons.analytics, () {
+                                'Another Report', Icons.find_in_page_sharp, () {
                               // Action for Another Report
                               print('Another Report Clicked');
                               // Add navigation or other actions here
@@ -236,6 +216,31 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                 ),
+                Card(
+                  elevation: 10,
+                  clipBehavior: Clip.antiAlias,
+                  child: Container(
+                    color: Colors.green,
+                    width: MediaQuery.of(context).size.width - 50,
+                    child: InkWell(
+                      onTap: () {
+                        punchInOut(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 11.0),
+                        alignment: Alignment.center,
+                        child: Text(
+                          tabName,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -246,11 +251,13 @@ class _ProfileState extends State<Profile> {
 
   Widget _buildGridItem(String title, IconData icon, VoidCallback onTap) {
     return Card(
+
+      color: Colors.white,
       elevation: 6,
-      margin: EdgeInsets.all(8),
+      margin: EdgeInsets.all(6),
       child: InkWell(
         onTap: onTap,
-        child: Column(
+        child: Padding(padding: EdgeInsets.all(4),child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 20, color: Colors.grey),
@@ -258,13 +265,13 @@ class _ProfileState extends State<Profile> {
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: FontWeight.normal,
                 color: Colors.black,
               ),
             ),
           ],
-        ),
+        ),),
       ),
     );
   }
@@ -350,7 +357,7 @@ class _ProfileState extends State<Profile> {
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
         Text(label,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
         Expanded(
           child: Text(
             controller.text,
@@ -366,7 +373,7 @@ class _ProfileState extends State<Profile> {
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
         Text(label,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
         Expanded(
           child: Text(
             timerDisplay,

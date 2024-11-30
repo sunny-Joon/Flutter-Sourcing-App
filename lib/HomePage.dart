@@ -34,107 +34,6 @@ class _HomePageState extends State<HomePage> {
       _displayValue = GlobalClass.target;
     }
   }
-  Future<int?> _showAlertDialog(BuildContext context) async {
-    _currentSliderValue = 2500; // Reset slider value to initial value
-
-    return showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              backgroundColor: Colors.transparent,
-              contentPadding: EdgeInsets.zero,
-              content: Container(
-                height: MediaQuery.of(context).size.height / 2,
-                width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.all(0),
-                padding: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  image: DecorationImage(
-                    image: AssetImage('assets/Images/curvedBackground.png'),
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15),
-                      child: Image.asset(
-                        'assets/Images/paisa_logo.png',
-                        height: 45,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Image.asset(
-                        'assets/Images/rupees.png',
-                        height: 30,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        'Monthly',
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: Color(0xFF6D6D6D),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        'Disbursement Target',
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: Color(0xFF6D6D6D),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Slider(
-                        value: _currentSliderValue.toDouble(),
-                        min: 0,
-                        max: 10000, // Max value in thousands (10 million)
-                        divisions: 10000, // Ensure divisions are set to the number of thousand increments
-                        label: '${(_currentSliderValue * 1000).toStringAsFixed(0)}',
-                        onChanged: (value) {
-                          setState(() {
-                            _currentSliderValue = value.toInt();
-                          });
-                        },
-                        onChangeEnd: (value) async{
-                          await _setTarget(context, value.toInt());
-                          Navigator.of(context).pop(value.toInt());
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        'Value: ${(_currentSliderValue * 1000).toStringAsFixed(0)}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF6D6D6D),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -255,9 +154,10 @@ class _HomePageState extends State<HomePage> {
                         color: Color(0xFFC5C3C3),
                         shadows: [
                           /* Shadow(
-                        blurRadius: 10.0,
-                        color: Colors.black,
-                      ),*/
+
+                          blurRadius: 10.0,
+                          color: Colors.black,
+                        ),*/
                         ],
                       ),
                       textAlign: TextAlign.center,
@@ -268,6 +168,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 )
+
+
             ),
             SizedBox(height: 10), // Add space before the row
             Row(
@@ -382,6 +284,106 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<int?> _showAlertDialog(BuildContext context) async {
+    _currentSliderValue = 2500; // Reset slider value to initial value
+
+    return showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              backgroundColor: Colors.transparent,
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                height: MediaQuery.of(context).size.height / 2,
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.all(0),
+                padding: EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  image: DecorationImage(
+                    image: AssetImage('assets/Images/curvedBackground.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: Image.asset(
+                        'assets/Images/paisa_logo.png',
+                        height: 45,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Image.asset(
+                        'assets/Images/rupees.png',
+                        height: 30,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        'Monthly',
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Color(0xFF6D6D6D),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        'Disbursement Target',
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Color(0xFF6D6D6D),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Slider(
+                        value: _currentSliderValue.toDouble(),
+                        min: 0,
+                        max: 10000, // Max value in thousands (10 million)
+                        divisions: 10000, // Ensure divisions are set to the number of thousand increments
+                        label: '${(_currentSliderValue * 1000).toStringAsFixed(0)}',
+                        onChanged: (value) {
+                          setState(() {
+                            _currentSliderValue = value.toInt();
+                          });
+                        },
+                        onChangeEnd: (value) async{
+                          await _setTarget(context, value.toInt());
+                          Navigator.of(context).pop(value.toInt());
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        'Value: ${(_currentSliderValue * 1000).toStringAsFixed(0)}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF6D6D6D),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   Future<void> _setTarget(BuildContext context, int target) async {
 
