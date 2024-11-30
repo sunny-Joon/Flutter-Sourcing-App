@@ -245,6 +245,7 @@ class _KYCPageState extends State<KYCPage> {
   String? selectedLoanDuration;
   String? selectedBank;*/
   String? Fi_Id;
+  String? Fi_Code;
   String qrResult = "";
   File? _imageFile;
   bool isPanVerified = false,
@@ -409,8 +410,12 @@ class _KYCPageState extends State<KYCPage> {
                               ),
                             ),
                             onTap: () {
+
                               if (_currentStep == 1) {
-                                _currentStep--;
+                                setState(() {
+                                  _currentStep--;
+
+                                });
                               } else {
                                 Navigator.of(context).pop();
                               }
@@ -730,6 +735,7 @@ class _KYCPageState extends State<KYCPage> {
           setState(() {
             _currentStep += 1;
             Fi_Id = value.data[0].fiId.toString();
+            Fi_Code = value.data[0].fiCode.toString();
           });
         } else if (value.statuscode == 201) {
           print("status code 201");
@@ -806,10 +812,10 @@ class _KYCPageState extends State<KYCPage> {
       "isAadharVerified": isAadharVerified,
       "is_phnno_verified": is_phnno_verified,
       "isNameVerify": isNameVerify,
-      "Pan_Name": "",
-      "VoterId_Name": "Jaspreet kaur",
-      "Aadhar_Name": "Jaspreet kaur",
-      "DrivingLic_Name": "",
+      "Pan_Name": panCardHolderName,
+      "VoterId_Name": voterCardHolderName,
+      "Aadhar_Name": "${_nameController.text} ${_nameMController.text} ${_nameLController.text}",
+      "DrivingLic_Name": dlCardHolderName,
       "VILLAGE_CODE": selectedVillageCode!.villageCode,
       "CITY_CODE": selectedCityCode!.cityCode,
       "SUB_DIST_CODE": selectedSubDistrictCode!.subDistCode,
@@ -827,7 +833,7 @@ class _KYCPageState extends State<KYCPage> {
         });*/
         EasyLoading.dismiss();
 
-        GlobalClass.showSuccessAlert(context, "KYC Saved with ${value.data[0].fiCode} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process", 2);
+        GlobalClass.showSuccessAlert(context, "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process", 2);
 
 
       } else {
@@ -1005,7 +1011,7 @@ class _KYCPageState extends State<KYCPage> {
         _selectedDate = parsedDate;
         _calculateAge();
       });
-
+      dlDob = DateFormat('dd-MM-yyyy').format(parsedDate);
       // Return the formatted date string in yyyy-MM-dd format
       return DateFormat('yyyy-MM-dd').format(parsedDate);
     } catch (e) {
@@ -1483,8 +1489,50 @@ class _KYCPageState extends State<KYCPage> {
                     'Last Name', _nameLController, TextInputType.name, 30)),
           ],
         ),
-        _buildTextField2(
-            'Guardian Name', _gurNameController, TextInputType.name, 60),
+        Container(
+          color: Colors.white,
+          margin: EdgeInsets.symmetric(vertical: 0),
+          padding: EdgeInsets.all(0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Guardian Name",
+                style: TextStyle(fontSize: 16, height: 2),
+              ),
+              SizedBox(height: 1),
+              Container(
+                  padding: EdgeInsets.zero,
+                  width: double.infinity, // Set the desired width
+                  child: Center(
+                    child: TextFormField(
+                      maxLength: 50,
+                      controller: _gurNameController,
+                      decoration: InputDecoration(
+                        counterText: "",
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter Guardian Name';
+                        }
+                        return null;
+                      },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(
+                              '[a-zA-Z0-9 ]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                          TextInputFormatter.withFunction(
+                                (oldValue, newValue) => TextEditingValue(
+                              text: newValue.text.toUpperCase(),
+                              selection: newValue.selection,
+                            ),
+                          ),
+                        ]
+                    ),
+                  )),
+            ],
+          ),
+        ),
         Row(
           children: [
             Expanded(
@@ -2687,6 +2735,8 @@ class _KYCPageState extends State<KYCPage> {
                 saveFiMethod(context);
               }
             }else{
+              getPlace("city", stateselected!.code, "", "");
+              getPlace("district", stateselected!.code, "", "");
               setState(() {
                 _currentStep += 1;
               });
@@ -3172,7 +3222,7 @@ bool checkIdMendate(){
   }
 
   Future<void> adhaarAllData(BuildContext contextDialog) async {
-    EasyLoading.show(status: "Adhaar Hoistory...");
+    EasyLoading.show(status: "Aadhaar History...");
     print("object112211");
 
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
@@ -3185,7 +3235,7 @@ bool checkIdMendate(){
     )
         .then((value) {
       if (value.statuscode == 200) {
-        print("object112211");
+
 
         if (value.data[0].errormsg.isEmpty) {
           print("object112222");
@@ -3193,22 +3243,32 @@ bool checkIdMendate(){
           if (value.data[0].panNo.isEmpty &&
               value.data[0].dl.isEmpty &&
               value.data[0].voterId.isEmpty) {
-            print("object112233");
+
             setState(() {
-              print("object112244");
 
               FiType = "OLD";
-
               Fi_Id = value.data[0].fiId.toString();
-             // selectedTitle = value.data[0].title;
+              selectedTitle = value.data[0].title.trim();
               _nameController.text = value.data[0].fName;
               _nameMController.text = value.data[0].mName;
               _nameLController.text = value.data[0].lName;
-             // genderselected = value.data[0].gender;
-              //relationwithBorrowerselected = value.data[0].rela;
+                if(value.data[0].relation_With_Borrower=="Husband"){
+                  relationwithBorrowerselected="Husband";
+                  _gurNameController.text="${value.data[0].spousEFirstName} ${value.data[0].spousEMiddleName} ${value.data[0].spousELastName}";
+                }else if(value.data[0].relation_With_Borrower=="Husband"){
+                  relationwithBorrowerselected="Husband";
+                  _gurNameController.text="${value.data[0].fatheRFirstName} ${value.data[0].fatheRMiddleName} ${value.data[0].fatheRLastName}";
+
+                }
+                genderselected=value.data[0].gender;
+              relationwithBorrowerselected=(value.data[0].relation_With_Borrower);
               _mobileNoController.text = value.data[0].pPhone;
-              _dobController.text = value.data[0].dob.toString();
+              _dobController.text = value.data[0].dob.toString().split("T")[0];
               // _ageController.text =value.data[0].;
+              stateselected= states
+                  .firstWhere((item) =>
+              item.descriptionEn.toLowerCase() ==
+                  value.data[0].pState.toLowerCase());
               _fatherFirstNameController.text = value.data[0].fatheRFirstName;
               _fatherMiddleNameController.text = value.data[0].fatheRMiddleName;
               _fatherLastNameController.text = value.data[0].fatheRLastName;
