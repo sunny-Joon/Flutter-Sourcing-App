@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFD42D3F)),
           useMaterial3: true,
         ),
-         home: LoginPage(),
+         home: SplashScreen(),
          builder: EasyLoading.init(),
          // home:MultiStepForm(),
       ),
@@ -100,7 +100,7 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(15.0),
-            child:Image.asset('assets/images/logo.gif'),
+            child:Image.asset('assets/Images/logo.gif'),
 
           ),
 

@@ -77,7 +77,7 @@ class GroupRecyclerItem extends StatelessWidget {
             decoration: BoxDecoration(
               // Gradient Background for Visual Appeal
               gradient: LinearGradient(
-                colors: [Colors.red.shade900, Colors.redAccent.shade200],
+                colors: [Colors.white, Colors.grey.shade500],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
