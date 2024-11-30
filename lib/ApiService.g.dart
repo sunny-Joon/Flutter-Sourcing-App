@@ -968,6 +968,7 @@ class _ApiService implements ApiService {
     String fname,
     String mname,
     String lname,
+    String GuardianName,
     String relation_with_Borrower,
     String p_Address1,
     String p_Address2,
@@ -1019,6 +1020,10 @@ class _ApiService implements ApiService {
     _data.fields.add(MapEntry(
       'lname',
       lname,
+    ));
+    _data.fields.add(MapEntry(
+      'GuardianName',
+      GuardianName,
     ));
     _data.fields.add(MapEntry(
       'relation_with_Borrower',

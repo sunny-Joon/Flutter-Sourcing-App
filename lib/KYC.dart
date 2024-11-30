@@ -979,7 +979,6 @@ class _KYCPageState extends State<KYCPage> {
                         setQRData(result);
                         //   onResult(qrResult);
                       }
-
                       Navigator.of(context).pop();
                     },
                     child: Text(
