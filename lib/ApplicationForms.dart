@@ -9,6 +9,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/Models/BankNamesModel.dart';
 import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
+import 'package:flutter_sourcing_app/Models/getAllModel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -40,17 +41,20 @@ class ApplicationPage extends StatefulWidget {
 
 class _ApplicationPageState extends State<ApplicationPage> {
   late KycScanningModel getData;
+  late ApiService apiService_OCR;
+
   bool _isPageLoading = false;
   int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
   bool _isEditing = false;
   bool personalInfoEditable = true;
+  bool FiFamilyEditable = true;
   bool FiIncomeEditable = true;
   bool FinancialInfoEditable = true;
+  bool femMemIncomeEditable = true;
   bool GuarantorEditable = true;
   bool UploadFiDocsEditable = true;
-  bool FiFamilyEditable = true;
-  bool femMemIncomeEditable = true;
+
   String pageTitle = "Personal Info";
 
   final _mobileFocusNode = FocusNode();
@@ -207,6 +211,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final _fnameController = TextEditingController();
   final _mnameController = TextEditingController();
   final _lnameController = TextEditingController();
+  final _guardianController = TextEditingController();
   final _phoneController = TextEditingController();
   final _dobController = TextEditingController();
   final _ageController = TextEditingController();
@@ -240,6 +245,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final FocusNode _dlFocus = FocusNode();
   final FocusNode _voterFocus = FocusNode();
   final FocusNode _aadharIdFocus = FocusNode();
+  final FocusNode _guardianFocus = FocusNode();
   final FocusNode _emailIdFocus = FocusNode();
   final FocusNode _placeOfBirthFocus = FocusNode();
   final FocusNode _resCatFocus = FocusNode();
@@ -290,6 +296,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void initState() {
     super.initState();
     FIID = widget.selectedData.id;
+    apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
 
     getAllDataApi(context);
     // apiService_idc=ApiService.create(baseUrl: ApiConfig.baseUrl4);
@@ -1079,6 +1086,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String fname = _fnameController.text.toString();
     String mname = _mnameController.text.toString();
     String lname = _lnameController.text.toString();
+    String guardianName = _guardianController.text.toString();
     String relation_with_Borrower = relationselected.toString();
     String p_Address1 = _p_Address1Controller.text.toString();
     String p_Address2 = _p_Address2Controller.text.toString();
@@ -1110,6 +1118,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             fname,
             mname,
             lname,
+            guardianName,
             relation_with_Borrower,
             p_Address1,
             p_Address2,
@@ -1179,7 +1188,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   width: double.infinity, // Match the width of the dialog
                   child: TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      getDataFromOCR("adharFront", context);
                     },
                     child: Text(
                       'Adhaar Front',
@@ -1200,7 +1209,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   width: double.infinity, // Match the width of the dialog
                   child: TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop(); // Optional: close the dialog
+                      getDataFromOCR("adharBack", context);
                     },
                     child: Text(
                       'Adhaar Back',
@@ -1228,16 +1237,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       );
 
                       if (result != null) {
-                        BigInt bigIntScanData = BigInt.parse(result);
-                        List<int> byteScanData = bigIntToBytes(bigIntScanData);
+                        setQRData(result);
 
-                        List<int> decompByteScanData =
-                            decompressData(byteScanData);
-                        List<List<int>> parts =
-                            separateData(decompByteScanData, 255, 15);
-                        String qrResult = decodeData(parts);
-
-                        onResult(qrResult);
                       }
 
                       Navigator.of(context).pop();
@@ -2736,7 +2737,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTextField(
-            'Mother name', _motherFController, FiIncomeEditable, _motherFFocus),
+            'Mother name', _motherFController, FiFamilyEditable, _motherFFocus),
         SizedBox(
           height: 10,
         ),
@@ -2783,11 +2784,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               color: Colors
                   .transparent, // Set to transparent to remove default underline
             ),
-            onChanged: (String? newValue) {
+            onChanged: FiFamilyEditable?(String? newValue) {
               setState(() {
                 selectednumOfChildren = newValue!;
               });
-            },
+            }:null,
             items: onetonine.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -2827,11 +2828,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               color: Colors
                   .transparent, // Set to transparent to remove default underline
             ),
-            onChanged: (String? newValue) {
+            onChanged: FiFamilyEditable?(String? newValue) {
               setState(() {
                 selectedschoolingChildren = newValue!;
               });
-            },
+            }:null,
             items: onetonine.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -2868,11 +2869,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               color: Colors
                   .transparent, // Set to transparent to remove default underline
             ),
-            onChanged: (String? newValue) {
+            onChanged: FiFamilyEditable?(String? newValue) {
               setState(() {
                 selectedotherDependents = newValue!;
               });
-            },
+            }:null,
             items: onetonine.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -2921,14 +2922,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         height: 2,
                         color: Colors.transparent, // Remove default underline
                       ),
-                      onChanged: (String? newValue) {
+                      onChanged: FiIncomeEditable?(String? newValue) {
                         if (newValue != null) {
                           setState(() {
                             selectedOccupation =
                                 newValue; // Update the selected value
                           });
                         }
-                      },
+                      }:null,
                       items: occupationType.map<DropdownMenuItem<String>>(
                           (RangeCategoryDataModel state) {
                         return DropdownMenuItem<String>(
@@ -2968,14 +2969,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         height: 2,
                         color: Colors.transparent, // Remove default underline
                       ),
-                      onChanged: (String? newValue) {
+                      onChanged: FiIncomeEditable?(String? newValue) {
                         if (newValue != null) {
                           setState(() {
                             selectedBusiness =
                                 newValue; // Update the selected value
                           });
                         }
-                      },
+                      }:null,
                       items: business_Type.map<DropdownMenuItem<String>>(
                           (RangeCategoryDataModel state) {
                         return DropdownMenuItem<String>(
@@ -3030,11 +3031,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         height: 2,
                         color: Colors.transparent,
                       ),
-                      onChanged: (String? newValue) {
+                      onChanged: FiIncomeEditable?(String? newValue) {
                         setState(() {
                           selectedHomeType = newValue!;
                         });
-                      },
+                      }:null,
                       items: houseType.map<DropdownMenuItem<String>>(
                           (RangeCategoryDataModel state) {
                         return DropdownMenuItem<String>(
@@ -3080,11 +3081,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         height: 2,
                         color: Colors.transparent,
                       ),
-                      onChanged: (String? newValue) {
+                      onChanged: FiIncomeEditable?(String? newValue) {
                         setState(() {
                           selectedRoofType = newValue!;
                         });
-                      },
+                      }:null,
                       items: roofType.map<DropdownMenuItem<String>>(
                           (RangeCategoryDataModel state) {
                         return DropdownMenuItem<String>(
@@ -3124,11 +3125,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         height: 2,
                         color: Colors.transparent,
                       ),
-                      onChanged: (String? newValue) {
+                      onChanged: FiIncomeEditable?(String? newValue) {
                         setState(() {
                           selectedToiletType = newValue!;
                         });
-                      },
+                      }:null,
                       items: toiletType.map<DropdownMenuItem<String>>(
                           (RangeCategoryDataModel state) {
                         return DropdownMenuItem<String>(
@@ -3174,11 +3175,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         height: 2,
                         color: Colors.transparent,
                       ),
-                      onChanged: (String? newValue) {
+                      onChanged: FiIncomeEditable?(String? newValue) {
                         setState(() {
                           selectedLivingWithSpouse = newValue!;
                         });
-                      },
+                      }:null,
                       items: trueFalse.map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -3217,11 +3218,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         height: 2,
                         color: Colors.transparent,
                       ),
-                      onChanged: (String? newValue) {
+                      onChanged: FiIncomeEditable?(String? newValue) {
                         setState(() {
                           selectedEarningMembers = newValue!;
                         });
-                      },
+                      }:null,
                       items: onetonine.map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -3260,11 +3261,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               height: 2,
               color: Colors.transparent,
             ),
-            onChanged: (String? newValue) {
+            onChanged: FiIncomeEditable?(String? newValue) {
               setState(() {
                 selectedBusinessExperience = newValue!;
               });
-            },
+            }:null,
             items: onetonine.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -3477,11 +3478,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 height: 2,
                 color: Colors.transparent,
               ),
-              onChanged: (String? newValue) {
+              onChanged: FinancialInfoEditable?(String? newValue) {
                 setState(() {
                   selectedAccountType = newValue!;
                 });
-              },
+              }:null,
               items: accType.map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -3512,11 +3513,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 height: 2,
                 color: Colors.transparent,
               ),
-              onChanged: (String? newValue) {
+              onChanged: FinancialInfoEditable?(String? newValue) {
                 setState(() {
                   selectedBankName = newValue!;
                 });
-              },
+              }:null,
               items: bankNamesList.map((BankNamesDataModel value) {
                 return DropdownMenuItem<String>(
                   value: value.bankName,
@@ -3562,7 +3563,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           borderRadius: BorderRadius.zero, // Rectangular shape
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: FinancialInfoEditable?() {
                         if (_bank_AcController.text.isEmpty ||
                             _bank_IFCSController.text.isEmpty) {
                           showToast_Error(
@@ -3573,7 +3574,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
                           ifscVerify(context, _bank_IFCSController.text);
                         }
-                      },
+                      }:null,
                       child: Text(
                         bankAccHolder == null
                             ? 'VERIFY NAME'
@@ -3638,6 +3639,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           Container(
             color: Colors.white,
             child: TextField(
+              enabled: FinancialInfoEditable,
               controller: _bankOpeningDateController,
               focusNode: _bankOpeningDateFocus,
               decoration: InputDecoration(
@@ -3708,14 +3710,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: femMemIncomeEditable?(String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               femselectedGender =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }:null,
                         items: aadhar_gender.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -3753,14 +3755,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: femMemIncomeEditable?(String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               femselectedRelationWithBorrower =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }:null,
                         items: relation.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -3805,14 +3807,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: femMemIncomeEditable?(String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               femselectedHealth =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }:null,
                         items: health.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -3851,14 +3853,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: femMemIncomeEditable?(String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               femselectedEducation =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }:null,
                         items: education.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -3903,14 +3905,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: femMemIncomeEditable?(String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               femselectedSchoolType =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }:null,
                         items: schoolType.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -3949,14 +3951,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: femMemIncomeEditable?(String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               femselectedBusiness =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }:null,
                         items: occupationType.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -4001,14 +4003,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: femMemIncomeEditable?(String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               femselectedBusinessType =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }:null,
                         items: business_Type.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -4047,14 +4049,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           height: 2,
                           color: Colors.transparent,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged:femMemIncomeEditable? (String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               femselectedIncomeType =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }:null,
                         items: income_type.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -4131,11 +4133,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           color: Colors
                               .transparent, // Set to transparent to remove default underline
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged:GuarantorEditable? (String? newValue) {
                           setState(() {
                             selectedTitle = newValue!;
                           });
-                        },
+                        }:null,
                         items: titleList.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -4171,6 +4173,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       GuarantorEditable, _lnameFocus)),
             ],
           ),
+    _buildTextField2('Guardian Name', _guardianController,
+    TextInputType.name, GuarantorEditable, _guardianFocus),
           Row(
             children: [
               Flexible(
@@ -4202,14 +4206,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           color: Colors
                               .transparent, // Set to transparent to remove default underline
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged:GuarantorEditable? (String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               genderselected =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }:null,
                         items: aadhar_gender.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -4252,14 +4256,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           color: Colors
                               .transparent, // Set to transparent to remove default underline
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: GuarantorEditable?(String? newValue) {
                           if (newValue != null) {
                             setState(() {
                               relationselected =
                                   newValue; // Update the selected value
                             });
                           }
-                        },
+                        }:null,
                         items: relation.map<DropdownMenuItem<String>>(
                             (RangeCategoryDataModel state) {
                           return DropdownMenuItem<String>(
@@ -4299,13 +4303,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 color: Colors
                     .transparent, // Set to transparent to remove default underline
               ),
-              onChanged: (String? newValue) {
+              onChanged: GuarantorEditable?(String? newValue) {
                 if (newValue != null) {
                   setState(() {
                     religionselected = newValue; // Update the selected value
                   });
                 }
-              },
+              }:null,
               items: religion.map<DropdownMenuItem<String>>(
                   (RangeCategoryDataModel state) {
                 return DropdownMenuItem<String>(
@@ -4355,6 +4359,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     Container(
                       color: Colors.white,
                       child: TextField(
+                        enabled: GuarantorEditable,
                         controller: _dobController,
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
@@ -4527,13 +4532,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 color: Colors
                     .transparent, // Set to transparent to remove default underline
               ),
-              onChanged: (String? newValue) {
+              onChanged:GuarantorEditable? (String? newValue) {
                 if (newValue != null) {
                   setState(() {
                     stateselected = newValue; // Update the selected value
                   });
                 }
-              },
+              }:null,
               items: states.map<DropdownMenuItem<String>>(
                   (RangeCategoryDataModel state) {
                 return DropdownMenuItem<String>(
@@ -4648,7 +4653,38 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
-        onPressed: toggleEditMode,
+
+        onPressed: (){
+          if (_currentStep == 0) {
+            setState(() {
+              personalInfoEditable = true;
+            });
+          } else if (_currentStep == 1) {
+            setState(() {
+              FiFamilyEditable = true;
+            });
+          } else if (_currentStep == 2) {
+            setState(() {
+              FiIncomeEditable = true;
+            });
+          } else if (_currentStep == 3) {
+            setState(() {
+              FinancialInfoEditable = true;
+            });
+          } else if (_currentStep == 4) {
+            setState(() {
+              femMemIncomeEditable = true;
+            });
+          } else if (_currentStep == 5) {
+            setState(() {
+              GuarantorEditable = true;
+            });
+          } else if (_currentStep == 6) {
+            setState(() {
+              UploadFiDocsEditable = true;
+            });
+          }
+        },
         child: Text(
           _isEditing ? "SAVE" : "EDIT",
           style: TextStyle(color: Colors.white, fontSize: 13),
@@ -4667,7 +4703,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
-        //  fixtraEditable,FiIncomeEditable,FinancialInfoEditable,GuarantorEditable,UploadFiDocsEditable,FiFamilyEditable,femMemIncomeEditable
 
         onPressed: () {
           if (_currentStep == 0) {
@@ -4734,12 +4769,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
       ),
     );
-  }
-
-  void toggleEditMode() {
-    setState(() {
-      _isEditing = !_isEditing;
-    });
   }
 
   /*void showAlertDialog(BuildContext context, String message) {
@@ -4982,62 +5011,26 @@ class _ApplicationPageState extends State<ApplicationPage> {
         .then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
+        print("object112222");
 
-        /* if (value.data[0].errormsg.isEmpty) {
-          print("object112222");
+        if(!value.data[0].placeOfBirth.isEmpty){
+          personalInfo(value.data[0]);
 
-          if (value.data[0].panNo.isEmpty &&
-              value.data[0].dl.isEmpty &&
-              value.data[0].voterId.isEmpty) {
-            print("object112233");
-            setState(() {
-              print("object112244");
+        }
+        if(!value.data[0].motheRFirstName.isEmpty){
+          familyDetails(value.data[0]);
+        }
+       /* if(!value.data[0].occupation){
 
-              FiType = "OLD";
-
-              Fi_Id = value.data[0].fiId.toString();
-              // selectedTitle = value.data[0].title;
-              _nameController.text = value.data[0].fName;
-              _nameMController.text = value.data[0].mName;
-              _nameLController.text = value.data[0].lName;
-              // genderselected = value.data[0].gender;
-              //relationwithBorrowerselected = value.data[0].rela;
-              _mobileNoController.text = value.data[0].pPhone;
-              _dobController.text = value.data[0].dob.toString();
-              // _ageController.text =value.data[0].;
-              _fatherFirstNameController.text = value.data[0].fatheRFirstName;
-              _fatherMiddleNameController.text = value.data[0].fatheRMiddleName;
-              _fatherLastNameController.text = value.data[0].fatheRLastName;
-              // selectedMarritalStatus = value.data[0].maritaLStatus;
-              _spouseFirstNameController.text = value.data[0].spousEFirstName;
-              _spouseMiddleNameController.text = value.data[0].spousEMiddleName;
-              _spouseLastNameController.text = value.data[0].spousELastName;
-              //  _expenseController.text =value.data[0].;
-              //  _incomeController.text =value.data[0].;
-              _latitudeController.text =value.data[0].latitude;
-              _longitudeController.text =value.data[0].longitude;
-              _address1Controller.text =value.data[0].pAddress1;
-              _address2Controller.text =value.data[0].pAddress2;
-              _address3Controller.text =value.data[0].pAddress3;
-              _cityController.text =value.data[0].pCity;
-              _pincodeController.text =value.data[0].pPincode;
-              */
-        /*stateselected = states.firstWhere((item) =>
-              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/
-        /*
-              _loan_amountController.text =value.data[0].loanAmount.toString();
-              // selectedLoanReason = value.data[0].;
-              //  selectedloanDuration = value.data[0].loanDuration;
-              //    bankselected = value.data[0].bankName;
-              EasyLoading.dismiss();
-
-            });
-          } else {
-            String A = value.data[0].fiCode.toString();
-            GlobalClass.showErrorAlert(context,
-                "Kyc is Already Done on this Adhaar Id(FiCode is $A)", 2);
-          }
         }*/
+        if(!value.data[0].bankAc.isEmpty){
+          financialInfo(value.data[0]);
+        }
+        /*if(!value.data[0].health){
+
+        }*/
+        /*if(!value.data[0].grno.isEmpty){}*/
+
       } else {
         setState(() {});
       }
@@ -5430,83 +5423,301 @@ class _ApplicationPageState extends State<ApplicationPage> {
     return true;
   }
 
-  Future<void> fiAllData(BuildContext contextDialog) async {
-    EasyLoading.show(status: "Adhaar Hoistory...");
-    print("object112211");
+  void personalInfo(getAllDataModel data) {
 
-    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
-
-    return await api
-        .dataByFIID(
-      GlobalClass.token,
-      GlobalClass.dbName,
-      FIID,
-    )
-        .then((value) {
-      if (value.statuscode == 200) {
-        print("object112211");
-
-        /* if (value.data[0].errormsg.isEmpty) {
-          print("object112222");
-
-          if (value.data[0].panNo.isEmpty &&
-              value.data[0].dl.isEmpty &&
-              value.data[0].voterId.isEmpty) {
-            print("object112233");
-            setState(() {
-              print("object112244");
-
-              FiType = "OLD";
-
-              Fi_Id = value.data[0].fiId.toString();
-              // selectedTitle = value.data[0].title;
-              _nameController.text = value.data[0].fName;
-              _nameMController.text = value.data[0].mName;
-              _nameLController.text = value.data[0].lName;
-              // genderselected = value.data[0].gender;
-              //relationwithBorrowerselected = value.data[0].rela;
-              _mobileNoController.text = value.data[0].pPhone;
-              _dobController.text = value.data[0].dob.toString();
-              // _ageController.text =value.data[0].;
-              _fatherFirstNameController.text = value.data[0].fatheRFirstName;
-              _fatherMiddleNameController.text = value.data[0].fatheRMiddleName;
-              _fatherLastNameController.text = value.data[0].fatheRLastName;
-              // selectedMarritalStatus = value.data[0].maritaLStatus;
-              _spouseFirstNameController.text = value.data[0].spousEFirstName;
-              _spouseMiddleNameController.text = value.data[0].spousEMiddleName;
-              _spouseLastNameController.text = value.data[0].spousELastName;
-              //  _expenseController.text =value.data[0].;
-              //  _incomeController.text =value.data[0].;
-              _latitudeController.text =value.data[0].latitude;
-              _longitudeController.text =value.data[0].longitude;
-              _address1Controller.text =value.data[0].pAddress1;
-              _address2Controller.text =value.data[0].pAddress2;
-              _address3Controller.text =value.data[0].pAddress3;
-              _cityController.text =value.data[0].pCity;
-              _pincodeController.text =value.data[0].pPincode;
-              */
-        /*stateselected = states.firstWhere((item) =>
-              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/
-        /*
-              _loan_amountController.text =value.data[0].loanAmount.toString();
-              // selectedLoanReason = value.data[0].;
-              //  selectedloanDuration = value.data[0].loanDuration;
-              //    bankselected = value.data[0].bankName;
-              EasyLoading.dismiss();
-
-            });
-          } else {
-            String A = value.data[0].fiCode.toString();
-            GlobalClass.showErrorAlert(context,
-                "Kyc is Already Done on this Adhaar Id(FiCode is $A)", 2);
-          }
-        }*/
-      } else {
-        setState(() {});
-      }
-    }).catchError((err) {
-      print("ERRORRRR$err");
-      EasyLoading.dismiss();
+    setState(() {
+      // FIID,
+      emailIdController.text=data.emailId;
+      placeOfBirthController.text =data.placeOfBirth;
+      // selectedDependent
+      // "gff"
+      //   selectedReligionextra
+      //   selectedCast,
+      mobileController.text=data.pPhone;
+      //  selectedIsHandicap  //  selectedspecialAbility,
+      //  selectedIsHouseRental  //  selectedProperty,
+      address1ControllerP.text=data.pAddress1;
+      address2ControllerP.text=data.pAddress2;
+      address3ControllerP.text=data.pAddress3;
+      cityControllerP.text=data.pCity;
+      //   selectedStateextraP,
+      pincodeControllerP.text=data.pPincode;
+      address1ControllerC.text=data.currentAddress1;
+      address2ControllerC.text=data.currentAddress2;
+      address3ControllerC.text=data.currentAddress3;
+      cityControllerC.text=data.currentCity;
+      //  selectedStateextraP,
+      pincodeControllerC.text=data.currentPincode;
+      //  selectedDistrict,
+      //  selectedSubDistrict,
+      //  selectedVillage,
+      //  selectedResidingFor,
+      //  selectedPresentHouseOwner
     });
+
+
+  }
+
+  void familyDetails(getAllDataModel data) {}
+
+  void financialInfo(getAllDataModel data) {}
+
+    Future<void> getDataFromOCR(String type, BuildContext context) async {
+    EasyLoading.show();
+    File? pickedImage = await GlobalClass().pickImage();
+
+    if (pickedImage != null) {
+      try {
+        final response = await apiService_OCR.uploadDocument(
+          type, // imgType
+          pickedImage!, // File
+        );
+        if (response.statusCode == 200) {
+          if (type == "adharFront") {
+            setState(() {
+              _aadharIdController.text = response.data.adharId;
+              List<String> nameParts = response.data.name.trim().split(" ");
+              if (nameParts.length == 1) {
+                _fnameController.text = nameParts[0];
+              } else if (nameParts.length == 2) {
+                _fnameController.text = nameParts[0];
+                _lnameController.text = nameParts[1];
+              } else {
+                _fnameController.text = nameParts.first;
+                _lnameController.text = nameParts.last;
+                _mnameController.text =
+                    nameParts.sublist(1, nameParts.length - 1).join(' ');
+              }
+              _dobController.text = formatDate(response.data.dob, 'dd/MM/yyyy');
+              genderselected = aadhar_gender
+                  .firstWhere((item) =>
+              item.descriptionEn.toLowerCase() ==
+                  response.data.gender.toLowerCase())
+                  .descriptionEn;
+              if (genderselected == "Male") {
+                selectedTitle = "Mr.";
+              } else {
+                selectedTitle = "Mrs.";
+              }
+            });
+            Navigator.of(context).pop();
+          } else if (type == "adharBack") {
+            _pincodeController.text = response.data.pincode;
+            if (response.data.relation.toLowerCase() == "father") {
+              _guardianController.text = response.data.guardianName;
+              setState(() {
+                relationselected = "Father";
+              });
+              _p_CityController.text = response.data.cityName;
+              List<String> addressParts =
+              response.data.address1.trim().split(" ");
+              if (addressParts.length == 1) {
+                _p_Address1Controller.text = addressParts[0];
+              } else if (addressParts.length == 2) {
+                _p_Address1Controller.text = addressParts[0];
+                _p_Address2Controller.text = addressParts[1];
+              } else {
+                _p_Address1Controller.text = addressParts.first;
+                _p_Address2Controller.text = addressParts.last;
+                _p_Address3Controller.text =
+                    addressParts.sublist(1, addressParts.length - 1).join(' ');
+              }
+              /*List<String> guarNameParts =
+              response.data.guardianName.trim().split(" ");
+              if (guarNameParts.length == 1) {
+                _fatherFirstNameController.text = guarNameParts[0];
+              } else if (guarNameParts.length == 2) {
+                _fatherFirstNameController.text = guarNameParts[0];
+                _fatherLastNameController.text = guarNameParts[1];
+              } else {
+                _fatherFirstNameController.text = guarNameParts.first;
+                _fatherLastNameController.text = guarNameParts.last;
+                _fatherMiddleNameController.text = guarNameParts
+                    .sublist(1, guarNameParts.length - 1)
+                    .join(' ');
+              }*/
+            } else if (response.data.relation.toLowerCase() == "husband") {
+              _guardianController.text = response.data.guardianName;
+              setState(() {
+                relationselected = "Husband";
+              //  selectedMarritalStatus = "Married";
+              });
+              _p_CityController.text = response.data.cityName;
+              List<String> addressParts =
+              response.data.address1.trim().split(" ");
+              if (addressParts.length == 1) {
+                _p_Address1Controller.text = addressParts[0];
+              } else if (addressParts.length == 2) {
+                _p_Address1Controller.text = addressParts[0];
+                _p_Address2Controller.text = addressParts[1];
+              } else {
+                _p_Address1Controller.text = addressParts.first;
+                _p_Address2Controller.text = addressParts.last;
+                _p_Address3Controller.text =
+                    addressParts.sublist(1, addressParts.length - 1).join(' ');
+              }
+              /*List<String> guarNameParts =
+              response.data.guardianName.trim().split(" ");
+              if (guarNameParts.length == 1) {
+                _spouseFirstNameController.text = guarNameParts[0];
+              } else if (guarNameParts.length == 2) {
+                _spouseFirstNameController.text = guarNameParts[0];
+                _spouseLastNameController.text = guarNameParts[1];
+              } else {
+                _spouseFirstNameController.text = guarNameParts.first;
+                _spouseLastNameController.text = guarNameParts.last;
+                _spouseMiddleNameController.text = guarNameParts
+                    .sublist(1, guarNameParts.length - 1)
+                    .join(' ');
+              }*/
+            }
+          }
+          EasyLoading.dismiss();
+        } else {
+          showToast_Error(
+              "Data not fetched from this Aadhaar card please check the image");
+          Navigator.of(context).pop();
+          EasyLoading.dismiss();
+        }
+      } catch (_) {
+        showToast_Error(
+            "Data not fetched from this Aadhaar card please check the image");
+        Navigator.of(context).pop();
+        EasyLoading.dismiss();
+      }
+    }
+  }
+
+  void setQRData(result) {
+    List<String> dataList = result.split(",");
+    if (dataList.length > 14) {
+      _aadharIdController.text = dataList[2];
+      List<String> nameParts = dataList[3].split(" ");
+      if (nameParts.length == 1) {
+        _fnameController.text = nameParts[0];
+      } else if (nameParts.length == 2) {
+        _fnameController.text = nameParts[0];
+        _mnameController.text = nameParts[1];
+      } else {
+        _fnameController.text = nameParts.first;
+        _lnameController.text = nameParts.last;
+        _mnameController.text =
+            nameParts.sublist(1, nameParts.length - 1).join(' ');
+      }
+
+      _dobController.text = formatDate(dataList[4], 'dd-MM-yyyy');
+      setState(() {
+        if (dataList[5].toLowerCase() == "m") {
+          genderselected = "Male";
+          selectedTitle = "Mr.";
+        } else if (dataList[5].toLowerCase() == "f") {
+          genderselected = "Female";
+          selectedTitle = "Mrs.";
+        }
+      });
+      if (dataList[6].toLowerCase().contains("s/o") ||
+          dataList[6].toLowerCase().contains("d/o")) {
+        setState(() {
+          relationselected = "Father";
+          List<String> guarNameParts =
+          replaceCharFromName(dataList[6]).split(" ");
+          if (guarNameParts.length == 1) {
+         //   _fatherFirstNameController.text = guarNameParts[0];
+          } else if (guarNameParts.length == 2) {
+          //  _fatherFirstNameController.text = guarNameParts[0];
+         //   _fatherLastNameController.text = guarNameParts[1];
+          } else {
+         //   _fatherFirstNameController.text = guarNameParts.first;
+         //   _fatherLastNameController.text = guarNameParts.last;
+         //   _fatherMiddleNameController.text =
+                guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+          }
+        });
+      } else if (dataList[6].toLowerCase().contains("w/o")) {
+        setState(() {
+          relationselected = "Husband";
+          List<String> guarNameParts =
+          replaceCharFromName(dataList[6]).split(" ");
+          if (guarNameParts.length == 1) {
+        //    _spouseFirstNameController.text = guarNameParts[0];
+          } else if (guarNameParts.length == 2) {
+       //     _spouseFirstNameController.text = guarNameParts[0];
+      //      _spouseLastNameController.text = guarNameParts[1];
+          } else {
+      //      _spouseFirstNameController.text = guarNameParts.first;
+      //      _spouseLastNameController.text = guarNameParts.last;
+       //     _spouseMiddleNameController.text =
+                guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+          }
+        });
+      }
+      _p_CityController.text = dataList[7];
+   //   _gurNameController.text = replaceCharFromName(dataList[6]);
+
+      if (dataList[0].toLowerCase() == 'v2') {
+        _pincodeController.text = dataList[11];
+        // stateselected = states.firstWhere((item) =>
+        // item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+        String address =
+            "${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
+        List<String> addressParts = address.trim().split(",");
+        if (addressParts.length == 1) {
+          _p_Address1Controller.text = addressParts[0];
+        } else if (addressParts.length == 2) {
+          _p_Address1Controller.text = addressParts[0];
+          _p_Address2Controller.text = addressParts[1];
+        } else {
+          _p_Address1Controller.text = addressParts.first;
+          _p_Address2Controller.text = addressParts.last;
+          _p_Address3Controller.text =
+              addressParts.sublist(1, addressParts.length - 1).join(' ');
+        }
+      } else if (dataList[0].toLowerCase() == 'v4') {
+        // stateselected = states.firstWhere((item) =>
+        // item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
+        _pincodeController.text = dataList[12];
+        String address =
+            "${dataList[10]},${dataList[11]},${dataList[13]},${dataList[15]},${dataList[16]}";
+
+        List<String> addressParts = address.trim().split(",");
+        if (addressParts.length == 1) {
+          _p_Address1Controller.text = addressParts[0];
+        } else if (addressParts.length == 2) {
+          _p_Address1Controller.text = addressParts[0];
+          _p_Address2Controller.text = addressParts[1];
+        } else {
+          _p_Address1Controller.text = addressParts.first;
+          _p_Address2Controller.text = addressParts.last;
+          _p_Address3Controller.text =
+              addressParts.sublist(1, addressParts.length - 1).join(' ');
+        }
+      }
+    }
+  }
+
+  String formatDate(String date, dateFormat) {
+    try {
+      // Parse the input string to a DateTime object
+      DateTime parsedDate = DateFormat(dateFormat).parse(date);
+      setState(() {
+        _selectedDate = parsedDate;
+        _calculateAge();
+      });
+
+      // Return the formatted date string in yyyy-MM-dd format
+      return DateFormat('yyyy-MM-dd').format(parsedDate);
+    } catch (e) {
+      // Handle any invalid format
+      return 'Invalid Date';
+    }
+  }
+  String replaceCharFromName(String gurName) {
+    return gurName
+        .replaceAll("S/O ", "")
+        .replaceAll("S/O: ", "")
+        .replaceAll("D/O ", "")
+        .replaceAll("D/O: ", "")
+        .replaceAll("W/O ", "")
+        .replaceAll("W/O: ", "");
   }
 }

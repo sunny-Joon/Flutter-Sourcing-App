@@ -227,6 +227,7 @@ abstract class ApiService {
       @Part( name:"fname") String fname,
       @Part( name:"mname") String mname,
       @Part( name:"lname") String lname,
+      @Part( name:"GuardianName") String GuardianName,
       @Part( name:"relation_with_Borrower") String relation_with_Borrower,
       @Part( name:"p_Address1") String p_Address1,
       @Part( name:"p_Address2") String p_Address2,
