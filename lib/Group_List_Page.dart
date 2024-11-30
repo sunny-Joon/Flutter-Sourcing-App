@@ -177,12 +177,12 @@ class _GroupListPageState extends State<GroupListPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HouseVisitForm(),
-                            /*builder: (context) => BorrowerList(
-                              data: "widget.data",
-                              areaCd: selectedItem.groupCode,
-                              foCode: selectedItem.groupCodeName,
-                            ),*/
+                          //  builder: (context) => HouseVisitForm(),
+                            builder: (context) => BorrowerList(
+                                BranchData: widget.Branchdata,
+                                GroupData: selectedItem,
+                                page:"HouseVisit"
+                            ),
                           ),
                         );
                         break;
