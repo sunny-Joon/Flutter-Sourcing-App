@@ -299,7 +299,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
 
     getAllDataApi(context);
-    // apiService_idc=ApiService.create(baseUrl: ApiConfig.baseUrl4);
+     apiService_idc=ApiService.create(baseUrl: ApiConfig.baseUrl4);
     GetDocs(context);
     initializeData(); // Fetch initial data
     _BabnkNamesAPI(context);
@@ -4708,57 +4708,62 @@ class _ApplicationPageState extends State<ApplicationPage> {
           if (_currentStep == 0) {
             setState(() {
               pageTitle = "Family Details";
-              _currentStep += 1;
+              // _currentStep += 1;
               personalInfoEditable = false;
             });
-            /*if (_stepOneValidations()) {
+            if (_stepOneValidations()) {
               AddFiExtraDetail(context);
-            }*/
+            }
           } else if (_currentStep == 1) {
-            setState(() {
-              pageTitle = "Income & Expense";
-              _currentStep += 1;
-              FiFamilyEditable = false;
-            });
-            /*if (_stepTwoValidations()) {
+
+            if (_stepTwoValidations()) {
+              setState(() {
+                pageTitle = "Income & Expense";
+                // _currentStep += 1;
+                FiFamilyEditable = false;
+              });
               AddFiFamilyDetail(context);
-            }*/
+            }
           } else if (_currentStep == 2) {
-            setState(() {
-              _currentStep += 1;
-              pageTitle = "Financial Info.";
-              FiIncomeEditable = false;
-            });
-            /*if(_stepThreeValidations()) {
+
+            if(_stepThreeValidations()) {
+              setState(() {
+                // _currentStep += 1;
+                pageTitle = "Financial Info.";
+                FiIncomeEditable = false;
+              });
               AddFiIncomeAndExpense(context);
-            }*/
+            }
           } else if (_currentStep == 3) {
-            setState(() {
-              pageTitle = "Family Income";
-              _currentStep += 1;
-              FinancialInfoEditable = false;
-            });
-            /*if(_stepFourValidations()){
+
+            if(_stepFourValidations()){
+              setState(() {
+                pageTitle = "Family Income";
+                // _currentStep += 1;
+                FinancialInfoEditable = false;
+              });
               AddFinancialInfo(context);
-            }*/
+            }
           } else if (_currentStep == 4) {
-            setState(() {
-              pageTitle = "Guarantor Form";
-              _currentStep += 1;
-              femMemIncomeEditable = false;
-            });
-            /*if(_stepFiveValidations()) {
+
+            if(_stepFiveValidations()) {
+              setState(() {
+                pageTitle = "Guarantor Form";
+                // _currentStep += 1;
+                femMemIncomeEditable = false;
+              });
               FiFemMemIncome(context);
-            }*/
+            }
           } else if (_currentStep == 5) {
-            setState(() {
-              pageTitle = "Docs Upload";
-              _currentStep += 1;
-              GuarantorEditable = false;
-            });
-            /*if(_stepSixValidations()) {
+
+            if(_stepSixValidations()) {
+              setState(() {
+                pageTitle = "Docs Upload";
+                // _currentStep += 1;
+                GuarantorEditable = false;
+              });
               saveGuarantorMethod(context);
-            }*/
+            }
           } else if (_currentStep == 6) {
             setState(() {});
           }
@@ -4916,7 +4921,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   void docVerifyIDC(
+
       String type, String txnNumber, String ifsc, String dob) async {
+    apiService_idc=ApiService.create(baseUrl: ApiConfig.baseUrl4);
+
     EasyLoading.show(
       status: 'Loading...',
     );

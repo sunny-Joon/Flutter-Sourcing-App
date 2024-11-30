@@ -141,6 +141,10 @@ class AdhaarDataModel {
   String errormsg;
   bool isvalid;
   String financialStatus;
+  String relation_With_Borrower;
+  String loan_Reason;
+  int expenses;
+  int income;
 
   AdhaarDataModel({
     required this.fiId,
@@ -251,6 +255,10 @@ class AdhaarDataModel {
     required this.errormsg,
     required this.isvalid,
     required this.financialStatus,
+    required this.relation_With_Borrower,
+    required this.loan_Reason,
+    required this.expenses,
+    required this.income,
   });
 
   factory AdhaarDataModel.fromJson(Map<String, dynamic> json) => AdhaarDataModel(
@@ -362,6 +370,10 @@ class AdhaarDataModel {
     errormsg: json["errormsg"]??"",
     isvalid: json["isvalid"]??"",
     financialStatus: json["financialStatus"]??"",
+    relation_With_Borrower: json["relation_With_Borrower"]??"",
+    loan_Reason: json["loan_Reason"]??"",
+    expenses: json["expenses"]??"",
+    income: json["income"]??"",
   );
 
   Map<String, dynamic> toJson() => {
@@ -473,5 +485,9 @@ class AdhaarDataModel {
     "errormsg": errormsg,
     "isvalid": isvalid,
     "financialStatus": financialStatus,
+    "relation_With_Borrower": relation_With_Borrower,
+    "loan_Reason": loan_Reason,
+    "expenses": expenses,
+    "income": income,
   };
 }

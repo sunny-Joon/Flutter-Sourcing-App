@@ -132,6 +132,8 @@ class _FirstEsignState extends State<FirstEsign> {
             endIndent: 10, // Right padding
           )
           ,          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
                   flex: 3,

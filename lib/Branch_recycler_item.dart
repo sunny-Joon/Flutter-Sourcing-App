@@ -10,10 +10,10 @@ class BranchRecyclerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.15),
@@ -23,19 +23,19 @@ class BranchRecyclerItem extends StatelessWidget {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
-            height: 80,
+            height: 50,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.red.shade900, Colors.redAccent.shade200],
+                colors: [Colors.white, Colors.grey.shade500],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(5),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(4.0),
               child: Row(
                 children: [
                   // Stylish Branch Code Box with Gradient Background
@@ -61,7 +61,7 @@ class BranchRecyclerItem extends StatelessWidget {
                       child: Text(
                         '${item.branchCode}',
                         style: GoogleFonts.roboto(
-                          fontSize: 22,
+                          fontSize:14,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -76,9 +76,9 @@ class BranchRecyclerItem extends StatelessWidget {
                       child: Text(
                         '${item.branchName}',
                         style: GoogleFonts.poppins(
-                          fontSize: 18,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Color(0xFFD42D3F),
                         ),
                         textAlign: TextAlign.center,
                       ),
