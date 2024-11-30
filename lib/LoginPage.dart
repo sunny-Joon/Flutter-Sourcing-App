@@ -448,7 +448,7 @@ class _LoginPageState extends State<LoginPage> {
                 context, value.statuscode.toString(), value.message);
           }
           EasyLoading.dismiss();
-          Navigator.push(
+          Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Fragments()));
         }
 

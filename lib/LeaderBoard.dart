@@ -77,30 +77,30 @@ class _LeaderBoardState extends State<LeaderBoard> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appColors.mainAppColor,
-      body: Column(
+      body:SingleChildScrollView(child:  Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 8,right: 8,top: 40),
+            padding: EdgeInsets.only(left: 8,right: 8,top: 50),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InkWell(
                   child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(width: 1, color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                    ),
+                    // decoration: BoxDecoration(
+                    //   color: Colors.white,
+                    //   border: Border.all(width: 1, color: Colors.grey.shade300),
+                    //   borderRadius: BorderRadius.all(Radius.circular(5)),
+                    // ),
                     height: 40,
                     width: 40,
                     alignment: Alignment.center,
-                    child: Center(
-                      child: Icon(Icons.arrow_back_ios_sharp, size: 16),
-                    ),
+                    // child: Center(
+                    //   child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                    // ),
                   ),
                   onTap: () {
-                    Navigator.of(context).pop();
+                   // Navigator.of(context).pop();
                   },
                 ),
                 Column(
@@ -256,159 +256,159 @@ class _LeaderBoardState extends State<LeaderBoard> with TickerProviderStateMixin
                   ],
                 ),
               ),*/
-             /* isLoading != 0
+              /* isLoading != 0
                   ? isLoading == 1
                       ?*/
               Stack(
-                          alignment: Alignment.topCenter,
-                          children: [
-                            Container(
-                                alignment: Alignment.center,
-                                height: MediaQuery.of(context).size.height / 1.4,
-                                child: null),
-                            Positioned(
-                             // top: 40,
-                              child: Container(
-                                color: appColors.mainAppColor,
-                                alignment: Alignment.bottomCenter,
-                                width: MediaQuery.of(context).size.width / 1.1,
-                                height:
-                                    MediaQuery.of(context).size.height / 1.5,
-                                child: Container(
-                                  margin: EdgeInsets.all(3),
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/Images/curvedBackground.png'), // Replace with the actual image path
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.only(
-                                      top: 65, left: 10, right: 10, bottom: 60),
-                                  //  margin: EdgeInsets.only(top: 30,left: 10,right: 10),
-                                  child: MediaQuery.removePadding(
-                                    context: context,
-                                    removeTop: true,
-                                    child: ListView.builder(
-                                      itemCount: leaderboardDataModel.length,
-                                      itemBuilder: (context, index) {
-                                         final item = leaderboardDataModel[index];
-                                        final bool isFirstItem = index == 0;
+                alignment: Alignment.topCenter,
+                children: [
+                  Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height / 1.4,
+                      child: null),
+                  Positioned(
+                    // top: 40,
+                    child: Container(
+                      color: appColors.mainAppColor,
+                      alignment: Alignment.bottomCenter,
+                      width: MediaQuery.of(context).size.width / 1.1,
+                      height:
+                      MediaQuery.of(context).size.height / 1.6,
+                      child: Container(
+                        margin: EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                                'assets/Images/curvedBackground.png'), // Replace with the actual image path
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        padding: EdgeInsets.only(
+                            top: 65, left: 10, right: 10, bottom: 60),
+                        //  margin: EdgeInsets.only(top: 30,left: 10,right: 10),
+                        child: MediaQuery.removePadding(
+                          context: context,
+                          removeTop: true,
+                          child: ListView.builder(
+                            itemCount: leaderboardDataModel.length,
+                            itemBuilder: (context, index) {
+                              final item = leaderboardDataModel[index];
+                              final bool isFirstItem = index == 0;
 
-                                        return Container(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 5.0, horizontal: 25.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Card(
-                                                    clipBehavior:
-                                                        Clip.antiAlias,
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        color: appColors
-                                                            .mainAppColor,
-                                                        gradient: isFirstItem
-                                                            ? const LinearGradient(
-                                                                colors: [
-                                                                  Colors.yellow,
-                                                                  Colors
-                                                                      .orangeAccent,
-                                                                  Colors.yellow,
-                                                                  Colors.orange,
-                                                                  Colors.orange
-                                                                ], // Define your gradient colors
-                                                                begin: Alignment
-                                                                    .topLeft,
-                                                                end: Alignment
-                                                                    .bottomCenter,
-                                                              )
-                                                            : null, // No gradient for other items
-                                                      ),
-                                                      height: 20,
-                                                      width: 20,
-                                                      child: Center(
-                                                        child: Text(
-                                                          '${index + 1}',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width /
-                                                            3,
-                                                    child: Flexible(child: Text(
-                                                      item.name,
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: Color(0xFFD42D3F),
-                                                        fontWeight: isFirstItem
-                                                            ? FontWeight.bold
-                                                            : FontWeight.normal,
-                                                      ),
-                                                    ),),
-
-                                                  ),
-                                                ],
-                                              ),
-                                              Flexible(
-                                                child: Text(
-                                                  item.totalDisbursementAmt,
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Color(0xFFD42D3F),
-                                                    /*decorationThickness: 1,
-                                                    decoration: TextDecoration.underline,*/
-                                                    decorationColor: Color(0xFFD42D3F),
-                                                    fontWeight: isFirstItem ? FontWeight.bold : FontWeight.normal,
-                                                  ),
-                                                ),
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 25.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Card(
+                                          clipBehavior:
+                                          Clip.antiAlias,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: appColors
+                                                  .mainAppColor,
+                                              gradient: isFirstItem
+                                                  ? const LinearGradient(
+                                                colors: [
+                                                  Colors.yellow,
+                                                  Colors
+                                                      .orangeAccent,
+                                                  Colors.yellow,
+                                                  Colors.orange,
+                                                  Colors.orange
+                                                ], // Define your gradient colors
+                                                begin: Alignment
+                                                    .topLeft,
+                                                end: Alignment
+                                                    .bottomCenter,
                                               )
-
-                                            ],
+                                                  : null, // No gradient for other items
+                                            ),
+                                            height: 20,
+                                            width: 20,
+                                            child: Center(
+                                              child: Text(
+                                                '${index + 1}',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.white,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                        );
-                                      },
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Container(
+                                          width:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              3,
+                                          child: Flexible(child: Text(
+                                            item.name,
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Color(0xFFD42D3F),
+                                              fontWeight: isFirstItem
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                            ),
+                                          ),),
+
+                                        ),
+                                      ],
                                     ),
-                                  ),
+                                    Flexible(
+                                      child: Text(
+                                        item.totalDisbursementAmt,
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Color(0xFFD42D3F),
+                                          /*decorationThickness: 1,
+                                                    decoration: TextDecoration.underline,*/
+                                          decorationColor: Color(0xFFD42D3F),
+                                          fontWeight: isFirstItem ? FontWeight.bold : FontWeight.normal,
+                                        ),
+                                      ),
+                                    )
+
+                                  ],
                                 ),
-                              ),
-                            ),
-                            Positioned(
-                              top: 38,
-                              child: Text(
-                                'Last Month Achievers',
-                                style: TextStyle(
-                                    color: appColors.mainAppColor,
-                                    fontSize: 16,
-                                    fontFamily: 'Visbyfregular'),
-                              ),
-                            ),
-                          ],
-                        )
-                      /*: Container()
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 38,
+                    child: Text(
+                      'Last Month Achievers',
+                      style: TextStyle(
+                          color: appColors.mainAppColor,
+                          fontSize: 16,
+                          fontFamily: 'Visbyfregular'),
+                    ),
+                  ),
+                ],
+              )
+              /*: Container()
                   : CircularProgressIndicator(
                       color: appColors.white,
                     ),*/
             ],
           ),
         ],
-      ),
+      )),
     );
   }
 }

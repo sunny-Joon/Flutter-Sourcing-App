@@ -32,6 +32,7 @@ class _FragmentsState extends State<Fragments> {
   final List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     LeaderBoard(),
+    OnBoarding(),
     Collection(),
     Profile(),
   ];
@@ -54,7 +55,7 @@ class _FragmentsState extends State<Fragments> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F), // Set background color
-      body: _widgetOptions.elementAt(_selectedIndex), // Display the selected page
+      body: _widgetOptions[_page], // Display the selected page
       bottomNavigationBar: CurvedNavigationBar(
         height: 60,
         items: <Widget>[
@@ -118,46 +119,46 @@ class _FragmentsState extends State<Fragments> {
           setState(() {
             setState(() {
               _page = index;
-              if(_page==0){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(), // Pass the response object
-                  ),
-                );
-              }
-              if(_page==1){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LeaderBoard(), // Pass the response object
-                  ),
-                );
-              }
-              if(_page==2){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => OnBoarding(), // Pass the response object
-                  ),
-                );
-              }
-              if(_page==3){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Collection(), // Pass the response object
-                  ),
-                );
-              }
-              if(_page==4){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Profile(), // Pass the response object
-                  ),
-                );
-              }
+              // if(_page==0){
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => HomePage(), // Pass the response object
+              //     ),
+              //   );
+              // }
+              // if(_page==1){
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => LeaderBoard(), // Pass the response object
+              //     ),
+              //   );
+              // }
+              // if(_page==2){
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => OnBoarding(), // Pass the response object
+              //     ),
+              //   );
+              // }
+              // if(_page==3){
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => Collection(), // Pass the response object
+              //     ),
+              //   );
+              // }
+              // if(_page==4){
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => Profile(), // Pass the response object
+              //     ),
+              //   );
+              // }
             });
           });
         },

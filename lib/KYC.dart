@@ -90,7 +90,7 @@ class _KYCPageState extends State<KYCPage> {
   String? _locationMessage;
   Position? position;
   bool otpVerified = false;
-
+  bool _pageloading=true;
   @override
   void initState() {
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
@@ -104,8 +104,9 @@ class _KYCPageState extends State<KYCPage> {
 
     // selectedTitle = titleList.isNotEmpty ? titleList[0] : null;
 
-    super.initState();
+
     geolocator(context);
+    super.initState();
 // Fetch states using the required cat_key
   }
 
@@ -195,6 +196,9 @@ class _KYCPageState extends State<KYCPage> {
             code: 'select', // Value of the placeholder
           ));
     }); // Refresh the UI
+    setState(() {
+      _pageloading=false;
+    });
   }
 
   // final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
@@ -374,6 +378,7 @@ class _KYCPageState extends State<KYCPage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
+        onWillPop: _onWillPop,
         child: Scaffold(
           backgroundColor: Color(0xFFD42D3F),
           body: SingleChildScrollView(
@@ -438,9 +443,9 @@ class _KYCPageState extends State<KYCPage> {
                     ),
                     //  _buildProgressIndicator(),
                     SizedBox(height: 30),
-                    Container(
-                      height: MediaQuery.of(context).size.height - 244,
-                      child: Flexible(
+                    _pageloading?CircularProgressIndicator(color: Colors.white,):Column(children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height - 244,
                         child: Stack(
                           clipBehavior: Clip.none,
                           children: [
@@ -468,84 +473,84 @@ class _KYCPageState extends State<KYCPage> {
                                 child: Center(
                                   child: _imageFile == null
                                       ? InkWell(
-                                          onTap: _pickImage,
-                                          child: ClipOval(
-                                            child: Container(
-                                              width: 70,
-                                              height: 70,
-                                              color: Colors.grey,
-                                              child: Icon(
-                                                Icons.person,
-                                                size: 50.0,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : InkWell(
-                                          child: ClipOval(
-                                            child: Image.file(
-                                              File(_imageFile!.path),
-                                              width: 70,
-                                              height: 70,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          onTap: _pickImage,
+                                    onTap: _pickImage,
+                                    child: ClipOval(
+                                      child: Container(
+                                        width: 70,
+                                        height: 70,
+                                        color: Colors.grey,
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 50.0,
+                                          color: Colors.white,
                                         ),
+                                      ),
+                                    ),
+                                  )
+                                      : InkWell(
+                                    child: ClipOval(
+                                      child: Image.file(
+                                        File(_imageFile!.path),
+                                        width: 70,
+                                        height: 70,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    onTap: _pickImage,
+                                  ),
                                 )),
                           ],
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on_outlined,
-                              color: Colors.white,
-                            ),
-                            Text(
-                              "${_locationMessage}",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        InkWell(
-                          onTap: () {
-                            geolocator(context);
-                          },
-                          child: Card(
-                            elevation: 5,
-                            shape: CircleBorder(),
-                            child: Padding(
-                              padding: EdgeInsets.all(3),
-                              child: Icon(
-                                Icons.refresh,
-                                size: 30,
-                                color: Color(0xffb41d2d),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.white,
+                              ),
+                              Text(
+                                "${_locationMessage}",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          InkWell(
+                            onTap: () {
+                              geolocator(context);
+                            },
+                            child: Card(
+                              elevation: 5,
+                              shape: CircleBorder(),
+                              child: Padding(
+                                padding: EdgeInsets.all(3),
+                                child: Icon(
+                                  Icons.refresh,
+                                  size: 30,
+                                  color: Color(0xffb41d2d),
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    _buildNextButton(context),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      _buildNextButton(context),
+                    ],)
+
                   ],
                 ),
               ),
             ),
           ),
-        ),
-        onWillPop: _onWillPop);
+        ));
   }
 
   int calculateAgeFromString(String dateString,
@@ -1394,6 +1399,7 @@ class _KYCPageState extends State<KYCPage> {
                             }
                             return null;
                           },
+
                         ),
                       )),
                 ],
@@ -3048,107 +3054,194 @@ bool checkIdMendate(){
   void setQRData(result) {
     List<String> dataList = result.split(",");
     if (dataList.length > 14) {
-      _aadharIdController.text = dataList[2];
-      List<String> nameParts = dataList[3].split(" ");
-      if (nameParts.length == 1) {
-        _nameController.text = nameParts[0];
-      } else if (nameParts.length == 2) {
-        _nameController.text = nameParts[0];
-        _nameLController.text = nameParts[1];
-      } else {
-        _nameController.text = nameParts.first;
-        _nameLController.text = nameParts.last;
-        _nameMController.text =
-            nameParts.sublist(1, nameParts.length - 1).join(' ');
-      }
-
-      _dobController.text = formatDate(dataList[4], 'dd-MM-yyyy');
-      setState(() {
-        if (dataList[5].toLowerCase() == "m") {
-          genderselected = "Male";
-          selectedTitle = "Mr.";
-        } else if (dataList[5].toLowerCase() == "f") {
-          genderselected = "Female";
-          selectedTitle = "Mrs.";
+      if(dataList[0].toLowerCase().startsWith("v")){
+        _aadharIdController.text = dataList[2];
+        List<String> nameParts = dataList[3].split(" ");
+        if (nameParts.length == 1) {
+          _nameController.text = nameParts[0];
+        } else if (nameParts.length == 2) {
+          _nameController.text = nameParts[0];
+          _nameLController.text = nameParts[1];
+        } else {
+          _nameController.text = nameParts.first;
+          _nameLController.text = nameParts.last;
+          _nameMController.text =
+              nameParts.sublist(1, nameParts.length - 1).join(' ');
         }
-      });
-      if (dataList[6].toLowerCase().contains("s/o") ||
-          dataList[6].toLowerCase().contains("d/o")) {
+
+        _dobController.text = formatDate(dataList[4], 'dd-MM-yyyy');
         setState(() {
-          relationwithBorrowerselected = "Father";
-          List<String> guarNameParts =
-              replaceCharFromName(dataList[6]).split(" ");
-          if (guarNameParts.length == 1) {
-            _fatherFirstNameController.text = guarNameParts[0];
-          } else if (guarNameParts.length == 2) {
-            _fatherFirstNameController.text = guarNameParts[0];
-            _fatherLastNameController.text = guarNameParts[1];
-          } else {
-            _fatherFirstNameController.text = guarNameParts.first;
-            _fatherLastNameController.text = guarNameParts.last;
-            _fatherMiddleNameController.text =
-                guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+          if (dataList[5].toLowerCase() == "m") {
+            genderselected = "Male";
+            selectedTitle = "Mr.";
+          } else if (dataList[5].toLowerCase() == "f") {
+            genderselected = "Female";
+            selectedTitle = "Mrs.";
           }
         });
-      } else if (dataList[6].toLowerCase().contains("w/o")) {
-        setState(() {
-          relationwithBorrowerselected = "Husband";
-          List<String> guarNameParts =
-              replaceCharFromName(dataList[6]).split(" ");
-          if (guarNameParts.length == 1) {
-            _spouseFirstNameController.text = guarNameParts[0];
-          } else if (guarNameParts.length == 2) {
-            _spouseFirstNameController.text = guarNameParts[0];
-            _spouseLastNameController.text = guarNameParts[1];
+        if (dataList[6].toLowerCase().contains("s/o") ||
+            dataList[6].toLowerCase().contains("d/o")) {
+          setState(() {
+            relationwithBorrowerselected = "Father";
+            List<String> guarNameParts =
+            replaceCharFromName(dataList[6]).split(" ");
+            if (guarNameParts.length == 1) {
+              _fatherFirstNameController.text = guarNameParts[0];
+            } else if (guarNameParts.length == 2) {
+              _fatherFirstNameController.text = guarNameParts[0];
+              _fatherLastNameController.text = guarNameParts[1];
+            } else {
+              _fatherFirstNameController.text = guarNameParts.first;
+              _fatherLastNameController.text = guarNameParts.last;
+              _fatherMiddleNameController.text =
+                  guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+            }
+          });
+        } else if (dataList[6].toLowerCase().contains("w/o")) {
+          setState(() {
+            relationwithBorrowerselected = "Husband";
+            List<String> guarNameParts =
+            replaceCharFromName(dataList[6]).split(" ");
+            if (guarNameParts.length == 1) {
+              _spouseFirstNameController.text = guarNameParts[0];
+            } else if (guarNameParts.length == 2) {
+              _spouseFirstNameController.text = guarNameParts[0];
+              _spouseLastNameController.text = guarNameParts[1];
+            } else {
+              _spouseFirstNameController.text = guarNameParts.first;
+              _spouseLastNameController.text = guarNameParts.last;
+              _spouseMiddleNameController.text =
+                  guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+            }
+          });
+        }
+        _cityController.text = dataList[7];
+        _gurNameController.text = replaceCharFromName(dataList[6]);
+
+        if (dataList[0].toLowerCase() == 'v2') {
+          _pincodeController.text = dataList[11];
+          stateselected = states.firstWhere((item) =>
+          item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+          String address =
+              "${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
+          List<String> addressParts = address.trim().split(",");
+          if (addressParts.length == 1) {
+            _address1Controller.text = addressParts[0];
+          } else if (addressParts.length == 2) {
+            _address1Controller.text = addressParts[0];
+            _address2Controller.text = addressParts[1];
           } else {
-            _spouseFirstNameController.text = guarNameParts.first;
-            _spouseLastNameController.text = guarNameParts.last;
-            _spouseMiddleNameController.text =
-                guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+            _address1Controller.text = addressParts.first;
+            _address2Controller.text = addressParts.last;
+            _address3Controller.text =
+                addressParts.sublist(1, addressParts.length - 1).join(' ');
+          }
+        } else if (dataList[0].toLowerCase() == 'v4') {
+          stateselected = states.firstWhere((item) =>
+          item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
+          _pincodeController.text = dataList[12];
+          String address =
+              "${dataList[10]},${dataList[11]},${dataList[13]},${dataList[15]},${dataList[16]}";
+
+          List<String> addressParts = address.trim().split(",");
+          if (addressParts.length == 1) {
+            _address1Controller.text = addressParts[0];
+          } else if (addressParts.length == 2) {
+            _address1Controller.text = addressParts[0];
+            _address2Controller.text = addressParts[1];
+          } else {
+            _address1Controller.text = addressParts.first;
+            _address2Controller.text = addressParts.last;
+            _address3Controller.text =
+                addressParts.sublist(1, addressParts.length - 1).join(' ');
+          }
+        }
+      }else{
+
+        _aadharIdController.text = dataList[1];
+        List<String> nameParts = dataList[2].split(" ");
+        if (nameParts.length == 1) {
+          _nameController.text = nameParts[0];
+        } else if (nameParts.length == 2) {
+          _nameController.text = nameParts[0];
+          _nameLController.text = nameParts[1];
+        } else {
+          _nameController.text = nameParts.first;
+          _nameLController.text = nameParts.last;
+          _nameMController.text =
+              nameParts.sublist(1, nameParts.length - 1).join(' ');
+        }
+
+        _dobController.text = formatDate(dataList[3], 'dd-MM-yyyy');
+        setState(() {
+          if (dataList[4].toLowerCase() == "m") {
+            genderselected = "Male";
+            selectedTitle = "Mr.";
+          } else if (dataList[4].toLowerCase() == "f") {
+            genderselected = "Female";
+            selectedTitle = "Mrs.";
           }
         });
-      }
-      _cityController.text = dataList[7];
-      _gurNameController.text = replaceCharFromName(dataList[6]);
-
-      if (dataList[0].toLowerCase() == 'v2') {
-        _pincodeController.text = dataList[11];
-        stateselected = states.firstWhere((item) =>
-            item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
-        String address =
-            "${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
-        List<String> addressParts = address.trim().split(",");
-        if (addressParts.length == 1) {
-          _address1Controller.text = addressParts[0];
-        } else if (addressParts.length == 2) {
-          _address1Controller.text = addressParts[0];
-          _address2Controller.text = addressParts[1];
-        } else {
-          _address1Controller.text = addressParts.first;
-          _address2Controller.text = addressParts.last;
-          _address3Controller.text =
-              addressParts.sublist(1, addressParts.length - 1).join(' ');
+        if (dataList[5].toLowerCase().contains("s/o") ||
+            dataList[5].toLowerCase().contains("d/o")) {
+          setState(() {
+            relationwithBorrowerselected = "Father";
+            List<String> guarNameParts =
+            replaceCharFromName(dataList[5]).split(" ");
+            if (guarNameParts.length == 1) {
+              _fatherFirstNameController.text = guarNameParts[0];
+            } else if (guarNameParts.length == 2) {
+              _fatherFirstNameController.text = guarNameParts[0];
+              _fatherLastNameController.text = guarNameParts[1];
+            } else {
+              _fatherFirstNameController.text = guarNameParts.first;
+              _fatherLastNameController.text = guarNameParts.last;
+              _fatherMiddleNameController.text =
+                  guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+            }
+          });
+        } else if (dataList[5].toLowerCase().contains("w/o")) {
+          setState(() {
+            relationwithBorrowerselected = "Husband";
+            List<String> guarNameParts =
+            replaceCharFromName(dataList[5]).split(" ");
+            if (guarNameParts.length == 1) {
+              _spouseFirstNameController.text = guarNameParts[0];
+            } else if (guarNameParts.length == 2) {
+              _spouseFirstNameController.text = guarNameParts[0];
+              _spouseLastNameController.text = guarNameParts[1];
+            } else {
+              _spouseFirstNameController.text = guarNameParts.first;
+              _spouseLastNameController.text = guarNameParts.last;
+              _spouseMiddleNameController.text =
+                  guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+            }
+          });
         }
-      } else if (dataList[0].toLowerCase() == 'v4') {
-        stateselected = states.firstWhere((item) =>
-            item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
-        _pincodeController.text = dataList[12];
-        String address =
-            "${dataList[10]},${dataList[11]},${dataList[13]},${dataList[15]},${dataList[16]}";
+        _cityController.text = dataList[6];
+        _gurNameController.text = replaceCharFromName(dataList[6]);
 
-        List<String> addressParts = address.trim().split(",");
-        if (addressParts.length == 1) {
-          _address1Controller.text = addressParts[0];
-        } else if (addressParts.length == 2) {
-          _address1Controller.text = addressParts[0];
-          _address2Controller.text = addressParts[1];
-        } else {
-          _address1Controller.text = addressParts.first;
-          _address2Controller.text = addressParts.last;
-          _address3Controller.text =
-              addressParts.sublist(1, addressParts.length - 1).join(' ');
-        }
+
+          _pincodeController.text = dataList[10];
+          stateselected = states.firstWhere((item) =>
+          item.descriptionEn.toLowerCase() == dataList[12].toLowerCase());
+          String address =
+              "${dataList[8]},${dataList[9]},${dataList[11]},${dataList[13]},${dataList[14]}";
+          List<String> addressParts = address.trim().split(",");
+          if (addressParts.length == 1) {
+            _address1Controller.text = addressParts[0];
+          } else if (addressParts.length == 2) {
+            _address1Controller.text = addressParts[0];
+            _address2Controller.text = addressParts[1];
+          } else {
+            _address1Controller.text = addressParts.first;
+            _address2Controller.text = addressParts.last;
+            _address3Controller.text =
+                addressParts.sublist(1, addressParts.length - 1).join(' ');
+          }
+
       }
+
     }
   }
 
