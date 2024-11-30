@@ -2420,8 +2420,7 @@ class _KYCPageState extends State<KYCPage> {
               selectedSubDistrictCode, (PlaceData? newValue) {
             setState(() {
               selectedSubDistrictCode = newValue;
-              getPlace(
-                  "village",
+              getPlace("village",
                   stateselected!.code,
                   selectedDistrictCode!.distCode!,
                   selectedSubDistrictCode!.subDistCode!);
@@ -2450,68 +2449,74 @@ class _KYCPageState extends State<KYCPage> {
       Type objName) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            labelText,
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          SizedBox(height: 8),
-          DropdownButtonFormField<T>(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              labelText: label,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
-                borderSide: BorderSide(
-                  color: Colors.grey.shade400, // Border color when enabled
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
-                borderSide: BorderSide(
-                  color: Colors.grey, // Border color when focused
-                ),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
-                borderSide: BorderSide(
-                  color: Colors.grey, // Default border color
-                ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              labelText,
+              style: TextStyle(
+                fontSize: 16,
               ),
             ),
-            value: selectedValue,
-            items: items.map((T value) {
-              String setdata = "";
-              if (value is RangeCategoryDataModel) {
-                setdata = value.descriptionEn;
-              } else if (value is PlaceData) {
-                if (label == "Cities") {
-                  setdata = value.cityName ?? "";
-                } else if (label == "Districts") {
-                  setdata = value.distName ?? "";
-                } else if (label == "Sub-Districts") {
-                  setdata = value.subDistName ?? "";
-                } else if (label == "Village") {
-                  setdata = value.villageName ?? "";
-                }
-              }
+            SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity, // Ensure the dropdown takes the full width available
+              child: DropdownButtonFormField<T>(
+                isExpanded: true, // Ensure the dropdown expands to fit its content
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  labelText: label,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade400, // Border color when enabled
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: Colors.grey, // Border color when focused
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(
+                      color: Colors.grey, // Default border color
+                    ),
+                  ),
+                ),
+                value: selectedValue,
+                items: items.map((T value) {
+                  String setdata = "";
+                  if (value is RangeCategoryDataModel) {
+                    setdata = value.descriptionEn;
+                  } else if (value is PlaceData) {
+                    if (label == "Cities") {
+                      setdata = value.cityName ?? "";
+                    } else if (label == "Districts") {
+                      setdata = value.distName ?? "";
+                    } else if (label == "Sub-Districts") {
+                      setdata = value.subDistName ?? "";
+                    } else if (label == "Village") {
+                      setdata = value.villageName ?? "";
+                    }
+                  }
 
-              return DropdownMenuItem<T>(
-                value: value,
-                child: Text(
-                  setdata,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
-                ), // Convert the value to string for display
-              );
-            }).toList(),
-            onChanged: onChanged,
-          ),
-        ],
+                  return DropdownMenuItem<T>(
+                    value: value,
+                    child: Text(
+                      setdata,
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                    ), // Convert the value to string for display
+                  );
+                }).toList(),
+                onChanged: onChanged,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
