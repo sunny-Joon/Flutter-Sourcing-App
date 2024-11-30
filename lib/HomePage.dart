@@ -144,9 +144,8 @@ class _HomePageState extends State<HomePage> {
           children: [
             SizedBox(height: 80), // Add some space at the top
             Container(
-              height: MediaQuery.of(context).size.height / 2.2,
-              width: MediaQuery.of(context).size.width-30,
-              margin: EdgeInsets.symmetric(horizontal: 5.0), // 5dp margin on left and right
+              width: MediaQuery.of(context).size.width - 30,
+              margin: EdgeInsets.symmetric(horizontal: 15.0), // 15dp margin on left and right
               padding: EdgeInsets.all(30.0),
               decoration: BoxDecoration(
                 color: Color(0xFFD42D3F),
@@ -157,6 +156,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   // Logo with top margin
                   Padding(
@@ -188,46 +188,39 @@ class _HomePageState extends State<HomePage> {
                   ),
                   // Disbursement Target text with top margin
                   Text(
-                      'Comission Target',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFF6D6D6D),
-                      ),
-                      textAlign: TextAlign.center,
+                    'Comission Target',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Color(0xFF6D6D6D),
                     ),
+                    textAlign: TextAlign.center,
+                  ),
                   // Container with margin from top and bottom
                   SizedBox(height: 10),
                   Text(
-                      '₹ ${_displayValue.toStringAsFixed(0)}',
-                      style: TextStyle(
-                        fontSize: 28,
-                        color: Color(0xFF000000),
-                        fontWeight: FontWeight.bold, // Bold text
-                      ),
-                      textAlign: TextAlign.center,
+                    '₹ ${_displayValue.toStringAsFixed(0)}',
+                    style: TextStyle(
+                      fontSize: 28,
+                      color: Color(0xFF000000),
+                      fontWeight: FontWeight.bold, // Bold text
                     ),
+                    textAlign: TextAlign.center,
+                  ),
                   SizedBox(height: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFD42D3F), // Button background color
-                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0), // Button padding
+                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10), // Button padding
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero, // Rectangular corners
                       ),
                     ),
                     onPressed: () async {
-                      // final selectedValue = await _showAlertDialog(context); // Same functionality
-                      // if (selectedValue != null) {
-                      //   setState(() {
-                      //     _displayValue = selectedValue * 1000; // Convert to the actual value
-                      //   });
-                      // }
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => TargetSetPage(
-
-                            )),
+                            builder: (context) => TargetSetPage()
+                        ),
                       );
                     },
                     child: Text(
@@ -242,40 +235,38 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-
             SizedBox(height: 20), // Add space between sections
             // Bottom section with cards
             GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TargetCarGif()),
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'TAP TO KNOW YOUR PROGRESS',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Color(0xFFC5C3C3),
-                      shadows: [
-                       /* Shadow(
-                          blurRadius: 10.0,
-                          color: Colors.black,
-                        ),*/
-                      ],
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TargetCarGif()),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'TAP TO KNOW YOUR PROGRESS',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color(0xFFC5C3C3),
+                        shadows: [
+                          /* Shadow(
+                        blurRadius: 10.0,
+                        color: Colors.black,
+                      ),*/
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Icon(
-                    Icons.double_arrow_outlined,
-                    color: Color(0xFFC5C3C3),
-                  ),
-                ],
-              )
-
+                    Icon(
+                      Icons.double_arrow_outlined,
+                      color: Color(0xFFC5C3C3),
+                    ),
+                  ],
+                )
             ),
             SizedBox(height: 10), // Add space before the row
             Row(
@@ -377,13 +368,13 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-
             SizedBox(height: 20), // Add some space at the bottom
           ],
         ),
       ),
     );
   }
+
 
   Future<void> _setTarget(BuildContext context, int target) async {
 
