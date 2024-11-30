@@ -33,6 +33,7 @@ class GlobalClass {
   static int target = 0;
   static double? longitude;
   static double? latitude;
+  static String? appVersion;
 
   static const List<String> storeValues = ['YES', 'NO'];
   static const List<String> oneToNine = ['1', '2', '3','4', '5', '6','7', '8', '9'];

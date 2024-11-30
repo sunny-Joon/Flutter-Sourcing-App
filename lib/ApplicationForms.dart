@@ -223,7 +223,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final _p_Address3Controller = TextEditingController();
   final _p_CityController = TextEditingController();
   final _pincodeController = TextEditingController();
-  String? stateselected;
+  RangeCategoryDataModel? stateselected;
   String? relationselected;
   String? genderselected;
   String? religionselected;
@@ -1092,7 +1092,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String p_Address2 = _p_Address2Controller.text.toString();
     String p_Address3 = _p_Address3Controller.text.toString();
     String p_City = _p_CityController.text.toString();
-    String p_State = stateselected.toString();
+    String p_State = stateselected!.descriptionEn;
     String pincode = _pincodeController.text.toString();
     String dob = _dobController.text.toString();
     String age = _ageController.text.toString();
@@ -1439,7 +1439,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Aadhar Front",
             path: doc.aadharPath,
-            id: doc.aadharCheckListId,
+            id: 1,
             GrNo: "0",
             onImagePicked: (File file) {
               adhaarFront = file;
@@ -1447,7 +1447,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Aadhar Back",
             path: doc.aadharBPath,
-            id: doc.aadharBCheckListId,
+            id: 27,
             GrNo: '0',
             onImagePicked: (File file) {
               adhaarBack = file;
@@ -1458,7 +1458,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Voter Front",
             path: doc.voterPath,
-            id: doc.voterCheckListId,
+            id: 3,
             GrNo: '0',
             onImagePicked: (File file) {
               voterFront = file;
@@ -1466,7 +1466,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Voter Back",
             path: doc.voterBPath,
-            id: doc.voterBCheckListId,
+            id: 26,
             GrNo: '0',
             onImagePicked: (File file) {
               voterback = file;
@@ -1477,7 +1477,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Pan Front",
             path: doc.panPath,
-            id: doc.panCheckListId,
+            id: 4,
             GrNo: '0',
             onImagePicked: (File file) {
               panFront = file;
@@ -1488,7 +1488,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "DL Front",
             path: doc.drivingPath,
-            id: doc.drivingCheckListId,
+            id: 15	,
             GrNo: '0',
             onImagePicked: (File file) {
               dlFront = file;
@@ -1509,7 +1509,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         listItems.add(_buildListItem(
             title: "Passbook Front",
             path: doc.passBookPath,
-            id: doc.passBookCheckListId,
+            id: 2,
             GrNo: '0',
             onImagePicked: (File file) {
               passbook = file;
@@ -1532,7 +1532,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "Aadhar Front",
               path: grDoc.aadharPath,
-              id: 1,
+              id: 7,
               GrNo: grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -1540,7 +1540,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "Aadhar Back",
               path: grDoc.aadharBPath,
-              id: 1,
+              id: 7,
               GrNo: grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -1551,7 +1551,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "Voter Front",
               path: grDoc.voterPath,
-              id: 1,
+              id: 5,
               GrNo: grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -1559,7 +1559,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "Voter Back",
               path: grDoc.voterBPath,
-              id: 1,
+              id: 5,
               GrNo: grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -1570,7 +1570,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "Pan Front",
               path: grDoc.panPath,
-              id: 1,
+              id: 8,
               GrNo: grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -1581,7 +1581,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
               title: "DL Front",
               path: grDoc.drivingPath,
-              id: 1,
+              id: 16,
               GrNo: grDoc.grSno,
               onImagePicked: (File file) {
                 passbook = file;
@@ -4521,7 +4521,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.circular(5),
             ),
-            child: DropdownButton<String>(
+            child: DropdownButton<RangeCategoryDataModel>(
               value: stateselected,
               isExpanded: true,
               iconSize: 24,
@@ -4532,17 +4532,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 color: Colors
                     .transparent, // Set to transparent to remove default underline
               ),
-              onChanged:GuarantorEditable? (String? newValue) {
+              onChanged:GuarantorEditable? (RangeCategoryDataModel? newValue) {
                 if (newValue != null) {
                   setState(() {
                     stateselected = newValue; // Update the selected value
                   });
                 }
               }:null,
-              items: states.map<DropdownMenuItem<String>>(
+              items: states.map<DropdownMenuItem<RangeCategoryDataModel>>(
                   (RangeCategoryDataModel state) {
-                return DropdownMenuItem<String>(
-                  value: state.code,
+                return DropdownMenuItem<RangeCategoryDataModel>(
+                  value: state,
                   child: Text(state.descriptionEn),
                 );
               }).toList(),
@@ -4705,6 +4705,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
 
         onPressed: () {
+          if(_currentStep == 0){
+            setState(() {
+              _currentStep=_currentStep+5;
+            });
+          }else
           if (_currentStep == 0) {
             setState(() {
               pageTitle = "Family Details";
@@ -5404,9 +5409,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please Enter Correct Pincode");
       _pincodeFocus.requestFocus();
       return false;
-    } else if (stateselected == null ||
-        stateselected!.isEmpty ||
-        stateselected!.toLowerCase() == 'select') {
+    } else if (stateselected == null  ||
+        stateselected!.descriptionEn.toLowerCase() == 'select') {
       showToast_Error("Please Select State");
       return false;
     } else if (relationselected == null ||
@@ -5660,12 +5664,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
         });
       }
       _p_CityController.text = dataList[7];
-   //   _gurNameController.text = replaceCharFromName(dataList[6]);
+     _guardianController.text = replaceCharFromName(dataList[6]);
 
       if (dataList[0].toLowerCase() == 'v2') {
         _pincodeController.text = dataList[11];
-        // stateselected = states.firstWhere((item) =>
-        // item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+         stateselected = states.firstWhere((item) =>item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
         String address =
             "${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
         List<String> addressParts = address.trim().split(",");

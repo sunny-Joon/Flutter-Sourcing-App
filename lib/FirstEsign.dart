@@ -15,6 +15,7 @@ import 'package:xml/xml.dart';
 import 'dart:io';
 
 
+import 'MasterAPIs/live_track_repository.dart';
 import 'Models/GroupModel.dart';
 import 'Models/branch_model.dart';
 
@@ -241,7 +242,7 @@ class _FirstEsignState extends State<FirstEsign> {
       pageBuilder: (context, animation, secondaryAnimation) {
         return SafeArea(
           child: Center(
-            child: DialogContent(borrowerAdharNumber: widget.selectedData.aadhar_no,),
+            child: DialogContent(borrowerAdharNumber: widget.selectedData.aadhar_no,selectedBorrower: widget.selectedData,),
           ),
         );
       },
@@ -258,8 +259,9 @@ class _FirstEsignState extends State<FirstEsign> {
 
 class DialogContent extends StatefulWidget {
   final String borrowerAdharNumber;
+  final BorrowerListDataModel selectedBorrower;
 
-  const DialogContent({super.key, required this.borrowerAdharNumber});
+  const DialogContent({super.key, required this.borrowerAdharNumber, required this.selectedBorrower});
   @override
   _DialogContentState createState() => _DialogContentState();
 }
@@ -476,6 +478,7 @@ class _DialogContentState extends State<DialogContent> {
   void sendXMlToServer(String result) {
     _apiServiceForESign.sendXMLtoServer(result).then((value){
       if(value.response.statusCode==200){
+        LiveTrackRepository().saveLivetrackData( "",   "ESign",widget.selectedBorrower.id);
         GlobalClass.showSuccessAlert(context,"ESign Has been done",2);
         Navigator.of(context).pop();
       }else{
