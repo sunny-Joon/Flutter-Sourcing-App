@@ -3,8 +3,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/PopupDialog.dart';
 import 'package:flutter_sourcing_app/SharedeviceId.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'ApiService.dart';
 import 'DeviceIdGenerator.dart';
 import 'Fragments.dart';
@@ -311,45 +314,7 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
-      /*floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (_isExpanded) ...[
-            ScaleTransition(
-              scale: _animation,
-              alignment: Alignment.bottomCenter,
-              child: _buildFab(Icons.chat, 'Chatbot', () {
-                // Your chatbot action here
-              }),
-            ),
-            ScaleTransition(
-              scale: _animation,
-              alignment: Alignment.bottomCenter,
-              child: _buildFab(Icons.email, 'Email', () {
-                // Your email action here
-              }),
-            ),
-            ScaleTransition(
-              scale: _animation,
-              alignment: Alignment.bottomCenter,
-              child: _buildFab(Icons.call, 'Call Support', () {
-                // Your call support action here
-              }),
-            ),
-            ScaleTransition(
-              scale: _animation,
-              alignment: Alignment.bottomCenter,
-              child: _buildFab(Icons.call, 'WhatsApp', () {
-                // Your WhatsApp action here
-              }),
-            ),
-          ],
-          FloatingActionButton(
-            onPressed: _toggle,
-            child: Icon(_isExpanded ? Icons.close : Icons.add),
-          ),
-        ],
-      ),*/
+      floatingActionButton: buildSupportFAB(),
     );
   }
 
@@ -474,42 +439,25 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Widget _buildFab(IconData icon, String tooltip, VoidCallback onPressed) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5.0),
-      child: FloatingActionButton(
-        onPressed: onPressed,
-        tooltip: tooltip,
-        child: Icon(icon),
-      ),
-    );
+  Future<void> _launchURLBrowser(String url) async {
+    final Uri _url = Uri.parse(url);
+    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $_url');
+    }
   }
-
-  /*void _toggle() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-      if (_isExpanded) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    });
-  }*/
-
 
   Widget _buildMenuButton(BuildContext context) {
     return PopupMenuButton<String>(
       onSelected: (String value) {
+        String url = '';
         if (value == 'App Link') {
-          // Navigate to the app link page
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => AppLinkPage()));
+          url = 'https://erpservice.paisalo.in:980/PDL.Mobile.Api/api/ApkApp/paisaloSourcingApp';
         } else if (value == 'RD Service Link') {
-          // Navigate to the RD service link page
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => RDServiceLinkPage()));
+          url = 'https://erpservice.paisalo.in:980/PDL.Mobile.Api/api/ApkApp/AndroidRDService';
         } else if (value == 'NSDL Link') {
-          // Navigate to the NSDL link page
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => NSDLLinkPage()));
+          url = 'https://erpservice.paisalo.in:980/PDL.Mobile.Api/api/ApkApp/AndroidNSDL';
         }
+        _launchURLBrowser(url);
       },
       itemBuilder: (BuildContext context) => [
         // App Link Item
@@ -569,5 +517,74 @@ class _LoginPageState extends State<LoginPage> {
       alignment: Alignment.center,
       child: Icon(icon, size: 16, color: color),
     );
+  }
+
+  Widget buildSupportFAB() {
+    return SpeedDial(
+      icon: Icons.support,
+      activeIcon: Icons.close,
+      backgroundColor: Color(0xFFD42D3F),
+      overlayColor: Colors.black,
+      overlayOpacity: 0.5,
+      children: [
+        SpeedDialChild(
+          child: Icon(Icons.chat),
+          label: 'Chatbot',
+          onTap: () => _launchURL('https://your-chatbot-url.com'),
+        ),
+        SpeedDialChild(
+          child: Icon(FontAwesomeIcons.whatsapp),
+          label: 'WhatsApp Support',
+          onTap: () => _launchURL('https://wa.me/8595847059'),
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.call),
+          label: 'Call Support',
+          onTap: () => _makePhoneCall('91:+8595847059'),
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.message),
+          label: 'Text Support',
+          onTap: () => _sendTextMessage('91:+8595847059'),
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.email),
+          label: 'Email Support',
+          onTap: () => _sendEmail('techsupport1@paisalo.in'),
+        ),
+      ],
+    );
+  }
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launchUrl(launchUri);
+  }
+
+  Future<void> _sendTextMessage(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'sms',
+      path: phoneNumber,
+    );
+    await launchUrl(launchUri);
+  }
+
+  Future<void> _sendEmail(String emailAddress) async {
+    final Uri launchUri = Uri(
+      scheme: 'mailto',
+      path: emailAddress,
+    );
+    await launchUrl(launchUri);
   }
 }
