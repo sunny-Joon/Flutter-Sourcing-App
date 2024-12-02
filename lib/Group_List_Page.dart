@@ -187,6 +187,18 @@ class _GroupListPageState extends State<GroupListPage> {
                           ),
                         );
                         break;
+                        case 'COLLECTION':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BorrowerList(
+                                BranchData: widget.Branchdata,
+                                GroupData: selectedItem,
+                                page:"COLLECTION"
+                            ),
+                          ),
+                        );
+                        break;
                       case 'Visit Report':
                         break;
                       case 'E SIGN':

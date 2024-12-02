@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
+import 'Branch_List_Page.dart';
 import 'GlobalClass.dart';
 import 'LeaderBoard.dart';
 import 'HomePage.dart';
@@ -33,7 +34,8 @@ class _FragmentsState extends State<Fragments> {
     HomePage(),
     LeaderBoard(),
     OnBoarding(),
-    Collection(),
+    //Collection(),
+    BranchListPage(intentFrom: 'COLLECTION'),
     Profile(),
   ];
 
