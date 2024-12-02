@@ -1,23 +1,45 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
+import 'MasterAPIs/live_track_repository.dart';
+import 'Models/BorrowerListModel.dart';
+import 'Models/GroupModel.dart';
+import 'Models/branch_model.dart';
 
 class HouseVisitForm extends StatefulWidget {
 
+  final BranchDataModel BranchData;
+  final GroupDataModel GroupData;
+  final BorrowerListDataModel selectedData;
+
+
+  const HouseVisitForm({
+      super.key,
+      required this.BranchData,
+    required this.GroupData,
+    required this.selectedData,
+  }
+  );
+
   @override
   _HouseVisitFormState createState() => _HouseVisitFormState();
+
 }
 
 class _HouseVisitFormState extends State<HouseVisitForm> {
   final _formKey = GlobalKey<FormState>();
   File? _image;
   final picker = ImagePicker();
-
+  String _locationMessage = "";
+  late double _latitude;
+  late double _longitude;
 
   List<String> relation = ['Select','mother','father','husband','wife','brother','sister'];
   List<String> residing_type = ['Select','pucca','kaccha'];
@@ -405,18 +427,18 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     String Mobilereferenceperson2=_Mobilereferenceperson2Controller.text.toString();
     String Address=_AddressController.text.toString();
 
-    double Latitude=521.6521;
-    double Longitude=56.5615;
+    double Latitude=_latitude;
+    double Longitude=_longitude;
 
     String Applicant_Status="N";
     String FamilymemberfromPaisalo="o";
 
-    String FICode="139";
-    String Creator="Creator";
+    String FICode=widget.selectedData.id.toString();
+    String Creator=GlobalClass.creator;
     int HouseMonthlyRent=45;
-    String EmpCode="EmpCode";
-    String GroupCode="GroupCode";
-    String GroupName="GroupName";
+    String EmpCode=GlobalClass.id;
+    String GroupCode=widget.GroupData.groupCode;
+    String GroupName=widget.GroupData.groupCodeName;
 
 
 
@@ -505,6 +527,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
       if (response.statuscode == 200) {
         EasyLoading.dismiss();
         GlobalClass.showSuccessAlert(context,response.message,2);
+        LiveTrackRepository().saveLivetrackData( "",   "House Visit",widget.selectedData.id);
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(context,response.message,1);
@@ -696,5 +719,50 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         backgroundColor: Color(0xFFD42D3F),
         textColor: Colors.white,
         fontSize: 13.0);
+  }
+  Future<void> geolocator() async {
+    try {
+      Position position = await _getCurrentPosition();
+      setState(() {
+        _locationMessage =
+        "${position.latitude},${position.longitude}";
+        print(
+            " geolocatttion: $_locationMessage"); // Print the location message to the console
+        _latitude = position.latitude;
+        _longitude =position.longitude;
+      });
+    } catch (e) {
+      setState(() {
+        _locationMessage = e.toString();
+      });
+      print(
+          " geolocatttion: $_locationMessage"); // Print the error message to the console
+    }
+  }
+  Future<Position> _getCurrentPosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When permissions are granted, get the position of the device.
+    return await Geolocator.getCurrentPosition();
   }
 }

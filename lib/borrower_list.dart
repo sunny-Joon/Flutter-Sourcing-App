@@ -5,9 +5,11 @@ import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
 import 'BorrowerListItem.dart';
+import 'Collection.dart';
 import 'FirstEsign.dart';
 import 'GlobalClass.dart';
 import 'ApplicationForms.dart';
+import 'HouseVisitForm.dart';
 import 'Models/BorrowerListModel.dart';
 
 class BorrowerList extends StatefulWidget {
@@ -156,6 +158,30 @@ print("object++12");
                           context,
                           MaterialPageRoute(
                             builder: (context) => FirstEsign(
+                              BranchData: widget.BranchData,
+                              GroupData: widget.GroupData,
+                              selectedData: item,
+                            ),
+                          ),
+                        );
+                        break;
+                        case 'HouseVisit':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HouseVisitForm(
+                              BranchData: widget.BranchData,
+                              GroupData: widget.GroupData,
+                              selectedData: item,
+                            ),
+                          ),
+                        );
+                        break;
+                        case 'COLLECTION':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Collection(
                               BranchData: widget.BranchData,
                               GroupData: widget.GroupData,
                               selectedData: item,

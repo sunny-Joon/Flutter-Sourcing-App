@@ -49,17 +49,28 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           // Align all text to the left
           children: [
+            SizedBox(height: 30,),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // _buildBackButton(context),
+                  _buildMenuButton(context),
+                ],
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 80),
+                  SizedBox(height: 50),
                   Image.asset(
                     'assets/Images/paisa_logo.png', // Adjust the image path
                     width: double.infinity,
                   ),
-                  SizedBox(height: 80),
+                  SizedBox(height: 20),
                   Center(
                     child: Text(
                       'Ver: 1.1',
@@ -486,4 +497,77 @@ class _LoginPageState extends State<LoginPage> {
   }*/
 
 
+  Widget _buildMenuButton(BuildContext context) {
+    return PopupMenuButton<String>(
+      onSelected: (String value) {
+        if (value == 'App Link') {
+          // Navigate to the app link page
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => AppLinkPage()));
+        } else if (value == 'RD Service Link') {
+          // Navigate to the RD service link page
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => RDServiceLinkPage()));
+        } else if (value == 'NSDL Link') {
+          // Navigate to the NSDL link page
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => NSDLLinkPage()));
+        }
+      },
+      itemBuilder: (BuildContext context) => [
+        // App Link Item
+        PopupMenuItem<String>(
+          value: 'App Link',
+          child: Row(
+            children: [
+              Icon(Icons.link, color: Color(0xFFD42D3F), size: 20),
+              SizedBox(width: 10),
+              Text('App Link'),
+            ],
+          ),
+        ),
+        // Divider between items
+        PopupMenuDivider(),
+        // RD Service Link Item
+        PopupMenuItem<String>(
+          value: 'RD Service Link',
+          child: Row(
+            children: [
+              Icon(Icons.build, color: Color(0xFFD42D3F), size: 20),
+              SizedBox(width: 10),
+              Text('RD Service Link'),
+            ],
+          ),
+        ),
+        // Divider between items
+        PopupMenuDivider(),
+        // NSDL Link Item
+        PopupMenuItem<String>(
+          value: 'NSDL Link',
+          child: Row(
+            children: [
+              Icon(Icons.business, color: Color(0xFFD42D3F), size: 20),
+              SizedBox(width: 10),
+              Text('NSDL Link'),
+            ],
+          ),
+        ),
+      ],
+      // Customize the menu's background color
+      offset: Offset(0, 40),  // Position the menu properly if needed
+      color: Colors.white,     // Set the background color of the menu
+      child: _buildIconContainer(Icons.menu, color: Color(0xFFD42D3F)),
+    );
+  }
+
+  Widget _buildIconContainer(IconData icon, {Color color = Colors.grey}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(width: 1, color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      height: 40,
+      width: 40,
+      alignment: Alignment.center,
+      child: Icon(icon, size: 16, color: color),
+    );
+  }
 }
