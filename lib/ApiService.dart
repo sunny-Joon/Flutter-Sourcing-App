@@ -182,6 +182,12 @@ abstract class ApiService {
       @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body);
 
+  @POST("FiSourcing/AddFiIDs")
+  Future <GlobalModel> getIdVerify(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> requestBody);
+
   @POST("FiSourcing/AddFiFamilyDetail")
   Future <GlobalModel> FiFamilyDetail(
       @Header("Authorization") String token,

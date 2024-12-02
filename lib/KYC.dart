@@ -19,9 +19,17 @@ import 'package:provider/provider.dart';
 import 'ApiService.dart';
 import 'DATABASE/DatabaseHelper.dart';
 import 'Models/RangeCategoryModel.dart';
+import 'package:http/http.dart' as http;
+
 import 'QRScanPage.dart';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 class KYCPage extends StatefulWidget {
+
+
   final BranchDataModel data;
   final GroupDataModel GroupData;
 
@@ -32,6 +40,7 @@ class KYCPage extends StatefulWidget {
 }
 
 class _KYCPageState extends State<KYCPage> {
+
   late ApiService apiService;
   late ApiService apiService_idc;
   late ApiService apiService_protean;
@@ -52,6 +61,7 @@ class _KYCPageState extends State<KYCPage> {
       "Please search PAN card holder name for verification";
   String? dlCardHolderName;
   String? voterCardHolderName;
+
   List<RangeCategoryDataModel> states = [];
   List<RangeCategoryDataModel> marrital_status = [];
   List<RangeCategoryDataModel> relation = [];
@@ -70,6 +80,7 @@ class _KYCPageState extends State<KYCPage> {
   PlaceData? selectedSubDistrictCode;
   PlaceData? selectedVillageCode;
   bool isCKYCNumberFound=false;
+
   List<String> loanDuration = ['12', '24', '36', '48'];
 
   List<String> titleList = ["Mr.", "Mrs.", "Miss"];
@@ -107,6 +118,7 @@ class _KYCPageState extends State<KYCPage> {
 
     geolocator(context);
     super.initState();
+
 // Fetch states using the required cat_key
   }
 
@@ -203,7 +215,6 @@ class _KYCPageState extends State<KYCPage> {
 
   // final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
-
   // TextEditingControllers for all input fields
   final _aadharIdController = TextEditingController();
   late var _nameController = TextEditingController();
@@ -256,6 +267,7 @@ class _KYCPageState extends State<KYCPage> {
       isDrivingLicenseVerified = false,
       isVoterIdVerified = false,
       isPassportVerified = false;
+
 
   get isChecked => null;
   final FocusNode _focusNodeAdhaarId = FocusNode();
@@ -405,6 +417,7 @@ class _KYCPageState extends State<KYCPage> {
                                     width: 1, color: Colors.grey.shade300),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5)),
+
                               ),
                               height: 40,
                               width: 40,
@@ -414,9 +427,11 @@ class _KYCPageState extends State<KYCPage> {
                                     Icon(Icons.arrow_back_ios_sharp, size: 16),
                               ),
                             ),
+
                             onTap: () {
 
                               if (_currentStep == 1) {
+
                                 setState(() {
                                   _currentStep--;
 
@@ -448,6 +463,7 @@ class _KYCPageState extends State<KYCPage> {
                         height: MediaQuery.of(context).size.height - 244,
                         child: Stack(
                           clipBehavior: Clip.none,
+
                           children: [
                             Container(
                               padding: EdgeInsets.all(20),
@@ -498,7 +514,9 @@ class _KYCPageState extends State<KYCPage> {
                                     ),
                                     onTap: _pickImage,
                                   ),
+
                                 )),
+
                           ],
                         ),
                       ),
@@ -510,6 +528,7 @@ class _KYCPageState extends State<KYCPage> {
                         children: [
                           Row(
                             children: [
+
                               Icon(
                                 Icons.location_on_outlined,
                                 color: Colors.white,
@@ -531,6 +550,7 @@ class _KYCPageState extends State<KYCPage> {
                               shape: CircleBorder(),
                               child: Padding(
                                 padding: EdgeInsets.all(3),
+
                                 child: Icon(
                                   Icons.refresh,
                                   size: 30,
@@ -553,11 +573,13 @@ class _KYCPageState extends State<KYCPage> {
         ));
   }
 
+
   int calculateAgeFromString(String dateString,
       {String format = "yyyy-MM-dd"}) {
     try {
       // Parse the string date
       DateTime birthDate = DateFormat(format).parse(dateString);
+
 
       // Calculate age
       DateTime today = DateTime.now();
@@ -576,16 +598,15 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
+
   int calculateAge(DateTime birthDate) {
     DateTime today = DateTime.now();
     int age = today.year - birthDate.year;
-
     // Adjust for the month and day
     if (today.month < birthDate.month ||
         (today.month == birthDate.month && today.day < birthDate.day)) {
       age--;
     }
-
     return age;
   }
 
@@ -606,7 +627,7 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
+  Widget _buildTextField(String label, TextEditingController controller, int maxLength, {TextInputType inputType = TextInputType.text}) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 0),
@@ -618,8 +639,9 @@ class _KYCPageState extends State<KYCPage> {
             label,
             style: TextStyle(fontSize: 16, height: 2),
           ),
-          SizedBox(height: 1),
+          SizedBox(height: 8), // Increased spacing for better layout
           Container(
+
               padding: EdgeInsets.zero,
               width: double.infinity, // Set the desired width
               child: Center(
@@ -636,6 +658,7 @@ class _KYCPageState extends State<KYCPage> {
                   },
                 ),
               )),
+
         ],
       ),
     );
@@ -829,6 +852,7 @@ class _KYCPageState extends State<KYCPage> {
       "DLExpireDate": DLExpireDate,
     };
 
+
     return await api
         .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
@@ -851,12 +875,53 @@ class _KYCPageState extends State<KYCPage> {
     });
   }
 
+
+  //////////////////////////
+
+ /* Future<void> IDVerification(String id, String type, String bankIfsc, String dob) async {
+    // Create an instance of the http Client
+    var client = http.Client();
+
+    try {
+      final response = await client.post(
+        Uri.parse('https://agra.paisalo.in:8462/creditmatrix/api/IdentityVerification/Get'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "type": type,
+          "txtnumber": id,
+          "ifsc": bankIfsc,
+          "userdob": dob,
+          "key": "1"
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        try {
+          final data = json.decode(response.body);
+          print("Data received: $data");
+        } catch (e) {
+          print("Error parsing response JSON: $e");
+        }
+      } else {
+        print('Request failed with status: ${response.statusCode}. Response: ${response.body}');
+      }
+    } catch (e) {
+      print("Request error: $e");
+    } finally {
+      // Close the client to prevent memory leaks
+      client.close();
+    }
+  }*/
+
   void savePersonalDetailsMethod() {}
 
   void saveDataMethod() {}
 
   Widget _buildTextField2(String label, TextEditingController controller,
       TextInputType inputType, int maxlength) {
+
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -870,7 +935,7 @@ class _KYCPageState extends State<KYCPage> {
               fontSize: 16,
             ),
           ),
-          SizedBox(height: 1),
+          SizedBox(height: 8), // Use a larger size for spacing
           Container(
             width: double.infinity, // Set the desired width
             child: Center(
@@ -897,12 +962,19 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ],
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter $label';
+                }
+                return null; // Valid input
+              },
             ),
           ),
         ],
       ),
     );
   }
+
 
   void _showPopup(BuildContext context, Function(String) onResult) {
     showDialog(
