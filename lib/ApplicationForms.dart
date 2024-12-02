@@ -532,14 +532,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(child:  Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xFFD42D3F),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
             child: Column(
               children: [
                 SizedBox(
@@ -571,21 +571,21 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         },
                       ),
                       Center(
-                          /*child: Image.asset(
+                        /*child: Image.asset(
                           'assets/Images/paisa_logo.png',
                           // Replace with your logo asset path
                           height: 50,
                         ),*/
                           child: Expanded(
-                        child: Text(
-                          pageTitle,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24 // Make the text bold
+                            child: Text(
+                              pageTitle,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24 // Make the text bold
                               ),
-                        ),
-                      )),
+                            ),
+                          )),
                       Container(
                         height: 40,
                         width: 40,
@@ -626,31 +626,31 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           child: Center(
                             child: _imageFile == null
                                 ? InkWell(
-                                    child: ClipOval(
-                                      child: Container(
-                                        width: 70,
-                                        height: 70,
-                                        color: Colors.grey,
-                                        child: Icon(
-                                          Icons.person,
-                                          size: 50.0,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    onTap: _pickImage,
-                                  )
-                                : InkWell(
-                                    child: ClipOval(
-                                      child: Image.file(
-                                        File(_imageFile!.path),
-                                        width: 70,
-                                        height: 70,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    onTap: _pickImage,
+                              child: ClipOval(
+                                child: Container(
+                                  width: 70,
+                                  height: 70,
+                                  color: Colors.grey,
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 50.0,
+                                    color: Colors.white,
                                   ),
+                                ),
+                              ),
+                              onTap: _pickImage,
+                            )
+                                : InkWell(
+                              child: ClipOval(
+                                child: Image.file(
+                                  File(_imageFile!.path),
+                                  width: 70,
+                                  height: 70,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              onTap: _pickImage,
+                            ),
                           )),
                     ]),
                   ),
@@ -658,7 +658,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 SizedBox(height: 10),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   child: Row(
                     children: [
                       _buildPreviousButton(),
@@ -674,9 +674,33 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
         ),
       ),
-    );
+    ), onWillPop: _onWillPop);
   }
-
+  Future<bool> _onWillPop() async {
+    // Show a confirmation dialog
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Are you sure?'),
+        content: Text('Do you want to close Application form?'),
+        actions: [
+          TextButton(
+            onPressed: () =>
+                Navigator.of(context).pop(false), // Stay in the app
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              EasyLoading.dismiss();
+              Navigator.of(context).pop(true);
+            }, // Exit the app
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    ) ??
+        false; // Default to false if dialog is dismissed
+  }
   Widget _buildTextField(String label, TextEditingController controller,
       bool saved, FocusNode FN) {
     return Container(

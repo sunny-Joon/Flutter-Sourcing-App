@@ -13,6 +13,8 @@ import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
 import 'package:flutter_sourcing_app/const/validators.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
@@ -84,7 +86,7 @@ class _KYCPageState extends State<KYCPage> {
   RangeCategoryDataModel? stateselected;
   String genderselected = 'select';
   String relationwithBorrowerselected = 'select';
-  String bankselected = 'select';
+  String bankselected = 'SBI';
 
   String? selectedloanDuration;
   String? _locationMessage;
@@ -147,18 +149,18 @@ class _KYCPageState extends State<KYCPage> {
             sortOrder: 0,
             code: 'select', // Value of the placeholder
           ));
-      bank.insert(
-          0,
-          RangeCategoryDataModel(
-            catKey: 'Select',
-            groupDescriptionEn: 'select',
-            groupDescriptionHi: 'select',
-            descriptionEn: 'Select',
-            // Display text
-            descriptionHi: 'select',
-            sortOrder: 0,
-            code: 'select', // Value of the placeholder
-          ));
+      // bank.insert(
+      //     0,
+      //     RangeCategoryDataModel(
+      //       catKey: 'Select',
+      //       groupDescriptionEn: 'select',
+      //       groupDescriptionHi: 'select',
+      //       descriptionEn: 'Select',
+      //       // Display text
+      //       descriptionHi: 'select',
+      //       sortOrder: 0,
+      //       code: 'select', // Value of the placeholder
+      //     ));
       marrital_status.insert(
           0,
           RangeCategoryDataModel(
@@ -264,14 +266,47 @@ class _KYCPageState extends State<KYCPage> {
 
 
   void _pickImage() async {
-    File? pickedImage = await GlobalClass().pickImage();
+
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.camera);
+
     if (pickedImage != null) {
       setState(() {
-        _imageFile = pickedImage;
+     //   _imageFile = File(pickedImage.path);
+        _cropImage(File(pickedImage.path)!);
       });
     }
   }
+  Future _cropImage(File imageFile) async {
+    if (imageFile != null) {
+      CroppedFile? cropped = await ImageCropper().cropImage(
+          sourcePath: imageFile!.path,
+          compressQuality: 100,
+          maxHeight: 700,
+          maxWidth: 700,
+          compressFormat: ImageCompressFormat.jpg,
 
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarColor: Color(0xFFD42D3F),
+                toolbarTitle: 'Crop',
+                toolbarWidgetColor: Colors.white,
+                cropGridColor: Colors.black,
+                backgroundColor: Color(0xFFD42D3F),
+                cropFrameColor: Color(0xFFD42D3F),
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            IOSUiSettings(title: 'Crop')
+          ]);
+
+      if (cropped != null) {
+        setState(() {
+          _imageFile = File(cropped.path);
+        //  filePicked=1;
+        });
+      }
+    }
+  }
   Widget _buildDatePickerField(BuildContext context, String labelText,
       TextEditingController controller, String type) {
     return Padding(
@@ -473,7 +508,9 @@ class _KYCPageState extends State<KYCPage> {
                                 child: Center(
                                   child: _imageFile == null
                                       ? InkWell(
-                                    onTap: _pickImage,
+                                    onTap:(){
+                                      GlobalClass().pickImage();
+                                    } ,
                                     child: ClipOval(
                                       child: Container(
                                         width: 70,
@@ -496,7 +533,9 @@ class _KYCPageState extends State<KYCPage> {
                                         fit: BoxFit.cover,
                                       ),
                                     ),
-                                    onTap: _pickImage,
+                                      onTap:(){
+                                        GlobalClass().pickImage();
+                                      }
                                   ),
                                 )),
                           ],
@@ -1848,13 +1887,13 @@ class _KYCPageState extends State<KYCPage> {
         Row(
           children: [
             Expanded(
-              child: _buildTextField2('Monthly Expense', _incomeController,
+              child: _buildTextField2('Monthly Income', _incomeController,
                   TextInputType.number, 7),
             ),
             SizedBox(width: 8),
             // Add spacing between the text fields if needed
             Expanded(
-              child: _buildTextField2('Monthly Income', _expenseController,
+              child: _buildTextField2('Monthly Expense', _expenseController,
                   TextInputType.number, 7),
             ),
           ],
@@ -2032,7 +2071,7 @@ class _KYCPageState extends State<KYCPage> {
                       items: bank.map<DropdownMenuItem<String>>(
                           (RangeCategoryDataModel state) {
                         return DropdownMenuItem<String>(
-                          value: state.code,
+                          value: state.descriptionEn,
                           child: Text(state.descriptionEn),
                         );
                       }).toList(),
@@ -2915,6 +2954,18 @@ bool checkIdMendate(){
     } else if (selectedMarritalStatus == null) {
       showToast_Error("Please select marital status");
       return false;
+    } else if (_expenseController.text.isEmpty ) {
+      showToast_Error("Please Enter Monthly Expenses");
+      return false;
+    } else if (_incomeController.text.isEmpty) {
+      showToast_Error("Please Enter Monthly Income");
+      return false;
+    }else if (!(int.parse(_incomeController.text)<=25000 && int.parse(_incomeController.text)>=10000)) {
+      showToast_Error("Income should be greater than 10,000 and less than 25,000");
+      return false;
+    }else if ((int.parse(_expenseController.text)<=((int.parse(_incomeController.text))*0.5))) {
+      showToast_Error("Expense should be greater than 50 % of Income");
+      return false;
     } else if (selectedMarritalStatus!.toLowerCase() != "unmarried") {
       if (_spouseFirstNameController.text.isEmpty) {
         showToast_Error("Please enter spouse first name");
@@ -2938,6 +2989,9 @@ bool checkIdMendate(){
       return false;
     } else if (_loan_amountController.text.isEmpty) {
       showToast_Error("Please enter correct loan amount");
+      return false;
+    } else if (!((int.parse(_loan_amountController.text))>=5000 && (int.parse(_loan_amountController.text))<=300000)) {
+      showToast_Error("Loan Amount should be Less than three Lakhs and Greater than 5 thousand");
       return false;
     } else if (selectedLoanReason == null) {
       showToast_Error("Please select loan reason");
@@ -3003,6 +3057,7 @@ bool checkIdMendate(){
 
   void getPlace(String type, String stateCode, String districtCode,
       String subDistrictCode) async {
+    EasyLoading.show(status: "Please wait...");
     print(GlobalClass.token);
     try {
       PlaceCodesModel response = await apiService.getVillageStateDistrict(
@@ -3027,10 +3082,12 @@ bool checkIdMendate(){
           listVillagesCodes = response.data;
         }
       });
-
+      EasyLoading.dismiss();
       //} else {}
     } catch (e) {
       print("Error: $e");
+      EasyLoading.dismiss();
+
     }
   }
 
@@ -3043,7 +3100,7 @@ bool checkIdMendate(){
     };
 
     return await api
-        .mobileOtpSend(GlobalClass.dbName, requestBody)
+        .mobileOtpSend(GlobalClass.token,GlobalClass.dbName, requestBody)
         .then((value) {
       if (value.statuscode == 200) {
         _showOTPDialog(context);

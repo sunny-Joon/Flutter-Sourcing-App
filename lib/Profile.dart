@@ -288,8 +288,32 @@ class _ProfileState extends State<Profile> {
   Widget _buildLogoutButton(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('Do you want to Logout?'),
+            actions: [
+              TextButton(
+
+                onPressed: (){
+                  EasyLoading.dismiss();
+                  Navigator.of(context).pop(true);
+                 } ,
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () {
+                  EasyLoading.dismiss();
+                  Navigator.pushReplacement(
+                      context, MaterialPageRoute(builder: (context) => LoginPage()));
+                }, // Exit the app
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        );
+
       },
       child: _buildIconContainer(Icons.logout, color: Color(0xFFD42D3F)),
     );

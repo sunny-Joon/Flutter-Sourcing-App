@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xml/xml.dart';
 
@@ -113,8 +114,13 @@ class GlobalClass {
               onPressed: () {
                 if (a == 1) {
                   Navigator.of(context).pop(); // Close the dialog
+                } else if (a == 2) {
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop(); // Close the dialog
                 } else {
                   Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop(); // Close the page
+                  Navigator.of(context).pop(); // Close the page
                   Navigator.of(context).pop(); // Close the page
                 }
               },
@@ -140,9 +146,39 @@ class GlobalClass {
   Future<File?> pickImage() async {
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: ImageSource.camera);
-    return pickedImage != null ? File(pickedImage.path) : null;
-  }
+    final croppedImage =_cropImage(new File(pickedImage!.path));
 
+    return croppedImage != null ? croppedImage : null;
+  }
+  Future<File?> _cropImage(File imageFile) async {
+    if (imageFile != null) {
+      CroppedFile? cropped = await ImageCropper().cropImage(
+          sourcePath: imageFile!.path,
+          compressQuality: 100,
+          maxHeight: 700,
+          maxWidth: 700,
+          compressFormat: ImageCompressFormat.jpg,
+
+          uiSettings: [
+            AndroidUiSettings(
+                toolbarColor: Color(0xFFD42D3F),
+                toolbarTitle: 'Crop',
+                toolbarWidgetColor: Colors.white,
+                cropGridColor: Colors.black,
+                backgroundColor: Color(0xFFD42D3F),
+                cropFrameColor: Color(0xFFD42D3F),
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            IOSUiSettings(title: 'Crop')
+          ]);
+
+      if (cropped != null) {
+        return File(cropped.path);
+      }else{
+        return null;
+      }
+    }
+  }
   static void showSnackBar(BuildContext context,String message){
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("$message")),
