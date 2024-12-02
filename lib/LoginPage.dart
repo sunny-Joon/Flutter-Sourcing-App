@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/GlobalClass.dart';
 import 'package:flutter_sourcing_app/PopupDialog.dart';
 import 'package:flutter_sourcing_app/SharedeviceId.dart';
@@ -10,14 +11,30 @@ import 'Fragments.dart';
 import 'Models/login_model.dart';
 import 'TermsConditions.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+class _LoginPageState extends State<LoginPage> {
+
   late String refToken, target;
+  bool _isObscure = true;
+ /* bool _isExpanded = false;
+  late AnimationController _controller;
+  late Animation<double> _animation;*/
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
 
   @override
   Widget build(BuildContext context) {
     // Define your custom color
     const Color customColor = Color(0xFFD42D3F);
-    TextEditingController passwordControllerlogin = TextEditingController();
+    TextEditingController passwordControllerlogin = TextEditingController(text: '12345');
     final TextEditingController mobileControllerlogin =
         TextEditingController(text: 'GRST002064');
     String deviceId = '';
@@ -32,17 +49,28 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           // Align all text to the left
           children: [
+            SizedBox(height: 30,),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // _buildBackButton(context),
+                  _buildMenuButton(context),
+                ],
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 80),
+                  SizedBox(height: 50),
                   Image.asset(
                     'assets/Images/paisa_logo.png', // Adjust the image path
                     width: double.infinity,
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 20),
                   Center(
                     child: Text(
                       'Ver: 1.1',
@@ -50,7 +78,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  Card(
+                 /* Card(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(color: Colors.grey.shade400), // Grey border
                     ),elevation: 0,
@@ -74,7 +102,7 @@ class LoginPage extends StatelessWidget {
                         hint: Text('Select Database'),
                       ),
                     ),
-                  ),
+                  ),*/
 
                   SizedBox(height: 20),
                   Text(
@@ -138,13 +166,22 @@ class LoginPage extends StatelessWidget {
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: '*****',
-                                hintStyle: TextStyle(color: Colors.grey.shade400), // Hint color greyS
+                                hintStyle: TextStyle(color: Colors.grey.shade400),
                               ),
-                              obscureText: true,
+                              obscureText: _isObscure,
                               style: TextStyle(fontSize: 18),
                             ),
                           ),
-                          Icon(Icons.visibility),
+                          IconButton(
+                            icon: Icon(
+                              _isObscure ? Icons.visibility : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isObscure = !_isObscure;
+                              });
+                            },
+                          ),
                           // Placeholder for Lottie animation
                         ],
                       ),
@@ -274,19 +311,51 @@ class LoginPage extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.white,
-        child:
-            Icon(Icons.support_agent), // Placeholder for customer support icon
-      ),
+      /*floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (_isExpanded) ...[
+            ScaleTransition(
+              scale: _animation,
+              alignment: Alignment.bottomCenter,
+              child: _buildFab(Icons.chat, 'Chatbot', () {
+                // Your chatbot action here
+              }),
+            ),
+            ScaleTransition(
+              scale: _animation,
+              alignment: Alignment.bottomCenter,
+              child: _buildFab(Icons.email, 'Email', () {
+                // Your email action here
+              }),
+            ),
+            ScaleTransition(
+              scale: _animation,
+              alignment: Alignment.bottomCenter,
+              child: _buildFab(Icons.call, 'Call Support', () {
+                // Your call support action here
+              }),
+            ),
+            ScaleTransition(
+              scale: _animation,
+              alignment: Alignment.bottomCenter,
+              child: _buildFab(Icons.call, 'WhatsApp', () {
+                // Your WhatsApp action here
+              }),
+            ),
+          ],
+          FloatingActionButton(
+            onPressed: _toggle,
+            child: Icon(_isExpanded ? Icons.close : Icons.add),
+          ),
+        ],
+      ),*/
     );
   }
 
   Future<bool> _checkAndRequestPermissions(BuildContext context) async {
     final permissions = [
       Permission.camera,
-      Permission.microphone,
       Permission.location,
       Permission.phone,
       Permission.notification,
@@ -353,9 +422,8 @@ class LoginPage extends StatelessWidget {
     return statuses.every((status) => status.isGranted);
   }
 
-  Future<void> _getLogin(
-      String userName, String userPassword, BuildContext context) async {
-    // EasyLoading.show(status: 'Loading...',);
+  Future<void> _getLogin( String userName, String userPassword, BuildContext context) async {
+     EasyLoading.show(status: 'Loading...',);
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
       "userName": userName,
@@ -370,30 +438,136 @@ class LoginPage extends StatelessWidget {
         refToken = value.data.tokenDetails.token.toString();
         if (value.message == 'Login Successfully !!') {
           // Assign values to GlobalClass static members
-          print(refToken);
+
           GlobalClass.token = 'Bearer ' + refToken;
           GlobalClass.deviceId = value.data.tokenDetails.deviceSrNo;
           GlobalClass.id = value.data.tokenDetails.userName;
+          GlobalClass.validity = value.data.tokenDetails.validity;
           GlobalClass.imei = value.data.foImei.toString() ?? '';
           print('object0');
 
           if(value.data.foImei.length>0) {
             print('object');
             GlobalClass.target = value.data.foImei[0].targetCommAmt;
-            //GlobalClass.creator = folist[0].creator ?? '';
+            GlobalClass.creator = value.data.foImei[0].creator ?? '';
+            GlobalClass.mobile=value.data.foImei[0].mobNo;
+            GlobalClass.userName=value.data.foImei[0].name;
+            GlobalClass.designation=value.data.foImei[0].designation;
 
           }else{
             PopupDialog.showPopup(
                 context, value.statuscode.toString(), value.message);
           }
-          Navigator.push(
+          EasyLoading.dismiss();
+          Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Fragments()));
         }
+
       } else {
+        EasyLoading.dismiss();
         PopupDialog.showPopup(
             context, value.statuscode.toString(), value.message);
         //  _showErrorDialog(context);
+
+      }
+
+    });
+  }
+
+  Widget _buildFab(IconData icon, String tooltip, VoidCallback onPressed) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5.0),
+      child: FloatingActionButton(
+        onPressed: onPressed,
+        tooltip: tooltip,
+        child: Icon(icon),
+      ),
+    );
+  }
+
+  /*void _toggle() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
       }
     });
+  }*/
+
+
+  Widget _buildMenuButton(BuildContext context) {
+    return PopupMenuButton<String>(
+      onSelected: (String value) {
+        if (value == 'App Link') {
+          // Navigate to the app link page
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => AppLinkPage()));
+        } else if (value == 'RD Service Link') {
+          // Navigate to the RD service link page
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => RDServiceLinkPage()));
+        } else if (value == 'NSDL Link') {
+          // Navigate to the NSDL link page
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => NSDLLinkPage()));
+        }
+      },
+      itemBuilder: (BuildContext context) => [
+        // App Link Item
+        PopupMenuItem<String>(
+          value: 'App Link',
+          child: Row(
+            children: [
+              Icon(Icons.link, color: Color(0xFFD42D3F), size: 20),
+              SizedBox(width: 10),
+              Text('App Link'),
+            ],
+          ),
+        ),
+        // Divider between items
+        PopupMenuDivider(),
+        // RD Service Link Item
+        PopupMenuItem<String>(
+          value: 'RD Service Link',
+          child: Row(
+            children: [
+              Icon(Icons.build, color: Color(0xFFD42D3F), size: 20),
+              SizedBox(width: 10),
+              Text('RD Service Link'),
+            ],
+          ),
+        ),
+        // Divider between items
+        PopupMenuDivider(),
+        // NSDL Link Item
+        PopupMenuItem<String>(
+          value: 'NSDL Link',
+          child: Row(
+            children: [
+              Icon(Icons.business, color: Color(0xFFD42D3F), size: 20),
+              SizedBox(width: 10),
+              Text('NSDL Link'),
+            ],
+          ),
+        ),
+      ],
+      // Customize the menu's background color
+      offset: Offset(0, 40),  // Position the menu properly if needed
+      color: Colors.white,     // Set the background color of the menu
+      child: _buildIconContainer(Icons.menu, color: Color(0xFFD42D3F)),
+    );
+  }
+
+  Widget _buildIconContainer(IconData icon, {Color color = Colors.grey}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(width: 1, color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      height: 40,
+      width: 40,
+      alignment: Alignment.center,
+      child: Icon(icon, size: 16, color: color),
+    );
   }
 }

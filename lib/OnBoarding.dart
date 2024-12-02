@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sourcing_app/visit_report_page.dart';
 import 'kyc.dart';
 import 'Branch_List_Page.dart';
 
-class OnBoarding extends StatelessWidget {
+class OnBoarding extends StatefulWidget {
+
+  @override
+  _OnboardingState createState() => _OnboardingState();
+
+}
+class _OnboardingState extends State<OnBoarding>{
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,33 +19,65 @@ class OnBoarding extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 115),
             Padding(
-              padding: const EdgeInsets.only(bottom: 40.0),
-              child: Text(
-                'Onboarding',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'VisbyCFRegular',
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+              padding: EdgeInsets.only(left: 10,top: 50,right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    child: Container(
+                      // decoration: BoxDecoration(
+                      //   color: Colors.white,
+                      //   border: Border.all(
+                      //       width: 1, color: Colors.grey.shade300),
+                      //   borderRadius: BorderRadius.all(Radius.circular(5)),
+                      // ),
+                      height: 40,
+                      width: 40,
+                      // alignment: Alignment.center,
+                      // child: Center(
+                      //   child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                      // ),
+                    ),
+                    // onTap: () {
+                    //   setState(() {
+                    //     Navigator.pop(context);                  });
+                    // },
+                  ),
+                  Center(
+                    child: Text(
+                      'ONBOARDING',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24 // Make the text bold
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 70),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding: const EdgeInsets.only(left: 20.0,right: 20,top: 10,bottom: 50),
               child: Stack(
-                alignment: Alignment.center,
+                alignment: Alignment.topCenter,
                 children: [
                   Image.asset(
                     'assets/Images/curvedBackground.png',
                     fit: BoxFit.fill,
                     width: double.infinity,
-                    height: 500, // Adjust the height as needed
+                    height: MediaQuery.of(context).size.height/1.8, // Adjust the height as needed
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.only(left: 10.0,right: 10,top: 10,bottom: 20),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -81,7 +121,7 @@ class OnBoarding extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BranchListPage(intentFrom: 'Visit Report'),
+                              builder: (context) => VisitReportPage(),
                             ),
                           );
                         }),

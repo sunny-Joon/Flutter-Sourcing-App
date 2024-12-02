@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.6.14
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -57,13 +57,20 @@ dependencies:
   geolocator: ^13.0.1
   horizontal_stepper_flutter: ^1.0.3
   flutter_pdfview: ^1.3.4
-  http: ^1.2.2
-
-
+  crop_your_image: ^1.1.0
+  fluttertoast: ^8.2.1
+  audioplayers: ^6.1.0
+  carousel_slider: ^5.0.0
+  android_intent_plus: ^5.1.0
+  xml: ^6.2.2
+  google_fonts: ^6.2.1
+  geocoding: ^3.0.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-
+  curved_navigation_bar: ^1.0.3
+  pinput: ^5.0.0
+  url_launcher: ^6.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -90,7 +97,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/Images/
-
+    - assets/beep.wav
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

@@ -1,262 +1,431 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-// import 'package:lottie/lottie.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_sourcing_app/GlobalClass.dart';
+import 'package:flutter_sourcing_app/LoginPage.dart';
+import 'package:flutter_sourcing_app/qr_PaymentReports.dart';
+import 'package:provider/provider.dart';
 
-class Profile extends StatelessWidget {
+import 'ApiService.dart';
+
+class Profile extends StatefulWidget {
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  final TextEditingController _creatorController = TextEditingController();
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _validityController = TextEditingController();
+  final TextEditingController _mobileNoController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _designationController = TextEditingController();
+
+  String tabName = "Punch In";
+  Duration _remainingTime = Duration();
+  String _timeDisplay = '';
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeControllers();
+    _startTimer();
+  }
+
+  void _initializeControllers() {
+    _creatorController.text = GlobalClass.creator;
+    _idController.text = GlobalClass.id;
+    _validityController.text = GlobalClass.address;
+    _mobileNoController.text = GlobalClass.mobile;
+    _nameController.text = GlobalClass.userName;
+    _designationController.text = GlobalClass.designation;
+  }
+
+  void _startTimer() {
+    String validityString = _validityController.text.trim();
+    if (validityString.isNotEmpty && validityString.contains(':')) {
+      List<String> timeParts = validityString.split(':');
+      if (timeParts.length == 3) {
+        try {
+          int hours = int.parse(timeParts[0]);
+          int minutes = int.parse(timeParts[1]);
+          int seconds = int.parse(timeParts[2]);
+          if (hours >= 0 &&
+              minutes >= 0 &&
+              seconds >= 0 &&
+              minutes < 60 &&
+              seconds < 60) {
+            _remainingTime =
+                Duration(hours: hours, minutes: minutes, seconds: seconds);
+            _timeDisplay = _formatTime(_remainingTime);
+            _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+              if (_remainingTime.inSeconds > 0) {
+                setState(() {
+                  _remainingTime -= Duration(seconds: 1);
+                  _timeDisplay = _formatTime(_remainingTime);
+                });
+              } else {
+                setState(() {
+                  _timeDisplay = 'Session expired';
+                });
+                _timer?.cancel();
+              }
+            });
+          } else {
+            _setInvalidTimeFormat();
+          }
+        } catch (e) {
+          _setInvalidTimeFormat();
+        }
+      } else {
+        _setInvalidTimeFormat();
+      }
+    } else {
+      _setInvalidTimeFormat();
+    }
+  }
+
+  void _setInvalidTimeFormat() {
+    setState(() {
+      _timeDisplay = 'Invalid time format';
+    });
+  }
+
+  String _formatTime(Duration duration) {
+    int hours = duration.inHours;
+    int minutes = duration.inMinutes % 60;
+    int seconds = duration.inSeconds % 60;
+    return '$hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFD42D3F), // teal_200 color
-      appBar: AppBar(
-        title: Text('Page 1'),
-        backgroundColor: Colors.red,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0, right: 15.0),
+      backgroundColor: Color(0xFFD42D3F),
+
+      body: Stack(
+        children: [
+          // Background sphere
+          Positioned(
+            top: -MediaQuery.of(context).size.width - 50,
+            left: -50,
+            right: -50,
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/Images/sphere.png'),
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
+
+          // Header with back, logo, and logout buttons
+          Positioned(
+            top: 35,
+            left: 10,
+            right: 10,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'PUNCH IN',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      fixedSize: Size(120, 40),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'PUNCH OUT',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      fixedSize: Size(120, 40),
-                    ),
-                  ),
+                 // _buildBackButton(context),
+                  SizedBox(width: 50,),
+                  _buildCenterLogo(),
+                  _buildLogoutButton(context),
                 ],
               ),
             ),
-            SizedBox(height: 50),
-            Image.asset(
-              'assets/profileimage.png', // Replace with your asset image
-              height: 80,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-            SizedBox(height: 8),
-            Container(
-              height: 45,
-              child: Center(
-                child: Text(
-                  'User Name',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+          ),
+
+          // Main content: Profile picture, user details, and action cards
+          Positioned.fill(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.width / 3.6),
+                _buildProfilePicture(),
+                SizedBox(
+                  height: 30,
+                ),
+                _buildUserDetailsCard(),
+
+                Container(
+                  height: MediaQuery.of(context).size.height / 5,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SingleChildScrollView(
+                      child: GridView.builder(
+                        padding: EdgeInsets.all(0),
+                        shrinkWrap:
+                            true, // Ensure the grid view doesn't expand infinitely
+                        physics:
+                            NeverScrollableScrollPhysics(), // Disable scrolling for GridView
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3, // Number of columns
+                          crossAxisSpacing: 1,
+                          mainAxisSpacing: 1,
+                        ),
+                        itemCount: 3, // Number of grid items
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return _buildGridItem(
+                                'QR Payment Report', Icons.qr_code, () {
+                              // Action for QR Payment Details
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => QrPaymentReports(),
+                                ),
+                              );
+                              // Add navigation or other actions here
+                            });
+                          } else if (index == 1) {
+                            return _buildGridItem(
+                                'Collection Report', Icons.currency_rupee, () {
+                              // Action for Get Collection Report
+                              print('Get Collection Report Clicked');
+                              // Add navigation or other actions here
+                            });
+                          } else if (index == 2) {
+                            return _buildGridItem(
+                                'Another Report', Icons.find_in_page_sharp, () {
+                              // Action for Another Report
+                              print('Another Report Clicked');
+                              // Add navigation or other actions here
+                            });
+                          } else {
+                            return _buildGridItem(
+                                'More Reports', Icons.insert_chart, () {
+                              // Action for More Reports
+                              print('More Reports Clicked');
+                              // Add navigation or other actions here
+                            });
+                          }
+                        },
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: 8),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 45,
-                      child: Center(
-                        child: Text(
-                          'Creator',
-                        ),
-                      ),
-                    ),
-                    Expanded(
+                Card(
+                  elevation: 10,
+                  clipBehavior: Clip.antiAlias,
+                  child: Container(
+                    color: Colors.green,
+                    width: MediaQuery.of(context).size.width - 50,
+                    child: InkWell(
+                      onTap: () {
+                        punchInOut(context);
+                      },
                       child: Container(
-                        height: 45,
-                        alignment: Alignment.centerRight,
+                        padding: EdgeInsets.symmetric(vertical: 11.0),
+                        alignment: Alignment.center,
                         child: Text(
-                          '9999999999',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 45,
-                      child: Center(
-                        child: Text(
-                          'ID',
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        height: 45,
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'CSO',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: Card(
-                          // child: Lottie.asset(
-                          //   'assets/locationtip.json', // Replace with your Lottie asset
-                          //   height: 45,
-                          //   fit: BoxFit.cover,
-                          // ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          height: 45,
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Address Details',
+                          tabName,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    child: Container(
-                      constraints: BoxConstraints(minHeight: 45),
-                      child: Text(
-                        'Address Details',
-                        maxLines: null,
-                        style: TextStyle(
-                          height: 1.0,
-                        ),
-                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 45,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Get QR Payment Details',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Icon(
-                      Icons.arrow_forward,
-                      color: Colors.black,
-                      size: 30,
-                    ),
-                  ],
                 ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGridItem(String title, IconData icon, VoidCallback onTap) {
+    return Card(
+
+      color: Colors.white,
+      elevation: 6,
+      margin: EdgeInsets.all(6),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(padding: EdgeInsets.all(4),child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 20, color: Colors.grey),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+                color: Colors.black,
               ),
             ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 45,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Get Collection Report',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Icon(
-                      Icons.arrow_forward,
-                      color: Colors.black,
-                      size: 30,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 10),
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/earn6.png', // Replace with your asset image
-                    fit: BoxFit.cover,
-                  ),
-                  Image.asset(
-                    'assets/earn5.png', // Replace with your asset image
-                    fit: BoxFit.cover,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Refer Now',
-                      style: TextStyle(fontSize: 9),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      fixedSize: Size(75, 45),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          ],
+        ),),
+      ),
+    );
+  }
+
+  Widget _buildBackButton(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+      child: _buildIconContainer(Icons.arrow_back_ios_sharp),
+    );
+  }
+
+  Widget _buildLogoutButton(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      },
+      child: _buildIconContainer(Icons.logout, color: Color(0xFFD42D3F)),
+    );
+  }
+
+  Widget _buildIconContainer(IconData icon, {Color color = Colors.grey}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(width: 1, color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      height: 40,
+      width: 40,
+      alignment: Alignment.center,
+      child: Icon(icon, size: 16, color: color),
+    );
+  }
+
+  Widget _buildCenterLogo() {
+    return Image.asset(
+      'assets/Images/logo_white.png',
+      height: 30,
+    );
+  }
+
+  Widget _buildProfilePicture() {
+    return Center(
+      child: CircleAvatar(
+        radius: 50.0,
+        backgroundImage: AssetImage('assets/Images/user_ic.png'),
+      ),
+    );
+  }
+
+  Widget _buildUserDetailsCard() {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+      color: Colors.white.withOpacity(0.8),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDetailRow(Icons.perm_identity, 'ID ', _idController),
+            Divider(thickness: 2, indent: 16, endIndent: 16),
+            _buildDetailRow(Icons.person, 'Name ', _nameController),
+            Divider(thickness: 2, indent: 16, endIndent: 16),
+            _buildDetailRow(Icons.phone, 'Mobile No ', _mobileNoController),
+            Divider(thickness: 2, indent: 16, endIndent: 16),
+            _buildDetailRow(Icons.work, 'Designation ', _designationController),
+            Divider(thickness: 2, indent: 16, endIndent: 16),
+            _buildDetailRow(Icons.map, 'Creator ', _creatorController),
+            Divider(thickness: 2, indent: 16, endIndent: 16),
+            _buildTimerRow(Icons.timer, 'Time Remaining ', _timeDisplay),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildDetailRow(
+      IconData icon, String label, TextEditingController controller) {
+    return Row(
+      children: [
+        Icon(icon, color: Color(0xFFD42D3F)),
+        Text(label,
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+        Expanded(
+          child: Text(
+            controller.text,
+            style: TextStyle(color: Color(0xFFD42D3F)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTimerRow(IconData icon, String label, String timerDisplay) {
+    return Row(
+      children: [
+        Icon(icon, color: Color(0xFFD42D3F)),
+        Text(label,
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+        Expanded(
+          child: Text(
+            timerDisplay,
+            style: TextStyle(color: Color(0xFFD42D3F)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionCard(String title) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+      child: ListTile(
+        title: Text(
+          title,
+          style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[700]),
+        ),
+        trailing: Icon(Icons.arrow_forward),
+        onTap: () {
+          // Add your action here
+        },
+      ),
+    );
+  }
+
+  Future<void> punchInOut(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+    Map<String, dynamic> requestBody = {
+      "location": "100745868994",
+    };
+    String type = "PUNCHOUT";
+    return await api
+        .punchInOut(GlobalClass.token, GlobalClass.dbName, requestBody, type)
+        .then((value) {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        setState(() {
+          tabName = "PUNCH OUT";
+        });
+        GlobalClass.showSuccessAlert(context, value.message, 1);
+      } else {
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
+      }
+    });
+  }
+
 }

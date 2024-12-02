@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Group_List_Page.dart';
+import 'package:flutter_sourcing_app/MasterAPIs/live_track_repository.dart';
 import 'package:provider/provider.dart';
 import 'ApiService.dart';
 import 'GlobalClass.dart';
@@ -20,7 +22,7 @@ class BranchListPage extends StatefulWidget {
 class _BranchListPageState extends State<BranchListPage> {
   List<BranchDataModel> _items = [];
   String _searchText = '';
-  bool _isLoading = true;
+
 
   @override
   void initState() {
@@ -29,21 +31,29 @@ class _BranchListPageState extends State<BranchListPage> {
   }
 
   Future<void> _fetchBranchList() async {
+    EasyLoading.show(status: 'Loading...',);
+
     final apiService = Provider.of<ApiService>(context, listen: false);
 
       await apiService.getBranchList(GlobalClass.dbName,"ETAH" /*GlobalClass.creator*/).then((response){
         if (response.statuscode == 200) {
           setState(() {
             _items = response.data; // Store the response data
-            _isLoading = false;
+
           });
+          EasyLoading.dismiss();
+
           print('Branch List retrieved successfully');
         } else {
+          EasyLoading.dismiss();
+
           print('Failed to retrieve branch list');
           setState(() {
-            _isLoading = false;
+
           });
         }
+      }).catchError((err){
+        EasyLoading.dismiss();
       });
   }
 
@@ -55,13 +65,49 @@ class _BranchListPageState extends State<BranchListPage> {
 
     return Scaffold(
 
-      backgroundColor: Colors.red,
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Column(
+      backgroundColor: Color(0xFFD42D3F),
+      body: Column(
         children: [
+          SizedBox(height: 50),
+          Padding(padding: EdgeInsets.all(8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 1, color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    child: Center(
+                      child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                Center(
+                  child: Image.asset(
+                    'assets/Images/logo_white.png', // Replace with your logo asset path
+                    height: 40,
+                  ),
+                ),
+                Container(
+                  height: 40,
+                  width: 40,
+                  alignment: Alignment.center,
+                ),
+              ],
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10,top: 50,left: 10,right: 10),
+            padding: const EdgeInsets.only(bottom: 0,top: 0,left: 10,right: 10),
             child: Card(
               color: Colors.white,
               elevation: 8,
@@ -80,20 +126,21 @@ class _BranchListPageState extends State<BranchListPage> {
           ),
           Expanded(
             child: ListView.builder(
+              padding: EdgeInsets.zero,
               itemCount: filteredItems.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
                     final selectedItem = filteredItems[index];
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GroupListPage(
-                                Branchdata: selectedItem,
-                                intentFrom:widget.intentFrom),
-                          ),
-                        );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GroupListPage(
+                            Branchdata: selectedItem,
+                            intentFrom:widget.intentFrom),
+                      ),
+                    );
                   },
                   child: BranchRecyclerItem(item: filteredItems[index]),
                 );
@@ -101,7 +148,7 @@ class _BranchListPageState extends State<BranchListPage> {
             ),
           ),
         ],
-      ),
+      )
     );
   }
 

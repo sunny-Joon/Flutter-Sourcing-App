@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Group_recycler_item.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
@@ -23,6 +24,7 @@ class GroupListPage extends StatefulWidget {
 }
 
 class _GroupListPageState extends State<GroupListPage> {
+
   List<GroupDataModel> _items = [];
   String _searchText = '';
   bool _isLoading = true;
@@ -34,6 +36,8 @@ class _GroupListPageState extends State<GroupListPage> {
   }
 
   Future<void> _fetchGroupList() async {
+    EasyLoading.show(status: 'Loading...',);
+
     final apiService = Provider.of<ApiService>(context, listen: false);
 
     try {
@@ -48,6 +52,8 @@ class _GroupListPageState extends State<GroupListPage> {
         setState(() {
           _items = response.data; // Store the response data
           _isLoading = false;
+          EasyLoading.dismiss();
+
         });
         print('Group List retrieved successfully');
       } else {
@@ -71,17 +77,59 @@ class _GroupListPageState extends State<GroupListPage> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: Color(0xFFD42D3F),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : Column(
         children: [
+          SizedBox(height: 50),
+          Padding(padding: EdgeInsets.all(8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 1, color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    child: Center(
+                      child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                Center(
+                  child: Image.asset(
+                    'assets/Images/logo_white.png', // Replace with your logo asset path
+                    height: 40,
+                  ),
+                ),
+                Container(
+                  height: 40,
+                  width: 40,
+                  alignment: Alignment.center,
+                ),
+              ],
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10,top: 50,left: 10,right: 10),
+            padding: const EdgeInsets.only(bottom: 0,top: 0,left: 6,right: 6),
             child: Card(
-              elevation: 8,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              elevation: 20,
               child: TextField(
+
                 decoration: InputDecoration(
+                  alignLabelWithHint: true,
                   hintText: 'Search',
                   prefixIcon: Icon(Icons.search),
                 ),
@@ -95,6 +143,8 @@ class _GroupListPageState extends State<GroupListPage> {
           ),
           Expanded(
             child: ListView.builder(
+              padding: EdgeInsets.zero,
+
               itemCount: filteredItems.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
@@ -128,12 +178,12 @@ class _GroupListPageState extends State<GroupListPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HouseVisitForm(),
-                            /*builder: (context) => BorrowerList(
-                              data: "widget.data",
-                              areaCd: selectedItem.groupCode,
-                              foCode: selectedItem.groupCodeName,
-                            ),*/
+                          //  builder: (context) => HouseVisitForm(),
+                            builder: (context) => BorrowerList(
+                                BranchData: widget.Branchdata,
+                                GroupData: selectedItem,
+                                page:"HouseVisit"
+                            ),
                           ),
                         );
                         break;

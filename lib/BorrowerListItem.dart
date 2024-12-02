@@ -1,125 +1,165 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts package
 
-class BorrowerListItem extends StatelessWidget {
-  final String name;
-  final String fiCode;
-  final String mobile;
-  final String creator;
-  final String address;
-  final VoidCallback onTap; // Callback for the onTap event
+// Function to transform the local file path to a URL
+String transformFilePathToUrl(String filePath) {
+  const String urlPrefix = 'https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//';
+  const String localPrefix = 'D:\\LOSDOC\\FiDocs\\';
+  if (filePath.startsWith(localPrefix)) {
+    // Remove the local prefix and replace with the URL prefix
+    return filePath.replaceFirst(localPrefix, urlPrefix).replaceAll('\\', '//');
+  }
+  // Return the filePath as is if it doesn't match the local prefix
+  return filePath;
+}
 
-  BorrowerListItem({
-    required this.name,
-    required this.fiCode,
-    required this.mobile,
-    required this.creator,
-    required this.address,
-    required this.onTap, // Initialize the onTap callback
-  });
+class ProfileAvatar extends StatelessWidget {
+  final String? imagePath;
+
+  ProfileAvatar({this.imagePath});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap, // Call the onTap callback when tapped
-      child: Card(
-        margin: EdgeInsets.all(10),
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
-        color: Color(0xFFD42D3F),
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    backgroundImage: AssetImage('assets/Images/profileimage.png'),
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    name,
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              SizedBox(height: 5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'FI Code:',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  Expanded(
-                    child: Text(
-                      fiCode,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Mobile:',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  Expanded(
-                    child: Text(
-                      mobile,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Creator:',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  Expanded(
-                    child: Text(
-                      creator,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 5),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Address:',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      address,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.all(2.0), // Adjust the padding as needed
+      child: CircleAvatar(
+        radius: 30,
+        backgroundColor: Colors.white,
+        child: imagePath == null
+            ? Icon(Icons.person, size: 40, color: Colors.grey[400]) // Icon when imagePath is null
+            : ClipOval(
+          child: Image.network(
+            imagePath!,
+            fit: BoxFit.cover,
+            width: 80,
+            height: 80,
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(Icons.person, size: 40, color: Colors.grey[400]); // Fallback to icon on error
+            },
           ),
         ),
       ),
     );
   }
+}
+
+class BorrowerListItem extends StatelessWidget {
+  final String name;
+  final String fiCode;
+  final String creator;
+  final String? pic; // Update this to be nullable
+  final VoidCallback onTap; // Callback for the onTap event
+
+  BorrowerListItem({
+    required this.name,
+    required this.fiCode,
+    required this.creator,
+    required this.onTap, // Initialize the onTap callback
+    this.pic, // Initialize the pic, now nullable
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    String? imageUrl;
+    if (pic != null) {
+      imageUrl = transformFilePathToUrl(pic!);
+    }
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.red.shade900, Colors.redAccent.shade200],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 6,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: <Widget>[
+            ProfileAvatar(imagePath: imageUrl),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: GoogleFonts.lato(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'FI Code: $fiCode',
+                    style: GoogleFonts.lato(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    creator,
+                    style: GoogleFonts.lato(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios, color: Colors.white70),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    theme: ThemeData(
+      primaryColor: Color(0xFFD42D3F),
+    ),
+    home: Scaffold(
+      appBar: AppBar(
+        title: Text('Borrower List'),
+        backgroundColor: Color(0xFFD42D3F),
+      ),
+      body: ListView(
+        children: [
+          BorrowerListItem(
+            name: 'John Doe',
+            fiCode: '12345',
+            creator: 'Admin',
+            pic: 'D:\\LOSDOC\\FiDocs\\image.jpg',
+            onTap: () {
+              // Handle tap
+            },
+          ),
+          BorrowerListItem(
+            name: 'Jane Smith',
+            fiCode: '67890',
+            creator: 'Admin',
+            pic: null,
+            onTap: () {
+              // Handle tap
+            },
+          ),
+        ],
+      ),
+    ),
+  ));
 }
