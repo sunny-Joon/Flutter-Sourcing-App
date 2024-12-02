@@ -43,10 +43,9 @@ class _HomePageState extends State<HomePage> {
           children: [
             SizedBox(height: 80), // Add some space at the top
             Container(
-              height: MediaQuery.of(context).size.height / 2.2,
-              width: MediaQuery.of(context).size.width-30,
-              margin: EdgeInsets.symmetric(horizontal: 5.0), // 5dp margin on left and right
-              padding: EdgeInsets.all(30.0),
+              width: MediaQuery.of(context).size.width - 30,
+              margin: EdgeInsets.symmetric(horizontal: 15.0), // 15dp margin on left and right
+              padding: EdgeInsets.only(left: 30.0,right: 30,top: 30,bottom: 50),
               decoration: BoxDecoration(
                 color: Color(0xFFD42D3F),
                 borderRadius: BorderRadius.circular(18),
@@ -56,6 +55,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   // Logo with top margin
                   Padding(
@@ -109,39 +109,32 @@ class _HomePageState extends State<HomePage> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFD42D3F), // Button background color
-                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0), // Button padding
+                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10), // Button padding
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero, // Rectangular corners
                       ),
                     ),
                     onPressed: () async {
-                      // final selectedValue = await _showAlertDialog(context); // Same functionality
-                      // if (selectedValue != null) {
-                      //   setState(() {
-                      //     _displayValue = selectedValue * 1000; // Convert to the actual value
-                      //   });
-                      // }
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => TargetSetPage(
-
-                            )),
+                            builder: (context) => TargetSetPage()
+                        ),
                       );
                     },
                     child: Text(
                       'Reset target',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+
                   ),
                 ],
               ),
             ),
-
             SizedBox(height: 20), // Add space between sections
             // Bottom section with cards
             GestureDetector(
@@ -161,6 +154,7 @@ class _HomePageState extends State<HomePage> {
                         color: Color(0xFFC5C3C3),
                         shadows: [
                           /* Shadow(
+
                           blurRadius: 10.0,
                           color: Colors.black,
                         ),*/
@@ -175,11 +169,12 @@ class _HomePageState extends State<HomePage> {
                   ],
                 )
 
+
             ),
             SizedBox(height: 10), // Add space before the row
             Row(
               children: [
-                Expanded(
+                Flexible(
                   child: Container(
                     height: MediaQuery.of(context).size.height / 4,
                     child: Card(
@@ -201,18 +196,22 @@ class _HomePageState extends State<HomePage> {
                                   color: Color(0xFF6D6D6D),
                                 ),
                               ),
-                              TextField(
-                                controller: TextEditingController(text: '\₹0000'),
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xFF6D6D6D),
-                                ),
-                                textAlign: TextAlign.center,
-                                readOnly: true, // Make it read-only
-                                decoration: InputDecoration(
-                                  border: InputBorder.none, // Remove underline
+                              SizedBox(height: 10), // Add some spacing
+                              Flexible(
+                                child: TextField(
+                                  controller: TextEditingController(text: '\₹0000'),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFF6D6D6D),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  readOnly: true, // Make it read-only
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none, // Remove underline
+                                  ),
                                 ),
                               ),
+                              SizedBox(height: 10), // Add some spacing
                               Text(
                                 '10 People are earning more commission',
                                 style: TextStyle(
@@ -228,7 +227,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                Expanded(
+
+
+                Flexible(
                   child: Container(
                     height: MediaQuery.of(context).size.height / 4,
                     child: Card(
@@ -276,14 +277,12 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-
             SizedBox(height: 20), // Add some space at the bottom
           ],
         ),
       ),
     );
   }
-
 
   Future<int?> _showAlertDialog(BuildContext context) async {
     _currentSliderValue = 2500; // Reset slider value to initial value
@@ -385,8 +384,6 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
-
 
   Future<void> _setTarget(BuildContext context, int target) async {
 
