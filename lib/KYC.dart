@@ -19,17 +19,9 @@ import 'package:provider/provider.dart';
 import 'ApiService.dart';
 import 'DATABASE/DatabaseHelper.dart';
 import 'Models/RangeCategoryModel.dart';
-import 'package:http/http.dart' as http;
-
 import 'QRScanPage.dart';
 
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 class KYCPage extends StatefulWidget {
-
-
   final BranchDataModel data;
   final GroupDataModel GroupData;
 
@@ -40,7 +32,6 @@ class KYCPage extends StatefulWidget {
 }
 
 class _KYCPageState extends State<KYCPage> {
-
   late ApiService apiService;
   late ApiService apiService_idc;
   late ApiService apiService_protean;
@@ -61,7 +52,6 @@ class _KYCPageState extends State<KYCPage> {
       "Please search PAN card holder name for verification";
   String? dlCardHolderName;
   String? voterCardHolderName;
-
   List<RangeCategoryDataModel> states = [];
   List<RangeCategoryDataModel> marrital_status = [];
   List<RangeCategoryDataModel> relation = [];
@@ -80,7 +70,6 @@ class _KYCPageState extends State<KYCPage> {
   PlaceData? selectedSubDistrictCode;
   PlaceData? selectedVillageCode;
   bool isCKYCNumberFound=false;
-
   List<String> loanDuration = ['12', '24', '36', '48'];
 
   List<String> titleList = ["Mr.", "Mrs.", "Miss"];
@@ -109,7 +98,7 @@ class _KYCPageState extends State<KYCPage> {
     apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     _focusNodeAdhaarId.addListener(_validateOnFocusChange);
- //    _mobileNoController.text="9910238307";
+    //    _mobileNoController.text="9910238307";
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
 
@@ -118,7 +107,6 @@ class _KYCPageState extends State<KYCPage> {
 
     geolocator(context);
     super.initState();
-
 // Fetch states using the required cat_key
   }
 
@@ -133,7 +121,7 @@ class _KYCPageState extends State<KYCPage> {
   Future<void> fetchData() async {
     states = await DatabaseHelper().selectRangeCatData("state");
     marrital_status =
-        await DatabaseHelper().selectRangeCatData("marrital_status");
+    await DatabaseHelper().selectRangeCatData("marrital_status");
     relation = await DatabaseHelper().selectRangeCatData("relationship");
     reasonForLoan = await DatabaseHelper().selectRangeCatData("loan_purpose");
     aadhar_gender = await DatabaseHelper().selectRangeCatData("gender");
@@ -215,6 +203,7 @@ class _KYCPageState extends State<KYCPage> {
 
   // final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
+
   // TextEditingControllers for all input fields
   final _aadharIdController = TextEditingController();
   late var _nameController = TextEditingController();
@@ -268,11 +257,10 @@ class _KYCPageState extends State<KYCPage> {
       isVoterIdVerified = false,
       isPassportVerified = false;
 
-
   get isChecked => null;
   final FocusNode _focusNodeAdhaarId = FocusNode();
 
-   String _errorMessageAadhaar="";
+  String _errorMessageAadhaar="";
 
 
   void _pickImage() async {
@@ -416,22 +404,19 @@ class _KYCPageState extends State<KYCPage> {
                                 border: Border.all(
                                     width: 1, color: Colors.grey.shade300),
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-
+                                BorderRadius.all(Radius.circular(5)),
                               ),
                               height: 40,
                               width: 40,
                               alignment: Alignment.center,
                               child: Center(
                                 child:
-                                    Icon(Icons.arrow_back_ios_sharp, size: 16),
+                                Icon(Icons.arrow_back_ios_sharp, size: 16),
                               ),
                             ),
-
                             onTap: () {
 
                               if (_currentStep == 1) {
-
                                 setState(() {
                                   _currentStep--;
 
@@ -463,7 +448,6 @@ class _KYCPageState extends State<KYCPage> {
                         height: MediaQuery.of(context).size.height - 244,
                         child: Stack(
                           clipBehavior: Clip.none,
-
                           children: [
                             Container(
                               padding: EdgeInsets.all(20),
@@ -514,9 +498,7 @@ class _KYCPageState extends State<KYCPage> {
                                     ),
                                     onTap: _pickImage,
                                   ),
-
                                 )),
-
                           ],
                         ),
                       ),
@@ -528,7 +510,6 @@ class _KYCPageState extends State<KYCPage> {
                         children: [
                           Row(
                             children: [
-
                               Icon(
                                 Icons.location_on_outlined,
                                 color: Colors.white,
@@ -550,7 +531,6 @@ class _KYCPageState extends State<KYCPage> {
                               shape: CircleBorder(),
                               child: Padding(
                                 padding: EdgeInsets.all(3),
-
                                 child: Icon(
                                   Icons.refresh,
                                   size: 30,
@@ -573,13 +553,11 @@ class _KYCPageState extends State<KYCPage> {
         ));
   }
 
-
   int calculateAgeFromString(String dateString,
       {String format = "yyyy-MM-dd"}) {
     try {
       // Parse the string date
       DateTime birthDate = DateFormat(format).parse(dateString);
-
 
       // Calculate age
       DateTime today = DateTime.now();
@@ -598,15 +576,16 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-
   int calculateAge(DateTime birthDate) {
     DateTime today = DateTime.now();
     int age = today.year - birthDate.year;
+
     // Adjust for the month and day
     if (today.month < birthDate.month ||
         (today.month == birthDate.month && today.day < birthDate.day)) {
       age--;
     }
+
     return age;
   }
 
@@ -627,7 +606,7 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller, int maxLength, {TextInputType inputType = TextInputType.text}) {
+  Widget _buildTextField(String label, TextEditingController controller) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 0),
@@ -639,9 +618,8 @@ class _KYCPageState extends State<KYCPage> {
             label,
             style: TextStyle(fontSize: 16, height: 2),
           ),
-          SizedBox(height: 8), // Increased spacing for better layout
+          SizedBox(height: 1),
           Container(
-
               padding: EdgeInsets.zero,
               width: double.infinity, // Set the desired width
               child: Center(
@@ -658,7 +636,6 @@ class _KYCPageState extends State<KYCPage> {
                   },
                 ),
               )),
-
         ],
       ),
     );
@@ -688,13 +665,13 @@ class _KYCPageState extends State<KYCPage> {
       lati = _latitudeController.text;
       longi = _longitudeController.text;
       int Expense =
-          (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
+      (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
       int Income =
-          (income != null && income.isNotEmpty) ? int.parse(income) : 0;
+      (income != null && income.isNotEmpty) ? int.parse(income) : 0;
       double latitude =
-          (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
+      (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
       double longitude =
-          (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
+      (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
       String add1 = _address1Controller.text.toString();
       String add2 = _address2Controller.text.toString();
       String add3 = _address3Controller.text.toString();
@@ -804,9 +781,9 @@ class _KYCPageState extends State<KYCPage> {
     String voter_id = _voterIdController.text.toString();
     String passport = _passportController.text.toString();
     String? PassportExpireDate =
-        _passportExpiryController.text.toString().isEmpty
-            ? null
-            : _passportExpiryController.text;
+    _passportExpiryController.text.toString().isEmpty
+        ? null
+        : _passportExpiryController.text;
     int isAadharVerified = 1;
     int is_phnno_verified = 1;
     int isNameVerify = 1;
@@ -852,7 +829,6 @@ class _KYCPageState extends State<KYCPage> {
       "DLExpireDate": DLExpireDate,
     };
 
-
     return await api
         .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
@@ -875,53 +851,12 @@ class _KYCPageState extends State<KYCPage> {
     });
   }
 
-
-  //////////////////////////
-
- /* Future<void> IDVerification(String id, String type, String bankIfsc, String dob) async {
-    // Create an instance of the http Client
-    var client = http.Client();
-
-    try {
-      final response = await client.post(
-        Uri.parse('https://agra.paisalo.in:8462/creditmatrix/api/IdentityVerification/Get'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          "type": type,
-          "txtnumber": id,
-          "ifsc": bankIfsc,
-          "userdob": dob,
-          "key": "1"
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        try {
-          final data = json.decode(response.body);
-          print("Data received: $data");
-        } catch (e) {
-          print("Error parsing response JSON: $e");
-        }
-      } else {
-        print('Request failed with status: ${response.statusCode}. Response: ${response.body}');
-      }
-    } catch (e) {
-      print("Request error: $e");
-    } finally {
-      // Close the client to prevent memory leaks
-      client.close();
-    }
-  }*/
-
   void savePersonalDetailsMethod() {}
 
   void saveDataMethod() {}
 
   Widget _buildTextField2(String label, TextEditingController controller,
       TextInputType inputType, int maxlength) {
-
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -935,7 +870,7 @@ class _KYCPageState extends State<KYCPage> {
               fontSize: 16,
             ),
           ),
-          SizedBox(height: 8), // Use a larger size for spacing
+          SizedBox(height: 1),
           Container(
             width: double.infinity, // Set the desired width
             child: Center(
@@ -955,26 +890,19 @@ class _KYCPageState extends State<KYCPage> {
                   FilteringTextInputFormatter.allow(RegExp(
                       '[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
                   TextInputFormatter.withFunction(
-                    (oldValue, newValue) => TextEditingValue(
+                        (oldValue, newValue) => TextEditingValue(
                       text: newValue.text.toUpperCase(),
                       selection: newValue.selection,
                     ),
                   ),
                 ],
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter $label';
-                }
-                return null; // Valid input
-              },
             ),
           ),
         ],
       ),
     );
   }
-
 
   void _showPopup(BuildContext context, Function(String) onResult) {
     showDialog(
@@ -1002,7 +930,7 @@ class _KYCPageState extends State<KYCPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(5), // Adjust as needed
+                        BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1023,7 +951,7 @@ class _KYCPageState extends State<KYCPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(5), // Adjust as needed
+                        BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1066,7 +994,7 @@ class _KYCPageState extends State<KYCPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(5), // Adjust as needed
+                        BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1125,8 +1053,8 @@ class _KYCPageState extends State<KYCPage> {
               _dobController.text = formatDate(response.data.dob, 'dd/MM/yyyy');
               genderselected = aadhar_gender
                   .firstWhere((item) =>
-                      item.descriptionEn.toLowerCase() ==
-                      response.data.gender.toLowerCase())
+              item.descriptionEn.toLowerCase() ==
+                  response.data.gender.toLowerCase())
                   .descriptionEn;
               if (genderselected == "Male") {
                 selectedTitle = "Mr.";
@@ -1144,7 +1072,7 @@ class _KYCPageState extends State<KYCPage> {
               });
               _cityController.text = response.data.cityName;
               List<String> addressParts =
-                  response.data.address1.trim().split(" ");
+              response.data.address1.trim().split(" ");
               if (addressParts.length == 1) {
                 _address1Controller.text = addressParts[0];
               } else if (addressParts.length == 2) {
@@ -1157,7 +1085,7 @@ class _KYCPageState extends State<KYCPage> {
                     addressParts.sublist(1, addressParts.length - 1).join(' ');
               }
               List<String> guarNameParts =
-                  response.data.guardianName.trim().split(" ");
+              response.data.guardianName.trim().split(" ");
               if (guarNameParts.length == 1) {
                 _fatherFirstNameController.text = guarNameParts[0];
               } else if (guarNameParts.length == 2) {
@@ -1178,7 +1106,7 @@ class _KYCPageState extends State<KYCPage> {
               });
               _cityController.text = response.data.cityName;
               List<String> addressParts =
-                  response.data.address1.trim().split(" ");
+              response.data.address1.trim().split(" ");
               if (addressParts.length == 1) {
                 _address1Controller.text = addressParts[0];
               } else if (addressParts.length == 2) {
@@ -1191,7 +1119,7 @@ class _KYCPageState extends State<KYCPage> {
                     addressParts.sublist(1, addressParts.length - 1).join(' ');
               }
               List<String> guarNameParts =
-                  response.data.guardianName.trim().split(" ");
+              response.data.guardianName.trim().split(" ");
               if (guarNameParts.length == 1) {
                 _spouseFirstNameController.text = guarNameParts[0];
               } else if (guarNameParts.length == 2) {
@@ -1255,7 +1183,7 @@ class _KYCPageState extends State<KYCPage> {
     for (var byteArray in encodedData) {
       // Decode using ISO-8859-1
       String decodedString =
-          utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
+      utf8.decode(byteArray); // Change to ISO-8859-1 if necessary
       decodedData.add(decodedString);
 
       test += decodedString;
@@ -1433,12 +1361,140 @@ class _KYCPageState extends State<KYCPage> {
   Widget _buildStepOne(BuildContext context) {
     return SingleChildScrollView(
         child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-                child: Container(
+            Row(
+              children: [
+                Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      margin: EdgeInsets.symmetric(vertical: 0),
+                      padding: EdgeInsets.all(0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Aadhaar ID",
+                            style: TextStyle(fontSize: 16, height: 2),
+                          ),
+                          SizedBox(height: 1),
+                          Container(
+                              padding: EdgeInsets.zero,
+                              width: double.infinity, // Set the desired width
+                              child: Center(
+                                child: TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 12,
+                                  focusNode: _focusNodeAdhaarId,
+                                  controller: _aadharIdController,
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      errorText: _errorMessageAadhaar.isEmpty
+                                          ? null
+                                          : _errorMessageAadhaar,
+                                      counterText: ""),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter Aadhaar ID';
+                                    }
+                                    return null;
+                                  },
+
+                                ),
+                              )),
+                        ],
+                      ),
+                    )),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  // Add 10px padding from above
+                  child: GestureDetector(
+                    onTap: () => _showPopup(context, (String result) {
+                      setState(() {
+                        qrResult = result;
+                      });
+                    }), // Show popup on image click
+                    child: Icon(
+                      Icons.qr_code_2_sharp,
+                      size: 50.0, // Set the size of the icon
+                      color: Colors.grey, // Set the color of the icon
+                    ),
+                  ),
+                )
+              ],
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 95, // Fixed width for the Title dropdown
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 2,
+                      ),
+                      Text(
+                        'Title',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+
+                        height: 55,
+                        // Fixed height
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: DropdownButton<String>(
+                          value: selectedTitle,
+                          isExpanded: true,
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                          underline: Container(
+                            height: 2,
+                            color: Colors
+                                .transparent, // Set to transparent to remove default underline
+                          ),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedTitle = newValue!;
+                            });
+                          },
+                          items: titleList.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
+                // Add spacing between Title dropdown and Name field if needed
+                Expanded(
+                  child: _buildTextField2(
+                      'Name', _nameController, TextInputType.name, 30),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                    child: _buildTextField2(
+                        'Middle Name', _nameMController, TextInputType.name, 30)),
+                SizedBox(width: 10),
+                // Add spacing between the text fields if needed
+                Expanded(
+                    child: _buildTextField2(
+                        'Last Name', _nameLController, TextInputType.name, 30)),
+              ],
+            ),
+            Container(
               color: Colors.white,
               margin: EdgeInsets.symmetric(vertical: 0),
               padding: EdgeInsets.all(0),
@@ -1446,7 +1502,7 @@ class _KYCPageState extends State<KYCPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Aadhaar ID",
+                    "Guardian Name",
                     style: TextStyle(fontSize: 16, height: 2),
                   ),
                   SizedBox(height: 1),
@@ -1455,712 +1511,584 @@ class _KYCPageState extends State<KYCPage> {
                       width: double.infinity, // Set the desired width
                       child: Center(
                         child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          maxLength: 12,
-                          focusNode: _focusNodeAdhaarId,
-                          controller: _aadharIdController,
-                          decoration: InputDecoration(
+                            maxLength: 50,
+                            controller: _gurNameController,
+                            decoration: InputDecoration(
+                              counterText: "",
                               border: OutlineInputBorder(),
-                              errorText: _errorMessageAadhaar.isEmpty
-                                  ? null
-                                  : _errorMessageAadhaar,
-                              counterText: ""),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter Aadhaar ID';
-                            }
-                            return null;
-                          },
-
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter Guardian Name';
+                              }
+                              return null;
+                            },
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp(
+                                  '[a-zA-Z0-9 ]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                              TextInputFormatter.withFunction(
+                                    (oldValue, newValue) => TextEditingValue(
+                                  text: newValue.text.toUpperCase(),
+                                  selection: newValue.selection,
+                                ),
+                              ),
+                            ]
                         ),
                       )),
                 ],
               ),
-            )),
-            Padding(
-              padding: EdgeInsets.only(top: 20),
-              // Add 10px padding from above
-              child: GestureDetector(
-                onTap: () => _showPopup(context, (String result) {
-                  setState(() {
-                    qrResult = result;
-                  });
-                }), // Show popup on image click
-                child: Icon(
-                  Icons.qr_code_2_sharp,
-                  size: 50.0, // Set the size of the icon
-                  color: Colors.grey, // Set the color of the icon
-                ),
-              ),
-            )
-          ],
-        ),
-        Row(
-          children: [
-            SizedBox(
-              width: 95, // Fixed width for the Title dropdown
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 2,
-                  ),
-                  Text(
-                    'Title',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-
-                    height: 55,
-                    // Fixed height
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<String>(
-                      value: selectedTitle,
-                      isExpanded: true,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                      underline: Container(
-                        height: 2,
-                        color: Colors
-                            .transparent, // Set to transparent to remove default underline
-                      ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedTitle = newValue!;
-                        });
-                      },
-                      items: titleList.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
             ),
-            SizedBox(width: 10),
-            // Add spacing between Title dropdown and Name field if needed
-            Expanded(
-              child: _buildTextField2(
-                  'Name', _nameController, TextInputType.name, 30),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(
-                child: _buildTextField2(
-                    'Middle Name', _nameMController, TextInputType.name, 30)),
-            SizedBox(width: 10),
-            // Add spacing between the text fields if needed
-            Expanded(
-                child: _buildTextField2(
-                    'Last Name', _nameLController, TextInputType.name, 30)),
-          ],
-        ),
-        Container(
-          color: Colors.white,
-          margin: EdgeInsets.symmetric(vertical: 0),
-          padding: EdgeInsets.all(0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Guardian Name",
-                style: TextStyle(fontSize: 16, height: 2),
-              ),
-              SizedBox(height: 1),
-              Container(
-                  padding: EdgeInsets.zero,
-                  width: double.infinity, // Set the desired width
-                  child: Center(
-                    child: TextFormField(
-                      maxLength: 50,
-                      controller: _gurNameController,
-                      decoration: InputDecoration(
-                        counterText: "",
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter Guardian Name';
-                        }
-                        return null;
-                      },
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(
-                              '[a-zA-Z0-9 ]')), // Allow only alphanumeric characters // Optional: to deny spaces
-                          TextInputFormatter.withFunction(
-                                (oldValue, newValue) => TextEditingValue(
-                              text: newValue.text.toUpperCase(),
-                              selection: newValue.selection,
-                            ),
-                          ),
-                        ]
-                    ),
-                  )),
-            ],
-          ),
-        ),
-        Row(
-          children: [
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
               children: [
-                SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  'Gender',
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Container(
-                  alignment: Alignment.center,
-
-                  width: 150,
-                  // Adjust the width as needed
-                  height: 55,
-                  // Fixed height
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: DropdownButton<String>(
-                    value: genderselected,
-                    isExpanded: true,
-                    iconSize: 24,
-                    elevation: 16,
-                    style: TextStyle(color: Colors.black, fontSize: 16),
-                    underline: Container(
-                      height: 2,
-                      color: Colors
-                          .transparent, // Set to transparent to remove default underline
-                    ),
-                    onChanged: (String? newValue) {
-                      if (newValue != null) {
-                        setState(() {
-                          genderselected =
-                              newValue; // Update the selected value
-                        });
-                      }
-                    },
-                    items: aadhar_gender.map<DropdownMenuItem<String>>(
-                      (RangeCategoryDataModel state) {
-                        return DropdownMenuItem<String>(
-                          value: state.code,
-                          child: Text(state.descriptionEn),
-                        );
-                      },
-                    ).toList(),
-                  ),
-                ),
-              ],
-            )),
-            SizedBox(width: 10),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  'Relationship',
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Container(
-                  alignment: Alignment.center,
-
-                  width: 150,
-                  // Adjust the width as needed
-                  height: 55,
-                  // Fixed height
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: DropdownButton<String>(
-                    value: relationwithBorrowerselected,
-                    isExpanded: true,
-                    iconSize: 24,
-                    elevation: 16,
-                    style: TextStyle(color: Colors.black, fontSize: 16),
-                    underline: Container(
-                      height: 2,
-                      color: Colors
-                          .transparent, // Set to transparent to remove default underline
-                    ),
-                    onChanged: (String? newValue) {
-                      if (newValue != null) {
-                        setState(() {
-                          relationwithBorrowerselected =
-                              newValue; // Update the selected value
-                        });
-                      }
-                    },
-                    items: relationwithBorrower.map<DropdownMenuItem<String>>(
-                        (RangeCategoryDataModel state) {
-                      return DropdownMenuItem<String>(
-                        value: state.code,
-                        child: Text(state.descriptionEn),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ))
-          ],
-        ),
-
-        Row(
-          children: [
-            Expanded(
-              child: _buildTextField2(
-                  'Mobile no', _mobileNoController, TextInputType.number, 10),
-            ),
-            SizedBox(width: 5),
-            // Add spacing between the text field and the button
-            Padding(
-                padding: EdgeInsets.only(top: 20),
-                // Add 10px padding from above
-                child: InkWell(
-                  onTap: () {
-                    {
-                      if (_mobileNoController.text.isEmpty) {
-                        showToast_Error("Please enter mobile number");
-                      } else {
-                        //getOTPByMobileNo(_mobileNoController.text);
-                        mobileOtp(context, _mobileNoController.text);
-                      }
-                      // Implement OTP verification logic here
-                    }
-                  },
-                  child: Card(
-                    elevation: 4,
-                    color: otpVerified ? Colors.green : Colors.grey,
-                    shape: CircleBorder(),
-                    child: Padding(
-                      padding: EdgeInsets.all(9),
-                      child: Icon(
-                        otpVerified ? Icons.verified : Icons.sms,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                )),
-          ],
-        ),
-        Row(
-          children: [
-            // Age Box
-            SizedBox(
-              width: 80, // Set a fixed width for the age box
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Text(
-                    'Age',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 8),
-                  Container(
-                    color: Colors.white,
-                    child: TextField(
-                      controller: _ageController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
-                      readOnly: true,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 16),
-            // Date of Birth Box
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Text(
-                    'Date of Birth',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 8),
-                  Container(
-                    color: Colors.white,
-                    child: TextField(
-                      controller: _dobController,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.calendar_today),
-                          onPressed: () =>
-                              _selectDate(context, _dobController, "dob"),
+                Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 4,
                         ),
-                        border: OutlineInputBorder(),
-                      ),
-                      readOnly: true,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        _buildTextField2('Father First Name', _fatherFirstNameController,
-            TextInputType.text, 30),
-        Row(
-          children: [
-            Expanded(
-              child: _buildTextField2('Middle Name',
-                  _fatherMiddleNameController, TextInputType.text, 30),
-            ),
-            SizedBox(width: 8),
-            // Add spacing between the text fields if needed
-            Expanded(
-                child: _buildTextField2('Last Name', _fatherLastNameController,
-                    TextInputType.text, 30)),
-          ],
-        ),
-        SizedBox(
-          height: 4,
-        ),
-        Text(
-          'Marital Status',
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(
-          height: 4,
-        ),
+                        Text(
+                          'Gender',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Container(
+                          alignment: Alignment.center,
 
-        Container(
-          alignment: Alignment.center,
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 55,
+                          // Fixed height
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: genderselected,
+                            isExpanded: true,
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                            underline: Container(
+                              height: 2,
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
+                            ),
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  genderselected =
+                                      newValue; // Update the selected value
+                                });
+                              }
+                            },
+                            items: aadhar_gender.map<DropdownMenuItem<String>>(
+                                  (RangeCategoryDataModel state) {
+                                return DropdownMenuItem<String>(
+                                  value: state.code,
+                                  child: Text(state.descriptionEn),
+                                );
+                              },
+                            ).toList(),
+                          ),
+                        ),
+                      ],
+                    )),
+                SizedBox(width: 10),
+                Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          'Relationship',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Container(
+                          alignment: Alignment.center,
 
-          width: double.infinity,
-          // Adjust the width as needed
-          height: 55,
-          // Fixed height
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: DropdownButton<String>(
-            value: selectedMarritalStatus,
-            isExpanded: true,
-            iconSize: 24,
-            elevation: 16,
-            style: TextStyle(color: Colors.black, fontSize: 16),
-            underline: Container(
-              height: 2,
-              color: Colors
-                  .transparent, // Set to transparent to remove default underline
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 55,
+                          // Fixed height
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: relationwithBorrowerselected,
+                            isExpanded: true,
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                            underline: Container(
+                              height: 2,
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
+                            ),
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  relationwithBorrowerselected =
+                                      newValue; // Update the selected value
+                                });
+                              }
+                            },
+                            items: relationwithBorrower.map<DropdownMenuItem<String>>(
+                                    (RangeCategoryDataModel state) {
+                                  return DropdownMenuItem<String>(
+                                    value: state.code,
+                                    child: Text(state.descriptionEn),
+                                  );
+                                }).toList(),
+                          ),
+                        ),
+                      ],
+                    ))
+              ],
             ),
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  selectedMarritalStatus =
-                      newValue; // Update the selected value
-                });
-              }
-            },
-            items: marrital_status
-                .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
-              return DropdownMenuItem<String>(
-                value: state.code,
-                child: Text(state.descriptionEn),
-              );
-            }).toList(),
-          ),
-        ),
-        // Conditionally show the spouse fields only when isMarried is true
-        if (selectedMarritalStatus.toString() == 'Married')
-          Column(
-            children: [
-              _buildTextField2('Spouse First Name', _spouseFirstNameController,
-                  TextInputType.text, 30),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildTextField2('Middle Name',
-                        _spouseMiddleNameController, TextInputType.text, 30),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: _buildTextField2('Last Name',
-                        _spouseLastNameController, TextInputType.text, 30),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        Row(
-          children: [
-            Expanded(
-              child: _buildTextField2('Monthly Expense', _incomeController,
-                  TextInputType.number, 7),
-            ),
-            SizedBox(width: 8),
-            // Add spacing between the text fields if needed
-            Expanded(
-              child: _buildTextField2('Monthly Income', _expenseController,
-                  TextInputType.number, 7),
-            ),
-          ],
-        ),
-        _buildTextField('Address1', _address1Controller),
-        _buildTextField('Address2', _address2Controller),
-        _buildTextField('Address3', _address3Controller),
-        Row(
-          children: [
-            Expanded(
-              child: _buildTextField2(
-                  'City', _cityController, TextInputType.text, 30),
-            ),
-            SizedBox(width: 16),
-            Expanded(
-              child: _buildTextField2(
-                  'Pincode', _pincodeController, TextInputType.number, 6),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 4,
-        ),
 
-        _buildLabeledDropdownField(
-            'Select State', 'State', states, stateselected,
-            (RangeCategoryDataModel? newValue) {
-          setState(() {
-            stateselected = newValue;
-          });
-        }, String),
-        _buildTextField2(
-            'Loan Amount', _loan_amountController, TextInputType.number, 7),
-
-        SizedBox(
-          height: 4,
-        ),
-        Text(
-          'Loan Reason',
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(
-          height: 4,
-        ),
-
-        Container(
-          alignment: Alignment.center,
-
-          width: double.infinity,
-          // Adjust the width as needed
-          height: 55,
-          // Fixed height
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: DropdownButton<String>(
-            value: selectedLoanReason,
-            isExpanded: true,
-            iconSize: 24,
-            elevation: 16,
-            style: TextStyle(color: Colors.black, fontSize: 16),
-            underline: Container(
-              height: 2,
-              color: Colors
-                  .transparent, // Set to transparent to remove default underline
-            ),
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  selectedLoanReason = newValue; // Update the selected value
-                });
-              }
-            },
-            items: reasonForLoan
-                .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
-              return DropdownMenuItem<String>(
-                value: state.code,
-                child: Text(state.descriptionEn),
-              );
-            }).toList(),
-          ),
-        ),
-        SizedBox(
-          height: 4,
-        ),
-
-        Row(
-          children: [
-            // Special Ability Dropdown
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Loan Duraction',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 5),
-                  Container(
-                    alignment: Alignment.center,
-                    width: 150,
-                    // Adjust the width as needed
-                    height: 55,
-                    // Fixed height
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<String>(
-                      value: selectedloanDuration,
-                      isExpanded: true,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                      underline: Container(
-                        height: 2,
-                        color: Colors
-                            .transparent, // Set to transparent to remove default underline
-                      ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedloanDuration = newValue!;
-                        });
-                      },
-                      items: loanDuration.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 16), // Space between dropdowns
-            // State Name Dropdown
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Bank Name',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 5),
-                  Container(
-                    alignment: Alignment.center,
-                    height: 55,
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<String>(
-                      value: bankselected,
-                      isExpanded: true,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.transparent,
-                      ),
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          setState(() {
-                            bankselected = newValue;
-                          });
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2(
+                      'Mobile no', _mobileNoController, TextInputType.number, 10),
+                ),
+                SizedBox(width: 5),
+                // Add spacing between the text field and the button
+                Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    // Add 10px padding from above
+                    child: InkWell(
+                      onTap: () {
+                        {
+                          if (_mobileNoController.text.isEmpty) {
+                            showToast_Error("Please enter mobile number");
+                          } else {
+                            //getOTPByMobileNo(_mobileNoController.text);
+                            mobileOtp(context, _mobileNoController.text);
+                          }
+                          // Implement OTP verification logic here
                         }
                       },
-                      items: bank.map<DropdownMenuItem<String>>(
-                          (RangeCategoryDataModel state) {
-                        return DropdownMenuItem<String>(
-                          value: state.code,
-                          child: Text(state.descriptionEn),
-                        );
-                      }).toList(),
-                    ),
+                      child: Card(
+                        elevation: 4,
+                        color: otpVerified ? Colors.green : Colors.grey,
+                        shape: CircleBorder(),
+                        child: Padding(
+                          padding: EdgeInsets.all(9),
+                          child: Icon(
+                            otpVerified ? Icons.verified : Icons.sms,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+            Row(
+              children: [
+                // Age Box
+                SizedBox(
+                  width: 80, // Set a fixed width for the age box
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        'Age',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 8),
+                      Container(
+                        color: Colors.white,
+                        child: TextField(
+                          controller: _ageController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
+                          readOnly: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 16),
+                // Date of Birth Box
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        'Date of Birth',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 8),
+                      Container(
+                        color: Colors.white,
+                        child: TextField(
+                          controller: _dobController,
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.calendar_today),
+                              onPressed: () =>
+                                  _selectDate(context, _dobController, "dob"),
+                            ),
+                            border: OutlineInputBorder(),
+                          ),
+                          readOnly: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            _buildTextField2('Father First Name', _fatherFirstNameController,
+                TextInputType.text, 30),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2('Middle Name',
+                      _fatherMiddleNameController, TextInputType.text, 30),
+                ),
+                SizedBox(width: 8),
+                // Add spacing between the text fields if needed
+                Expanded(
+                    child: _buildTextField2('Last Name', _fatherLastNameController,
+                        TextInputType.text, 30)),
+              ],
+            ),
+            SizedBox(
+              height: 4,
+            ),
+            Text(
+              'Marital Status',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(
+              height: 4,
+            ),
+
+            Container(
+              alignment: Alignment.center,
+
+              width: double.infinity,
+              // Adjust the width as needed
+              height: 55,
+              // Fixed height
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: DropdownButton<String>(
+                value: selectedMarritalStatus,
+                isExpanded: true,
+                iconSize: 24,
+                elevation: 16,
+                style: TextStyle(color: Colors.black, fontSize: 16),
+                underline: Container(
+                  height: 2,
+                  color: Colors
+                      .transparent, // Set to transparent to remove default underline
+                ),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      selectedMarritalStatus =
+                          newValue; // Update the selected value
+                    });
+                  }
+                },
+                items: marrital_status
+                    .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
+                  return DropdownMenuItem<String>(
+                    value: state.code,
+                    child: Text(state.descriptionEn),
+                  );
+                }).toList(),
+              ),
+            ),
+            // Conditionally show the spouse fields only when isMarried is true
+            if (selectedMarritalStatus.toString() == 'Married')
+              Column(
+                children: [
+                  _buildTextField2('Spouse First Name', _spouseFirstNameController,
+                      TextInputType.text, 30),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField2('Middle Name',
+                            _spouseMiddleNameController, TextInputType.text, 30),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: _buildTextField2('Last Name',
+                            _spouseLastNameController, TextInputType.text, 30),
+                      ),
+                    ],
                   ),
                 ],
               ),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2('Monthly Expense', _incomeController,
+                      TextInputType.number, 7),
+                ),
+                SizedBox(width: 8),
+                // Add spacing between the text fields if needed
+                Expanded(
+                  child: _buildTextField2('Monthly Income', _expenseController,
+                      TextInputType.number, 7),
+                ),
+              ],
             ),
+            _buildTextField('Address1', _address1Controller),
+            _buildTextField('Address2', _address2Controller),
+            _buildTextField('Address3', _address3Controller),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2(
+                      'City', _cityController, TextInputType.text, 30),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: _buildTextField2(
+                      'Pincode', _pincodeController, TextInputType.number, 6),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 4,
+            ),
+
+            _buildLabeledDropdownField(
+                'Select State', 'State', states, stateselected,
+                    (RangeCategoryDataModel? newValue) {
+                  setState(() {
+                    stateselected = newValue;
+                  });
+                }, String),
+            _buildTextField2(
+                'Loan Amount', _loan_amountController, TextInputType.number, 7),
+
+            SizedBox(
+              height: 4,
+            ),
+            Text(
+              'Loan Reason',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(
+              height: 4,
+            ),
+
+            Container(
+              alignment: Alignment.center,
+
+              width: double.infinity,
+              // Adjust the width as needed
+              height: 55,
+              // Fixed height
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: DropdownButton<String>(
+                value: selectedLoanReason,
+                isExpanded: true,
+                iconSize: 24,
+                elevation: 16,
+                style: TextStyle(color: Colors.black, fontSize: 16),
+                underline: Container(
+                  height: 2,
+                  color: Colors
+                      .transparent, // Set to transparent to remove default underline
+                ),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      selectedLoanReason = newValue; // Update the selected value
+                    });
+                  }
+                },
+                items: reasonForLoan
+                    .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
+                  return DropdownMenuItem<String>(
+                    value: state.code,
+                    child: Text(state.descriptionEn),
+                  );
+                }).toList(),
+              ),
+            ),
+            SizedBox(
+              height: 4,
+            ),
+
+            Row(
+              children: [
+                // Special Ability Dropdown
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Loan Duraction',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 5),
+                      Container(
+                        alignment: Alignment.center,
+                        width: 150,
+                        // Adjust the width as needed
+                        height: 55,
+                        // Fixed height
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: DropdownButton<String>(
+                          value: selectedloanDuration,
+                          isExpanded: true,
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                          underline: Container(
+                            height: 2,
+                            color: Colors
+                                .transparent, // Set to transparent to remove default underline
+                          ),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedloanDuration = newValue!;
+                            });
+                          },
+                          items: loanDuration.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 16), // Space between dropdowns
+                // State Name Dropdown
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Bank Name',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 5),
+                      Container(
+                        alignment: Alignment.center,
+                        height: 55,
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: DropdownButton<String>(
+                          value: bankselected,
+                          isExpanded: true,
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.transparent,
+                          ),
+                          onChanged: (String? newValue) {
+                            if (newValue != null) {
+                              setState(() {
+                                bankselected = newValue;
+                              });
+                            }
+                          },
+                          items: bank.map<DropdownMenuItem<String>>(
+                                  (RangeCategoryDataModel state) {
+                                return DropdownMenuItem<String>(
+                                  value: state.code,
+                                  child: Text(state.descriptionEn),
+                                );
+                              }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: Row(
+            //         children: [
+            //           Expanded(
+            //             child: _buildTextField('Latitude', _latitudeController),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //     SizedBox(width: 8),
+            //     Expanded(
+            //       child: Row(
+            //         children: [
+            //           Expanded(
+            //             child: _buildTextField('Longitude', _longitudeController),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //     SizedBox(width: 8),
+            //     Padding(
+            //       padding: EdgeInsets.only(top: 20),
+            //       // Add 10px padding from above
+            //       child: SizedBox(
+            //         height: 40, // Smaller height for compact button
+            //         width: 40, // Smaller width for compact button
+            //         child: ElevatedButton(
+            //           onPressed: geolocator,
+            //           style: ElevatedButton.styleFrom(
+            //             padding: EdgeInsets.all(0),
+            //             // Remove padding for smaller size
+            //             minimumSize: Size(40, 40), // Ensure button remains compact
+            //           ),
+            //           child: Icon(
+            //             Icons.refresh,
+            //             size: 18, // Smaller icon size for compact look
+            //           ),
+            //         ),
+            //       ),
+            //     )
+            //   ],
+            // ),
           ],
-        ),
-        // Row(
-        //   children: [
-        //     Expanded(
-        //       child: Row(
-        //         children: [
-        //           Expanded(
-        //             child: _buildTextField('Latitude', _latitudeController),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     SizedBox(width: 8),
-        //     Expanded(
-        //       child: Row(
-        //         children: [
-        //           Expanded(
-        //             child: _buildTextField('Longitude', _longitudeController),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     SizedBox(width: 8),
-        //     Padding(
-        //       padding: EdgeInsets.only(top: 20),
-        //       // Add 10px padding from above
-        //       child: SizedBox(
-        //         height: 40, // Smaller height for compact button
-        //         width: 40, // Smaller width for compact button
-        //         child: ElevatedButton(
-        //           onPressed: geolocator,
-        //           style: ElevatedButton.styleFrom(
-        //             padding: EdgeInsets.all(0),
-        //             // Remove padding for smaller size
-        //             minimumSize: Size(40, 40), // Ensure button remains compact
-        //           ),
-        //           child: Icon(
-        //             Icons.refresh,
-        //             size: 18, // Smaller icon size for compact look
-        //           ),
-        //         ),
-        //       ),
-        //     )
-        //   ],
-        // ),
-      ],
-    ));
+        ));
   }
 
   void _showOTPDialog(BuildContext context) {
@@ -2310,7 +2238,7 @@ class _KYCPageState extends State<KYCPage> {
                         width: double.infinity, // Set the desired width
                         child: Center(
                           child: TextFormField(
-                             maxLength: 10,
+                            maxLength: 10,
                             controller: _panNoController,
                             keyboardType: TextInputType.text, // Set the input type
                             decoration: InputDecoration(
@@ -2409,11 +2337,11 @@ class _KYCPageState extends State<KYCPage> {
           ),
           dlCardHolderName == null
               ? Text(
-                  "Please search driving license holder name for verification",
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
-                )
+            "Please search driving license holder name for verification",
+            style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
+          )
               : Text(dlCardHolderName!,
-                  style: TextStyle(color: Colors.green, fontSize: 14)),
+              style: TextStyle(color: Colors.green, fontSize: 14)),
           _buildDatePickerField(context, 'Driving License Expiry Date',
               _dlExpiryController, "dlExp"),
           Row(
@@ -2452,11 +2380,11 @@ class _KYCPageState extends State<KYCPage> {
           ),
           voterCardHolderName == null
               ? Text(
-                  "Please search voter card holder name for verification",
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
-                )
+            "Please search voter card holder name for verification",
+            style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
+          )
               : Text(voterCardHolderName!,
-                  style: TextStyle(color: Colors.green, fontSize: 14)),
+              style: TextStyle(color: Colors.green, fontSize: 14)),
           Row(
             children: [
               Flexible(
@@ -2469,22 +2397,22 @@ class _KYCPageState extends State<KYCPage> {
               _passportExpiryController, "passExp"),
           _buildLabeledDropdownField(
               'Select City', 'Cities', listCityCodes, selectedCityCode,
-              (PlaceData? newValue) {
-            setState(() {
-              selectedCityCode = newValue;
-              // getPlace("city",stateselected!.code,"","");
-              // getPlace("district",stateselected!.code,"","");
-            });
-          }, String),
+                  (PlaceData? newValue) {
+                setState(() {
+                  selectedCityCode = newValue;
+                  // getPlace("city",stateselected!.code,"","");
+                  // getPlace("district",stateselected!.code,"","");
+                });
+              }, String),
           _buildLabeledDropdownField('Select District', 'Districts',
               listDistrictCodes, selectedDistrictCode, (PlaceData? newValue) {
-            setState(() {
-              selectedDistrictCode = newValue;
-              getPlace("subdistrict", stateselected!.code,
-                  selectedDistrictCode!.distCode!, "");
-              // getPlace("district",stateselected!.code,"","");
-            });
-          }, String),
+                setState(() {
+                  selectedDistrictCode = newValue;
+                  getPlace("subdistrict", stateselected!.code,
+                      selectedDistrictCode!.distCode!, "");
+                  // getPlace("district",stateselected!.code,"","");
+                });
+              }, String),
           _buildLabeledDropdownField(
               'Select Sub-District',
               'Sub-Districts',
@@ -2501,12 +2429,12 @@ class _KYCPageState extends State<KYCPage> {
           }, String),
           _buildLabeledDropdownField('Select Village', 'Village',
               listVillagesCodes, selectedVillageCode, (PlaceData? newValue) {
-            setState(() {
-              selectedVillageCode = newValue;
-              // getPlace("city",stateselected!.code,"","");
-              // getPlace("district",stateselected!.code,"","");
-            });
-          }, String),
+                setState(() {
+                  selectedVillageCode = newValue;
+                  // getPlace("city",stateselected!.code,"","");
+                  // getPlace("district",stateselected!.code,"","");
+                });
+              }, String),
         ],
       ),
     );
@@ -2618,7 +2546,7 @@ class _KYCPageState extends State<KYCPage> {
           setState(() {
             if (response["error"] == null) {
               panCardHolderName =
-                  "${responseData['first_name']} ${responseData['last_name']}";
+              "${responseData['first_name']} ${responseData['last_name']}";
               panVerified = true;
             }else{
               panCardHolderName = "PAN no. is wrong please check";
@@ -2710,7 +2638,7 @@ class _KYCPageState extends State<KYCPage> {
       // Hit the API
 
       final response =
-          await apiService_protean.getDLDetailsProtean(requestBody);
+      await apiService_protean.getDLDetailsProtean(requestBody);
 
       EasyLoading.show(
         status: 'Loading...',
@@ -2759,7 +2687,7 @@ class _KYCPageState extends State<KYCPage> {
 
       // Hit the API
       final response =
-          await apiService_protean.getVoteretailsProtean(requestBody);
+      await apiService_protean.getVoteretailsProtean(requestBody);
 
       // Handle response
       if (response is Map<String, dynamic>) {
@@ -2768,7 +2696,7 @@ class _KYCPageState extends State<KYCPage> {
         setState(() {
           if (responseData['result'].responseData['name'] != null) {
             voterCardHolderName =
-                "${responseData['result'].responseData['name']}";
+            "${responseData['result'].responseData['name']}";
             voterVerified = true;
           } else {
             docVerifyIDC("voterid", _voterIdController.text, "", "");
@@ -2813,7 +2741,7 @@ class _KYCPageState extends State<KYCPage> {
         onPressed: () {
           if (_currentStep == 0) {
             if(FiType == "NEW") {
-            if (firstPageFieldVelidate()) {
+              if (firstPageFieldVelidate()) {
                 saveFiMethod(context);
               }
             }else{
@@ -2942,8 +2870,8 @@ class _KYCPageState extends State<KYCPage> {
   }
 
 
-bool checkIdMendate(){
-  print("voterCardHolderName $voterCardHolderName");
+  bool checkIdMendate(){
+    print("voterCardHolderName $voterCardHolderName");
     if(voterVerified || voterCardHolderName!=null){
 
       return true;
@@ -3299,23 +3227,23 @@ bool checkIdMendate(){
         _gurNameController.text = replaceCharFromName(dataList[6]);
 
 
-          _pincodeController.text = dataList[10];
-          stateselected = states.firstWhere((item) =>
-          item.descriptionEn.toLowerCase() == dataList[12].toLowerCase());
-          String address =
-              "${dataList[8]},${dataList[9]},${dataList[11]},${dataList[13]},${dataList[14]}";
-          List<String> addressParts = address.trim().split(",");
-          if (addressParts.length == 1) {
-            _address1Controller.text = addressParts[0];
-          } else if (addressParts.length == 2) {
-            _address1Controller.text = addressParts[0];
-            _address2Controller.text = addressParts[1];
-          } else {
-            _address1Controller.text = addressParts.first;
-            _address2Controller.text = addressParts.last;
-            _address3Controller.text =
-                addressParts.sublist(1, addressParts.length - 1).join(' ');
-          }
+        _pincodeController.text = dataList[10];
+        stateselected = states.firstWhere((item) =>
+        item.descriptionEn.toLowerCase() == dataList[12].toLowerCase());
+        String address =
+            "${dataList[8]},${dataList[9]},${dataList[11]},${dataList[13]},${dataList[14]}";
+        List<String> addressParts = address.trim().split(",");
+        if (addressParts.length == 1) {
+          _address1Controller.text = addressParts[0];
+        } else if (addressParts.length == 2) {
+          _address1Controller.text = addressParts[0];
+          _address2Controller.text = addressParts[1];
+        } else {
+          _address1Controller.text = addressParts.first;
+          _address2Controller.text = addressParts.last;
+          _address3Controller.text =
+              addressParts.sublist(1, addressParts.length - 1).join(' ');
+        }
 
       }
 
@@ -3339,7 +3267,7 @@ bool checkIdMendate(){
 
     return await api
         .otpVerify(GlobalClass.token, GlobalClass.dbName,
-            _mobileNoController.text, pin)
+        _mobileNoController.text, pin)
         .then((value) {
       if (value.statuscode == 200) {
         showToast_Error("OTP Verified...");
@@ -3367,26 +3295,26 @@ bool checkIdMendate(){
   Future<bool> _onWillPop() async {
     // Show a confirmation dialog
     return await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Are you sure?'),
-            content: Text('Do you want to close KYC page?'),
-            actions: [
-              TextButton(
-                onPressed: () =>
-                    Navigator.of(context).pop(false), // Stay in the app
-                child: Text('No'),
-              ),
-              TextButton(
-                onPressed: () {
-                  EasyLoading.dismiss();
-                  Navigator.of(context).pop(true);
-                }, // Exit the app
-                child: Text('Yes'),
-              ),
-            ],
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Are you sure?'),
+        content: Text('Do you want to close KYC page?'),
+        actions: [
+          TextButton(
+            onPressed: () =>
+                Navigator.of(context).pop(false), // Stay in the app
+            child: Text('No'),
           ),
-        ) ??
+          TextButton(
+            onPressed: () {
+              EasyLoading.dismiss();
+              Navigator.of(context).pop(true);
+            }, // Exit the app
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    ) ??
         false; // Default to false if dialog is dismissed
   }
 
@@ -3421,15 +3349,15 @@ bool checkIdMendate(){
               _nameController.text = value.data[0].fName;
               _nameMController.text = value.data[0].mName;
               _nameLController.text = value.data[0].lName;
-                if(value.data[0].relation_With_Borrower=="Husband"){
-                  relationwithBorrowerselected="Husband";
-                  _gurNameController.text="${value.data[0].spousEFirstName} ${value.data[0].spousEMiddleName} ${value.data[0].spousELastName}";
-                }else if(value.data[0].relation_With_Borrower=="Husband"){
-                  relationwithBorrowerselected="Husband";
-                  _gurNameController.text="${value.data[0].fatheRFirstName} ${value.data[0].fatheRMiddleName} ${value.data[0].fatheRLastName}";
+              if(value.data[0].relation_With_Borrower=="Husband"){
+                relationwithBorrowerselected="Husband";
+                _gurNameController.text="${value.data[0].spousEFirstName} ${value.data[0].spousEMiddleName} ${value.data[0].spousELastName}";
+              }else if(value.data[0].relation_With_Borrower=="Husband"){
+                relationwithBorrowerselected="Husband";
+                _gurNameController.text="${value.data[0].fatheRFirstName} ${value.data[0].fatheRMiddleName} ${value.data[0].fatheRLastName}";
 
-                }
-                genderselected=value.data[0].gender;
+              }
+              genderselected=value.data[0].gender;
               relationwithBorrowerselected=(value.data[0].relation_With_Borrower);
               _mobileNoController.text = value.data[0].pPhone;
               _dobController.text = value.data[0].dob.toString().split("T")[0];
@@ -3441,12 +3369,12 @@ bool checkIdMendate(){
               _fatherFirstNameController.text = value.data[0].fatheRFirstName;
               _fatherMiddleNameController.text = value.data[0].fatheRMiddleName;
               _fatherLastNameController.text = value.data[0].fatheRLastName;
-             // selectedMarritalStatus = value.data[0].maritaLStatus;
+              // selectedMarritalStatus = value.data[0].maritaLStatus;
               _spouseFirstNameController.text = value.data[0].spousEFirstName;
               _spouseMiddleNameController.text = value.data[0].spousEMiddleName;
               _spouseLastNameController.text = value.data[0].spousELastName;
-            //  _expenseController.text =value.data[0].;
-            //  _incomeController.text =value.data[0].;
+              //  _expenseController.text =value.data[0].;
+              //  _incomeController.text =value.data[0].;
               _latitudeController.text =value.data[0].latitude;
               _longitudeController.text =value.data[0].longitude;
               _address1Controller.text =value.data[0].pAddress1;
@@ -3457,9 +3385,9 @@ bool checkIdMendate(){
               /*stateselected = states.firstWhere((item) =>
               item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/
               _loan_amountController.text =value.data[0].loanAmount.toString();
-             // selectedLoanReason = value.data[0].;
-            //  selectedloanDuration = value.data[0].loanDuration;
-          //    bankselected = value.data[0].bankName;
+              // selectedLoanReason = value.data[0].;
+              //  selectedloanDuration = value.data[0].loanDuration;
+              //    bankselected = value.data[0].bankName;
               EasyLoading.dismiss();
 
             });
