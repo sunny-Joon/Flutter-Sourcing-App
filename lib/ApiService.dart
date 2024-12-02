@@ -8,6 +8,7 @@ import 'package:flutter_sourcing_app/Models/common_int_model.dart';
 import 'package:flutter_sourcing_app/Models/leaderboardModel.dart';
 import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
 import 'package:flutter_sourcing_app/Models/qr_payments_model.dart';
+import 'package:flutter_sourcing_app/Models/xml_response.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
@@ -114,6 +115,7 @@ abstract class ApiService {
 
   @POST("Masters/SendSms")
   Future<CommonIntModel> mobileOtpSend(
+      @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body,
       );
@@ -425,7 +427,7 @@ abstract class ApiService {
       );
 
 
-  @GET("Masters/OTPVerify")
+  @GET("Masters/Verify")
   Future<CommonIntModel> otpVerify(
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
@@ -451,7 +453,7 @@ abstract class ApiService {
 
   @POST("e_SignMobile/SaveAgreements")
   @MultiPart()
-  Future<String> saveAgreements(
+  Future<dynamic> saveAgreements(
       @Part(name: "Ficode") String ficode,
       @Part(name: "Creator") String creator,
       @Part(name: "ConsentText") String consentText,
@@ -462,7 +464,7 @@ abstract class ApiService {
 
   @FormUrlEncoded()
   @POST("E_Sign/XMLReaponseNew")
-  Future<HttpResponse> sendXMLtoServer(
+  Future<XmlResponse> sendXMLtoServer(
       @Field("msg") String msg,
       );
 

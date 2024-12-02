@@ -34,8 +34,7 @@ class _QRViewExampleState extends State<QRViewExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('QR Code Scanner')),
-      body: Stack(
+       body: Stack(
         children: [
           Column(
             children: <Widget>[
@@ -45,7 +44,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                   key: qrKey,
                   onQRViewCreated: _onQRViewCreated,
                   overlay: QrScannerOverlayShape(
-                    borderColor: Colors.red,
+                    borderColor: Color(0xFFD42D3F),
                     borderRadius: 10,
                     borderLength: 30,
                     borderWidth: 10,
@@ -53,12 +52,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                   ),
                 ),
               ),
-              Expanded(
-                flex: 1,
-                child: Center(
-                  child: Text("$qrMsg"),
-                ),
-              ),
+
             ],
           ),
           if (isLoading)
@@ -96,7 +90,7 @@ class _QRViewExampleState extends State<QRViewExample> {
         if (scanData.code != null) {
           retryAttempts = 0; // Reset retry count
           await _processScanData(scanData.code!);
-          await _playSuccessSound(); // Play sound after success
+
         } else {
           _showMessage("Scan failed: Invalid QR code data. Please try again.");
         }
@@ -126,6 +120,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       List<List<int>> parts = separateData(decompressedData, 255, 15);
       String decodedResult = decodeData(parts);
       isLoading = false;
+      await _playSuccessSound(); // Play sound after success
       // Navigate back with the decoded result
       Navigator.pop(context, decodedResult);
     } catch (e) {

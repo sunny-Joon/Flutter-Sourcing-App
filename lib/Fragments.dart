@@ -55,7 +55,7 @@ class _FragmentsState extends State<Fragments> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(child: Scaffold(
       backgroundColor: Color(0xFFD42D3F), // Set background color
       body: _widgetOptions[_page], // Display the selected page
       bottomNavigationBar: CurvedNavigationBar(
@@ -167,9 +167,33 @@ class _FragmentsState extends State<Fragments> {
         letIndexChange: (index) => true,
       ),
 
-    );
+    ), onWillPop: _onWillPop);
   }
-
+  Future<bool> _onWillPop() async {
+    // Show a confirmation dialog
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Are you sure?'),
+        content: Text('Do you want to close App?'),
+        actions: [
+          TextButton(
+            onPressed: () =>
+                Navigator.of(context).pop(false), // Stay in the app
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              EasyLoading.dismiss();
+              Navigator.of(context).pop(true);
+            }, // Exit the app
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    ) ??
+        false; // Default to false if dialog is dismissed
+  }
   Future<void> RangeCategory(BuildContext context) async {
     EasyLoading.show(status: 'Loading...',);
 

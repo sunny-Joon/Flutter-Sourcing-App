@@ -305,12 +305,16 @@ class _ApiService implements ApiService {
 
   @override
   Future<CommonIntModel> mobileOtpSend(
+    String token,
     String dbname,
     Map<String, dynamic> body,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'dbname': dbname};
+    final _headers = <String, dynamic>{
+      r'Authorization': token,
+      r'dbname': dbname,
+    };
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(body);
@@ -2235,7 +2239,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<String> saveAgreements(
+  Future<dynamic> saveAgreements(
     String ficode,
     String creator,
     String consentText,
@@ -2271,7 +2275,7 @@ class _ApiService implements ApiService {
       'SignType',
       signType,
     ));
-    final _options = _setStreamType<String>(Options(
+    final _options = _setStreamType<dynamic>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -2288,24 +2292,18 @@ class _ApiService implements ApiService {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<String>(_options);
-    late String _value;
-    try {
-      _value = _result.data!;
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
     return _value;
   }
 
   @override
-  Future<HttpResponse<dynamic>> sendXMLtoServer(String msg) async {
+  Future<XmlResponse> sendXMLtoServer(String msg) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = {'msg': msg};
-    final _options = _setStreamType<HttpResponse<dynamic>>(Options(
+    final _options = _setStreamType<XmlResponse>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -2322,10 +2320,15 @@ class _ApiService implements ApiService {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch(_options);
-    final _value = _result.data;
-    final httpResponse = HttpResponse(_value, _result);
-    return httpResponse;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late XmlResponse _value;
+    try {
+      _value = XmlResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
