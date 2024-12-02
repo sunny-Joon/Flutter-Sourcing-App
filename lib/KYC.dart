@@ -272,7 +272,7 @@ class _KYCPageState extends State<KYCPage> {
 
     if (pickedImage != null) {
       setState(() {
-     //   _imageFile = File(pickedImage.path);
+        //   _imageFile = File(pickedImage.path);
         _cropImage(File(pickedImage.path)!);
       });
     }
@@ -288,7 +288,7 @@ class _KYCPageState extends State<KYCPage> {
 
           uiSettings: [
             AndroidUiSettings(
-              toolbarColor: Color(0xFFD42D3F),
+                toolbarColor: Color(0xFFD42D3F),
                 toolbarTitle: 'Crop',
                 toolbarWidgetColor: Colors.white,
                 cropGridColor: Colors.black,
@@ -302,7 +302,7 @@ class _KYCPageState extends State<KYCPage> {
       if (cropped != null) {
         setState(() {
           _imageFile = File(cropped.path);
-        //  filePicked=1;
+          //  filePicked=1;
         });
       }
     }
@@ -525,14 +525,14 @@ class _KYCPageState extends State<KYCPage> {
                                     ),
                                   )
                                       : InkWell(
-                                    child: ClipOval(
-                                      child: Image.file(
-                                        File(_imageFile!.path),
-                                        width: 70,
-                                        height: 70,
-                                        fit: BoxFit.cover,
+                                      child: ClipOval(
+                                        child: Image.file(
+                                          File(_imageFile!.path),
+                                          width: 70,
+                                          height: 70,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
-                                    ),
                                       onTap:(){
                                         GlobalClass().pickImage();
                                       }
@@ -1884,21 +1884,19 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ],
               ),
-
             Row(
               children: [
                 Expanded(
-                  child: _buildTextField2('Monthly Expense', _incomeController,
+                  child: _buildTextField2('Monthly Income', _incomeController,
                       TextInputType.number, 7),
                 ),
                 SizedBox(width: 8),
                 // Add spacing between the text fields if needed
                 Expanded(
-                  child: _buildTextField2('Monthly Income', _expenseController,
+                  child: _buildTextField2('Monthly Expense', _expenseController,
                       TextInputType.number, 7),
                 ),
               ],
-
             ),
             _buildTextField('Address1', _address1Controller),
             _buildTextField('Address2', _address2Controller),
@@ -2044,23 +2042,42 @@ class _KYCPageState extends State<KYCPage> {
                         'Bank Name',
                         style: TextStyle(fontSize: 16),
                       ),
-
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          setState(() {
-                            bankselected = newValue;
-                          });
-                        }
-                      },
-                      items: bank.map<DropdownMenuItem<String>>(
-                          (RangeCategoryDataModel state) {
-                        return DropdownMenuItem<String>(
-                          value: state.descriptionEn,
-                          child: Text(state.descriptionEn),
-                        );
-                      }).toList(),
-                    ),
-
+                      SizedBox(height: 5),
+                      Container(
+                        alignment: Alignment.center,
+                        height: 55,
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: DropdownButton<String>(
+                          value: bankselected,
+                          isExpanded: true,
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.transparent,
+                          ),
+                          onChanged: (String? newValue) {
+                            if (newValue != null) {
+                              setState(() {
+                                bankselected = newValue;
+                              });
+                            }
+                          },
+                          items: bank.map<DropdownMenuItem<String>>(
+                                  (RangeCategoryDataModel state) {
+                                return DropdownMenuItem<String>(
+                                  value: state.descriptionEn,
+                                  child: Text(state.descriptionEn),
+                                );
+                              }).toList(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -2908,7 +2925,7 @@ class _KYCPageState extends State<KYCPage> {
     if (_aadharIdController.text.isEmpty) {
       showToast_Error("Please enter correct aadhaar id");
       return false;
-    } else if (selectedTitle == null||selectedTitle!.toLowerCase() == "select") {
+    } else if (selectedTitle == null) {
       showToast_Error("Please choose title");
       return false;
     } else if (_nameController.text.isEmpty) {
@@ -2920,7 +2937,7 @@ class _KYCPageState extends State<KYCPage> {
     } else if (_gurNameController.text.isEmpty) {
       showToast_Error("Please enter guardian name");
       return false;
-    } else if (genderselected == null||genderselected.toLowerCase() == "select") {
+    } else if (genderselected.toLowerCase() == "select") {
       showToast_Error("Please select borrower's gender");
       return false;
     } else if (relationwithBorrowerselected.toLowerCase() == "select") {
