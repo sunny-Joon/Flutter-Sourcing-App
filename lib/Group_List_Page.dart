@@ -44,7 +44,8 @@ class _GroupListPageState extends State<GroupListPage> {
       final response = await apiService.getGroupList(
         GlobalClass.token,
         GlobalClass.dbName,
-        GlobalClass.creator,
+        "ETAH",
+        // GlobalClass.creator,
         widget.Branchdata.branchCode
       );
       if (response.statuscode == 200) {
@@ -177,12 +178,24 @@ class _GroupListPageState extends State<GroupListPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HouseVisitForm(),
-                            /*builder: (context) => BorrowerList(
-                              data: "widget.data",
-                              areaCd: selectedItem.groupCode,
-                              foCode: selectedItem.groupCodeName,
-                            ),*/
+                          //  builder: (context) => HouseVisitForm(),
+                            builder: (context) => BorrowerList(
+                                BranchData: widget.Branchdata,
+                                GroupData: selectedItem,
+                                page:"HouseVisit"
+                            ),
+                          ),
+                        );
+                        break;
+                        case 'COLLECTION':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BorrowerList(
+                                BranchData: widget.Branchdata,
+                                GroupData: selectedItem,
+                                page:"COLLECTION"
+                            ),
                           ),
                         );
                         break;

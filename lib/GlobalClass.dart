@@ -32,8 +32,6 @@ class GlobalClass {
   static String dbName = "kDnH5KSEQ2zYUc1sg63RQg==";
   static String deviceId = "";
   static int target = 0;
-  static double? longitude;
-  static double? latitude;
   static String? appVersion;
 
   static const List<String> storeValues = ['YES', 'NO'];

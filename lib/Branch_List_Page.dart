@@ -35,7 +35,7 @@ class _BranchListPageState extends State<BranchListPage> {
 
     final apiService = Provider.of<ApiService>(context, listen: false);
 
-      await apiService.getBranchList(GlobalClass.dbName, GlobalClass.creator).then((response){
+      await apiService.getBranchList(GlobalClass.dbName,"ETAH" /*GlobalClass.creator*/).then((response){
         if (response.statuscode == 200) {
           setState(() {
             _items = response.data; // Store the response data
