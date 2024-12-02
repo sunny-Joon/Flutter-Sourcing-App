@@ -3506,13 +3506,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
 
         onPressed: () {
-          /*if(_currentStep == 0){
-            setState(() {
-              _currentStep=_currentStep+1;
-            });
-          }else*/
           if (_currentStep == 0) {
-
             if (_stepOneValidations()) {
               AddFiExtraDetail(context);
             }
@@ -3525,44 +3519,23 @@ class _ApplicationPageState extends State<ApplicationPage> {
           else if (_currentStep == 2) {
 
             if(_stepThreeValidations()) {
-              setState(() {
-                // _currentStep += 1;
-                pageTitle = "Financial Info.";
-                FiIncomeEditable = false;
-              });
               AddFiIncomeAndExpense(context);
             }
           }
           else if (_currentStep == 3) {
 
             if(_stepFourValidations()){
-              setState(() {
-                pageTitle = "Family Income";
-                // _currentStep += 1;
-                FinancialInfoEditable = false;
-              });
               AddFinancialInfo(context);
             }
           }
           else if (_currentStep == 4) {
 
             if(_stepFiveValidations()) {
-              setState(() {
-                pageTitle = "Guarantor Form";
-                // _currentStep += 1;
-                femMemIncomeEditable = false;
-              });
               FiFemMemIncome(context);
             }
           }
           else if (_currentStep == 5) {
-
             if(_stepSixValidations()) {
-              setState(() {
-                pageTitle = "Docs Upload";
-                // _currentStep += 1;
-                GuarantorEditable = false;
-              });
               saveGuarantorMethod(context);
             }
           }
@@ -4901,9 +4874,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
         if (value.statuscode == 200) {
           setState(() {
             _currentStep += 1;
+            pageTitle = "Family Income";
+            FinancialInfoEditable = false;
           });
           EasyLoading.dismiss();
-        } else {}
+        }else {
+          showToast_Error(value.data[0].errormsg);
+          EasyLoading.dismiss();
+        }
+      }).catchError((error){
+        showToast_Error(error);
+        EasyLoading.dismiss();
       });
     }
   }
@@ -4949,11 +4930,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
+          pageTitle = "Guarantor Form";
+          femMemIncomeEditable = false;
         });
         EasyLoading.dismiss();
-      } else {
+      }else {
+        showToast_Error(value.data[0].errormsg);
         EasyLoading.dismiss();
       }
+    }).catchError((error){
+      showToast_Error(error);
+      EasyLoading.dismiss();
     });
   }
 
@@ -5034,11 +5021,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
+          pageTitle = "Financial Info.";
+          FiIncomeEditable = false;
         });
         EasyLoading.dismiss();
       } else {
+        showToast_Error(value.data[0].errormsg);
         EasyLoading.dismiss();
       }
+    }).catchError((error){
+      showToast_Error(error);
+      EasyLoading.dismiss();
     });
   }
 
@@ -5110,9 +5103,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
+          pageTitle = "Docs Upload";
+          GuarantorEditable = false;
           GetDocs(context);
         });
-      } else {}
+      } else {
+        showToast_Error(value.data[0].errormsg);
+        EasyLoading.dismiss();
+      }
+    }).catchError((error){
+      showToast_Error(error);
+      EasyLoading.dismiss();
     });
   }
 
