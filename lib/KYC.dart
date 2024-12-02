@@ -2886,7 +2886,7 @@ bool checkIdMendate(){
     if (_aadharIdController.text.isEmpty) {
       showToast_Error("Please enter correct aadhaar id");
       return false;
-    } else if (selectedTitle == null) {
+    } else if (selectedTitle == null||selectedTitle!.toLowerCase() == "select") {
       showToast_Error("Please choose title");
       return false;
     } else if (_nameController.text.isEmpty) {
@@ -2898,7 +2898,7 @@ bool checkIdMendate(){
     } else if (_gurNameController.text.isEmpty) {
       showToast_Error("Please enter guardian name");
       return false;
-    } else if (genderselected.toLowerCase() == "select") {
+    } else if (genderselected == null||genderselected.toLowerCase() == "select") {
       showToast_Error("Please select borrower's gender");
       return false;
     } else if (relationwithBorrowerselected.toLowerCase() == "select") {
