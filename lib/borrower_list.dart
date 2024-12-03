@@ -123,7 +123,11 @@ print("object++12");
               borderRadius: BorderRadius.circular(8),
             ),
             child: TextField(
+              style: TextStyle(
+                  fontFamily: "Poppins-Regular"
+              ),
               decoration: InputDecoration(
+
                 hintText: 'Search...',
                 contentPadding: EdgeInsets.all(10),
                 border: InputBorder.none,

@@ -231,7 +231,7 @@ class _ProfileState extends State<Profile> {
                         alignment: Alignment.center,
                         child: Text(
                           tabName,
-                          style: TextStyle(
+                          style: TextStyle(fontFamily: "Poppins-Regular",
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -264,7 +264,7 @@ class _ProfileState extends State<Profile> {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: TextStyle(fontFamily: "Poppins-Regular",
                 fontSize: 14,
                 fontWeight: FontWeight.normal,
                 color: Colors.black,
@@ -381,11 +381,11 @@ class _ProfileState extends State<Profile> {
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
         Text(label,
-            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11, fontWeight: FontWeight.bold)),
         Expanded(
           child: Text(
             controller.text,
-            style: TextStyle(color: Color(0xFFD42D3F)),
+            style: TextStyle(fontFamily: "Poppins-Regular",color: Color(0xFFD42D3F)),
           ),
         ),
       ],
@@ -397,11 +397,11 @@ class _ProfileState extends State<Profile> {
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
         Text(label,
-            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11, fontWeight: FontWeight.bold)),
         Expanded(
           child: Text(
             timerDisplay,
-            style: TextStyle(color: Color(0xFFD42D3F)),
+            style: TextStyle(fontFamily: "Poppins-Regular",color: Color(0xFFD42D3F)),
           ),
         ),
       ],
@@ -414,7 +414,7 @@ class _ProfileState extends State<Profile> {
       child: ListTile(
         title: Text(
           title,
-          style: TextStyle(
+          style: TextStyle(fontFamily: "Poppins-Regular",
               fontSize: 13,
               fontWeight: FontWeight.bold,
               color: Colors.grey[700]),

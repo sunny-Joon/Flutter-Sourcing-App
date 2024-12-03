@@ -88,7 +88,7 @@ class GlobalClass {
               Expanded(
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: TextStyle(fontFamily: "Poppins-Regular",
                     color: color,
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -99,7 +99,7 @@ class GlobalClass {
           ),
           content: Text(
             message,
-            style: TextStyle(fontSize: 16, color: Colors.black87),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16, color: Colors.black87),
           ),
           actions: [
             ElevatedButton(
@@ -124,7 +124,7 @@ class GlobalClass {
               },
               child: Text(
                 'OK',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
               ),
             ),
           ],

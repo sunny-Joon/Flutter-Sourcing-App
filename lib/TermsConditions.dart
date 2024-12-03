@@ -91,7 +91,7 @@ class TermsConditions extends StatelessWidget {
           child: SingleChildScrollView(
             child: HtmlWidget(
               termsText,
-              textStyle: TextStyle(
+              textStyle: TextStyle(fontFamily: "Poppins-Regular",
                 fontSize: 16,
                 color: Colors.white, // Set the text color to white
               ),
