@@ -28,12 +28,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if(GlobalClass.target==0){
+    if (GlobalClass.target == 0) {
       _showAlertDialog(context);
-    }else{
+    } else {
       _displayValue = GlobalClass.target;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,13 +45,16 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 80), // Add some space at the top
             Container(
               width: MediaQuery.of(context).size.width - 30,
-              margin: EdgeInsets.symmetric(horizontal: 15.0), // 15dp margin on left and right
-              padding: EdgeInsets.only(left: 30.0,right: 30,top: 30,bottom: 50),
+              margin: EdgeInsets.symmetric(
+                  horizontal: 15.0), // 15dp margin on left and right
+              padding:
+                  EdgeInsets.only(left: 30.0, right: 30, top: 30, bottom: 50),
               decoration: BoxDecoration(
                 color: Color(0xFFD42D3F),
                 borderRadius: BorderRadius.circular(18),
                 image: DecorationImage(
-                  image: AssetImage('assets/Images/curvedBackground.png'), // replace with your background image
+                  image: AssetImage(
+                      'assets/Images/curvedBackground.png'), // replace with your background image
                   fit: BoxFit.fill,
                 ),
               ),
@@ -108,8 +112,10 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFD42D3F), // Button background color
-                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10), // Button padding
+                      backgroundColor:
+                          Color(0xFFD42D3F), // Button background color
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10), // Button padding
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero, // Rectangular corners
                       ),
@@ -118,8 +124,7 @@ class _HomePageState extends State<HomePage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => TargetSetPage()
-                        ),
+                            builder: (context) => TargetSetPage()),
                       );
                     },
                     child: Text(
@@ -130,7 +135,6 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                   ),
                 ],
               ),
@@ -167,10 +171,7 @@ class _HomePageState extends State<HomePage> {
                       color: Color(0xFFC5C3C3),
                     ),
                   ],
-                )
-
-
-            ),
+                )),
             SizedBox(height: 10), // Add space before the row
             Row(
               children: [
@@ -187,7 +188,8 @@ class _HomePageState extends State<HomePage> {
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+                            mainAxisAlignment:
+                                MainAxisAlignment.center, // Center vertically
                             children: [
                               Text(
                                 'Current Earning',
@@ -199,7 +201,8 @@ class _HomePageState extends State<HomePage> {
                               SizedBox(height: 10), // Add some spacing
                               Flexible(
                                 child: TextField(
-                                  controller: TextEditingController(text: '\₹0000'),
+                                  controller:
+                                      TextEditingController(text: '\₹0000'),
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Color(0xFF6D6D6D),
@@ -207,7 +210,8 @@ class _HomePageState extends State<HomePage> {
                                   textAlign: TextAlign.center,
                                   readOnly: true, // Make it read-only
                                   decoration: InputDecoration(
-                                    border: InputBorder.none, // Remove underline
+                                    border:
+                                        InputBorder.none, // Remove underline
                                   ),
                                 ),
                               ),
@@ -227,8 +231,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-
-
                 Flexible(
                   child: Container(
                     height: MediaQuery.of(context).size.height / 4,
@@ -243,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.all(15.0),
                         child: Center(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 'Earn Maximum Commission',
@@ -274,7 +276,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                ),
+                )
               ],
             ),
             SizedBox(height: 20), // Add some space at the bottom
@@ -352,14 +354,16 @@ class _HomePageState extends State<HomePage> {
                         value: _currentSliderValue.toDouble(),
                         min: 0,
                         max: 10000, // Max value in thousands (10 million)
-                        divisions: 10000, // Ensure divisions are set to the number of thousand increments
-                        label: '${(_currentSliderValue * 1000).toStringAsFixed(0)}',
+                        divisions:
+                            10000, // Ensure divisions are set to the number of thousand increments
+                        label:
+                            '${(_currentSliderValue * 1000).toStringAsFixed(0)}',
                         onChanged: (value) {
                           setState(() {
                             _currentSliderValue = value.toInt();
                           });
                         },
-                        onChangeEnd: (value) async{
+                        onChangeEnd: (value) async {
                           await _setTarget(context, value.toInt());
                           Navigator.of(context).pop(value.toInt());
                         },
@@ -386,8 +390,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _setTarget(BuildContext context, int target) async {
-
-    int targetAmount = target.toInt()*1000;
+    int targetAmount = target.toInt() * 1000;
 
     final api = Provider.of<ApiService>(context, listen: false);
 
@@ -396,27 +399,23 @@ class _HomePageState extends State<HomePage> {
     };
 
     return await api
-        .insertMonthlytarget(GlobalClass.token,GlobalClass.dbName, requestBody)
+        .insertMonthlytarget(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
 
         if (value.data[0].errormsg == null || value.data[0].errormsg.isEmpty) {
-          GlobalClass.showSuccessAlert(
-              context, value.message,1);
+          GlobalClass.showSuccessAlert(context, value.message, 1);
           setState(() {
             _displayValue = targetAmount;
           });
         } else {
-          GlobalClass.showUnsuccessfulAlert(
-              context, value.data[0].errormsg,1);
+          GlobalClass.showUnsuccessfulAlert(context, value.data[0].errormsg, 1);
         }
       } else {
         EasyLoading.dismiss();
-        GlobalClass.showErrorAlert(
-            context,value.message,1);
+        GlobalClass.showErrorAlert(context, value.message, 1);
       }
     });
   }
 }
-
