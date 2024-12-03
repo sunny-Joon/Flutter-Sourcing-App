@@ -62,6 +62,9 @@ dependencies:
   audioplayers: ^6.1.0
   carousel_slider: ^5.0.0
   android_intent_plus: ^5.1.0
+  flutter_speed_dial: ^7.0.0
+  font_awesome_flutter: ^10.8.0
+
   xml: ^6.2.2
   google_fonts: ^6.2.1
   geocoding: ^3.0.0
