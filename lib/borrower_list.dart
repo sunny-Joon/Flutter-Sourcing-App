@@ -52,6 +52,9 @@ class _BorrowerListState extends State<BorrowerList> {
     ).then((response) {
       if (response.statuscode == 200) {
         setState(() {
+          if(widget.page=="APPLICATION FORM"){
+
+          }
           _borrowerItems = response.data;
 
         });
