@@ -263,6 +263,7 @@ abstract class ApiService {
 
   @GET("Masters/GetBranchCode")
   Future<BranchModel> getBranchList(
+      @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Query("Creator") String Creator);
 
@@ -286,6 +287,13 @@ abstract class ApiService {
       @Query("SmCode") String SmCode,
       @Query("userid") String userid,
       @Query("type") String type);
+
+  @GET("Collection/GetFiCollection")
+  Future<QrPaymentsModel> GetFiCollection(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Query("SmCode") String SmCode,
+      @Query("GetDate") String GetDate);
 
 
 

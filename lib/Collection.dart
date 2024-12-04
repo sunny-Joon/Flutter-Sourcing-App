@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart'; // Add this import for date formatting
+import 'package:provider/provider.dart';
 
+import 'ApiService.dart';
+import 'GlobalClass.dart';
 import 'Models/BorrowerListModel.dart';
 import 'Models/GroupModel.dart';
 import 'Models/branch_model.dart';
@@ -33,6 +37,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+    getCollectionData(context);
     _tabController = TabController(length: 3, vsync: this);
   }
 
@@ -374,5 +379,28 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
       ),
     );
   }
+
+    Future<void> getCollectionData(BuildContext context) async {
+      EasyLoading.show(status: 'Loading...');
+
+      final api = Provider.of<ApiService>(context, listen: false);
+
+      return await api
+          .GetFiCollection(GlobalClass.token, GlobalClass.dbName, "BBAB002073","2024-11-20")
+          .then((value) async {
+        if (value.statuscode == 200) {
+           EasyLoading.dismiss();
+          print("object112222");
+
+        }
+
+        else {
+          setState(() {});
+        }
+      }).catchError((err) {
+        print("ERRORRRR$err");
+        EasyLoading.dismiss();
+      });
+    }
 
 }

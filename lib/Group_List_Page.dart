@@ -44,7 +44,7 @@ class _GroupListPageState extends State<GroupListPage> {
       final response = await apiService.getGroupList(
         GlobalClass.token,
         GlobalClass.dbName,
-        "ETAH",
+        GlobalClass.creator,
         // GlobalClass.creator,
         widget.Branchdata.branchCode
       );
