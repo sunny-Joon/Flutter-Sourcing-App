@@ -1059,17 +1059,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
               selectedStateextraP,
                   (RangeCategoryDataModel? newValue) {
                 setState(() {
-                  selectedStateextraP = newValue;
-                  // print('ssssssssssss: ${stateselected!.descriptionEn}');
+                  selectedDistrict=null;
+                  selectedVillage=null;
+                  selectedSubDistrict=null;
 
-                  if (selectedStateextraP != null) {
-                    print('ssssssssssss: ${selectedStateextraP!.descriptionEn}');
-                    getPlace("city", selectedStateextraP!.code, "", "");
-                    getPlace("district", selectedStateextraP!.code, "", "");
-                  } else {
-                    print('ssssssssssss is null');
-                  }
+                  selectedStateextraP = newValue;
+
+
+
                 });
+
+
+                // getPlace("city", selectedStateextraP!.code, "", "");
+                getPlace("district", selectedStateextraP!.code, "", "");
               },
               String,
             ),
@@ -1329,9 +1331,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       selectedDistrict,
                           (PlaceData? newValue) {
                         setState(() {
+                          selectedVillage=null;
+                        selectedSubDistrict=null;
+
                           selectedDistrict = newValue;
+
                           getPlace("subdistrict", selectedStateextraP!.code, selectedDistrict!.distCode!, "");
                         });
+
                       },
                       String
                   ),
@@ -1346,13 +1353,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         (PlaceData? newValue) {
                       setState(() {
                         selectedSubDistrict = newValue;
-                        getPlace(
-                          "village",
-                          selectedStateextraP!.code,
-                          selectedDistrict!.distCode!,
-                          selectedSubDistrict!.subDistCode!,
-                        );
+
                       });
+                      getPlace(
+                        "village",
+                        selectedStateextraP!.code,
+                        selectedDistrict!.distCode!,
+                        selectedSubDistrict!.subDistCode!,
+                      );
                     },
                     String,
                   ),
@@ -3512,6 +3520,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         onPressed: () {
           if (_currentStep == 0) {
+          setState(() {
+            _currentStep+=6;
+          });
+          }else
+          if (_currentStep == 0) {
             if (_stepOneValidations()) {
               AddFiExtraDetail(context);
             }
@@ -3665,7 +3678,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             }
           },
           child: Card(
-            color: path != null ? Colors.green : Color(0xFFD42D3F),
+            color: path!.isNotEmpty? Colors.green :Colors.yellowAccent.shade700,
             // Set color based on path
             margin: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
             child: Padding(
@@ -3699,7 +3712,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   Text(
                     title,
                     style: TextStyle(fontFamily: "Poppins-Regular",
-                        color: Colors.white), // Change text color if needed
+                        color: path.isNotEmpty? Colors.white:Colors.black), // Change text color if needed
                   ),
                   IconButton(
                     icon: Icon(
@@ -3710,6 +3723,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       UploadFiDocs(context, title, _selectedImage, GrNo, id);
                       print('Title: $title');
                       print('Path: $path');
+
                     },
                   ),
                 ],
@@ -5031,87 +5045,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-  Future<void> saveGuarantorMethod(BuildContext context) async {
-    EasyLoading.show(
-      status: 'Loading...',
-    );
 
-    print("object");
-    String fi_ID = FIID.toString();
-    String gr_Sno = "1";
-    String title = titleselected;
-    String fname = _fnameController.text.toString();
-    String mname = _mnameController.text.toString();
-    String lname = _lnameController.text.toString();
-    String guardianName = _guardianController.text.toString();
-    String relation_with_Borrower = relationselected.toString();
-    String p_Address1 = _p_Address1Controller.text.toString();
-    String p_Address2 = _p_Address2Controller.text.toString();
-    String p_Address3 = _p_Address3Controller.text.toString();
-    String p_City = _p_CityController.text.toString();
-    String p_State = stateselected!.descriptionEn;
-    String pincode = _pincodeController.text.toString();
-    String dob = _dobController.text.toString();
-    String age = _ageController.text.toString();
-    String phone = _phoneController.text.toString();
-    String pan = _panController.text.toString();
-    String dl = _dlController.text.toString();
-    String voter = _voterController.text.toString();
-    String aadharId = _aadharIdController.text.toString();
-    String gender = genderselected.toString();
-    String religion = religionselected.toString();
-    bool esign_Succeed = true;
-    String esign_UUID = "1354";
-
-    final api = Provider.of<ApiService>(context, listen: false);
-
-    return await api
-        .saveGurrantor(
-            GlobalClass.token,
-            GlobalClass.dbName,
-            fi_ID,
-            gr_Sno,
-            title,
-            fname,
-            mname,
-            lname,
-            guardianName,
-            relation_with_Borrower,
-            p_Address1,
-            p_Address2,
-            p_Address3,
-            p_City,
-            p_State,
-            pincode,
-            dob,
-            age,
-            phone,
-            pan,
-            dl,
-            voter,
-            aadharId,
-            gender,
-            religion,
-            esign_Succeed,
-            esign_UUID,
-            _imageFile!)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        setState(() {
-          _currentStep += 1;
-          pageTitle = "Docs Upload";
-          GuarantorEditable = false;
-          GetDocs(context);
-        });
-      } else {
-        showToast_Error(value.data[0].errormsg);
-        EasyLoading.dismiss();
-      }
-    }).catchError((error){
-      showToast_Error(error);
-      EasyLoading.dismiss();
-    });
-  }
 
   Future<void> GetDocs(BuildContext context) async {
     print("111object");
@@ -5142,11 +5076,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
     EasyLoading.show(
       status: 'Loading...',
     );
+    if(file==null){
+        GlobalClass.showUnsuccessfulAlert(context, "Please upload $tittle", 1);
+    }else{
 
-    final api = Provider.of<ApiService>(context, listen: false);
+      final api = Provider.of<ApiService>(context, listen: false);
 //https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//38//FiDocuments//VoterIDBorrower0711_2024_43_01.png
 
-    /* String baseUrl = 'https://predeptest.paisalo.in:8084';
+      /* String baseUrl = 'https://predeptest.paisalo.in:8084';
 
     // Replace the front part of the file path and ensure the path uses forward slashes
     String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
@@ -5154,20 +5091,23 @@ class _ApplicationPageState extends State<ApplicationPage> {
     // Join the base URL with the modified path
     String finalUrl = '$baseUrl/$modifiedPath';
     File file = File(finalUrl);*/
-    return await api
-        .uploadFiDocs(GlobalClass.token, GlobalClass.dbName, "10004",
-            int.parse(grNo!), checklistid!, tittle.toString(), file!)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        /*setState(() {
+      return await api
+          .uploadFiDocs(GlobalClass.token, GlobalClass.dbName, FIID.toString(),
+          int.parse(grNo!), checklistid!, tittle.toString(), file!)
+          .then((value) async {
+        if (value.statuscode == 200) {
+          GetDocs(context);
+          /*setState(() {
           _currentStep += 1;
           Fi_Id = value.data[0].fiId.toString();
         });*/
-        EasyLoading.dismiss();
-      } else {
-        EasyLoading.dismiss();
-      }
-    });
+          EasyLoading.dismiss();
+        } else {
+          EasyLoading.dismiss();
+        }
+      });
+    }
+    EasyLoading.dismiss();
   }
 
   Future<void> verifyDocs(BuildContext context, String idNoController, String type, String ifsc, String dob) async {
@@ -5330,8 +5270,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 relationselected = "Father";
               });
               _p_CityController.text = response.data.cityName;
+              stateselected = states.firstWhere((item) =>
+              item.descriptionEn.toLowerCase() == response.data.stateName.toLowerCase());
               List<String> addressParts =
-              response.data.address1.trim().split(" ");
+              response.data.address1.trim().replaceAll(response.data.pincode, "").replaceAll(response.data.stateName, "").split(",");
               if (addressParts.length == 1) {
                 _p_Address1Controller.text = addressParts[0];
               } else if (addressParts.length == 2) {
@@ -5343,6 +5285,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 _p_Address3Controller.text =
                     addressParts.sublist(1, addressParts.length - 1).join(' ');
               }
+
               /*List<String> guarNameParts =
               response.data.guardianName.trim().split(" ");
               if (guarNameParts.length == 1) {
@@ -5358,6 +5301,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     .join(' ');
               }*/
             } else if (response.data.relation.toLowerCase() == "husband") {
+
               _guardianController.text = response.data.guardianName;
               setState(() {
                 relationselected = "Husband";
@@ -5392,6 +5336,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     .join(' ');
               }*/
             }
+            Navigator.of(context).pop();
           }
           EasyLoading.dismiss();
         } else {
@@ -5412,77 +5357,184 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void setQRData(result) {
     List<String> dataList = result.split(",");
     if (dataList.length > 14) {
-      _aadharIdController.text = dataList[2];
-      List<String> nameParts = dataList[3].split(" ");
-      if (nameParts.length == 1) {
-        _fnameController.text = nameParts[0];
-      } else if (nameParts.length == 2) {
-        _fnameController.text = nameParts[0];
-        _mnameController.text = nameParts[1];
-      } else {
-        _fnameController.text = nameParts.first;
-        _lnameController.text = nameParts.last;
-        _mnameController.text =
-            nameParts.sublist(1, nameParts.length - 1).join(' ');
-      }
-
-      _dobController.text = formatDate(dataList[4], 'dd-MM-yyyy');
-      setState(() {
-        if (dataList[5].toLowerCase() == "m") {
-          genderselected = "Male";
-          selectedTitle = "Mr.";
-        } else if (dataList[5].toLowerCase() == "f") {
-          genderselected = "Female";
-          selectedTitle = "Mrs.";
+      if(dataList[0].toLowerCase().startsWith("v")){
+        _aadharIdController.text = dataList[2];
+        _fnameController.text = dataList[3];
+        List<String> nameParts = dataList[3].split(" ");
+        if (nameParts.length == 1) {
+          _fnameController.text = nameParts[0];
+        } else if (nameParts.length == 2) {
+          _fnameController.text = nameParts[0];
+          _mnameController.text = nameParts[1];
+        } else {
+          _fnameController.text = nameParts.first;
+          _lnameController.text = nameParts.last;
+          _mnameController.text =
+              nameParts.sublist(1, nameParts.length - 1).join(' ');
         }
-      });
-      if (dataList[6].toLowerCase().contains("s/o") ||
-          dataList[6].toLowerCase().contains("d/o")) {
+
+        _dobController.text = formatDate(dataList[4], 'dd-MM-yyyy');
         setState(() {
-          relationselected = "Father";
-          List<String> guarNameParts =
-          replaceCharFromName(dataList[6]).split(" ");
-          if (guarNameParts.length == 1) {
-         //   _fatherFirstNameController.text = guarNameParts[0];
-          } else if (guarNameParts.length == 2) {
-          //  _fatherFirstNameController.text = guarNameParts[0];
-         //   _fatherLastNameController.text = guarNameParts[1];
-          } else {
-         //   _fatherFirstNameController.text = guarNameParts.first;
-         //   _fatherLastNameController.text = guarNameParts.last;
-         //   _fatherMiddleNameController.text =
-                guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+          if (dataList[5].toLowerCase() == "m") {
+            genderselected = "Male";
+            selectedTitle = "Mr.";
+          } else if (dataList[5].toLowerCase() == "f") {
+            genderselected = "Female";
+            selectedTitle = "Mrs.";
           }
         });
-      } else if (dataList[6].toLowerCase().contains("w/o")) {
-        setState(() {
-          relationselected = "Husband";
-          List<String> guarNameParts =
-          replaceCharFromName(dataList[6]).split(" ");
-          if (guarNameParts.length == 1) {
-        //    _spouseFirstNameController.text = guarNameParts[0];
-          } else if (guarNameParts.length == 2) {
-       //     _spouseFirstNameController.text = guarNameParts[0];
-      //      _spouseLastNameController.text = guarNameParts[1];
+        // if (dataList[6].toLowerCase().contains("s/o") ||
+        //     dataList[6].toLowerCase().contains("d/o")) {
+        //   setState(() {
+        //     relationselected = "Father";
+        //     List<String> guarNameParts =
+        //     replaceCharFromName(dataList[6]).split(" ");
+        //     if (guarNameParts.length == 1) {
+        //       //   _fatherFirstNameController.text = guarNameParts[0];
+        //     } else if (guarNameParts.length == 2) {
+        //       //  _fatherFirstNameController.text = guarNameParts[0];
+        //       //   _fatherLastNameController.text = guarNameParts[1];
+        //     } else {
+        //       //   _fatherFirstNameController.text = guarNameParts.first;
+        //       //   _fatherLastNameController.text = guarNameParts.last;
+        //       //   _fatherMiddleNameController.text =
+        //       guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+        //     }
+        //   });
+        // } else if (dataList[6].toLowerCase().contains("w/o")) {
+        //   setState(() {
+        //     relationselected = "Husband";
+        //     List<String> guarNameParts =
+        //     replaceCharFromName(dataList[6]).split(" ");
+        //     if (guarNameParts.length == 1) {
+        //       //    _spouseFirstNameController.text = guarNameParts[0];
+        //     } else if (guarNameParts.length == 2) {
+        //       //     _spouseFirstNameController.text = guarNameParts[0];
+        //       //      _spouseLastNameController.text = guarNameParts[1];
+        //     } else {
+        //       //      _spouseFirstNameController.text = guarNameParts.first;
+        //       //      _spouseLastNameController.text = guarNameParts.last;
+        //       //     _spouseMiddleNameController.text =
+        //       guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+        //     }
+        //   });
+        // }
+        _p_CityController.text = dataList[7];
+
+        _guardianController.text = replaceCharFromName(dataList[6]);
+
+
+
+        if (dataList[0].toLowerCase() == 'v2') {
+          _pincodeController.text = dataList[11];
+          stateselected = states.firstWhere((item) =>item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+          String address =
+              "${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
+          List<String> addressParts = address.trim().split(",");
+          if (addressParts.length == 1) {
+            _p_Address1Controller.text = addressParts[0];
+          } else if (addressParts.length == 2) {
+            _p_Address1Controller.text = addressParts[0];
+            _p_Address2Controller.text = addressParts[1];
           } else {
-      //      _spouseFirstNameController.text = guarNameParts.first;
-      //      _spouseLastNameController.text = guarNameParts.last;
-       //     _spouseMiddleNameController.text =
-                guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+            _p_Address1Controller.text = addressParts.first;
+            _p_Address2Controller.text = addressParts.last;
+            _p_Address3Controller.text =
+                addressParts.sublist(1, addressParts.length - 1).join(' ');
+          }
+        } else if (dataList[0].toLowerCase() == 'v4') {
+          // stateselected = states.firstWhere((item) =>
+          // item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
+          _pincodeController.text = dataList[12];
+          String address =
+              "${dataList[10]},${dataList[11]},${dataList[13]},${dataList[15]},${dataList[16]}";
+
+          List<String> addressParts = address.trim().split(",");
+          if (addressParts.length == 1) {
+            _p_Address1Controller.text = addressParts[0];
+          } else if (addressParts.length == 2) {
+            _p_Address1Controller.text = addressParts[0];
+            _p_Address2Controller.text = addressParts[1];
+          } else {
+            _p_Address1Controller.text = addressParts.first;
+            _p_Address2Controller.text = addressParts.last;
+            _p_Address3Controller.text =
+                addressParts.sublist(1, addressParts.length - 1).join(' ');
+          }
+        }
+
+      }else{
+
+        _aadharIdController.text = dataList[1];
+        _fnameController.text = dataList[2];
+
+        List<String> nameParts = dataList[2].split(" ");
+        if (nameParts.length == 1) {
+          _fnameController.text = nameParts[0];
+        } else if (nameParts.length == 2) {
+          _fnameController.text = nameParts[0];
+          _mnameController.text = nameParts[1];
+        } else {
+          _fnameController.text = nameParts.first;
+          _mnameController.text = nameParts.last;
+          _lnameController.text =
+              nameParts.sublist(1, nameParts.length - 1).join(' ');
+        }
+        _dobController.text = formatDate(dataList[3], 'dd-MM-yyyy');
+        setState(() {
+          if (dataList[4].toLowerCase() == "m") {
+            genderselected = "Male";
+            selectedTitle = "Mr.";
+          } else if (dataList[4].toLowerCase() == "f") {
+            genderselected = "Female";
+            selectedTitle = "Mrs.";
           }
         });
-      }
-      _p_CityController.text = dataList[7];
+        // if (dataList[5].toLowerCase().contains("s/o") ||
+        //     dataList[5].toLowerCase().contains("d/o")) {
+        //   setState(() {
+        //     relationwithBorrowerselected = "Father";
+        //     List<String> guarNameParts =
+        //     replaceCharFromName(dataList[5]).split(" ");
+        //     if (guarNameParts.length == 1) {
+        //       _fatherFirstNameController.text = guarNameParts[0];
+        //     } else if (guarNameParts.length == 2) {
+        //       _fatherFirstNameController.text = guarNameParts[0];
+        //       _fatherLastNameController.text = guarNameParts[1];
+        //     } else {
+        //       _fatherFirstNameController.text = guarNameParts.first;
+        //       _fatherLastNameController.text = guarNameParts.last;
+        //       _fatherMiddleNameController.text =
+        //           guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+        //     }
+        //   });
+        // } else if (dataList[5].toLowerCase().contains("w/o")) {
+        //   setState(() {
+        //     relationwithBorrowerselected = "Husband";
+        //     List<String> guarNameParts =
+        //     replaceCharFromName(dataList[5]).split(" ");
+        //     if (guarNameParts.length == 1) {
+        //       _spouseFirstNameController.text = guarNameParts[0];
+        //     } else if (guarNameParts.length == 2) {
+        //       _spouseFirstNameController.text = guarNameParts[0];
+        //       _spouseLastNameController.text = guarNameParts[1];
+        //     } else {
+        //       _spouseFirstNameController.text = guarNameParts.first;
+        //       _spouseLastNameController.text = guarNameParts.last;
+        //       _spouseMiddleNameController.text =
+        //           guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+        //     }
+        //   });
+        // }
+        _p_CityController.text= dataList[6];
+        _guardianController.text= replaceCharFromName(dataList[5]);
 
-     _guardianController.text = replaceCharFromName(dataList[6]);
 
-
-
-      if (dataList[0].toLowerCase() == 'v2') {
-        _pincodeController.text = dataList[11];
-         stateselected = states.firstWhere((item) =>item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+        _pincodeController.text = dataList[10];
+        stateselected = states.firstWhere((item) =>
+        item.descriptionEn.toLowerCase() == dataList[12].toLowerCase());
         String address =
-            "${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
+            "${dataList[8]},${dataList[9]},${dataList[11]},${dataList[13]},${dataList[14]}";
         List<String> addressParts = address.trim().split(",");
         if (addressParts.length == 1) {
           _p_Address1Controller.text = addressParts[0];
@@ -5495,29 +5547,93 @@ class _ApplicationPageState extends State<ApplicationPage> {
           _p_Address3Controller.text =
               addressParts.sublist(1, addressParts.length - 1).join(' ');
         }
-      } else if (dataList[0].toLowerCase() == 'v4') {
-        // stateselected = states.firstWhere((item) =>
-        // item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
-        _pincodeController.text = dataList[12];
-        String address =
-            "${dataList[10]},${dataList[11]},${dataList[13]},${dataList[15]},${dataList[16]}";
 
-        List<String> addressParts = address.trim().split(",");
-        if (addressParts.length == 1) {
-          _p_Address1Controller.text = addressParts[0];
-        } else if (addressParts.length == 2) {
-          _p_Address1Controller.text = addressParts[0];
-          _p_Address2Controller.text = addressParts[1];
-        } else {
-          _p_Address1Controller.text = addressParts.first;
-          _p_Address2Controller.text = addressParts.last;
-          _p_Address3Controller.text =
-              addressParts.sublist(1, addressParts.length - 1).join(' ');
-        }
+
       }
+
     }
   }
+  Future<void> saveGuarantorMethod(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
 
+    print("object");
+    String fi_ID = FIID.toString();
+    String gr_Sno = "1";
+    String title = titleselected;
+    String fname = _fnameController.text.toString();
+    String mname = _mnameController.text.toString();
+    String lname = _lnameController.text.toString();
+    String guardianName = _guardianController.text.toString();
+    String relation_with_Borrower = relationselected.toString();
+    String p_Address1 = _p_Address1Controller.text.toString();
+    String p_Address2 = _p_Address2Controller.text.toString();
+    String p_Address3 = _p_Address3Controller.text.toString();
+    String p_City = _p_CityController.text.toString();
+    String p_State = stateselected!.descriptionEn;
+    String pincode = _pincodeController.text.toString();
+    String dob = _dobController.text.toString();
+    String age = _ageController.text.toString();
+    String phone = _phoneController.text.toString();
+    String pan = _panController.text.toString();
+    String dl = _dlController.text.toString();
+    String voter = _voterController.text.toString();
+    String aadharId = _aadharIdController.text.toString();
+    String gender = genderselected.toString();
+    String religion = religionselected.toString();
+    bool esign_Succeed = true;
+    String esign_UUID = "1354";
+
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .saveGurrantor(
+        GlobalClass.token,
+        GlobalClass.dbName,
+        fi_ID,
+        gr_Sno,
+        title,
+        fname,
+        mname,
+        lname,
+        guardianName,
+        relation_with_Borrower,
+        p_Address1,
+        p_Address2,
+        p_Address3,
+        p_City,
+        p_State,
+        pincode,
+        dob,
+        age,
+        phone,
+        pan,
+        dl,
+        voter,
+        aadharId,
+        gender,
+        religion,
+        esign_Succeed,
+        esign_UUID,
+        _imageFile!)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          _currentStep += 1;
+          pageTitle = "Docs Upload";
+          GuarantorEditable = false;
+          GetDocs(context);
+        });
+      } else {
+        showToast_Error(value.data[0].errormsg);
+        EasyLoading.dismiss();
+      }
+    }).catchError((error){
+      showToast_Error(error);
+      EasyLoading.dismiss();
+    });
+  }
   String formatDate(String date, dateFormat) {
     try {
       // Parse the input string to a DateTime object
@@ -5567,7 +5683,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listDistrictCodes = response.data;
         } else if (type == "subdistrict") {
           listSubDistrictCodes = response.data;
-        } else if (type == "village") {
+        }
+        else if (type == "village") {
           listVillagesCodes = response.data;
         }
       });
