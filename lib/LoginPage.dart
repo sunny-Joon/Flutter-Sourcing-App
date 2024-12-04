@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'ApiService.dart';
+import 'ChatBot.dart';
 import 'DeviceIdGenerator.dart';
 import 'Fragments.dart';
 import 'Models/login_model.dart';
@@ -530,8 +531,14 @@ class _LoginPageState extends State<LoginPage> {
         SpeedDialChild(
           child: Icon(Icons.chat),
           label: 'Chatbot',
-          onTap: () => _launchURL('https://your-chatbot-url.com'),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChatActivity()),
+            );
+          },
         ),
+
         SpeedDialChild(
           child: Icon(FontAwesomeIcons.whatsapp),
           label: 'WhatsApp Support',

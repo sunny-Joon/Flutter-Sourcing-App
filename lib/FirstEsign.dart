@@ -43,8 +43,8 @@ class _FirstEsignState extends State<FirstEsign> {
   @override
   void initState() {
     super.initState();
-    print("https://predeptest.paisalo.in:8084${widget.selectedData.downloadLink.replaceAll("D:", "").replaceAll("\\", "/")}.pdf");
-    _loadPdf("https://predeptest.paisalo.in:8084${widget.selectedData.downloadLink.replaceAll("D:", "").replaceAll("\\", "/")}.pdf");
+    print("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}.pdf");
+    _loadPdf("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}.pdf");
   }
 
   Future<void> _loadPdf(String url) async {
@@ -206,7 +206,7 @@ class _FirstEsignState extends State<FirstEsign> {
                  flex: 1,
                  child:   InkWell(
                    onTap: (){
-                     if(widget.selectedData.aadhar_no!=null){
+                     if(widget.selectedData.aadharNo!=null){
                        showFullPageDialog(context);
                      }else{
                        GlobalClass.showToast_Error("Borrower's Aadhaar number is missing");
@@ -242,7 +242,7 @@ class _FirstEsignState extends State<FirstEsign> {
       pageBuilder: (context, animation, secondaryAnimation) {
         return SafeArea(
           child: Center(
-            child: DialogContent(borrowerAdharNumber: widget.selectedData.aadhar_no,selectedBorrower: widget.selectedData,),
+            child: DialogContent(borrowerAdharNumber: widget.selectedData.aadharNo,selectedBorrower: widget.selectedData,),
           ),
         );
       },

@@ -1,28 +1,28 @@
 // To parse this JSON data, do
 //
-//     final getAllModel = getAllModelFromJson(jsonString);
+//     final applicationgetAllModel = applicationgetAllModelFromJson(jsonString);
 
 import 'dart:convert';
 
-GetAllModel getAllModelFromJson(String str) => GetAllModel.fromJson(json.decode(str));
+ApplicationgetAllModel applicationgetAllModelFromJson(String str) => ApplicationgetAllModel.fromJson(json.decode(str));
 
-String getAllModelToJson(GetAllModel data) => json.encode(data.toJson());
+String applicationgetAllModelToJson(ApplicationgetAllModel data) => json.encode(data.toJson());
 
-class GetAllModel {
+class ApplicationgetAllModel {
   int statuscode;
   String message;
-  List<getAllDataModel> data;
+  List<ApplicationgetAllDataModel> data;
 
-  GetAllModel({
+  ApplicationgetAllModel({
     required this.statuscode,
     required this.message,
     required this.data,
   });
 
-  factory GetAllModel.fromJson(Map<String, dynamic> json) => GetAllModel(
+  factory ApplicationgetAllModel.fromJson(Map<String, dynamic> json) => ApplicationgetAllModel(
     statuscode: json["statuscode"],
     message: json["message"],
-    data: List<getAllDataModel>.from(json["data"].map((x) => getAllDataModel.fromJson(x))),
+    data: List<ApplicationgetAllDataModel>.from(json["data"].map((x) => ApplicationgetAllDataModel.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -32,11 +32,12 @@ class GetAllModel {
   };
 }
 
-class getAllDataModel {
+class ApplicationgetAllDataModel {
   int fiId;
   int fiCode;
   String creator;
   String dob;
+  String age;
   String gender;
   String title;
   String fName;
@@ -139,18 +140,22 @@ class getAllDataModel {
   int otherDependents;
   bool isCkyCisDone;
   String errormsg;
-  String isvalid;
+  bool isvalid;
   String financialStatus;
-  String relation_With_Borrower;
-  String loan_Reason;
+  String relationWithBorrower;
+  String loanReason;
   String expenses;
   String income;
+  List<FiIncomeExpense> fiIncomeExpenses;
+  List<FamilyMember> familyMembers;
+  List<Guarantor> guarantors;
 
-  getAllDataModel({
+  ApplicationgetAllDataModel({
     required this.fiId,
     required this.fiCode,
     required this.creator,
     required this.dob,
+    required this.age,
     required this.gender,
     required this.title,
     required this.fName,
@@ -255,125 +260,132 @@ class getAllDataModel {
     required this.errormsg,
     required this.isvalid,
     required this.financialStatus,
-    required this.relation_With_Borrower,
-    required this.loan_Reason,
+    required this.relationWithBorrower,
+    required this.loanReason,
     required this.expenses,
     required this.income,
+    required this.fiIncomeExpenses,
+    required this.familyMembers,
+    required this.guarantors,
   });
 
-  factory getAllDataModel.fromJson(Map<String, dynamic> json) => getAllDataModel(
-    fiId: json["fi_Id"]??"",
-    fiCode: json["fiCode"]??"",
-    creator: json["creator"]??"",
-    dob: json["dob"]??"",
-    gender: json["gender"]??"",
-    title: json["title"]??"",
-    fName: json["f_Name"]??"",
-    mName: json["m_Name"]??"",
-    lName: json["l_Name"]??"",
-    cast: json["cast"]??"",
-    pAddress1: json["p_Address1"]??"",
-    pAddress2: json["p_Address2"]??"",
-    pAddress3: json["p_Address3"]??"",
-    pCity: json["p_City"]??"",
-    pState: json["p_State"]??"",
-    pPincode: json["p_Pincode"]??"",
-    pPhone: json["p_Phone"]??"",
-    currentAddress1: json["current_Address1"]??"",
-    currentAddress2: json["current_Address2"]??"",
-    currentAddress3: json["current_Address3"]??"",
-    currentCity: json["current_City"]??"",
-    currentState: json["current_State"]??"",
-    currentPincode: json["current_Pincode"]??"",
-    currentPhone: json["current_Phone"]??"",
-    district: json["district"]??"",
-    subDistrict: json["sub_District"]??"",
-    village: json["village"]??"",
-    aadharNo: json["aadhar_no"]??"",
-    isAadharVerified: json["isAadharVerified"]??"",
-    panNo: json["pan_no"]??"",
-    isPanVerified: json["isPanVerified"]??"",
-    dl: json["dl"]??"",
-    dLExpiry: json["dL_Expiry"]??"",
-    isDlVerified: json["isDlVerified"]??"",
-    voterId: json["voter_id"]??"",
-    isVoterVerified: json["isVoterVerified"]??"",
-    passbook: json["passbook"]??"",
-    passport: json["passport"]??"",
-    passportExpiry: json["passport_expiry"]??"",
-    bankAc: json["bank_Ac"]??"",
-    bankName: json["bank_name"]??"",
-    bankIfcs: json["bank_IFCS"]??"",
-    bankAddress: json["bank_address"]??"",
-    isHouseRental: json["is_house_rental"]??"",
-    loanAmount: json["loan_amount"]??"",
-    loanDuration: json["loan_Duration"]??"",
-    emi: json["emi"]??"",
-    vehicleType: json["vehicle_type"]??"",
-    depedentPerson: json["depedent_person"]??"",
-    groupCode: json["group_code"]??"",
-    branchCode: json["branch_code"]??"",
-    religion: json["religion"]??"",
-    smCode: json["smCode"]??"",
-    isPhnnoVerified: json["is_phnno_verified"]??"",
-    userId: json["user_Id"]??"",
-    propertyArea: json["property_area"]??"",
-    isExserviceman: json["is_exserviceman"]??"",
-    latitude: json["latitude"]??"",
-    longitude: json["longitude"]??"",
-    geoDateTime: json["geoDateTime"]??"",
-    eSignUuid: json["eSignUUID"]??"",
-    isNameVerify: json["isNameVerify"]??"",
-    noOfChildren: json["no_of_children"]??"",
-    emailId: json["email_Id"]??"",
-    isHandicap: json["isHandicap"]??"",
-    handicapType: json["handicap_type"]??"",
-    placeOfBirth: json["place_Of_Birth"]??"",
-    forM60TnxDt: json["forM60_TNX_DT"]??"",
-    forM60Submissiondate: json["forM60_SUBMISSIONDATE"]??"",
-    maritaLStatus: json["maritaL_STATUS"]??"",
-    reservatioNCategory: json["reservatioN_CATEGORY"]??"",
-    encProperty: json["enc_Property"]??"",
-    isActive: json["isActive"]??"",
-    createdOn: json["createdOn"]??"",
-    createdBy: json["createdBy"]??"",
-    modifiedOn: json["modifiedOn"]??"",
-    modifiedBy: json["modifiedBy"]??"",
-    approved: json["approved"]??"",
-    residentialType: json["residential_type"]??"",
-    houseOwnerName: json["house_owner_Name"]??"",
-    rentofHouse: json["rentofHouse"]??"",
-    panName: json["pan_Name"]??"",
-    voterName: json["voter_Name"]??"",
-    aadharName: json["aadhar_Name"]??"",
-    dLName: json["dL_Name"]??"",
-    liveInPresentPlace: json["liveInPresentPlace"]??"",
-    authId: json["auth_Id"]??"",
-    authUser: json["auth_User"]??"",
-    bankAcOpenDate: json["bankAC_OpenDate"]??"",
-    profilePic: json["profilePic"]??"",
-    fiSignature: json["fi_Signature"]??"",
-    caseNo: json["caseNo"]??"",
-    spousEFirstName: json["spousE_FIRST_NAME"]??"",
-    spousEMiddleName: json["spousE_MIDDLE_NAME"]??"",
-    spousELastName: json["spousE_LAST_NAME"]??"",
-    motheRFirstName: json["motheR_FIRST_NAME"]??"",
-    motheRMiddleName: json["motheR_MIDDLE_NAME"]??"",
-    motheRLastName: json["motheR_LAST_NAME"]??"",
-    motheRMaidenName: json["motheR_MAIDEN_NAME"]??"",
-    fatheRFirstName: json["fatheR_FIRST_NAME"]??"",
-    fatheRMiddleName: json["fatheR_MIDDLE_NAME"]??"",
-    fatheRLastName: json["fatheR_LAST_NAME"]??"",
-    schoolingChildren: json["schoolingChildren"]??"",
-    otherDependents: json["otherDependents"]??"",
-    isCkyCisDone: json["isCKYCisDone"]??"",
-    errormsg: json["errormsg"]??"",
-    isvalid: json["isvalide"]??"",
-    financialStatus: json["financialStatus"]??"",
-    relation_With_Borrower: json["relation_With_Borrower"]??"",
-    loan_Reason: json["loan_Reason"]??"",
-    expenses: json["expenses"]??"",
-    income: json["income"]??"",
+  factory ApplicationgetAllDataModel.fromJson(Map<String, dynamic> json) => ApplicationgetAllDataModel(
+    fiId: json["fi_Id"],
+    fiCode: json["fiCode"],
+    creator: json["creator"],
+    dob: json["dob"],
+    age: json["age"],
+    gender: json["gender"],
+    title: json["title"],
+    fName: json["f_Name"],
+    mName: json["m_Name"],
+    lName: json["l_Name"],
+    cast: json["cast"],
+    pAddress1: json["p_Address1"],
+    pAddress2: json["p_Address2"],
+    pAddress3: json["p_Address3"],
+    pCity: json["p_City"],
+    pState: json["p_State"],
+    pPincode: json["p_Pincode"],
+    pPhone: json["p_Phone"],
+    currentAddress1: json["current_Address1"],
+    currentAddress2: json["current_Address2"],
+    currentAddress3: json["current_Address3"],
+    currentCity: json["current_City"],
+    currentState: json["current_State"],
+    currentPincode: json["current_Pincode"],
+    currentPhone: json["current_Phone"],
+    district: json["district"],
+    subDistrict: json["sub_District"],
+    village: json["village"],
+    aadharNo: json["aadhar_no"],
+    isAadharVerified: json["isAadharVerified"],
+    panNo: json["pan_no"],
+    isPanVerified: json["isPanVerified"],
+    dl: json["dl"],
+    dLExpiry: json["dL_Expiry"],
+    isDlVerified: json["isDlVerified"],
+    voterId: json["voter_id"],
+    isVoterVerified: json["isVoterVerified"],
+    passbook: json["passbook"],
+    passport: json["passport"],
+    passportExpiry: json["passport_expiry"],
+    bankAc: json["bank_Ac"],
+    bankName: json["bank_name"],
+    bankIfcs: json["bank_IFCS"],
+    bankAddress: json["bank_address"],
+    isHouseRental: json["is_house_rental"],
+    loanAmount: json["loan_amount"],
+    loanDuration: json["loan_Duration"],
+    emi: json["emi"],
+    vehicleType: json["vehicle_type"],
+    depedentPerson: json["depedent_person"],
+    groupCode: json["group_code"],
+    branchCode: json["branch_code"],
+    religion: json["religion"],
+    smCode: json["smCode"],
+    isPhnnoVerified: json["is_phnno_verified"],
+    userId: json["user_Id"],
+    propertyArea: json["property_area"],
+    isExserviceman: json["is_exserviceman"],
+    latitude: json["latitude"],
+    longitude: json["longitude"],
+    geoDateTime: json["geoDateTime"],
+    eSignUuid: json["eSignUUID"],
+    isNameVerify: json["isNameVerify"],
+    noOfChildren: json["no_of_children"],
+    emailId: json["email_Id"],
+    isHandicap: json["isHandicap"],
+    handicapType: json["handicap_type"],
+    placeOfBirth: json["place_Of_Birth"],
+    forM60TnxDt: json["forM60_TNX_DT"],
+    forM60Submissiondate: json["forM60_SUBMISSIONDATE"],
+    maritaLStatus: json["maritaL_STATUS"],
+    reservatioNCategory: json["reservatioN_CATEGORY"],
+    encProperty: json["enc_Property"],
+    isActive: json["isActive"],
+    createdOn: json["createdOn"],
+    createdBy: json["createdBy"],
+    modifiedOn: json["modifiedOn"],
+    modifiedBy: json["modifiedBy"],
+    approved: json["approved"],
+    residentialType: json["residential_type"],
+    houseOwnerName: json["house_owner_Name"],
+    rentofHouse: json["rentofHouse"],
+    panName: json["pan_Name"],
+    voterName: json["voter_Name"],
+    aadharName: json["aadhar_Name"],
+    dLName: json["dL_Name"],
+    liveInPresentPlace: json["liveInPresentPlace"],
+    authId: json["auth_Id"],
+    authUser: json["auth_User"],
+    bankAcOpenDate: json["bankAC_OpenDate"],
+    profilePic: json["profilePic"],
+    fiSignature: json["fi_Signature"],
+    caseNo: json["caseNo"],
+    spousEFirstName: json["spousE_FIRST_NAME"],
+    spousEMiddleName: json["spousE_MIDDLE_NAME"],
+    spousELastName: json["spousE_LAST_NAME"],
+    motheRFirstName: json["motheR_FIRST_NAME"],
+    motheRMiddleName: json["motheR_MIDDLE_NAME"],
+    motheRLastName: json["motheR_LAST_NAME"],
+    motheRMaidenName: json["motheR_MAIDEN_NAME"],
+    fatheRFirstName: json["fatheR_FIRST_NAME"],
+    fatheRMiddleName: json["fatheR_MIDDLE_NAME"],
+    fatheRLastName: json["fatheR_LAST_NAME"],
+    schoolingChildren: json["schoolingChildren"],
+    otherDependents: json["otherDependents"],
+    isCkyCisDone: json["isCKYCisDone"],
+    errormsg: json["errormsg"],
+    isvalid: json["isvalid"],
+    financialStatus: json["financialStatus"],
+    relationWithBorrower: json["relation_With_Borrower"],
+    loanReason: json["loan_Reason"],
+    expenses: json["expenses"],
+    income: json["income"],
+    fiIncomeExpenses: List<FiIncomeExpense>.from(json["fiIncomeExpenses"].map((x) => FiIncomeExpense.fromJson(x))),
+    familyMembers: List<FamilyMember>.from(json["familyMembers"].map((x) => FamilyMember.fromJson(x))),
+    guarantors: List<Guarantor>.from(json["guarantors"].map((x) => Guarantor.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -381,6 +393,7 @@ class getAllDataModel {
     "fiCode": fiCode,
     "creator": creator,
     "dob": dob,
+    "age": age,
     "gender": gender,
     "title": title,
     "f_Name": fName,
@@ -483,7 +496,294 @@ class getAllDataModel {
     "otherDependents": otherDependents,
     "isCKYCisDone": isCkyCisDone,
     "errormsg": errormsg,
-    "isvalide": isvalid,
+    "isvalid": isvalid,
     "financialStatus": financialStatus,
+    "relation_With_Borrower": relationWithBorrower,
+    "loan_Reason": loanReason,
+    "expenses": expenses,
+    "income": income,
+    "fiIncomeExpenses": List<dynamic>.from(fiIncomeExpenses.map((x) => x.toJson())),
+    "familyMembers": List<dynamic>.from(familyMembers.map((x) => x.toJson())),
+    "guarantors": List<dynamic>.from(guarantors.map((x) => x.toJson())),
+  };
+}
+
+class FamilyMember {
+  String famName;
+  int famAge;
+  String famGender;
+  String famRelationWithBorrower;
+  String famHealth;
+  String famEducation;
+  String famSchoolType;
+  String famBusiness;
+  int famIncome;
+  String famBusinessType;
+  String famIncomeType;
+
+  FamilyMember({
+    required this.famName,
+    required this.famAge,
+    required this.famGender,
+    required this.famRelationWithBorrower,
+    required this.famHealth,
+    required this.famEducation,
+    required this.famSchoolType,
+    required this.famBusiness,
+    required this.famIncome,
+    required this.famBusinessType,
+    required this.famIncomeType,
+  });
+
+  factory FamilyMember.fromJson(Map<String, dynamic> json) => FamilyMember(
+    famName: json["fam_Name"],
+    famAge: json["fam_Age"],
+    famGender: json["fam_Gender"],
+    famRelationWithBorrower: json["fam_RelationWithBorrower"],
+    famHealth: json["fam_Health"],
+    famEducation: json["fam_Education"],
+    famSchoolType: json["fam_SchoolType"],
+    famBusiness: json["fam_Business"],
+    famIncome: json["fam_Income"],
+    famBusinessType: json["fam_BusinessType"],
+    famIncomeType: json["fam_IncomeType"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "fam_Name": famName,
+    "fam_Age": famAge,
+    "fam_Gender": famGender,
+    "fam_RelationWithBorrower": famRelationWithBorrower,
+    "fam_Health": famHealth,
+    "fam_Education": famEducation,
+    "fam_SchoolType": famSchoolType,
+    "fam_Business": famBusiness,
+    "fam_Income": famIncome,
+    "fam_BusinessType": famBusinessType,
+    "fam_IncomeType": famIncomeType,
+  };
+}
+
+class FiIncomeExpense {
+  String inExOccupation;
+  String inExBusinessDetail;
+  bool inExAnyCurrentEmi;
+  int inExFutureIncome;
+  int inExAgricultureIncome;
+  int inExEarningMemCount;
+  int inExOtherIncome;
+  int inExAnnualIncome;
+  int inExSpendOnChildren;
+  int inExOtherThanAgriculturalIncome;
+  int inExYearsInBusiness;
+  int inExPensionIncome;
+  int inExAnyRentalIncome;
+  int inExRent;
+  int inExFooding;
+  int inExEducation;
+  int inExHealth;
+  int inExTravelling;
+  int inExEntertainment;
+  int inExOthers;
+  String inExHomeType;
+  String inExHomeRoofType;
+  String inExToiletType;
+  bool inExLivingWithSpouse;
+  String inExDocsPath;
+
+  FiIncomeExpense({
+    required this.inExOccupation,
+    required this.inExBusinessDetail,
+    required this.inExAnyCurrentEmi,
+    required this.inExFutureIncome,
+    required this.inExAgricultureIncome,
+    required this.inExEarningMemCount,
+    required this.inExOtherIncome,
+    required this.inExAnnualIncome,
+    required this.inExSpendOnChildren,
+    required this.inExOtherThanAgriculturalIncome,
+    required this.inExYearsInBusiness,
+    required this.inExPensionIncome,
+    required this.inExAnyRentalIncome,
+    required this.inExRent,
+    required this.inExFooding,
+    required this.inExEducation,
+    required this.inExHealth,
+    required this.inExTravelling,
+    required this.inExEntertainment,
+    required this.inExOthers,
+    required this.inExHomeType,
+    required this.inExHomeRoofType,
+    required this.inExToiletType,
+    required this.inExLivingWithSpouse,
+    required this.inExDocsPath,
+  });
+
+  factory FiIncomeExpense.fromJson(Map<String, dynamic> json) => FiIncomeExpense(
+    inExOccupation: json["inEx_Occupation"],
+    inExBusinessDetail: json["inEx_BusinessDetail"],
+    inExAnyCurrentEmi: json["inEx_AnyCurrentEMI"],
+    inExFutureIncome: json["inEx_FutureIncome"],
+    inExAgricultureIncome: json["inEx_AgricultureIncome"],
+    inExEarningMemCount: json["inEx_EarningMemCount"],
+    inExOtherIncome: json["inEx_OtherIncome"],
+    inExAnnualIncome: json["inEx_AnnualIncome"],
+    inExSpendOnChildren: json["inEx_SpendOnChildren"],
+    inExOtherThanAgriculturalIncome: json["inEx_OtherThanAgriculturalIncome"],
+    inExYearsInBusiness: json["inEx_YearsInBusiness"],
+    inExPensionIncome: json["inEx_PensionIncome"],
+    inExAnyRentalIncome: json["inEx_AnyRentalIncome"],
+    inExRent: json["inEx_Rent"],
+    inExFooding: json["inEx_Fooding"],
+    inExEducation: json["inEx_Education"],
+    inExHealth: json["inEx_Health"],
+    inExTravelling: json["inEx_Travelling"],
+    inExEntertainment: json["inEx_Entertainment"],
+    inExOthers: json["inEx_Others"],
+    inExHomeType: json["inEx_HomeType"],
+    inExHomeRoofType: json["inEx_HomeRoofType"],
+    inExToiletType: json["inEx_ToiletType"],
+    inExLivingWithSpouse: json["inEx_LivingWithSpouse"],
+    inExDocsPath: json["inEx_DocsPath"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "inEx_Occupation": inExOccupation,
+    "inEx_BusinessDetail": inExBusinessDetail,
+    "inEx_AnyCurrentEMI": inExAnyCurrentEmi,
+    "inEx_FutureIncome": inExFutureIncome,
+    "inEx_AgricultureIncome": inExAgricultureIncome,
+    "inEx_EarningMemCount": inExEarningMemCount,
+    "inEx_OtherIncome": inExOtherIncome,
+    "inEx_AnnualIncome": inExAnnualIncome,
+    "inEx_SpendOnChildren": inExSpendOnChildren,
+    "inEx_OtherThanAgriculturalIncome": inExOtherThanAgriculturalIncome,
+    "inEx_YearsInBusiness": inExYearsInBusiness,
+    "inEx_PensionIncome": inExPensionIncome,
+    "inEx_AnyRentalIncome": inExAnyRentalIncome,
+    "inEx_Rent": inExRent,
+    "inEx_Fooding": inExFooding,
+    "inEx_Education": inExEducation,
+    "inEx_Health": inExHealth,
+    "inEx_Travelling": inExTravelling,
+    "inEx_Entertainment": inExEntertainment,
+    "inEx_Others": inExOthers,
+    "inEx_HomeType": inExHomeType,
+    "inEx_HomeRoofType": inExHomeRoofType,
+    "inEx_ToiletType": inExToiletType,
+    "inEx_LivingWithSpouse": inExLivingWithSpouse,
+    "inEx_DocsPath": inExDocsPath,
+  };
+}
+
+class Guarantor {
+  int grSno;
+  String grTitle;
+  String grFname;
+  String grMname;
+  String grLname;
+  String grGuardianName;
+  String grRelationWithBorrower;
+  String grPAddress1;
+  String grPAddress2;
+  String grPAddress3;
+  String grPCity;
+  String grPState;
+  int grPincode;
+  DateTime grDob;
+  int grAge;
+  String grPhone;
+  String grPan;
+  String grDl;
+  String grVoter;
+  String grAadharId;
+  String grGender;
+  String grReligion;
+  bool grEsignSucceed;
+  String grEsignUuid;
+  String grPicture;
+
+  Guarantor({
+    required this.grSno,
+    required this.grTitle,
+    required this.grFname,
+    required this.grMname,
+    required this.grLname,
+    required this.grGuardianName,
+    required this.grRelationWithBorrower,
+    required this.grPAddress1,
+    required this.grPAddress2,
+    required this.grPAddress3,
+    required this.grPCity,
+    required this.grPState,
+    required this.grPincode,
+    required this.grDob,
+    required this.grAge,
+    required this.grPhone,
+    required this.grPan,
+    required this.grDl,
+    required this.grVoter,
+    required this.grAadharId,
+    required this.grGender,
+    required this.grReligion,
+    required this.grEsignSucceed,
+    required this.grEsignUuid,
+    required this.grPicture,
+  });
+
+  factory Guarantor.fromJson(Map<String, dynamic> json) => Guarantor(
+    grSno: json["gr_Sno"],
+    grTitle: json["gr_Title"],
+    grFname: json["gr_Fname"],
+    grMname: json["gr_Mname"],
+    grLname: json["gr_Lname"],
+    grGuardianName: json["gr_GuardianName"],
+    grRelationWithBorrower: json["gr_RelationWithBorrower"],
+    grPAddress1: json["gr_PAddress1"],
+    grPAddress2: json["gr_PAddress2"],
+    grPAddress3: json["gr_PAddress3"],
+    grPCity: json["gr_PCity"],
+    grPState: json["gr_PState"],
+    grPincode: json["gr_Pincode"],
+    grDob: DateTime.parse(json["gr_Dob"]),
+    grAge: json["gr_Age"],
+    grPhone: json["gr_Phone"],
+    grPan: json["gr_Pan"],
+    grDl: json["gr_Dl"],
+    grVoter: json["gr_Voter"],
+    grAadharId: json["gr_AadharId"],
+    grGender: json["gr_Gender"],
+    grReligion: json["gr_Religion"],
+    grEsignSucceed: json["gr_EsignSucceed"],
+    grEsignUuid: json["gr_EsignUuid"],
+    grPicture: json["gr_Picture"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "gr_Sno": grSno,
+    "gr_Title": grTitle,
+    "gr_Fname": grFname,
+    "gr_Mname": grMname,
+    "gr_Lname": grLname,
+    "gr_GuardianName": grGuardianName,
+    "gr_RelationWithBorrower": grRelationWithBorrower,
+    "gr_PAddress1": grPAddress1,
+    "gr_PAddress2": grPAddress2,
+    "gr_PAddress3": grPAddress3,
+    "gr_PCity": grPCity,
+    "gr_PState": grPState,
+    "gr_Pincode": grPincode,
+    "gr_Dob": grDob.toIso8601String(),
+    "gr_Age": grAge,
+    "gr_Phone": grPhone,
+    "gr_Pan": grPan,
+    "gr_Dl": grDl,
+    "gr_Voter": grVoter,
+    "gr_AadharId": grAadharId,
+    "gr_Gender": grGender,
+    "gr_Religion": grReligion,
+    "gr_EsignSucceed": grEsignSucceed,
+    "gr_EsignUuid": grEsignUuid,
+    "gr_Picture": grPicture,
   };
 }
