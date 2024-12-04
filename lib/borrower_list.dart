@@ -34,11 +34,11 @@ class _BorrowerListState extends State<BorrowerList> {
   @override
   void initState() {
     super.initState();
-    if(widget.page =="E SIGN"){
+   // if(widget.page =="E SIGN"){
       _fetchBorrowerList(1);
-    }else{
-      _fetchBorrowerList(0);
-    }
+   // }else{
+   //   _fetchBorrowerList(0);
+ //   }
   }
 
   Future<void> _fetchBorrowerList(int type) async {
