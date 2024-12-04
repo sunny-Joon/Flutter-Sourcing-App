@@ -34,13 +34,14 @@ class BorrowerListModel {
 
 class BorrowerListDataModel {
   int id;
-  String creator;
   int fiCode;
-  DateTime dob;
+  String creator;
+  String dob;
   String gender;
+  String aadharNo;
   String title;
   String fullName;
-  dynamic cast;
+  String cast;
   String pAddress;
   String pPhone;
   String currentAddress;
@@ -48,17 +49,17 @@ class BorrowerListDataModel {
   String branchCode;
   String borrSignStatus;
   String errormsg;
-  bool isvalide;
-  String downloadLink;
+  bool isvalid;
+  String eSignDoc;
   String profilePic;
-  String aadhar_no;
 
   BorrowerListDataModel({
     required this.id,
-    required this.creator,
     required this.fiCode,
+    required this.creator,
     required this.dob,
     required this.gender,
+    required this.aadharNo,
     required this.title,
     required this.fullName,
     required this.cast,
@@ -69,40 +70,40 @@ class BorrowerListDataModel {
     required this.branchCode,
     required this.borrSignStatus,
     required this.errormsg,
-    required this.isvalide,
-    required this.downloadLink,
+    required this.isvalid,
+    required this.eSignDoc,
     required this.profilePic,
-    required this.aadhar_no,
   });
 
   factory BorrowerListDataModel.fromJson(Map<String, dynamic> json) => BorrowerListDataModel(
-    id: json["id"],
-    creator: json["creator"],
-    fiCode: json["fiCode"],
-    dob: DateTime.parse(json["dob"]),
-    gender: json["gender"],
-    title: json["title"],
-    fullName: json["fullName"],
-    cast: json["cast"],
-    pAddress: json["p_Address"],
-    pPhone: json["p_Phone"],
-    currentAddress: json["current_Address"],
+    id: json["id"]??"",
+    fiCode: json["fiCode"]??"",
+    creator: json["creator"]??"",
+    dob: json["dob"]??"",
+    gender: json["gender"]??"",
+    aadharNo: json["aadhar_no"]??"",
+    title: json["title"]??"",
+    fullName: json["fullName"]??"",
+    cast: json["cast"]??"",
+    pAddress: json["p_Address"]??"",
+    pPhone: json["p_Phone"]??"",
+    currentAddress: json["current_Address"]??"",
     groupCode: json["group_code"]??"",
     branchCode: json["branch_code"]??"",
-    borrSignStatus: json["borrSignStatus"],
-    errormsg: json["errormsg"],
-    isvalide: json["isvalid"],
-    downloadLink: json["downloadLink"]??"",
+    borrSignStatus: json["borrSignStatus"]??"",
+    errormsg: json["errormsg"]??"",
+    isvalid: json["isvalid"]??"",
+    eSignDoc: json["eSignDoc"]??"",
     profilePic: json["profilePic"]??"",
-    aadhar_no: json["aadhar_no"]??"",
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "creator": creator,
     "fiCode": fiCode,
-    "dob": dob.toIso8601String(),
+    "creator": creator,
+    "dob": dob,
     "gender": gender,
+    "aadhar_no": aadharNo,
     "title": title,
     "fullName": fullName,
     "cast": cast,
@@ -113,9 +114,8 @@ class BorrowerListDataModel {
     "branch_code": branchCode,
     "borrSignStatus": borrSignStatus,
     "errormsg": errormsg,
-    "isvalide": isvalide,
-    "downloadLink": downloadLink,
+    "isvalid": isvalid,
+    "eSignDoc": eSignDoc,
     "profilePic": profilePic,
-    "aadhar_no": aadhar_no,
   };
 }

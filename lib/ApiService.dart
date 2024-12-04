@@ -267,7 +267,7 @@ abstract class ApiService {
       @Query("Creator") String Creator);
 
   @GET("FiSourcing/GetAllFiData")
-  Future<GetAllModel> dataByFIID(
+  Future<ApplicationgetAllModel> dataByFIID(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Query("FI_ID") int FI_ID);
@@ -380,7 +380,7 @@ abstract class ApiService {
       @Part( name:"Address") String Address,
       @Part( name: "Image") File Picture );
 
-  @GET("FiSourcing/GetDataForFirstEsign")
+  @GET("FiSourcing/GetDataForEsign")
   Future<BorrowerListModel> BorrowerList(
       @Header("Authorization") String token,
       @Header("dbname") String dbName,

@@ -4849,7 +4849,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String Fi_ID = FIID.toString();
     String bankType = selectedAccountType.toString();
     String bank_name = selectedBankName.toString();
-
     String bank_Ac = _bank_AcController.text.toString();
     String bank_IFCS = _bank_IFCSController.text.toString();
     String bank_address = bankAddress!;
@@ -4956,24 +4955,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String homeType = selectedHomeType.toString();
     String homeRoofType = selectedRoofType.toString();
     String toiletType = selectedToiletType.toString();
-    bool livingSpouse =
-        selectedLivingWithSpouse.toString().toLowerCase() == "true"
-            ? true
-            : false;
+    bool livingSpouse = selectedLivingWithSpouse.toString().toLowerCase() == "true" ? true : false;
     int earning_mem_count = int.parse(selectedEarningMembers.toString());
     int years_in_business = int.parse(selectedBusinessExperience.toString());
-
     int future_Income = int.parse(_future_IncomeController.text.toString());
-    int agriculture_income =
-        int.parse(_agriculture_incomeController.text.toString());
+    int agriculture_income = int.parse(_agriculture_incomeController.text.toString());
     int other_Income = int.parse(_other_IncomeController.text.toString());
     int annuaL_INCOME = int.parse(_annuaL_INCOMEController.text.toString());
     int spendOnChildren = int.parse(_spendOnChildrenController.text.toString());
-    int otheR_THAN_AGRICULTURAL_INCOME =
-        int.parse(_otheR_THAN_AGRICULTURAL_INCOMEController.text.toString());
+    int otheR_THAN_AGRICULTURAL_INCOME = int.parse(_otheR_THAN_AGRICULTURAL_INCOMEController.text.toString());
     int pensionIncome = int.parse(_pensionIncomeController.text.toString());
-    int any_RentalIncome =
-        int.parse(_any_RentalIncomeController.text.toString());
+    int any_RentalIncome = int.parse(_any_RentalIncomeController.text.toString());
     int rent = int.parse(_rentController.text.toString());
     int fooding = int.parse(_foodingController.text.toString());
     int education = int.parse(_educationController.text.toString());
@@ -4981,7 +4973,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     int travelling = int.parse(_travellingController.text.toString());
     int entertainment = int.parse(_entertainmentController.text.toString());
     int others = int.parse(_othersController.text.toString());
-
     String docs_path = "";
 
     final api = Provider.of<ApiService>(context, listen: false);
@@ -5287,84 +5278,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-  Future<void> getAllDataApi(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...');
-
-    final api = Provider.of<ApiService>(context, listen: false);
-
-    return await api
-        .dataByFIID(GlobalClass.token, GlobalClass.dbName, FIID)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        EasyLoading.dismiss();
-        print("object112222");
-
-        if(!value.data[0].placeOfBirth.isEmpty){
-          personalInfo(value.data[0]);
-
-        }
-        if(!value.data[0].motheRFirstName.isEmpty){
-          familyDetails(value.data[0]);
-        }
-       /* if(!value.data[0].occupation){
-
-        }*/
-        if(!value.data[0].bankAc.isEmpty){
-          financialInfo(value.data[0]);
-        }
-        /*if(!value.data[0].health){
-
-        }*/
-        /*if(!value.data[0].grno.isEmpty){}*/
-
-      } else {
-        setState(() {});
-      }
-    }).catchError((err) {
-      print("ERRORRRR$err");
-      EasyLoading.dismiss();
-    });
-  }
-
-  void personalInfo(getAllDataModel data) {
-
-    setState(() {
-      // FIID,
-      emailIdController.text=data.emailId;
-      placeOfBirthController.text =data.placeOfBirth;
-      // selectedDependent
-      // "gff"
-      //   selectedReligionextra
-      //   selectedCast,
-      mobileController.text=data.pPhone;
-      //  selectedIsHandicap  //  selectedspecialAbility,
-      //  selectedIsHouseRental  //  selectedProperty,
-      address1ControllerP.text=data.pAddress1;
-      address2ControllerP.text=data.pAddress2;
-      address3ControllerP.text=data.pAddress3;
-      cityControllerP.text=data.pCity;
-      //   selectedStateextraP,
-      pincodeControllerP.text=data.pPincode;
-      address1ControllerC.text=data.currentAddress1;
-      address2ControllerC.text=data.currentAddress2;
-      address3ControllerC.text=data.currentAddress3;
-      cityControllerC.text=data.currentCity;
-      //  selectedStateextraP,
-      pincodeControllerC.text=data.currentPincode;
-      //  selectedDistrict,
-      //  selectedSubDistrict,
-      //  selectedVillage,
-      //  selectedResidingFor,
-      //  selectedPresentHouseOwner
-    });
-
-
-  }
-
-  void familyDetails(getAllDataModel data) {}
-
-  void financialInfo(getAllDataModel data) {}
-
   Future<void> getDataFromOCR(String type, BuildContext context) async {
     EasyLoading.show();
     File? pickedImage = await GlobalClass().pickImage();
@@ -5660,4 +5573,184 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
+  Future<void> getAllDataApi(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
+
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .dataByFIID(GlobalClass.token, GlobalClass.dbName, FIID)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        print("object112222");
+
+        if(!value.data[0].placeOfBirth.isEmpty){
+          personalInfo(value.data[0]);
+
+        }
+        if(!value.data[0].motheRFirstName.isEmpty){
+          familyDetails(value.data[0]);
+        }
+
+        if(value.data[0].fiIncomeExpenses.length != 0){
+          fiIncomeExpenses(value.data[0]);
+        }
+
+        if(!value.data[0].bankAc.isEmpty){
+          financialInfo(value.data[0]);
+        }
+
+        if(value.data[0].familyMembers.length != 0){
+          femMemIncome(value.data[0]);
+        }
+        if(value.data[0].guarantors.length != 0){
+          guarrantors(value.data[0]);
+        }
+
+        }
+
+      else {
+        setState(() {});
+      }
+    }).catchError((err) {
+      print("ERRORRRR$err");
+      EasyLoading.dismiss();
+    });
+  }
+
+  void personalInfo(ApplicationgetAllDataModel data) {
+
+    setState(() {
+      // FIID,
+      emailIdController.text=data.emailId;
+      placeOfBirthController.text =data.placeOfBirth;
+      // selectedDependent
+      // "gff"
+      //   selectedReligionextra
+      //   selectedCast,
+      mobileController.text=data.pPhone;
+      //  selectedIsHandicap  //  selectedspecialAbility,
+      //  selectedIsHouseRental  //  selectedProperty,
+      address1ControllerP.text=data.pAddress1;
+      address2ControllerP.text=data.pAddress2;
+      address3ControllerP.text=data.pAddress3;
+      cityControllerP.text=data.pCity;
+      //   selectedStateextraP,
+      pincodeControllerP.text=data.pPincode;
+      address1ControllerC.text=data.currentAddress1;
+      address2ControllerC.text=data.currentAddress2;
+      address3ControllerC.text=data.currentAddress3;
+      cityControllerC.text=data.currentCity;
+      //  selectedStateextraP,
+      pincodeControllerC.text=data.currentPincode;
+      //  selectedDistrict,
+      //  selectedSubDistrict,
+      //  selectedVillage,
+      //  selectedResidingFor,
+      //  selectedPresentHouseOwner
+    });
+
+
+  }
+
+  void familyDetails(ApplicationgetAllDataModel data) {
+    setState(() {
+      _motherFController.text = data.motheRFirstName;
+      _motherMController.text = data.motheRMiddleName;
+      _motherLController.text = data.motheRLastName;
+      selectednumOfChildren = data.noOfChildren.toString();
+      selectedschoolingChildren = data.schoolingChildren.toString();
+      selectedotherDependents = data.otherDependents.toString();
+    });
+  }
+
+  void fiIncomeExpenses(ApplicationgetAllDataModel data) {
+    setState(() {
+      selectedOccupation = data.fiIncomeExpenses[0].inExOccupation;
+      selectedBusiness = data.fiIncomeExpenses[0].inExBusinessDetail;
+      _currentEMIController.text = data.fiIncomeExpenses[0].inExAnyCurrentEmi.toString();
+      selectedHomeType = data.fiIncomeExpenses[0].inExHomeType;
+      selectedRoofType = data.fiIncomeExpenses[0].inExHomeRoofType;
+      selectedToiletType = data.fiIncomeExpenses[0].inExToiletType;
+      selectedLivingWithSpouse = data.fiIncomeExpenses[0].inExLivingWithSpouse.toString();
+      selectedEarningMembers = data.fiIncomeExpenses[0].inExEarningMemCount.toString();
+      selectedBusinessExperience = data.fiIncomeExpenses[0].inExYearsInBusiness.toString();
+      _future_IncomeController.text = data.fiIncomeExpenses[0].inExFutureIncome.toString();
+      _agriculture_incomeController.text = data.fiIncomeExpenses[0].inExAgricultureIncome.toString();
+      _other_IncomeController.text = data.fiIncomeExpenses[0].inExOtherIncome.toString();
+      _annuaL_INCOMEController.text = data.fiIncomeExpenses[0].inExAnnualIncome.toString();
+      _spendOnChildrenController.text = data.fiIncomeExpenses[0].inExSpendOnChildren.toString();
+      _otheR_THAN_AGRICULTURAL_INCOMEController.text = data.fiIncomeExpenses[0].inExOtherThanAgriculturalIncome.toString();
+      _pensionIncomeController.text = data.fiIncomeExpenses[0].inExPensionIncome.toString();
+      _any_RentalIncomeController.text = data.fiIncomeExpenses[0].inExAnyRentalIncome.toString();
+      _rentController.text = data.fiIncomeExpenses[0].inExRent.toString();
+      _foodingController.text = data.fiIncomeExpenses[0].inExFooding.toString();
+      _educationController.text = data.fiIncomeExpenses[0].inExEducation.toString();
+      _healthController.text = data.fiIncomeExpenses[0].inExHealth.toString();
+      _travellingController.text = data.fiIncomeExpenses[0].inExTravelling.toString();
+      _entertainmentController.text = data.fiIncomeExpenses[0].inExEntertainment.toString();
+      _othersController.text = data.fiIncomeExpenses[0].inExOthers.toString();
+    });
+
+  }
+
+  void financialInfo(ApplicationgetAllDataModel data) {
+    setState(() {
+      selectedAccountType = data.bankAc;
+      selectedBankName = data.bankName;
+      _bank_AcController.text = data.bankName;
+      _bank_IFCSController.text = data.bankIfcs;
+      bankAddress = data.bankAddress;
+      _bankOpeningDateController.text = data.bankAcOpenDate;
+    });
+
+  }
+
+  void femMemIncome(ApplicationgetAllDataModel data) {
+    setState(() {
+      _femNameController.text = data.familyMembers[0].famName;
+      _AgeController.text = data.familyMembers[0].famAge.toString();
+      femselectedGender = data.familyMembers[0].famGender;
+      femselectedRelationWithBorrower = data.familyMembers[0].famRelationWithBorrower;
+      femselectedHealth = data.familyMembers[0].famHealth;
+      femselectedEducation = data.familyMembers[0].famEducation;
+      femselectedSchoolType = data.familyMembers[0].famSchoolType;
+      femselectedBusiness = data.familyMembers[0].famBusiness;
+      _IncomeController.text = data.familyMembers[0].famIncome.toString();
+      femselectedBusinessType = data.familyMembers[0].famBusinessType;
+      femselectedIncomeType = data.familyMembers[0].famIncomeType;
+    });
+
+  }
+
+  void guarrantors(ApplicationgetAllDataModel data) {
+    setState(() {
+      titleselected = data.guarantors[0].grTitle;
+      _fnameController.text = data.guarantors[0].grFname;
+      _mnameController.text = data.guarantors[0].grMname;
+      _lnameController.text = data.guarantors[0].grLname;
+      _guardianController.text = data.guarantors[0].grGuardianName;
+      relationselected = data.guarantors[0].grRelationWithBorrower;
+      _p_Address1Controller.text = data.guarantors[0].grPAddress1;
+      _p_Address2Controller.text = data.guarantors[0].grPAddress2;
+      _p_Address3Controller.text = data.guarantors[0].grPAddress3;
+      _p_CityController.text = data.guarantors[0].grPCity;
+    //  stateselected = data.guarantors[0].grPState.toString();
+      _pincodeController.text = data.guarantors[0].grPincode.toString();
+      _dobController.text = data.guarantors[0].grDob.toString();
+      _ageController.text = data.guarantors[0].grAge.toString();
+      _phoneController.text = data.guarantors[0].grPhone;
+      _panController.text = data.guarantors[0].grPan;
+      _dlController.text = data.guarantors[0].grDl;
+      _voterController.text = data.guarantors[0].grVoter;
+      _aadharIdController.text = data.guarantors[0].grAadharId;
+      genderselected = data.guarantors[0].grGender;
+      religionselected = data.guarantors[0].grReligion;
+ /*      = data.guarantors[0].grEsignSucceed;
+       = data.guarantors[0].grEsignUuid;
+       = data.guarantors[0].grPicture;*/
+    });
+
+  }
 }
