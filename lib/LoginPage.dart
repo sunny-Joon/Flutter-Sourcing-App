@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                   Center(
                     child: Text(
                       'Ver: 1.1',
-                      style: TextStyle(color: customColor),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: customColor),
                     ),
                   ),
                   SizedBox(height: 20),
@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 20),
                   Text(
                     'User ID',
-                    style: TextStyle(
+                    style: TextStyle(fontFamily: "Poppins-Regular",
                       color: customColor,
                       fontSize: 20,
                     ),
@@ -129,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'GRST000223',
-                          hintStyle: TextStyle(color: Colors.grey.shade400), // Hint color grey
+                          hintStyle: TextStyle(fontFamily: "Poppins-Regular",color: Colors.grey.shade400), // Hint color grey
                         ),
                         style: TextStyle(fontSize: 18),
                       ),
@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 5),
                   Text(
                     'User Name must be at least 10 characters',
-                    style: TextStyle(
+                    style: TextStyle(fontFamily: "Poppins-Regular",
                       color: customColor,
                       fontSize: 12,
                     ),
@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   Text(
                     'Password',
-                    style: TextStyle(
+                    style: TextStyle(fontFamily: "Poppins-Regular",
                       color: customColor,
                       fontSize: 20,
                     ),
@@ -170,10 +170,10 @@ class _LoginPageState extends State<LoginPage> {
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: '*****',
-                                hintStyle: TextStyle(color: Colors.grey.shade400),
+                                hintStyle: TextStyle(fontFamily: "Poppins-Regular",color: Colors.grey.shade400),
                               ),
                               obscureText: _isObscure,
-                              style: TextStyle(fontSize: 18),
+                              style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 18),
                             ),
                           ),
                           IconButton(
@@ -194,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 5),
                   Text(
                     'Password must be at least 5 characters',
-                    style: TextStyle(
+                    style: TextStyle(fontFamily: "Poppins-Regular",
                       color: customColor,
                       fontSize: 12,
                     ),
@@ -210,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                         foregroundColor: Colors.white, // Text color
                         backgroundColor: customColor, // Background color
                         minimumSize: Size(double.infinity, 45), // Full width with a height of 65
-                        textStyle: TextStyle(fontSize: 18),
+                        textStyle: TextStyle(fontFamily: "Poppins-Regular",fontSize: 18),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(0), // Rectangular corners
                         ),
@@ -285,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: const Text(
                           'Share Device Id',
-                          style: TextStyle(
+                          style: TextStyle(fontFamily: "Poppins-Regular",
                             color: customColor,
                             fontSize: 12,
                           ),
@@ -301,7 +301,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: Text(
                           'Terms & Conditions',
-                          style: TextStyle(
+                          style: TextStyle(fontFamily: "Poppins-Regular",
                             color: customColor,
                             fontSize: 12,
                           ),

@@ -172,7 +172,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                       child: Expanded(
                         child: Text(
                           "HOUSE VISIT",
-                          style: TextStyle(
+                          style: TextStyle(fontFamily: "Poppins-Regular",
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 24 // Make the text bold
@@ -547,7 +547,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: TextStyle(fontFamily: "Poppins-Regular",
               fontSize: 16,
               color: Colors.black,
             ),
@@ -617,7 +617,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                         Flexible( // Ensures the Text widget takes the remaining space
                           child: Text(
                             label,
-                            style: TextStyle(
+                            style: TextStyle(fontFamily: "Poppins-Regular",
                               fontSize: 16,
                               color: Colors.black,
                             ),
@@ -646,7 +646,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: TextStyle(fontFamily: "Poppins-Regular",
               fontSize: 16,
               color: Colors.black,
             ),

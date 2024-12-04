@@ -77,7 +77,7 @@ class _TargetSetPageState extends State<TargetSetPage> {
                       Text(
                         "Set your monthly\ncommission target",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 30, color: Colors.black54),
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 30, color: Colors.black54),
                       ),
                       SizedBox(height: 15),
                       Container(
@@ -87,7 +87,7 @@ class _TargetSetPageState extends State<TargetSetPage> {
                             color: Color(0xFFD42D3F)),
                         child: Text(
                           '${currencyFormatter.format(_targetedAmount)}',
-                          style: TextStyle(fontSize: 26, color: Colors.white),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 26, color: Colors.white),
                         ),
                       ),
                       Container(
@@ -192,12 +192,12 @@ class _TargetSetPageState extends State<TargetSetPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Welcome', style: TextStyle(color: Colors.white,
+                Text('Welcome', style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,
                   fontSize: 30,
-                  fontFamily: 'Visbyfregular',),)
+                 ),)
                 , Text(
                   name,
-                  style: TextStyle(
+                  style: TextStyle(fontFamily: "Poppins-Regular",
                     fontSize: 45,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -206,7 +206,7 @@ class _TargetSetPageState extends State<TargetSetPage> {
                 SizedBox(height: 20,),
                 Text(text, style: TextStyle(color: Colors.white,
                     fontSize: 24,
-                    fontFamily: 'Visbyfregular'),),
+                    fontFamily: "Poppins-Regular"),),
 
                 Container(
                   width: 80,
@@ -249,7 +249,7 @@ class _TargetSetPageState extends State<TargetSetPage> {
           child: Center(
             child: Text(
               '',
-              style: TextStyle(
+              style: TextStyle(fontFamily: "Poppins-Regular",
                 fontSize: 24,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

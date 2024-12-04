@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/GlobalModel2.dart';
 import 'package:flutter_sourcing_app/StepperSS.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'ApiService.dart';
@@ -216,3 +216,5 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
 }
+
+

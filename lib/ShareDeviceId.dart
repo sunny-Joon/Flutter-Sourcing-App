@@ -281,13 +281,13 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                               children: [
                                 Text(
                                   'Device Id:- ${_deviceIdController}',
-                                  style: TextStyle(
+                                  style: TextStyle(fontFamily: "Poppins-Regular",
                                       fontSize: 13,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(
                                   'User Id:- ${_userIdController}',
-                                  style: TextStyle(
+                                  style: TextStyle(fontFamily: "Poppins-Regular",
                                       fontSize: 13,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -296,7 +296,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                 SizedBox(height: 4),
                                 Text(
                                   'Request Type',
-                                  style: TextStyle(fontSize: 13),
+                                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                                 ),
 
                                 Container(
@@ -317,7 +317,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                     isExpanded: true,
                                     iconSize: 24,
                                     elevation: 16,
-                                    style: TextStyle(
+                                    style: TextStyle(fontFamily: "Poppins-Regular",
                                         color: Colors.black,
                                         fontSize: 13),
                                     underline: Container(
@@ -343,7 +343,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                 SizedBox(height: 4),
                                 Text(
                                   'Creator',
-                                  style: TextStyle(fontSize: 13),
+                                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                                 ),
 
                                 Container(
@@ -364,7 +364,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                     isExpanded: true,
                                     iconSize: 24,
                                     elevation: 16,
-                                    style: TextStyle(
+                                    style: TextStyle(fontFamily: "Poppins-Regular",
                                         color: Colors.black,
                                         fontSize: 16),
                                     underline: Container(
@@ -464,7 +464,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                   children: [
                                     Row(children: [
                                       Icon(Icons.location_on_outlined,color: Colors.red,),
-                                      Text("${_locationMessage}",style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
+                                      Text("${_locationMessage}",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.red,fontWeight: FontWeight.bold),),
 
                                     ],),
                                     InkWell(
@@ -485,7 +485,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                 if (_errorText != null)
                                   Text(
                                     _errorText!,
-                                    style: TextStyle(
+                                    style: TextStyle(fontFamily: "Poppins-Regular",
                                         color: Color(0xFFD42D3F), fontSize: 13),
                                   ),
                                 //SizedBox(height:2 ),
@@ -512,7 +512,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                     child: Text(
                                       'Save',
                                       style:
-                                      TextStyle(color: Colors.white),
+                                      TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                                     ),
                                   ),
                                 ),
@@ -541,7 +541,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: TextStyle(fontFamily: "Poppins-Regular",
               fontSize: 13,
             ),
           ),
@@ -667,7 +667,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Select Branches',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Expanded(

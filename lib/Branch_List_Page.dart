@@ -74,6 +74,7 @@ class _BranchListPageState extends State<BranchListPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                widget.intentFrom=="COLLECTION"?SizedBox():
                 InkWell(
                   child: Container(
                     decoration: BoxDecoration(

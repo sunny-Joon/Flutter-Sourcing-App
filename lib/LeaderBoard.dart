@@ -110,14 +110,14 @@ class _LeaderBoardState extends State<LeaderBoard> with TickerProviderStateMixin
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          fontFamily: 'Visbycfbold',
+                          fontFamily: "Poppins-Regular",
                           fontSize: 16),
                     ),
                     Text(
                       "LEADER BOARD",
                       style: TextStyle(
                           color: Colors.white,
-                          fontFamily: 'Visbycfbold',
+                          fontFamily: "Poppins-Regular",
                           fontSize: 14),
                     ),
                   ],
@@ -333,7 +333,7 @@ class _LeaderBoardState extends State<LeaderBoard> with TickerProviderStateMixin
                                             child: Center(
                                               child: Text(
                                                 '${index + 1}',
-                                                style: TextStyle(
+                                                style: TextStyle(fontFamily: "Poppins-Regular",
                                                   fontSize: 14,
                                                   color: Colors.white,
                                                   fontWeight:
@@ -354,7 +354,7 @@ class _LeaderBoardState extends State<LeaderBoard> with TickerProviderStateMixin
                                               3,
                                           child: Flexible(child: Text(
                                             item.name,
-                                            style: TextStyle(
+                                            style: TextStyle(fontFamily: "Poppins-Regular",
                                               fontSize: 15,
                                               color: Color(0xFFD42D3F),
                                               fontWeight: isFirstItem
@@ -369,7 +369,7 @@ class _LeaderBoardState extends State<LeaderBoard> with TickerProviderStateMixin
                                     Flexible(
                                       child: Text(
                                         item.totalDisbursementAmt,
-                                        style: TextStyle(
+                                        style: TextStyle(fontFamily: "Poppins-Regular",
                                           fontSize: 15,
                                           color: Color(0xFFD42D3F),
                                           /*decorationThickness: 1,
@@ -393,10 +393,10 @@ class _LeaderBoardState extends State<LeaderBoard> with TickerProviderStateMixin
                     top: 38,
                     child: Text(
                       'Last Month Achievers',
-                      style: TextStyle(
+                      style: TextStyle(fontFamily: "Poppins-Regular",
                           color: appColors.mainAppColor,
                           fontSize: 16,
-                          fontFamily: 'Visbyfregular'),
+                         ),
                     ),
                   ),
                 ],

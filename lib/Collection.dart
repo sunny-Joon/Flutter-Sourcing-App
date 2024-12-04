@@ -75,6 +75,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                           border: Border.all(width: 1, color: Colors.grey.shade300),
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                         ),
+                        clipBehavior: Clip.antiAlias,
                         height: 40,
                         width: 40,
                         alignment: Alignment.center,
@@ -102,6 +103,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
               ),
               SizedBox(height: 20),
               Container(
+                clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8.0),
@@ -112,18 +114,22 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                       controller: _tabController,
                       labelColor: Colors.white,
                       unselectedLabelColor: Colors.black,
-                      indicatorColor: Colors.white,
+                      indicatorColor: Color(0xFFD42D3F),
+                      tabAlignment: TabAlignment.fill,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicator: BoxDecoration(
+                        color: Colors.grey.shade400,
+                        borderRadius: BorderRadius.circular(0),
+                      ),
                       tabs: [
-                        Tab(text: 'Cash'),
+                        Tab(text: 'Cash',),
                         Tab(text: 'QR'),
                         Tab(text: 'Lump sum'),
                       ],
-                      indicator: BoxDecoration(
-                        color: Color(0xFFD42D3F),
-                      ),
+
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height - 400,
+                      height: MediaQuery.of(context).size.height - 380,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Colors.grey.shade100, Colors.grey.shade300],
@@ -131,7 +137,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                           end: Alignment.bottomRight,
                         ),
                       ),
-                      margin: EdgeInsets.all(10), // Adjust height as needed
+                      margin: EdgeInsets.all(0), // Adjust height as needed
                       child: TabBarView(
                         controller: _tabController,
                         children: [
@@ -156,6 +162,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                           Text('Total Amount: ₹$totalAmount'),
                           SizedBox(height: 20),
                           ElevatedButton(
+
                             onPressed: () {
                               // Submit button action
                             },
@@ -186,7 +193,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Submit',
-                                  style: TextStyle(
+                                  style: TextStyle(fontFamily: "Poppins-Regular",
                                     fontSize: 16,
                                     color: Colors.black, // Text color
                                   ),
@@ -278,14 +285,15 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          TextField(
+          AbsorbPointer(child: TextField(
+
             controller: _controller,
             keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly, // Only allow digits
             ],
             decoration: InputDecoration(
-              labelText: 'Lumpsum Amount',
+              labelText: 'Lump sum Amount',
               border: OutlineInputBorder(),
             ),
             onChanged: (value) {
@@ -294,73 +302,74 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                 selection: TextSelection.collapsed(offset: _controller.text.length),
               );
             },
-          ),
+          ),),
+
           SizedBox(height: 16),
           // Custom Numeric Keypad with Gradient Buttons
-          Expanded(
-            child: GridView.builder(
-              shrinkWrap: true,
-              itemCount: 12, // 9 digits + 3 buttons (Clear, 0, 00)
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3, // Number of columns
-                crossAxisSpacing: 6.0, // Reduced spacing between buttons
-                mainAxisSpacing: 6.0,  // Reduced spacing between buttons
-                childAspectRatio: 1.4, // Slightly adjusted aspect ratio
-              ),
-              itemBuilder: (context, index) {
-                String label;
-                if (index < 9) {
-                  label = '${index + 1}';
-                } else if (index == 9) {
-                  label = '0';
-                } else if (index == 10) {
-                  label = 'Clear';
-                } else {
-                  label = '00'; // Replacing Enter with 00
-                }
+            Padding(padding: EdgeInsets.all(8),child:  Expanded(
+              child: GridView.builder(
+                shrinkWrap: true,
+                itemCount: 12, // 9 digits + 3 buttons (Clear, 0, 00)
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3, // Number of columns
+                  crossAxisSpacing: 6.0, // Reduced spacing between buttons
+                  mainAxisSpacing: 6.0,  // Reduced spacing between buttons
+                  childAspectRatio: 1.4, // Slightly adjusted aspect ratio
+                ),
+                itemBuilder: (context, index) {
+                  String label;
+                  if (index < 9) {
+                    label = '${index + 1}';
+                  } else if (index == 9) {
+                    label = '0';
+                  } else if (index == 10) {
+                    label = 'Clear';
+                  } else {
+                    label = '00'; // Replacing Enter with 00
+                  }
 
-                return GestureDetector(
-                  onTap: () {
-                    if (label == 'Clear') {
-                      _controller.clear(); // Clear the text field
-                    } else if (label == '00') {
-                      String newValue = _controller.text + '00'; // Add '00' to the text
-                      _controller.text = _formatNumber(newValue); // Format and update
-                    } else {
-                      String newValue = _controller.text + label;
-                      _controller.text = _formatNumber(newValue); // Format and update
-                    }
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.white, // Start with white
-                          Colors.grey.shade200, // Light grey
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.4),
-                          blurRadius: 4.0,
-                          spreadRadius: 2.0,
+                  return GestureDetector(
+                    onTap: () {
+                      if (label == 'Clear') {
+                        _controller.clear(); // Clear the text field
+                      } else if (label == '00') {
+                        String newValue = _controller.text + '00'; // Add '00' to the text
+                        _controller.text = _formatNumber(newValue); // Format and update
+                      } else {
+                        String newValue = _controller.text + label;
+                        _controller.text = _formatNumber(newValue); // Format and update
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.white, // Start with white
+                            Colors.grey.shade200, // Light grey
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        label,
-                        style: TextStyle(fontSize: 14, color: Colors.black),
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.4),
+                            blurRadius: 4.0,
+                            spreadRadius: 2.0,
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          label,
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, color: Colors.black),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ),
+                  );
+                },
+              ),
+            ),) ,
         ],
       ),
     );

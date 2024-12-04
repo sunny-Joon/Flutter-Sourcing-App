@@ -175,6 +175,7 @@ class _FragmentsState extends State<Fragments> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Are you sure?'),
+
         content: Text('Do you want to close App?'),
         actions: [
           TextButton(
