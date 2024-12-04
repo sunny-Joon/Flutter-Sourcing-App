@@ -430,6 +430,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           child: Text(
                             pageTitle,
                             style: TextStyle(
+                              fontFamily: "Poppins-Regular",
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 24,
@@ -585,6 +586,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         child: Text(
           (step + 1).toString(),
           style: TextStyle(
+              fontFamily: "Poppins-Regular",
               color: isCompleted
                   ? Colors.white
                   : (isActive ? Color(0xFFD42D3F) : Colors.grey)),
@@ -610,6 +612,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             Text(
               "Email Id",
               style: TextStyle(
+                fontFamily: "Poppins-Regular",
                 fontSize: 13,
               ),
             ),
@@ -650,7 +653,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       children: [
                         Text(
                           'Dependent Persons',
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle( fontFamily: "Poppins-Regular",fontSize: 13),
+
                           textAlign: TextAlign.left,
                         ),
                         SizedBox(height: 1),
@@ -667,7 +671,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             isExpanded: true,
                             iconSize: 24,
                             elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
+                            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                             underline: Container(
                               height: 2,
                               color: Colors.transparent,
@@ -730,7 +734,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       children: [
                         Text(
                           'Religion',
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                           textAlign: TextAlign.left,
                         ),
                         SizedBox(height: 1),
@@ -747,7 +751,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             isExpanded: true,
                             iconSize: 24,
                             elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
+                            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                             underline: Container(
                               height: 2,
                               color: Colors.transparent,
@@ -785,7 +789,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       children: [
                         Text(
                           'Cast',
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                           textAlign: TextAlign.left,
                         ),
                         SizedBox(height: 1),
@@ -802,7 +806,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             isExpanded: true,
                             iconSize: 24,
                             elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
+                            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                             underline: Container(
                               height: 2,
                               color: Colors
@@ -837,7 +841,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
             Text(
               "Mobile No.",
-              style: TextStyle(
+              style: TextStyle(fontFamily: "Poppins-Regular",
                 fontSize: 13,
               ),
             ),
@@ -872,7 +876,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       children: [
                         Text(
                           'Is Handicap',
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                           textAlign: TextAlign.left, // Align text to the left
                         ),
                         SizedBox(height: 1),
@@ -889,7 +893,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             isExpanded: true,
                             iconSize: 24,
                             elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
+                            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                             underline: Container(
                               height: 2,
                               color: Colors.transparent,
@@ -925,7 +929,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       children: [
                         Text(
                           'Special Ability',
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                           textAlign: TextAlign.left, // Align text to the left
                         ),
                         SizedBox(height: 1),
@@ -942,7 +946,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             isExpanded: true,
                             iconSize: 24,
                             elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
+                            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                             underline: Container(
                               height: 2,
                               color: Colors.transparent,
@@ -976,7 +980,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Text(
                   'Special Social Category',
-                  style: TextStyle(fontSize: 13),
+                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                 ),
                 SizedBox(height: 1),
                 Container(
@@ -992,7 +996,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     isExpanded: true,
                     iconSize: 24,
                     elevation: 16,
-                    style: TextStyle(color: Colors.black, fontSize: 13),
+                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                     underline: Container(
                       height: 2,
                       color: Colors.transparent,
@@ -1028,7 +1032,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 // Center widget to center the text inside the container
                 child: Text(
                   'PERMANENT',
-                  style: TextStyle(
+                  style: TextStyle(fontFamily: "Poppins-Regular",
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1122,6 +1126,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 // City TextField
                 Flexible(
                   child: _buildTextField(
+
                       'City', cityControllerP, personalInfoEditable, _cityFocusP),
                 ),
                 SizedBox(width: 10),
@@ -1133,7 +1138,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Text(
                         "Pin Code",
-                        style: TextStyle(
+                        style: TextStyle(fontFamily: "Poppins-Regular",
                           fontSize: 13,
                         ),
                       ),
@@ -1171,7 +1176,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 // Center widget to center the text inside the container
                 child: Text(
                   'CURRENT',
-                  style: TextStyle(
+                  style: TextStyle(fontFamily: "Poppins-Regular",
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1187,7 +1192,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 ),
                 Text(
                   'Same as Permanent Address',
-                  style: TextStyle(
+                  style: TextStyle(fontFamily: "Poppins-Regular",
                     fontSize: 10.0,
                     color: Color(0xFFD42D3F), // Custom color
                   ),
@@ -1237,7 +1242,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Text(
                         "Pin Code",
-                        style: TextStyle(
+                        style: TextStyle(fontFamily: "Poppins-Regular",
                           fontSize: 13,
                         ),
                       ),
@@ -1274,7 +1279,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       children: [
                         Text(
                           'Is House Rental',
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                           textAlign: TextAlign.left, // Align text to the left
                         ),
                         SizedBox(height: 1),
@@ -1291,7 +1296,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             isExpanded: true,
                             iconSize: 24,
                             elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
+                            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                             underline: Container(
                               height: 2,
                               color: Colors.transparent,
@@ -1385,7 +1390,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Text(
                         'Residing for (Years)',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                       ),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 12),
@@ -1398,7 +1403,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           isExpanded: true,
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                           underline: Container(
                             height: 2,
                             color: Colors.transparent,
@@ -1436,7 +1441,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Text(
                         'Property (In Acres)',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                       ),
                       Container(
                         //width: 150,
@@ -1453,7 +1458,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           isExpanded: true,
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                           underline: Container(
                             height: 2,
                             color: Colors
@@ -1484,7 +1489,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       children: [
                         Text(
                           'House Owner',
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                         ),
                         Container(
                           //width: 150,
@@ -1501,7 +1506,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             isExpanded: true,
                             iconSize: 24,
                             elevation: 16,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
+                            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                             underline: Container(
                               height: 2,
                               color: Colors
@@ -1560,7 +1565,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
             Text(
               'No. of Children',
-              style: TextStyle(fontSize: 13),
+              style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
             ),
             SizedBox(
               height: 1,
@@ -1580,7 +1585,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 isExpanded: true,
                 iconSize: 24,
                 elevation: 16,
-                style: TextStyle(color: Colors.black, fontSize: 13),
+                style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                 underline: Container(
                   height: 2,
                   color: Colors
@@ -1604,7 +1609,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
             Text(
               'Schooling Children',
-              style: TextStyle(fontSize: 13),
+              style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
             ),
             SizedBox(
               height: 1,
@@ -1624,7 +1629,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 isExpanded: true,
                 iconSize: 24,
                 elevation: 16,
-                style: TextStyle(color: Colors.black, fontSize: 13),
+                style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                 underline: Container(
                   height: 2,
                   color: Colors
@@ -1648,7 +1653,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
             Text(
               'Other Dependents',
-              style: TextStyle(fontSize: 13),
+              style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
             ),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -1665,7 +1670,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 isExpanded: true,
                 iconSize: 24,
                 elevation: 16,
-                style: TextStyle(color: Colors.black, fontSize: 13),
+                style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                 underline: Container(
                   height: 2,
                   color: Colors
@@ -1705,7 +1710,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Text(
                         'Occupation',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width,
@@ -1719,7 +1724,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           isExpanded: true,
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                           underline: Container(
                             height: 2,
                             color: Colors.transparent, // Remove default underline
@@ -1752,7 +1757,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Text(
                         'Business Detail',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width,
@@ -1766,7 +1771,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           isExpanded: true,
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                           underline: Container(
                             height: 2,
                             color: Colors.transparent, // Remove default underline
@@ -1813,7 +1818,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Text(
                         'Home Type',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                         textAlign: TextAlign.left,
                       ),
                       Container(
@@ -1828,7 +1833,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           isExpanded: true,
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                           underline: Container(
                             height: 2,
                             color: Colors.transparent,
@@ -1863,7 +1868,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Text(
                         'Roof Type',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                         textAlign: TextAlign.left,
                       ),
                       Container(
@@ -1878,7 +1883,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           isExpanded: true,
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                           underline: Container(
                             height: 2,
                             color: Colors.transparent,
@@ -1907,7 +1912,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Text(
                         'Toilet Type',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                         textAlign: TextAlign.left,
                       ),
                       Container(
@@ -1922,7 +1927,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           isExpanded: true,
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                           underline: Container(
                             height: 2,
                             color: Colors.transparent,
@@ -1957,7 +1962,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Text(
                         'Living With Spouse',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                         textAlign: TextAlign.left,
                       ),
                       Container(
@@ -1972,7 +1977,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           isExpanded: true,
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                           underline: Container(
                             height: 2,
                             color: Colors.transparent,
@@ -2000,7 +2005,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Text(
                         'No of Earning Member',
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                         textAlign: TextAlign.left,
                       ),
                       Container(
@@ -2015,7 +2020,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           isExpanded: true,
                           iconSize: 24,
                           elevation: 16,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
+                          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                           underline: Container(
                             height: 2,
                             color: Colors.transparent,
@@ -2043,7 +2048,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
             Text(
               'Business Experience',
-              style: TextStyle(fontSize: 13),
+              style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
               textAlign: TextAlign.left,
             ),
             Container(
@@ -2058,7 +2063,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 isExpanded: true,
                 iconSize: 24,
                 elevation: 16,
-                style: TextStyle(color: Colors.black, fontSize: 13),
+                style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                 underline: Container(
                   height: 2,
                   color: Colors.transparent,
@@ -2088,7 +2093,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 // Center widget to center the text inside the container
                 child: Text(
                   'INCOMES',
-                  style: TextStyle(
+                  style: TextStyle(fontFamily: "Poppins-Regular",
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -2182,7 +2187,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 // Center widget to center the text inside the container
                 child: Text(
                   'EXPENSES',
-                  style: TextStyle(
+                  style: TextStyle(fontFamily: "Poppins-Regular",
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -2260,7 +2265,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         children: [
           Text(
             'Bank Type',
-            style: TextStyle(fontSize: 13),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
             textAlign: TextAlign.left,
           ),
           Container(
@@ -2275,7 +2280,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               isExpanded: true,
               iconSize: 24,
               elevation: 16,
-              style: TextStyle(color: Colors.black, fontSize: 13),
+              style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
               underline: Container(
                 height: 2,
                 color: Colors.transparent,
@@ -2295,7 +2300,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           Text(
             'BANK NAME',
-            style: TextStyle(fontSize: 13),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
             textAlign: TextAlign.left,
           ),
           Container(
@@ -2310,7 +2315,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               isExpanded: true,
               iconSize: 24,
               elevation: 16,
-              style: TextStyle(color: Colors.black, fontSize: 13),
+              style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
               underline: Container(
                 height: 2,
                 color: Colors.transparent,
@@ -2381,7 +2386,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             bankAccHolder == null
                                 ? 'VERIFY NAME'
                                 : 'VERIFY ADDRESS',
-                            style: TextStyle(fontSize: 18), // Text size
+                            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 18), // Text size
                           ),
                         ),
                       )
@@ -2397,11 +2402,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 TextSpan(
                   text: 'ACC. HOLDER NAME:',
-                  style: TextStyle(color: Colors.black, fontSize: 13),
+                  style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                 ),
                 TextSpan(
                   text: " ${bankAccHolder}",
-                  style: TextStyle(
+                  style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.green,
                       fontSize: 13,
                       fontWeight: FontWeight.bold),
@@ -2416,11 +2421,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 TextSpan(
                   text: 'BANK ADDRESS:',
-                  style: TextStyle(color: Colors.black, fontSize: 13),
+                  style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                 ),
                 TextSpan(
                   text: " ${bankAddress}",
-                  style: TextStyle(
+                  style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.green,
                       fontSize: 13,
                       fontWeight: FontWeight.bold),
@@ -2434,7 +2439,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
           Text(
             'BANK OPENING DATE',
-            style: TextStyle(fontSize: 13),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
           ),
           SizedBox(height: 10), // Adds space between the fields
 
@@ -2493,7 +2498,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Gender',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       height: 60,
@@ -2507,7 +2512,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors.transparent,
@@ -2538,7 +2543,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Relation With Borrower',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       height: 60,
@@ -2552,7 +2557,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors.transparent,
@@ -2590,7 +2595,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Health',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       height: 60,
@@ -2604,7 +2609,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors.transparent,
@@ -2636,7 +2641,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Education',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       height: 60,
@@ -2650,7 +2655,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors.transparent,
@@ -2688,7 +2693,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'SchoolType',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       height: 60,
@@ -2702,7 +2707,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors.transparent,
@@ -2734,7 +2739,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Business',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       height: 60,
@@ -2748,7 +2753,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors.transparent,
@@ -2786,7 +2791,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Business Type',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       height: 60,
@@ -2800,7 +2805,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors.transparent,
@@ -2832,7 +2837,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'IncomeType',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       height: 60,
@@ -2846,7 +2851,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors.transparent,
@@ -2915,7 +2920,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Title',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       height: 60,
@@ -2929,7 +2934,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors
@@ -2986,7 +2991,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Gender',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       // Adjust the width as needed
@@ -3002,7 +3007,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors
@@ -3036,7 +3041,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Relationship',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       // Adjust the width as needed
@@ -3052,7 +3057,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         isExpanded: true,
                         iconSize: 24,
                         elevation: 16,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                         underline: Container(
                           height: 2,
                           color: Colors
@@ -3082,7 +3087,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           Text(
             'Religion',
-            style: TextStyle(fontSize: 13),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
@@ -3099,7 +3104,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               isExpanded: true,
               iconSize: 24,
               elevation: 16,
-              style: TextStyle(color: Colors.black, fontSize: 13),
+              style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
               underline: Container(
                 height: 2,
                 color: Colors
@@ -3133,7 +3138,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Age',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       color: Colors.white,
@@ -3156,7 +3161,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   children: [
                     Text(
                       'Date of Birth',
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                     ),
                     Container(
                       color: Colors.white,
@@ -3257,7 +3262,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       SizedBox(height: 4),
                       Text(
                         'OR',
-                        style: TextStyle(
+                        style: TextStyle(fontFamily: "Poppins-Regular",
                           fontSize: 13,
                           color: Color(0xFFD42D3F), // Set the text color to red
                         ),
@@ -3446,7 +3451,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         child: Text(
           "PREVIOUS",
-          style: TextStyle(color: Colors.white, fontSize: 13),
+          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white, fontSize: 13),
         ),
       ),
     );
@@ -3496,7 +3501,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         },
         child: Text(
           _isEditing ? "SAVE" : "EDIT",
-          style: TextStyle(color: Colors.white, fontSize: 13),
+          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white, fontSize: 13),
         ),
       ),
     );
@@ -3558,7 +3563,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         },
         child: Text(
           _currentStep == 6 ? "SUBMIT" : "NEXT",
-          style: TextStyle(color: Colors.white, fontSize: 13),
+          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white, fontSize: 13),
         ),
       ),
     );
@@ -3573,7 +3578,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: TextStyle(fontFamily: "Poppins-Regular",
               fontSize: 13,
             ),
           ),
@@ -3613,7 +3618,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: TextStyle(fontFamily: "Poppins-Regular",
               fontSize: 13,
             ),
           ),
@@ -3706,7 +3711,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ),
                   Text(
                     title,
-                    style: TextStyle(
+                    style: TextStyle(fontFamily: "Poppins-Regular",
                         color: path.isNotEmpty? Colors.white:Colors.black), // Change text color if needed
                   ),
                   IconButton(
@@ -3741,7 +3746,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             "Borrower Docs",
-            style: TextStyle(fontSize: 13),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
           ),
         ),
       );
@@ -3834,7 +3839,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               "Guarantor " + grDoc.grSno + " Docs",
-              style: TextStyle(fontSize: 13),
+              style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
             ),
           ),
         );
@@ -3920,7 +3925,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             Text(
               labelText,
-              style: TextStyle(
+              style: TextStyle(fontFamily: "Poppins-Regular",
                 fontSize: 13,
               ),
             ),
@@ -3973,7 +3978,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     value: value,
                     child: Text(
                       setdata,
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, fontWeight: FontWeight.normal),
                     ), // Convert the value to string for display
                   );
                 }).toList(),
@@ -4273,7 +4278,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     },
                     child: Text(
                       'Adhaar Front',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
                       backgroundColor: Color(0xFFD42D3F),
@@ -4294,7 +4299,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     },
                     child: Text(
                       'Adhaar Back',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
                       backgroundColor: Color(0xFFD42D3F),
@@ -4326,7 +4331,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     },
                     child: Text(
                       'Adhaar QR',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
                       backgroundColor: Color(0xFFD42D3F),
@@ -4863,7 +4868,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String Fi_ID = FIID.toString();
     String bankType = selectedAccountType.toString();
     String bank_name = selectedBankName.toString();
-
     String bank_Ac = _bank_AcController.text.toString();
     String bank_IFCS = _bank_IFCSController.text.toString();
     String bank_address = bankAddress!;
@@ -4970,24 +4974,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String homeType = selectedHomeType.toString();
     String homeRoofType = selectedRoofType.toString();
     String toiletType = selectedToiletType.toString();
-    bool livingSpouse =
-        selectedLivingWithSpouse.toString().toLowerCase() == "true"
-            ? true
-            : false;
+    bool livingSpouse = selectedLivingWithSpouse.toString().toLowerCase() == "true" ? true : false;
     int earning_mem_count = int.parse(selectedEarningMembers.toString());
     int years_in_business = int.parse(selectedBusinessExperience.toString());
-
     int future_Income = int.parse(_future_IncomeController.text.toString());
-    int agriculture_income =
-        int.parse(_agriculture_incomeController.text.toString());
+    int agriculture_income = int.parse(_agriculture_incomeController.text.toString());
     int other_Income = int.parse(_other_IncomeController.text.toString());
     int annuaL_INCOME = int.parse(_annuaL_INCOMEController.text.toString());
     int spendOnChildren = int.parse(_spendOnChildrenController.text.toString());
-    int otheR_THAN_AGRICULTURAL_INCOME =
-        int.parse(_otheR_THAN_AGRICULTURAL_INCOMEController.text.toString());
+    int otheR_THAN_AGRICULTURAL_INCOME = int.parse(_otheR_THAN_AGRICULTURAL_INCOMEController.text.toString());
     int pensionIncome = int.parse(_pensionIncomeController.text.toString());
-    int any_RentalIncome =
-        int.parse(_any_RentalIncomeController.text.toString());
+    int any_RentalIncome = int.parse(_any_RentalIncomeController.text.toString());
     int rent = int.parse(_rentController.text.toString());
     int fooding = int.parse(_foodingController.text.toString());
     int education = int.parse(_educationController.text.toString());
@@ -4995,7 +4992,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     int travelling = int.parse(_travellingController.text.toString());
     int entertainment = int.parse(_entertainmentController.text.toString());
     int others = int.parse(_othersController.text.toString());
-
     String docs_path = "";
 
     final api = Provider.of<ApiService>(context, listen: false);
@@ -5226,84 +5222,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
       }
     });
   }
-
-  Future<void> getAllDataApi(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...');
-
-    final api = Provider.of<ApiService>(context, listen: false);
-
-    return await api
-        .dataByFIID(GlobalClass.token, GlobalClass.dbName, FIID)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        EasyLoading.dismiss();
-        print("object112222");
-
-        if(!value.data[0].placeOfBirth.isEmpty){
-          personalInfo(value.data[0]);
-
-        }
-        if(!value.data[0].motheRFirstName.isEmpty){
-          familyDetails(value.data[0]);
-        }
-       /* if(!value.data[0].occupation){
-
-        }*/
-        if(!value.data[0].bankAc.isEmpty){
-          financialInfo(value.data[0]);
-        }
-        /*if(!value.data[0].health){
-
-        }*/
-        /*if(!value.data[0].grno.isEmpty){}*/
-
-      } else {
-        setState(() {});
-      }
-    }).catchError((err) {
-      print("ERRORRRR$err");
-      EasyLoading.dismiss();
-    });
-  }
-
-  void personalInfo(getAllDataModel data) {
-
-    setState(() {
-      // FIID,
-      emailIdController.text=data.emailId;
-      placeOfBirthController.text =data.placeOfBirth;
-      // selectedDependent
-      // "gff"
-      //   selectedReligionextra
-      //   selectedCast,
-      mobileController.text=data.pPhone;
-      //  selectedIsHandicap  //  selectedspecialAbility,
-      //  selectedIsHouseRental  //  selectedProperty,
-      address1ControllerP.text=data.pAddress1;
-      address2ControllerP.text=data.pAddress2;
-      address3ControllerP.text=data.pAddress3;
-      cityControllerP.text=data.pCity;
-      //   selectedStateextraP,
-      pincodeControllerP.text=data.pPincode;
-      address1ControllerC.text=data.currentAddress1;
-      address2ControllerC.text=data.currentAddress2;
-      address3ControllerC.text=data.currentAddress3;
-      cityControllerC.text=data.currentCity;
-      //  selectedStateextraP,
-      pincodeControllerC.text=data.currentPincode;
-      //  selectedDistrict,
-      //  selectedSubDistrict,
-      //  selectedVillage,
-      //  selectedResidingFor,
-      //  selectedPresentHouseOwner
-    });
-
-
-  }
-
-  void familyDetails(getAllDataModel data) {}
-
-  void financialInfo(getAllDataModel data) {}
 
   Future<void> getDataFromOCR(String type, BuildContext context) async {
     EasyLoading.show();
@@ -5777,4 +5695,184 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
+  Future<void> getAllDataApi(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
+
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .dataByFIID(GlobalClass.token, GlobalClass.dbName, FIID)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        print("object112222");
+
+        if(!value.data[0].placeOfBirth.isEmpty){
+          personalInfo(value.data[0]);
+
+        }
+        if(!value.data[0].motheRFirstName.isEmpty){
+          familyDetails(value.data[0]);
+        }
+
+        if(value.data[0].fiIncomeExpenses.length != 0){
+          fiIncomeExpenses(value.data[0]);
+        }
+
+        if(!value.data[0].bankAc.isEmpty){
+          financialInfo(value.data[0]);
+        }
+
+        if(value.data[0].familyMembers.length != 0){
+          femMemIncome(value.data[0]);
+        }
+        if(value.data[0].guarantors.length != 0){
+          guarrantors(value.data[0]);
+        }
+
+        }
+
+      else {
+        setState(() {});
+      }
+    }).catchError((err) {
+      print("ERRORRRR$err");
+      EasyLoading.dismiss();
+    });
+  }
+
+  void personalInfo(ApplicationgetAllDataModel data) {
+
+    setState(() {
+      // FIID,
+      emailIdController.text=data.emailId;
+      placeOfBirthController.text =data.placeOfBirth;
+      // selectedDependent
+      // "gff"
+      //   selectedReligionextra
+      //   selectedCast,
+      mobileController.text=data.pPhone;
+      //  selectedIsHandicap  //  selectedspecialAbility,
+      //  selectedIsHouseRental  //  selectedProperty,
+      address1ControllerP.text=data.pAddress1;
+      address2ControllerP.text=data.pAddress2;
+      address3ControllerP.text=data.pAddress3;
+      cityControllerP.text=data.pCity;
+      //   selectedStateextraP,
+      pincodeControllerP.text=data.pPincode;
+      address1ControllerC.text=data.currentAddress1;
+      address2ControllerC.text=data.currentAddress2;
+      address3ControllerC.text=data.currentAddress3;
+      cityControllerC.text=data.currentCity;
+      //  selectedStateextraP,
+      pincodeControllerC.text=data.currentPincode;
+      //  selectedDistrict,
+      //  selectedSubDistrict,
+      //  selectedVillage,
+      //  selectedResidingFor,
+      //  selectedPresentHouseOwner
+    });
+
+
+  }
+
+  void familyDetails(ApplicationgetAllDataModel data) {
+    setState(() {
+      _motherFController.text = data.motheRFirstName;
+      _motherMController.text = data.motheRMiddleName;
+      _motherLController.text = data.motheRLastName;
+      selectednumOfChildren = data.noOfChildren.toString();
+      selectedschoolingChildren = data.schoolingChildren.toString();
+      selectedotherDependents = data.otherDependents.toString();
+    });
+  }
+
+  void fiIncomeExpenses(ApplicationgetAllDataModel data) {
+    setState(() {
+      selectedOccupation = data.fiIncomeExpenses[0].inExOccupation;
+      selectedBusiness = data.fiIncomeExpenses[0].inExBusinessDetail;
+      _currentEMIController.text = data.fiIncomeExpenses[0].inExAnyCurrentEmi.toString();
+      selectedHomeType = data.fiIncomeExpenses[0].inExHomeType;
+      selectedRoofType = data.fiIncomeExpenses[0].inExHomeRoofType;
+      selectedToiletType = data.fiIncomeExpenses[0].inExToiletType;
+      selectedLivingWithSpouse = data.fiIncomeExpenses[0].inExLivingWithSpouse.toString();
+      selectedEarningMembers = data.fiIncomeExpenses[0].inExEarningMemCount.toString();
+      selectedBusinessExperience = data.fiIncomeExpenses[0].inExYearsInBusiness.toString();
+      _future_IncomeController.text = data.fiIncomeExpenses[0].inExFutureIncome.toString();
+      _agriculture_incomeController.text = data.fiIncomeExpenses[0].inExAgricultureIncome.toString();
+      _other_IncomeController.text = data.fiIncomeExpenses[0].inExOtherIncome.toString();
+      _annuaL_INCOMEController.text = data.fiIncomeExpenses[0].inExAnnualIncome.toString();
+      _spendOnChildrenController.text = data.fiIncomeExpenses[0].inExSpendOnChildren.toString();
+      _otheR_THAN_AGRICULTURAL_INCOMEController.text = data.fiIncomeExpenses[0].inExOtherThanAgriculturalIncome.toString();
+      _pensionIncomeController.text = data.fiIncomeExpenses[0].inExPensionIncome.toString();
+      _any_RentalIncomeController.text = data.fiIncomeExpenses[0].inExAnyRentalIncome.toString();
+      _rentController.text = data.fiIncomeExpenses[0].inExRent.toString();
+      _foodingController.text = data.fiIncomeExpenses[0].inExFooding.toString();
+      _educationController.text = data.fiIncomeExpenses[0].inExEducation.toString();
+      _healthController.text = data.fiIncomeExpenses[0].inExHealth.toString();
+      _travellingController.text = data.fiIncomeExpenses[0].inExTravelling.toString();
+      _entertainmentController.text = data.fiIncomeExpenses[0].inExEntertainment.toString();
+      _othersController.text = data.fiIncomeExpenses[0].inExOthers.toString();
+    });
+
+  }
+
+  void financialInfo(ApplicationgetAllDataModel data) {
+    setState(() {
+      selectedAccountType = data.bankAc;
+      selectedBankName = data.bankName;
+      _bank_AcController.text = data.bankName;
+      _bank_IFCSController.text = data.bankIfcs;
+      bankAddress = data.bankAddress;
+      _bankOpeningDateController.text = data.bankAcOpenDate;
+    });
+
+  }
+
+  void femMemIncome(ApplicationgetAllDataModel data) {
+    setState(() {
+      _femNameController.text = data.familyMembers[0].famName;
+      _AgeController.text = data.familyMembers[0].famAge.toString();
+      femselectedGender = data.familyMembers[0].famGender;
+      femselectedRelationWithBorrower = data.familyMembers[0].famRelationWithBorrower;
+      femselectedHealth = data.familyMembers[0].famHealth;
+      femselectedEducation = data.familyMembers[0].famEducation;
+      femselectedSchoolType = data.familyMembers[0].famSchoolType;
+      femselectedBusiness = data.familyMembers[0].famBusiness;
+      _IncomeController.text = data.familyMembers[0].famIncome.toString();
+      femselectedBusinessType = data.familyMembers[0].famBusinessType;
+      femselectedIncomeType = data.familyMembers[0].famIncomeType;
+    });
+
+  }
+
+  void guarrantors(ApplicationgetAllDataModel data) {
+    setState(() {
+      titleselected = data.guarantors[0].grTitle;
+      _fnameController.text = data.guarantors[0].grFname;
+      _mnameController.text = data.guarantors[0].grMname;
+      _lnameController.text = data.guarantors[0].grLname;
+      _guardianController.text = data.guarantors[0].grGuardianName;
+      relationselected = data.guarantors[0].grRelationWithBorrower;
+      _p_Address1Controller.text = data.guarantors[0].grPAddress1;
+      _p_Address2Controller.text = data.guarantors[0].grPAddress2;
+      _p_Address3Controller.text = data.guarantors[0].grPAddress3;
+      _p_CityController.text = data.guarantors[0].grPCity;
+    //  stateselected = data.guarantors[0].grPState.toString();
+      _pincodeController.text = data.guarantors[0].grPincode.toString();
+      _dobController.text = data.guarantors[0].grDob.toString();
+      _ageController.text = data.guarantors[0].grAge.toString();
+      _phoneController.text = data.guarantors[0].grPhone;
+      _panController.text = data.guarantors[0].grPan;
+      _dlController.text = data.guarantors[0].grDl;
+      _voterController.text = data.guarantors[0].grVoter;
+      _aadharIdController.text = data.guarantors[0].grAadharId;
+      genderselected = data.guarantors[0].grGender;
+      religionselected = data.guarantors[0].grReligion;
+ /*      = data.guarantors[0].grEsignSucceed;
+       = data.guarantors[0].grEsignUuid;
+       = data.guarantors[0].grPicture;*/
+    });
+
+  }
 }

@@ -43,8 +43,8 @@ class _FirstEsignState extends State<FirstEsign> {
   @override
   void initState() {
     super.initState();
-    print("https://predeptest.paisalo.in:8084${widget.selectedData.downloadLink.replaceAll("D:", "").replaceAll("\\", "/")}.pdf");
-    _loadPdf("https://predeptest.paisalo.in:8084${widget.selectedData.downloadLink.replaceAll("D:", "").replaceAll("\\", "/")}.pdf");
+    print("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}.pdf");
+    _loadPdf("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}.pdf");
   }
 
   Future<void> _loadPdf(String url) async {
@@ -147,11 +147,11 @@ class _FirstEsignState extends State<FirstEsign> {
                       children: [
                         TextSpan(
                           text: 'Ficode: '.toUpperCase(),
-                          style: TextStyle(fontSize: 11,color: Colors.white),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11,color: Colors.white),
                         ),
                         TextSpan(
                           text: "${widget.selectedData.fiCode}",
-                          style: TextStyle(fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -161,11 +161,11 @@ class _FirstEsignState extends State<FirstEsign> {
                       children: [
                         TextSpan(
                           text: 'Creator: '.toUpperCase(),
-                          style: TextStyle(fontSize: 11,color: Colors.white),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11,color: Colors.white),
                         ),
                         TextSpan(
                           text: "${widget.selectedData.creator}",
-                          style: TextStyle(fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -175,11 +175,11 @@ class _FirstEsignState extends State<FirstEsign> {
                       children: [
                         TextSpan(
                           text: 'Name: '.toUpperCase(),
-                          style: TextStyle(fontSize: 11,color: Colors.white),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11,color: Colors.white),
                         ),
                         TextSpan(
                           text: "${widget.selectedData.fullName}",
-                          style: TextStyle(fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -188,11 +188,11 @@ class _FirstEsignState extends State<FirstEsign> {
                       children: [
                         TextSpan(
                           text: 'Address: '.toUpperCase(),
-                          style: TextStyle(fontSize: 11,color: Colors.white),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11,color: Colors.white),
                         ),
                         TextSpan(
                           text: "${widget.selectedData.pAddress}",
-                          style: TextStyle(fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -206,7 +206,7 @@ class _FirstEsignState extends State<FirstEsign> {
                  flex: 1,
                  child:   InkWell(
                    onTap: (){
-                     if(widget.selectedData.aadhar_no!=null){
+                     if(widget.selectedData.aadharNo!=null){
                        showFullPageDialog(context);
                      }else{
                        GlobalClass.showToast_Error("Borrower's Aadhaar number is missing");
@@ -219,7 +219,7 @@ class _FirstEsignState extends State<FirstEsign> {
                  child: Container(
                    alignment: Alignment.center,
                    height: 45,
-                   child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text("Proceed",style: TextStyle(color: Colors.black),),),
+                   child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text("Proceed",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black),),),
                  ),
                ),
              ))
@@ -242,7 +242,7 @@ class _FirstEsignState extends State<FirstEsign> {
       pageBuilder: (context, animation, secondaryAnimation) {
         return SafeArea(
           child: Center(
-            child: DialogContent(borrowerAdharNumber: widget.selectedData.aadhar_no,selectedBorrower: widget.selectedData,),
+            child: DialogContent(borrowerAdharNumber: widget.selectedData.aadharNo,selectedBorrower: widget.selectedData,),
           ),
         );
       },
@@ -316,7 +316,7 @@ class _DialogContentState extends State<DialogContent> {
                 SizedBox(height: 5),
                 Text(
                   "Please Read Below Consent before Proceed",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5),
                 Expanded(
@@ -365,7 +365,7 @@ class _DialogContentState extends State<DialogContent> {
                         child: Container(
                           alignment: Alignment.center,
                           height: 45,
-                          child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text("Cancel",style: TextStyle(color: Colors.black),),),
+                          child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text("Cancel",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black),),),
                         ),
                       ),
                     ),
@@ -383,7 +383,7 @@ class _DialogContentState extends State<DialogContent> {
                           child: Container(
                             alignment: Alignment.center,
                             height: 45,
-                            child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text("Proceed",style: TextStyle(color: Colors.white),),),
+                            child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text("Proceed",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),),),
                           ),
                         ),
                       ),
@@ -575,11 +575,11 @@ EasyLoading.dismiss();
     return RichText(
 
       text: TextSpan(
-        style: TextStyle(fontSize: 12.0, color: Colors.black), // Default text style
+        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 12.0, color: Colors.black), // Default text style
         children: <TextSpan>[
           TextSpan(
             text: 'TERMS & CONDITIONS FOR ONLINE PAYMENTS TO BE MADE TO PAISALO DIGITAL LTD\n\n',
-            style: TextStyle(fontWeight: FontWeight.bold,color: Color(0xffb41d2d)),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,color: Color(0xffb41d2d)),
           ),
           TextSpan(
             text: 'Name of NBFC: PAISALO DIGITAL LTD\n'
@@ -589,7 +589,7 @@ EasyLoading.dismiss();
           ),
           TextSpan(
             text: 'Online Charges Payments:\n',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
           ),
           TextSpan(
             text:
@@ -600,7 +600,7 @@ EasyLoading.dismiss();
           ),
           TextSpan(
             text: 'All payments are subject to the following conditions:\n',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
           ),
           TextSpan(
             text:
@@ -615,7 +615,7 @@ EasyLoading.dismiss();
           ),
           TextSpan(
             text: 'Refund Policy:\n',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
           ),
           TextSpan(
             text:
@@ -623,7 +623,7 @@ EasyLoading.dismiss();
           ),
           TextSpan(
             text: 'Cancel and Return Policy:\n',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
           ),
           TextSpan(
             text:
@@ -631,7 +631,7 @@ EasyLoading.dismiss();
           ),
           TextSpan(
             text: 'Privacy Policy:\n',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
           ),
           TextSpan(
             text:
@@ -639,7 +639,7 @@ EasyLoading.dismiss();
           ),
           TextSpan(
             text: 'Changes to our Privacy Policy:\n',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
           ),
           TextSpan(
             text:
@@ -647,7 +647,7 @@ EasyLoading.dismiss();
           ),
           TextSpan(
             text: 'DND Policy:\n',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
           ),
           TextSpan(
             text:
@@ -658,7 +658,7 @@ EasyLoading.dismiss();
           ),
           TextSpan(
             text: 'Terms of Payment:\n',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
           ),
           TextSpan(
             text:

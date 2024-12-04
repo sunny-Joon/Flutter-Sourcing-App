@@ -64,7 +64,7 @@ dependencies:
   android_intent_plus: ^5.1.0
   flutter_speed_dial: ^7.0.0
   font_awesome_flutter: ^10.8.0
-
+  intl_utils: ^2.8.7
   xml: ^6.2.2
   google_fonts: ^6.2.1
   geocoding: ^3.0.0
@@ -114,11 +114,17 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Popins
+    - family: Poppins-Regular
       fonts:
         - asset: assets/fonts/Poppins-Regular.ttf
+    - family: Poppins-Black
+      fonts:
         - asset: assets/fonts/Poppins-Black.ttf
+    - family: Poppins-Bold
+      fonts:
         - asset: assets/fonts/Poppins-Bold.ttf
+    - family: Poppins-SemiBold
+      fonts:
         - asset: assets/fonts/Poppins-SemiBold.ttf
 
 

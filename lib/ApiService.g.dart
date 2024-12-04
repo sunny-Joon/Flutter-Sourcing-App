@@ -1246,7 +1246,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<GetAllModel> dataByFIID(
+  Future<ApplicationgetAllModel> dataByFIID(
     String token,
     String dbname,
     int FI_ID,
@@ -1259,7 +1259,7 @@ class _ApiService implements ApiService {
     };
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<GetAllModel>(Options(
+    final _options = _setStreamType<ApplicationgetAllModel>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -1276,9 +1276,9 @@ class _ApiService implements ApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late GetAllModel _value;
+    late ApplicationgetAllModel _value;
     try {
-      _value = GetAllModel.fromJson(_result.data!);
+      _value = ApplicationgetAllModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -1866,7 +1866,7 @@ class _ApiService implements ApiService {
     )
         .compose(
           _dio.options,
-          'FiSourcing/GetDataForFirstEsign',
+          'FiSourcing/GetDataForEsign',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -2130,7 +2130,7 @@ class _ApiService implements ApiService {
     )
         .compose(
           _dio.options,
-          'Masters/OTPVerify',
+          'Masters/Verify',
           queryParameters: queryParameters,
           data: _data,
         )

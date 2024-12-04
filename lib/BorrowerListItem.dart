@@ -104,7 +104,7 @@ class BorrowerListItem extends StatelessWidget {
                   SizedBox(height: 4),
                   Text(
                     'FI Code: $fiCode',
-                    style: GoogleFonts.lato(
+                    style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.white70,
                       fontSize: 14,
                     ),
@@ -112,7 +112,7 @@ class BorrowerListItem extends StatelessWidget {
                   SizedBox(height: 2),
                   Text(
                     creator,
-                    style: GoogleFonts.lato(
+                    style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.white70,
                       fontSize: 14,
                     ),

@@ -52,9 +52,9 @@ class VisitReportPage extends StatelessWidget {
               SizedBox(height: 20,),
               const Text(
                 "Meeting Type",
-                style: TextStyle(
+                style: TextStyle(fontFamily: "Poppins-Regular",
                   fontSize: 15,
-                  fontFamily: 'ScadaRegular',
+
                   color: Colors.white,
                 ),
               ),
@@ -94,7 +94,7 @@ class VisitReportPage extends StatelessWidget {
                     "Sm Code",
                     style: TextStyle(
                       fontSize: 15,
-                      fontFamily: 'ScadaRegular',
+                      fontFamily: "Poppins-Regular",
                       color: Colors.white,
                     ),
                   ),
@@ -142,7 +142,7 @@ class VisitReportPage extends StatelessWidget {
                     "Comment",
                     style: TextStyle(
                       fontSize: 15,
-                      fontFamily: 'ScadaRegular',
+                      fontFamily: "Poppins-Regular",
                       color: Colors.white,
                     ),
                   ),
@@ -228,7 +228,7 @@ class VisitReportPage extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 15,
-            fontFamily: 'ScadaRegular',
+            fontFamily: "Poppins-Regular",
             color: Colors.white,
           ),
         ),

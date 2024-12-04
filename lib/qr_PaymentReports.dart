@@ -107,7 +107,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                       children: [
                         Text(
                           'Smcode',
-                          style: TextStyle(
+                          style: TextStyle(fontFamily: "Poppins-Regular",
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.black, // Text color for 'Smcode'
@@ -173,19 +173,19 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                       children: [
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('S.No', style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: Text('S.No', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold)),
                         )),
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Transaction ID', style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: Text('Transaction ID', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold)),
                         )),
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Amount', style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: Text('Amount', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold)),
                         )),
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Date', style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: Text('Date', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold)),
                         )),
                       ],
                     ),
@@ -194,19 +194,19 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                         children: [
                           TableCell(child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text('${i + 1}',style: TextStyle(color: Colors.white,)),
+                            child: Text('${i + 1}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,)),
                           )),
                           TableCell(child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text('${_qrPaymentsList[i].txnId}',style: TextStyle(color: Colors.white,)),
+                            child: Text('${_qrPaymentsList[i].txnId}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,)),
                           )),
                           TableCell(child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text('${_qrPaymentsList[i].amount}',style: TextStyle(color: Colors.white,)),
+                            child: Text('${_qrPaymentsList[i].amount}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,)),
                           )),
                           TableCell(child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text('${_qrPaymentsList[i].creationDate}',style: TextStyle(color: Colors.white,)),
+                            child: Text('${_qrPaymentsList[i].creationDate}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,)),
                           )),
                         ],
                       ),

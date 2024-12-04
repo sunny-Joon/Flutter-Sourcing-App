@@ -73,7 +73,7 @@ class _TargetCarGifState extends State<TargetCarGif> {
               child: Center(
                 child: Text(
                   '00000',
-                  style: TextStyle(
+                  style: TextStyle(fontFamily: "Poppins-Regular",
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

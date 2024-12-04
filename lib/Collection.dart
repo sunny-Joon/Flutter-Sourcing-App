@@ -193,7 +193,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Submit',
-                                  style: TextStyle(
+                                  style: TextStyle(fontFamily: "Poppins-Regular",
                                     fontSize: 16,
                                     color: Colors.black, // Text color
                                   ),
@@ -362,7 +362,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                       child: Center(
                         child: Text(
                           label,
-                          style: TextStyle(fontSize: 14, color: Colors.black),
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, color: Colors.black),
                         ),
                       ),
                     ),

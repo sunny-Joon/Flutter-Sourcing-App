@@ -256,7 +256,7 @@ class _GroupListPageState extends State<GroupListPage> {
                   ),
                   child: Text(
                     'First Esign',
-                    style: TextStyle(color: Colors.red),
+                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.red),
                   ),
                 ),
               ),
@@ -278,7 +278,7 @@ class _GroupListPageState extends State<GroupListPage> {
                   ),
                   child: Text(
                     'Second Esign',
-                    style: TextStyle(color: Colors.red),
+                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.red),
                   ),
                 ),
               ),
