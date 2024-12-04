@@ -49,7 +49,7 @@ class _OnboardingState extends State<OnBoarding>{
                     child: Text(
                       'ONBOARDING',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: TextStyle(fontFamily: "Poppins-Regular",
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 24 // Make the text bold
@@ -148,8 +148,7 @@ class _OnboardingState extends State<OnBoarding>{
               flex: 4,
               child: Text(
                 title,
-                style: TextStyle(
-                  fontFamily: 'VisbyCFBold',
+                style: TextStyle(fontFamily: "Poppins-Regular",
                   fontSize: 18,
                 ),
               ),

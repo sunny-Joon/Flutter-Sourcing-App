@@ -43,7 +43,7 @@ class _StepperSSState extends State<StepperSS> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 'Stepper Example',
-                style: TextStyle(color: Colors.white, fontSize: 20),
+                style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white, fontSize: 20),
               ),
             ),
           ),
@@ -75,7 +75,7 @@ class _StepperSSState extends State<StepperSS> {
                   Step(
                     title: Container(
                       color: Colors.red,
-                      child: Text('Step 1', style: TextStyle(color: Colors.white)),
+                      child: Text('Step 1', style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white)),
                     ),
                     content: Form(
                       key: _formKey1,
@@ -108,7 +108,7 @@ class _StepperSSState extends State<StepperSS> {
                   Step(
                     title: Container(
                       color: Colors.red,
-                      child: Text('Step 2', style: TextStyle(color: Colors.white)),
+                      child: Text('Step 2', style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white)),
                     ),
                     content: Form(
                       key: _formKey2,
@@ -141,7 +141,7 @@ class _StepperSSState extends State<StepperSS> {
                   Step(
                     title: Container(
                       color: Colors.red,
-                      child: Text('Step 3', style: TextStyle(color: Colors.white)),
+                      child: Text('Step 3', style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white)),
                     ),
                     content: Form(
                       key: _formKey3,

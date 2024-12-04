@@ -30,13 +30,18 @@ class BorrowerList extends StatefulWidget {
 class _BorrowerListState extends State<BorrowerList> {
   List<BorrowerListDataModel> _borrowerItems = [];
 
+
   @override
   void initState() {
     super.initState();
-    _fetchBorrowerList();
+    if(widget.page =="E SIGN"){
+      _fetchBorrowerList(1);
+    }else{
+      _fetchBorrowerList(0);
+    }
   }
 
-  Future<void> _fetchBorrowerList() async {
+  Future<void> _fetchBorrowerList(int type) async {
     EasyLoading.show(status: 'Loading...',);
 
     final apiService = Provider.of<ApiService>(context, listen: false);
@@ -47,7 +52,8 @@ class _BorrowerListState extends State<BorrowerList> {
 
       widget.GroupData.groupCode,
      widget.BranchData.branchCode,
-      GlobalClass.creator.toString()
+      GlobalClass.creator.toString(),
+      type
 
     ).then((response) {
       if (response.statuscode == 200) {
@@ -123,7 +129,11 @@ print("object++12");
               borderRadius: BorderRadius.circular(8),
             ),
             child: TextField(
+              style: TextStyle(
+                  fontFamily: "Poppins-Regular"
+              ),
               decoration: InputDecoration(
+
                 hintText: 'Search...',
                 contentPadding: EdgeInsets.all(10),
                 border: InputBorder.none,

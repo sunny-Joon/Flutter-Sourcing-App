@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.only(top: 5),
                     child: Text(
                       'Monthly',
-                      style: TextStyle(
+                      style: TextStyle(fontFamily: "Poppins-Regular",
                         fontSize: 20,
                         color: Color(0xFF6D6D6D), // dark grey color
                       ),
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                   // Disbursement Target text with top margin
                   Text(
                     'Comission Target',
-                    style: TextStyle(
+                    style: TextStyle(fontFamily: "Poppins-Regular",
                       fontSize: 20,
                       color: Color(0xFF6D6D6D),
                     ),
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 10),
                   Text(
                     '₹ ${_displayValue.toStringAsFixed(0)}',
-                    style: TextStyle(
+                    style: TextStyle(fontFamily: "Poppins-Regular",
                       fontSize: 28,
                       color: Color(0xFF000000),
                       fontWeight: FontWeight.bold, // Bold text
@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: Text(
                       'Reset target',
-                      style: TextStyle(
+                      style: TextStyle(fontFamily: "Poppins-Regular",
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text(
                       'TAP TO KNOW YOUR PROGRESS',
-                      style: TextStyle(
+                      style: TextStyle(fontFamily: "Poppins-Regular",
                         fontSize: 18,
                         color: Color(0xFFC5C3C3),
                         shadows: [
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Text(
                                 'Current Earning',
-                                style: TextStyle(
+                                style: TextStyle(fontFamily: "Poppins-Regular",
                                   fontSize: 16,
                                   color: Color(0xFF6D6D6D),
                                 ),
@@ -201,9 +201,8 @@ class _HomePageState extends State<HomePage> {
                               SizedBox(height: 10), // Add some spacing
                               Flexible(
                                 child: TextField(
-                                  controller:
-                                      TextEditingController(text: '\₹0000'),
-                                  style: TextStyle(
+                                  controller: TextEditingController(text: '\₹0000'),
+                                  style: TextStyle(fontFamily: "Poppins-Regular",
                                     fontSize: 16,
                                     color: Color(0xFF6D6D6D),
                                   ),
@@ -218,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                               SizedBox(height: 10), // Add some spacing
                               Text(
                                 '10 People are earning more commission',
-                                style: TextStyle(
+                                style: TextStyle(fontFamily: "Poppins-Regular",
                                   fontSize: 16,
                                   color: Color(0xFF6D6D6D),
                                 ),
@@ -249,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Text(
                                 'Earn Maximum Commission',
-                                style: TextStyle(
+                                style: TextStyle(fontFamily: "Poppins-Regular",
                                   fontSize: 16,
                                   color: Colors.white,
                                 ),
@@ -258,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                               SizedBox(height: 5),
                               Text(
                                 'AB RUKNA NAHI',
-                                style: TextStyle(
+                                style: TextStyle(fontFamily: "Poppins-Regular",
                                   fontSize: 16,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -330,7 +329,7 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.only(top: 10),
                       child: Text(
                         'Monthly',
-                        style: TextStyle(
+                        style: TextStyle(fontFamily: "Poppins-Regular",
                           fontSize: 24,
                           color: Color(0xFF6D6D6D),
                         ),
@@ -341,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.only(top: 10),
                       child: Text(
                         'Disbursement Target',
-                        style: TextStyle(
+                        style: TextStyle(fontFamily: "Poppins-Regular",
                           fontSize: 24,
                           color: Color(0xFF6D6D6D),
                         ),
@@ -373,7 +372,7 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.only(top: 10),
                       child: Text(
                         'Value: ${(_currentSliderValue * 1000).toStringAsFixed(0)}',
-                        style: TextStyle(
+                        style: TextStyle(fontFamily: "Poppins-Regular",
                           fontSize: 16,
                           color: Color(0xFF6D6D6D),
                         ),

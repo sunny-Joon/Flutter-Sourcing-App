@@ -555,7 +555,7 @@ class _KYCPageState extends State<KYCPage> {
                               ),
                               Text(
                                 "${_locationMessage}",
-                                style: TextStyle(
+                                style: TextStyle(fontFamily: "Poppins-Regular",
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -655,7 +655,7 @@ class _KYCPageState extends State<KYCPage> {
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 16, height: 2),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16, height: 2),
           ),
           SizedBox(height: 1),
           Container(
@@ -905,7 +905,7 @@ class _KYCPageState extends State<KYCPage> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: TextStyle(fontFamily: "Poppins-Regular",
               fontSize: 16,
             ),
           ),
@@ -963,7 +963,7 @@ class _KYCPageState extends State<KYCPage> {
                     },
                     child: Text(
                       'Adhaar Front',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
                       backgroundColor: Color(0xFFD42D3F),
@@ -984,7 +984,7 @@ class _KYCPageState extends State<KYCPage> {
                     },
                     child: Text(
                       'Adhaar Back',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
                       backgroundColor: Color(0xFFD42D3F),
@@ -1027,7 +1027,7 @@ class _KYCPageState extends State<KYCPage> {
                     },
                     child: Text(
                       'Adhaar QR',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
                       backgroundColor: Color(0xFFD42D3F),
@@ -1414,7 +1414,7 @@ class _KYCPageState extends State<KYCPage> {
                 children: [
                   Text(
                     "Aadhaar ID",
-                    style: TextStyle(fontSize: 16, height: 2),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16, height: 2),
                   ),
                   SizedBox(height: 1),
                   Container(
@@ -1474,7 +1474,7 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                   Text(
                     'Title',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
                   ),
                   Container(
                     alignment: Alignment.center,
@@ -1491,7 +1491,7 @@ class _KYCPageState extends State<KYCPage> {
                       isExpanded: true,
                       iconSize: 24,
                       elevation: 16,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
                       underline: Container(
                         height: 2,
                         color: Colors
@@ -1542,7 +1542,7 @@ class _KYCPageState extends State<KYCPage> {
             children: [
               Text(
                 "Guardian Name",
-                style: TextStyle(fontSize: 16, height: 2),
+                style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16, height: 2),
               ),
               SizedBox(height: 1),
               Container(
@@ -1588,7 +1588,7 @@ class _KYCPageState extends State<KYCPage> {
                 ),
                 Text(
                   'Gender',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
                 ),
                 SizedBox(
                   height: 4,
@@ -1610,7 +1610,7 @@ class _KYCPageState extends State<KYCPage> {
                     isExpanded: true,
                     iconSize: 24,
                     elevation: 16,
-                    style: TextStyle(color: Colors.black, fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
                     underline: Container(
                       height: 2,
                       color: Colors
@@ -1646,7 +1646,7 @@ class _KYCPageState extends State<KYCPage> {
                 ),
                 Text(
                   'Relationship',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
                 ),
                 SizedBox(
                   height: 4,
@@ -1668,7 +1668,7 @@ class _KYCPageState extends State<KYCPage> {
                     isExpanded: true,
                     iconSize: 24,
                     elevation: 16,
-                    style: TextStyle(color: Colors.black, fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
                     underline: Container(
                       height: 2,
                       color: Colors
@@ -1747,7 +1747,7 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                   Text(
                     'Age',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
                   ),
                   SizedBox(height: 8),
                   Container(
@@ -1774,7 +1774,7 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                   Text(
                     'Date of Birth',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
                   ),
                   SizedBox(height: 8),
                   Container(
@@ -1817,7 +1817,7 @@ class _KYCPageState extends State<KYCPage> {
         ),
         Text(
           'Marital Status',
-          style: TextStyle(fontSize: 16),
+          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
         ),
         SizedBox(
           height: 4,
@@ -1840,7 +1840,7 @@ class _KYCPageState extends State<KYCPage> {
             isExpanded: true,
             iconSize: 24,
             elevation: 16,
-            style: TextStyle(color: Colors.black, fontSize: 16),
+            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
             underline: Container(
               height: 2,
               color: Colors
@@ -1933,7 +1933,7 @@ class _KYCPageState extends State<KYCPage> {
         ),
         Text(
           'Loan Reason',
-          style: TextStyle(fontSize: 16),
+          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
         ),
         SizedBox(
           height: 4,
@@ -1956,7 +1956,7 @@ class _KYCPageState extends State<KYCPage> {
             isExpanded: true,
             iconSize: 24,
             elevation: 16,
-            style: TextStyle(color: Colors.black, fontSize: 16),
+            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
             underline: Container(
               height: 2,
               color: Colors
@@ -1991,7 +1991,7 @@ class _KYCPageState extends State<KYCPage> {
                 children: [
                   Text(
                     'Loan Duraction',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
                   ),
                   SizedBox(height: 5),
                   Container(
@@ -2010,7 +2010,7 @@ class _KYCPageState extends State<KYCPage> {
                       isExpanded: true,
                       iconSize: 24,
                       elevation: 16,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
                       underline: Container(
                         height: 2,
                         color: Colors
@@ -2040,7 +2040,7 @@ class _KYCPageState extends State<KYCPage> {
                 children: [
                   Text(
                     'Bank Name',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
                   ),
                   SizedBox(height: 5),
                   Container(
@@ -2056,7 +2056,7 @@ class _KYCPageState extends State<KYCPage> {
                       isExpanded: true,
                       iconSize: 24,
                       elevation: 16,
-                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
                       underline: Container(
                         height: 2,
                         color: Colors.transparent,
@@ -2165,7 +2165,7 @@ class _KYCPageState extends State<KYCPage> {
                 children: [
                   Text(
                     'Please Enter OTP Here',
-                    style: TextStyle(
+                    style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.black,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -2184,7 +2184,7 @@ class _KYCPageState extends State<KYCPage> {
                     defaultPinTheme: PinTheme(
                       width: 40,
                       height: 40,
-                      textStyle: const TextStyle(
+                      textStyle: const TextStyle(fontFamily: "Poppins-Regular",
                         fontSize: 15,
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -2200,7 +2200,7 @@ class _KYCPageState extends State<KYCPage> {
                       visible: !cancelButtonVisible,
                       child: Text(
                         'Resend OTP in $remainingTime seconds',
-                        style: TextStyle(color: Colors.red),
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.red),
                       )),
                 ],
               ),
@@ -2220,7 +2220,7 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                   child: Text(
                     'Submit',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                   ),
                 ),
                 Visibility(
@@ -2234,7 +2234,7 @@ class _KYCPageState extends State<KYCPage> {
                     ),
                     child: Text(
                       'Close',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                   ),
                   visible: cancelButtonVisible,
@@ -2268,7 +2268,7 @@ class _KYCPageState extends State<KYCPage> {
                     children: [
                       Text(
                         "PAN No.",
-                        style: TextStyle(
+                        style: TextStyle(fontFamily: "Poppins-Regular",
                           fontSize: 16,
                         ),
                       ),
@@ -2336,7 +2336,7 @@ class _KYCPageState extends State<KYCPage> {
             ],
           ),
           Text(panCardHolderName,
-              style: TextStyle(
+              style: TextStyle(fontFamily: "Poppins-Regular",
                   color: !panVerified ? Colors.grey.shade400 : Colors.green,
                   fontSize: !panVerified ? 11 : 14)),
           Row(
@@ -2377,10 +2377,10 @@ class _KYCPageState extends State<KYCPage> {
           dlCardHolderName == null
               ? Text(
                   "Please search driving license holder name for verification",
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
+                  style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.grey.shade400, fontSize: 11),
                 )
               : Text(dlCardHolderName!,
-                  style: TextStyle(color: Colors.green, fontSize: 14)),
+                  style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.green, fontSize: 14)),
           _buildDatePickerField(context, 'Driving License Expiry Date',
               _dlExpiryController, "dlExp"),
           Row(
@@ -2420,10 +2420,10 @@ class _KYCPageState extends State<KYCPage> {
           voterCardHolderName == null
               ? Text(
                   "Please search voter card holder name for verification",
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
+                  style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.grey.shade400, fontSize: 11),
                 )
               : Text(voterCardHolderName!,
-                  style: TextStyle(color: Colors.green, fontSize: 14)),
+                  style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.green, fontSize: 14)),
           Row(
             children: [
               Flexible(
@@ -2494,7 +2494,7 @@ class _KYCPageState extends State<KYCPage> {
           children: [
             Text(
               labelText,
-              style: TextStyle(
+              style: TextStyle(fontFamily: "Poppins-Regular",
                 fontSize: 16,
               ),
             ),
@@ -2547,7 +2547,7 @@ class _KYCPageState extends State<KYCPage> {
                     value: value,
                     child: Text(
                       setdata,
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, fontWeight: FontWeight.normal),
                     ), // Convert the value to string for display
                   );
                 }).toList(),
@@ -2814,7 +2814,7 @@ class _KYCPageState extends State<KYCPage> {
         },
         child: Text(
           "SUBMIT",
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white, fontSize: 16),
         ),
       ),
     );

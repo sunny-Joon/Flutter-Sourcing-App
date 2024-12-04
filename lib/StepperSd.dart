@@ -78,7 +78,7 @@ class _MultiStepFormState extends State<MultiStepForm> {
         backgroundColor: isCompleted ? Colors.red : Colors.white,
         child: Text(
           (step + 1).toString(),
-          style: TextStyle(color: isCompleted ? Colors.white : (isActive ? Colors.red : Colors.grey)),
+          style: TextStyle(fontFamily: "Poppins-Regular",color: isCompleted ? Colors.white : (isActive ? Colors.red : Colors.grey)),
         ),
       ),
     );
@@ -184,7 +184,7 @@ class _MultiStepFormState extends State<MultiStepForm> {
         },
         child: Text(
           _currentStep == 2 ? "SUBMIT" : "NEXT",
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white, fontSize: 16),
         ),
       ),
     );

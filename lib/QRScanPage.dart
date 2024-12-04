@@ -66,7 +66,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                     SizedBox(height: 16),
                     Text(
                       'Scanning in progress. Please wait...',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                   ],
                 ),

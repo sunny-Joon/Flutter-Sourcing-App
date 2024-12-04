@@ -1846,12 +1846,14 @@ class _ApiService implements ApiService {
     String Group_code,
     String Branch_code,
     String Creator,
+    int Type,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'Group_code': Group_code,
       r'Branch_code': Branch_code,
       r'Creator': Creator,
+      r'Type': Type,
     };
     final _headers = <String, dynamic>{
       r'Authorization': token,
