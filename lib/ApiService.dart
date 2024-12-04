@@ -386,7 +386,9 @@ abstract class ApiService {
       @Header("dbname") String dbName,
       @Query("Group_code") String Group_code,
       @Query("Branch_code") String Branch_code,
-      @Query("Creator") String Creator);
+      @Query("Creator") String Creator,
+      @Query("Type") int Type,
+      );
 
   @GET("FiSourcing/GetFiUploadedDocuments")
   Future<KycScanningModel> KycScanning(
