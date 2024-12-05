@@ -1,27 +1,27 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter_sourcing_app/Models/BankNamesModel.dart';
-import 'package:flutter_sourcing_app/Models/GroupModel.dart';
-import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
+import 'package:flutter_sourcing_app/Models/bank_names_model.dart';
+import 'package:flutter_sourcing_app/Models/group_model.dart';
+import 'package:flutter_sourcing_app/Models/kyc_scanning_model.dart';
 import 'package:flutter_sourcing_app/Models/common_int_model.dart';
-import 'package:flutter_sourcing_app/Models/leaderboardModel.dart';
+import 'package:flutter_sourcing_app/Models/leader_board_model.dart';
 import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
 import 'package:flutter_sourcing_app/Models/qr_payments_model.dart';
 import 'package:flutter_sourcing_app/Models/xml_response.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
-import 'Models/BorrowerListModel.dart';
-import 'Models/CreatorListModel.dart';
-import 'Models/GlobalModel.dart';
-import 'Models/GlobalModel2.dart';
-import 'Models/KycUpdateModel.dart';
-import 'Models/RangeCategoryModel.dart';
-import 'Models/adhaarModel.dart';
+import 'Models/borrower_list_model.dart';
+import 'Models/creator_list_model.dart';
+import 'Models/global_model.dart';
+import 'Models/global_model2.dart';
+import 'Models/kyc_update_model.dart';
+import 'Models/range_category_model.dart';
+import 'Models/adhaar_model.dart';
 import 'Models/branch_model.dart';
-import 'Models/docsVerify.dart';
-import 'Models/getAllModel.dart';
+import 'Models/docs_verify.dart';
+import 'Models/get_all_model.dart';
 import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
 import 'Models/ocr_response_model.dart';
@@ -263,6 +263,7 @@ abstract class ApiService {
 
   @GET("Masters/GetBranchCode")
   Future<BranchModel> getBranchList(
+      @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Query("Creator") String Creator);
 
@@ -286,6 +287,13 @@ abstract class ApiService {
       @Query("SmCode") String SmCode,
       @Query("userid") String userid,
       @Query("type") String type);
+
+  @GET("Collection/GetFiCollection")
+  Future<QrPaymentsModel> GetFiCollection(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Query("SmCode") String SmCode,
+      @Query("GetDate") String GetDate);
 
 
 
@@ -386,7 +394,9 @@ abstract class ApiService {
       @Header("dbname") String dbName,
       @Query("Group_code") String Group_code,
       @Query("Branch_code") String Branch_code,
-      @Query("Creator") String Creator);
+      @Query("Creator") String Creator,
+      @Query("Type") int Type,
+      );
 
   @GET("FiSourcing/GetFiUploadedDocuments")
   Future<KycScanningModel> KycScanning(

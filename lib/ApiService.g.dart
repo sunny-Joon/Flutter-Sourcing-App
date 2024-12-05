@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ApiService.dart';
+part of 'api_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -1210,12 +1210,16 @@ class _ApiService implements ApiService {
 
   @override
   Future<BranchModel> getBranchList(
+    String token,
     String dbname,
     String Creator,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'Creator': Creator};
-    final _headers = <String, dynamic>{r'dbname': dbname};
+    final _headers = <String, dynamic>{
+      r'Authorization': token,
+      r'dbname': dbname,
+    };
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BranchModel>(Options(
@@ -1359,6 +1363,51 @@ class _ApiService implements ApiService {
         .compose(
           _dio.options,
           'Collection/GetQrPaymentsBySmcode',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late QrPaymentsModel _value;
+    try {
+      _value = QrPaymentsModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<QrPaymentsModel> GetFiCollection(
+    String token,
+    String dbname,
+    String SmCode,
+    String GetDate,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'SmCode': SmCode,
+      r'GetDate': GetDate,
+    };
+    final _headers = <String, dynamic>{
+      r'Authorization': token,
+      r'dbname': dbname,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<QrPaymentsModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'Collection/GetFiCollection',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -1846,12 +1895,14 @@ class _ApiService implements ApiService {
     String Group_code,
     String Branch_code,
     String Creator,
+    int Type,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'Group_code': Group_code,
       r'Branch_code': Branch_code,
       r'Creator': Creator,
+      r'Type': Type,
     };
     final _headers = <String, dynamic>{
       r'Authorization': token,

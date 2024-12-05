@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/Models/GroupModel.dart';
-import 'package:flutter_sourcing_app/Models/branch_model.dart';
+ import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:provider/provider.dart';
-import 'ApiService.dart';
-import 'BorrowerListItem.dart';
-import 'Collection.dart';
-import 'FirstEsign.dart';
-import 'GlobalClass.dart';
-import 'ApplicationForms.dart';
-import 'HouseVisitForm.dart';
-import 'Models/BorrowerListModel.dart';
+ import 'collection.dart';
+import 'Models/borrower_list_model.dart';
+import 'Models/group_model.dart';
+import 'api_service.dart';
+import 'application_forms.dart';
+import 'brrower_list_item.dart';
+import 'first_esign.dart';
+import 'global_class.dart';
+import 'house_visit_form.dart';
+
 
 class BorrowerList extends StatefulWidget {
   final BranchDataModel BranchData;
@@ -30,13 +31,18 @@ class BorrowerList extends StatefulWidget {
 class _BorrowerListState extends State<BorrowerList> {
   List<BorrowerListDataModel> _borrowerItems = [];
 
+
   @override
   void initState() {
     super.initState();
-    _fetchBorrowerList();
+   // if(widget.page =="E SIGN"){
+      _fetchBorrowerList(1);
+   // }else{
+   //   _fetchBorrowerList(0);
+ //   }
   }
 
-  Future<void> _fetchBorrowerList() async {
+  Future<void> _fetchBorrowerList(int type) async {
     EasyLoading.show(status: 'Loading...',);
 
     final apiService = Provider.of<ApiService>(context, listen: false);
@@ -47,7 +53,8 @@ class _BorrowerListState extends State<BorrowerList> {
 
       widget.GroupData.groupCode,
      widget.BranchData.branchCode,
-      GlobalClass.creator.toString()
+      GlobalClass.creator.toString(),
+      type
 
     ).then((response) {
       if (response.statuscode == 200) {

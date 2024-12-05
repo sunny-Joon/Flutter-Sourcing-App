@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:flutter_sourcing_app/ApiService.dart';
-import 'package:flutter_sourcing_app/GlobalClass.dart';
-import 'package:flutter_sourcing_app/Models/BorrowerListModel.dart';
+import 'package:flutter_sourcing_app/api_service.dart';
+import 'package:flutter_sourcing_app/global_class.dart';
+import 'package:flutter_sourcing_app/Models/borrower_list_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -16,7 +16,7 @@ import 'dart:io';
 
 
 import 'MasterAPIs/live_track_repository.dart';
-import 'Models/GroupModel.dart';
+import 'Models/group_model.dart';
 import 'Models/branch_model.dart';
 
 class FirstEsign extends StatefulWidget {
@@ -219,7 +219,7 @@ class _FirstEsignState extends State<FirstEsign> {
                  child: Container(
                    alignment: Alignment.center,
                    height: 45,
-                   child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text("Proceed",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black),),),
+                   child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 4),child: Text("Proceed",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black),),),
                  ),
                ),
              ))

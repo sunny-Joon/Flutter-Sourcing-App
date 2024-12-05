@@ -1,16 +1,16 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/GlobalClass.dart';
-import 'package:flutter_sourcing_app/targetsetpage.dart';
+import 'package:flutter_sourcing_app/global_class.dart';
+import 'package:flutter_sourcing_app/target_set_page.dart';
 import 'package:provider/provider.dart';
 
-import 'ApiService.dart';
-import 'Collection.dart';
-import 'LeaderBoard.dart';
-import 'OnBoarding.dart';
-import 'Profile.dart';
-import 'TargetCarGif.dart';
+import 'api_service.dart';
+import 'collection.dart';
+import 'leader_board.dart';
+import 'on_boarding.dart';
+import 'profile.dart';
+import 'target_car_gif.dart';
 import 'const/appcolors.dart';
 
 class HomePage extends StatefulWidget {

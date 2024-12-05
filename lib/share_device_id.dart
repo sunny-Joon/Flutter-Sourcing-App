@@ -2,14 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/GlobalClass.dart';
+import 'package:flutter_sourcing_app/global_class.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'ApiService.dart';
-import 'Models/CreatorListModel.dart';
-import 'PopupDialog.dart';
+import 'api_service.dart';
+import 'Models/creator_list_model.dart';
+import 'popup_dialog.dart';
 
 class Sharedeviceid extends StatefulWidget {
   final String mobile;
@@ -159,7 +159,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
   Future<void> _fetchBranchList(BuildContext context, String creators) async {
     final api = Provider.of<ApiService>(context, listen: false);
-    final value = await api.getBranchList(GlobalClass.dbName, creators);
+    final value = await api.getBranchList(GlobalClass.token,GlobalClass.dbName, creators);
     if (value.statuscode == 200) {
       setState(() {
         _branch_codes = value.data; // Assuming value.data is a list of BranchDataModel

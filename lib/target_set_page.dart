@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'ApiService.dart';
-import 'Fragments.dart';
-import 'GlobalClass.dart';
+import 'api_service.dart';
+import 'fragments.dart';
+import 'global_class.dart';
 
 
 class TargetSetPage extends StatefulWidget {

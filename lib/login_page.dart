@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/GlobalClass.dart';
-import 'package:flutter_sourcing_app/PopupDialog.dart';
-import 'package:flutter_sourcing_app/SharedeviceId.dart';
+import 'package:flutter_sourcing_app/global_class.dart';
+import 'package:flutter_sourcing_app/popup_dialog.dart';
+import 'package:flutter_sourcing_app/share_device_id.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'ApiService.dart';
-import 'ChatBot.dart';
-import 'DeviceIdGenerator.dart';
-import 'Fragments.dart';
+import 'api_service.dart';
+import 'chat_bot.dart';
+import 'device_id_generator.dart';
+import 'fragments.dart';
 import 'Models/login_model.dart';
-import 'TermsConditions.dart';
+import 'terms_conditions.dart';
 
 class LoginPage extends StatefulWidget {
   @override
