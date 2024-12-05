@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/GlobalClass.dart';
-import 'package:flutter_sourcing_app/LoginPage.dart';
-import 'package:flutter_sourcing_app/qr_PaymentReports.dart';
-import 'package:flutter_sourcing_app/utils/currentLocation.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_sourcing_app/qr_payment_reports.dart';
+import 'package:flutter_sourcing_app/utils/current_location.dart';
 
-import 'ApiService.dart';
+import 'api_service.dart';
+import 'global_class.dart';
+import 'login_page.dart';
+
 
 class Profile extends StatefulWidget {
   @override
