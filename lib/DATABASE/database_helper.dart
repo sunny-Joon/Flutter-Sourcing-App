@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-import '../Models/RangeCategoryModel.dart';
+import '../Models/range_category_model.dart';
 
 
 class DatabaseHelper {

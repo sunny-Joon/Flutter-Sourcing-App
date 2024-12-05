@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_sourcing_app/ApiService.dart';
-import 'package:flutter_sourcing_app/GlobalClass.dart';
+import 'package:flutter_sourcing_app/api_service.dart';
+import 'package:flutter_sourcing_app/global_class.dart';
 
 
 class CkycRepository {

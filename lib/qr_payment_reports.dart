@@ -4,8 +4,8 @@ import 'dart:convert'; // For jsonDecode
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-import 'ApiService.dart';
-import 'GlobalClass.dart';
+import 'api_service.dart';
+import 'global_class.dart';
 import 'Models/qr_payments_model.dart'; // For making API calls
 
 class QrPaymentReports extends StatefulWidget {

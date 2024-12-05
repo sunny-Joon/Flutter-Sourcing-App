@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sourcing_app/visit_report_page.dart';
 import 'kyc.dart';
-import 'Branch_List_Page.dart';
+import 'branch_list_page.dart';
 
 class OnBoarding extends StatefulWidget {
 

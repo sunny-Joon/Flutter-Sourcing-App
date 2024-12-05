@@ -1,10 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/Models/leaderboardModel.dart';
+import 'package:flutter_sourcing_app/Models/leader_board_model.dart';
 import 'package:gif/gif.dart';
-import 'ApiService.dart';
-import 'GlobalClass.dart';
+import 'api_service.dart';
+import 'global_class.dart';
 import 'const/appcolors.dart';
 
 class LeaderBoard extends StatefulWidget {

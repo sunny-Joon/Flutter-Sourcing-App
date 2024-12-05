@@ -6,23 +6,23 @@ import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/GlobalClass.dart';
-import 'package:flutter_sourcing_app/Models/BankNamesModel.dart';
-import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
-import 'package:flutter_sourcing_app/Models/getAllModel.dart';
+import 'package:flutter_sourcing_app/global_class.dart';
+import 'package:flutter_sourcing_app/Models/bank_names_model.dart';
+import 'package:flutter_sourcing_app/Models/kyc_scanning_model.dart';
+import 'package:flutter_sourcing_app/Models/get_all_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'ApiService.dart';
-import 'DATABASE/DatabaseHelper.dart';
-import 'Models/BorrowerListModel.dart';
-import 'Models/GroupModel.dart';
-import 'Models/RangeCategoryModel.dart';
+import 'api_service.dart';
+import 'DATABASE/database_helper.dart';
+import 'Models/borrower_list_model.dart';
+import 'Models/group_model.dart';
+import 'Models/range_category_model.dart';
 import 'Models/branch_model.dart';
 import 'Models/place_codes_model.dart';
-import 'QRScanPage.dart';
+import 'qr_scan_page.dart';
 
 class ApplicationPage extends StatefulWidget {
   final BranchDataModel BranchData;
@@ -3519,11 +3519,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
 
         onPressed: () {
-          if (_currentStep == 0) {
-          setState(() {
-            _currentStep+=6;
-          });
-          }else
+          // if (_currentStep == 0) {
+          // setState(() {
+          //   _currentStep+=6;
+          // });
+          // }else
           if (_currentStep == 0) {
             if (_stepOneValidations()) {
               AddFiExtraDetail(context);

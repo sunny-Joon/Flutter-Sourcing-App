@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_sourcing_app/ApiService.dart';
-import 'package:flutter_sourcing_app/GlobalClass.dart';
+import 'package:flutter_sourcing_app/api_service.dart';
+import 'package:flutter_sourcing_app/global_class.dart';
 
 import '../Models/track_location_request.dart';
-import '../utils/currentLocation.dart';
+import '../utils/current_location.dart';
 
 
 class LiveTrackRepository {

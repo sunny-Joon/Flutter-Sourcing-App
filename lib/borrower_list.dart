@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/Models/GroupModel.dart';
+import 'package:flutter_sourcing_app/Models/group_model.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:provider/provider.dart';
-import 'ApiService.dart';
-import 'BorrowerListItem.dart';
-import 'Collection.dart';
-import 'FirstEsign.dart';
-import 'GlobalClass.dart';
-import 'ApplicationForms.dart';
-import 'HouseVisitForm.dart';
-import 'Models/BorrowerListModel.dart';
+import 'api_service.dart';
+import 'brrower_list_item.dart';
+import 'collection.dart';
+import 'first_esign.dart';
+import 'global_class.dart';
+import 'application_forms.dart';
+import 'house_visit_form.dart';
+import 'Models/borrower_list_model.dart';
 
 class BorrowerList extends StatefulWidget {
   final BranchDataModel BranchData;
@@ -37,7 +37,7 @@ class _BorrowerListState extends State<BorrowerList> {
     if(widget.page =="E SIGN"){
       _fetchBorrowerList(1);
     }else{
-      _fetchBorrowerList(0);
+      _fetchBorrowerList(1);
     }
   }
 
@@ -140,6 +140,7 @@ print("object++12");
               ),
             ),
           ),
+          (_borrowerItems.length==1 && !_borrowerItems[0].isvalid)?Container( height:300, alignment:Alignment.center,child: Text("Sorry!, ${_borrowerItems[0].errormsg}",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 17),),):
           Expanded(
             child: ListView.builder(
               itemCount: _borrowerItems.length,
