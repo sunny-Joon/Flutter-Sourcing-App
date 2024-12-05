@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/Group_recycler_item.dart';
+import 'package:flutter_sourcing_app/group_recycler_item.dart';
 
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:provider/provider.dart';
 
 
-import 'KYC.dart';
+import 'kyc.dart';
 import 'Models/group_model.dart';
 import 'api_service.dart';
 import 'borrower_list.dart';
@@ -44,7 +44,7 @@ class _GroupListPageState extends State<GroupListPage> {
       final response = await apiService.getGroupList(
         GlobalClass.token,
         GlobalClass.dbName,
-        "ETAH",
+        GlobalClass.creator,
         // GlobalClass.creator,
         widget.Branchdata.branchCode
       );

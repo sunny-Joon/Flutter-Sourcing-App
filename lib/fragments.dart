@@ -4,11 +4,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
-import 'Branch_List_Page.dart';
+import 'branch_list_page.dart';
 
 import 'DATABASE/database_helper.dart';
 import 'Models/range_category_model.dart';
-import 'Profile.dart';
+import 'profile.dart';
 
 import 'api_service.dart';
 import 'const/appcolors.dart';
