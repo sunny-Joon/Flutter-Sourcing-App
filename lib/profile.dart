@@ -200,7 +200,7 @@ class _ProfileState extends State<Profile> {
                             });
                           } else if (index == 2) {
                             return _buildGridItem(
-                                'Another Report', Icons.find_in_page_sharp, () {
+                                'Morpho Recharge', Icons.fingerprint, () {
                               // Action for Another Report
                               print('Another Report Clicked');
                               // Add navigation or other actions here

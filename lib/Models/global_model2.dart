@@ -51,11 +51,11 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     fiId: json["fi_Id"],
-    errormsg: json["errormsg"],
+    errormsg: json["errormsg"]??"",
     isvalid: json["isvalid"],
-    financialStatus: json["financialStatus"],
-    fiCode: json["fiCode"],
-    appLink: json["appLink"],
+    financialStatus: json["financialStatus"]??"",
+    fiCode: json["fiCode"]??"",
+    appLink: json["appLink"]??"",
   );
 
   Map<String, dynamic> toJson() => {

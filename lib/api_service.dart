@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/Models/bank_names_model.dart';
+import 'package:flutter_sourcing_app/Models/details_by_smcode_response.dart';
 import 'package:flutter_sourcing_app/Models/group_model.dart';
 import 'package:flutter_sourcing_app/Models/kyc_scanning_model.dart';
 import 'package:flutter_sourcing_app/Models/common_int_model.dart';
@@ -26,7 +27,7 @@ import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
 import 'Models/ocr_response_model.dart';
 import 'Models/track_location_request.dart';
-part 'ApiService.g.dart';
+part 'api_service.g.dart';
 
 
 
@@ -498,4 +499,27 @@ abstract class ApiService {
       @Header("Authorization") String authorization,
       );
 
+  @GET("FiSourcing/GetBorrowerDetails")
+  Future<DetailsBySMcodeResponse> getBorrowerDetails(
+    @Query("SmCode") String smcode,
+      @Header("dbname") String dbname,
+      @Header("Authorization") String authorization,
+
+      );
+  @POST("Tracklocations/InsertBranchVisit")
+  @MultiPart()
+  Future<GlobalModel> insertBranchVisit(
+      @Header("dbname")  String dbName,
+      @Header("Authorization")  String authorization,
+      @Part(name: "VisitType")  String visitType,
+      @Part(name: "SmCode")  String smCode,
+      @Part(name: "Amount")  String amount,
+      @Part(name: "Lat")  String lat,
+      @Part(name: "Long")  String long,
+      @Part(name: "UserId")  String userId,
+      @Part(name: "Remarks")  String remarks,
+      @Part(name: "Address")  String address,
+      @Part(name: "Picture")  File picture
+      );
 }
+

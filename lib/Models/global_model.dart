@@ -53,11 +53,11 @@ class GlobalDataModel {
   factory GlobalDataModel.fromJson(Map<String, dynamic> json) => GlobalDataModel(
 
     fiId: json["fi_Id"],
-    errormsg: json["errormsg"],
+    errormsg: json["errormsg"]??"",
     isvalid: json["isvalid"],
-    financialStatus: json["financialStatus"],
-    fiCode: json["fiCode"],
-    appLink: json["appLink"],
+    financialStatus: json["financialStatus"]??"",
+    fiCode: json["fiCode"]??"",
+    appLink: json["appLink"]??"",
 
   );
 
