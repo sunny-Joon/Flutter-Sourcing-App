@@ -16,6 +16,8 @@ import 'stepper_sd.dart';
 import 'package:http/http.dart'as http;
 import 'package:url_launcher/url_launcher.dart';
 
+import 'dealer_homepage.dart';
+
 
 void main() {
 
@@ -73,6 +75,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
          home: SplashScreen(),
+       //  home: DealerHomePage(),
          builder: EasyLoading.init(),
          // home:MultiStepForm(),
       ),

@@ -6,23 +6,23 @@ import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/global_class.dart';
-import 'package:flutter_sourcing_app/Models/bank_names_model.dart';
-import 'package:flutter_sourcing_app/Models/kyc_scanning_model.dart';
-import 'package:flutter_sourcing_app/Models/get_all_model.dart';
+import 'package:flutter_sourcing_app/GlobalClass.dart';
+import 'package:flutter_sourcing_app/Models/BankNamesModel.dart';
+import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
+import 'package:flutter_sourcing_app/Models/getAllModel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'api_service.dart';
-import 'DATABASE/database_helper.dart';
-import 'Models/borrower_list_model.dart';
-import 'Models/group_model.dart';
-import 'Models/range_category_model.dart';
+import 'ApiService.dart';
+import 'DATABASE/DatabaseHelper.dart';
+import 'Models/BorrowerListModel.dart';
+import 'Models/GroupModel.dart';
+import 'Models/RangeCategoryModel.dart';
 import 'Models/branch_model.dart';
 import 'Models/place_codes_model.dart';
-import 'qr_scan_page.dart';
+import 'QRScanPage.dart';
 
 class ApplicationPage extends StatefulWidget {
   final BranchDataModel BranchData;
@@ -321,7 +321,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     FIID = widget.selectedData.id;
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
-
     getAllDataApi(context);
      apiService_idc=ApiService.create(baseUrl: ApiConfig.baseUrl4);
     GetDocs(context);
@@ -3519,43 +3518,59 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
 
         onPressed: () {
-          // if (_currentStep == 0) {
-          // setState(() {
-          //   _currentStep+=6;
-          // });
-          // }else
+         /* if (_currentStep == 0) {
+          setState(() {
+            _currentStep+=6;
+          });
+          }else*/
           if (_currentStep == 0) {
-            if (_stepOneValidations()) {
+            setState(() {
+              _currentStep++;
+            });
+
+            if (personalInfoEditable && _stepOneValidations()) {
               AddFiExtraDetail(context);
             }
-          }
-          else if (_currentStep == 1) {
-            if (_stepTwoValidations()) {
+          }else if (_currentStep == 1) {
+           /* if (FiFamilyEditable && _stepTwoValidations()) {
               AddFiFamilyDetail(context);
-            }
-          }
-          else if (_currentStep == 2) {
+            }*/
+            setState(() {
+              _currentStep++;
+            });
+          } else if (_currentStep == 2) {
 
-            if(_stepThreeValidations()) {
+           /* if(FiIncomeEditable && _stepThreeValidations()) {
               AddFiIncomeAndExpense(context);
-            }
+            }*/
+            setState(() {
+              _currentStep++;
+            });
           }
           else if (_currentStep == 3) {
 
-            if(_stepFourValidations()){
+            /*if(FinancialInfoEditable &&_stepFourValidations()){
               AddFinancialInfo(context);
-            }
+            }*/
+            setState(() {
+              _currentStep++;
+            });
           }
           else if (_currentStep == 4) {
-
-            if(_stepFiveValidations()) {
+            setState(() {
+              _currentStep++;
+            });
+            /*if(femMemIncomeEditable && _stepFiveValidations()) {
               FiFemMemIncome(context);
-            }
+            }*/
           }
           else if (_currentStep == 5) {
-            if(_stepSixValidations()) {
+            /*if(GuarantorEditable && _stepSixValidations()) {
               saveGuarantorMethod(context);
-            }
+            }*/
+            setState(() {
+              _currentStep++;
+            });
           }
           else if (_currentStep == 6) {
             setState(() {});
@@ -5705,29 +5720,40 @@ class _ApplicationPageState extends State<ApplicationPage> {
         .then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
-        print("object112222");
+        print("object11111");
+        print(value.data[0].placeOfBirth);
+        print(value.data[0].motheRFirstName);
+        print(value.data[0].fiIncomeExpenses);
+        print(value.data[0].bankAc);
+        print(value.data[0].familyMembers);
+        print(value.data[0].guarantors);
 
         if(!value.data[0].placeOfBirth.isEmpty){
+          print("object22222");
           personalInfo(value.data[0]);
-
         }
         if(!value.data[0].motheRFirstName.isEmpty){
           familyDetails(value.data[0]);
+          print("object33333");
         }
 
         if(value.data[0].fiIncomeExpenses.length != 0){
           fiIncomeExpenses(value.data[0]);
+          print("object44444");
         }
 
         if(!value.data[0].bankAc.isEmpty){
           financialInfo(value.data[0]);
+          print("object55555");
         }
 
         if(value.data[0].familyMembers.length != 0){
           femMemIncome(value.data[0]);
+          print("object66666");
         }
         if(value.data[0].guarantors.length != 0){
           guarrantors(value.data[0]);
+          print("object77777");
         }
 
         }
@@ -5744,6 +5770,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void personalInfo(ApplicationgetAllDataModel data) {
 
     setState(() {
+      personalInfoEditable = false;
       // FIID,
       emailIdController.text=data.emailId;
       placeOfBirthController.text =data.placeOfBirth;
@@ -5778,6 +5805,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void familyDetails(ApplicationgetAllDataModel data) {
     setState(() {
+
+      FiFamilyEditable = false;
       _motherFController.text = data.motheRFirstName;
       _motherMController.text = data.motheRMiddleName;
       _motherLController.text = data.motheRLastName;
@@ -5789,15 +5818,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void fiIncomeExpenses(ApplicationgetAllDataModel data) {
     setState(() {
-      selectedOccupation = data.fiIncomeExpenses[0].inExOccupation;
-      selectedBusiness = data.fiIncomeExpenses[0].inExBusinessDetail;
+
+      FiIncomeEditable = false;
+    //  selectedOccupation = data.fiIncomeExpenses[0].inExOccupation;
+    //  selectedBusiness = data.fiIncomeExpenses[0].inExBusinessDetail;
       _currentEMIController.text = data.fiIncomeExpenses[0].inExAnyCurrentEmi.toString();
-      selectedHomeType = data.fiIncomeExpenses[0].inExHomeType;
-      selectedRoofType = data.fiIncomeExpenses[0].inExHomeRoofType;
-      selectedToiletType = data.fiIncomeExpenses[0].inExToiletType;
-      selectedLivingWithSpouse = data.fiIncomeExpenses[0].inExLivingWithSpouse.toString();
-      selectedEarningMembers = data.fiIncomeExpenses[0].inExEarningMemCount.toString();
-      selectedBusinessExperience = data.fiIncomeExpenses[0].inExYearsInBusiness.toString();
+    //  selectedHomeType = data.fiIncomeExpenses[0].inExHomeType;
+    //  selectedRoofType = data.fiIncomeExpenses[0].inExHomeRoofType;
+    //  selectedToiletType = data.fiIncomeExpenses[0].inExToiletType;
+    //  selectedLivingWithSpouse = data.fiIncomeExpenses[0].inExLivingWithSpouse.toString();
+    //  selectedEarningMembers = data.fiIncomeExpenses[0].inExEarningMemCount.toString();
+    //  selectedBusinessExperience = data.fiIncomeExpenses[0].inExYearsInBusiness.toString();
       _future_IncomeController.text = data.fiIncomeExpenses[0].inExFutureIncome.toString();
       _agriculture_incomeController.text = data.fiIncomeExpenses[0].inExAgricultureIncome.toString();
       _other_IncomeController.text = data.fiIncomeExpenses[0].inExOtherIncome.toString();
@@ -5819,8 +5850,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void financialInfo(ApplicationgetAllDataModel data) {
     setState(() {
-      selectedAccountType = data.bankAc;
-      selectedBankName = data.bankName;
+
+      FinancialInfoEditable = false;
+      //selectedAccountType = data.bankAc;
+      //selectedBankName = data.bankName;
       _bank_AcController.text = data.bankName;
       _bank_IFCSController.text = data.bankIfcs;
       bankAddress = data.bankAddress;
@@ -5831,29 +5864,32 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void femMemIncome(ApplicationgetAllDataModel data) {
     setState(() {
+      femMemIncomeEditable = false;
+
       _femNameController.text = data.familyMembers[0].famName;
       _AgeController.text = data.familyMembers[0].famAge.toString();
-      femselectedGender = data.familyMembers[0].famGender;
-      femselectedRelationWithBorrower = data.familyMembers[0].famRelationWithBorrower;
-      femselectedHealth = data.familyMembers[0].famHealth;
-      femselectedEducation = data.familyMembers[0].famEducation;
-      femselectedSchoolType = data.familyMembers[0].famSchoolType;
-      femselectedBusiness = data.familyMembers[0].famBusiness;
+    // femselectedGender = data.familyMembers[0].famGender;
+    // femselectedRelationWithBorrower = data.familyMembers[0].famRelationWithBorrower;
+    // femselectedHealth = data.familyMembers[0].famHealth;
+    // femselectedEducation = data.familyMembers[0].famEducation;
+    // femselectedSchoolType = data.familyMembers[0].famSchoolType;
+    // femselectedBusiness = data.familyMembers[0].famBusiness;
       _IncomeController.text = data.familyMembers[0].famIncome.toString();
-      femselectedBusinessType = data.familyMembers[0].famBusinessType;
-      femselectedIncomeType = data.familyMembers[0].famIncomeType;
+    //  femselectedBusinessType = data.familyMembers[0].famBusinessType;
+    //  femselectedIncomeType = data.familyMembers[0].famIncomeType;
     });
 
   }
 
   void guarrantors(ApplicationgetAllDataModel data) {
     setState(() {
-      titleselected = data.guarantors[0].grTitle;
+      GuarantorEditable = false;
+     // titleselected = data.guarantors[0].grTitle;
       _fnameController.text = data.guarantors[0].grFname;
       _mnameController.text = data.guarantors[0].grMname;
       _lnameController.text = data.guarantors[0].grLname;
       _guardianController.text = data.guarantors[0].grGuardianName;
-      relationselected = data.guarantors[0].grRelationWithBorrower;
+   //   relationselected = data.guarantors[0].grRelationWithBorrower;
       _p_Address1Controller.text = data.guarantors[0].grPAddress1;
       _p_Address2Controller.text = data.guarantors[0].grPAddress2;
       _p_Address3Controller.text = data.guarantors[0].grPAddress3;
@@ -5867,8 +5903,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _dlController.text = data.guarantors[0].grDl;
       _voterController.text = data.guarantors[0].grVoter;
       _aadharIdController.text = data.guarantors[0].grAadharId;
-      genderselected = data.guarantors[0].grGender;
-      religionselected = data.guarantors[0].grReligion;
+    //  genderselected = data.guarantors[0].grGender;
+    //  religionselected = data.guarantors[0].grReligion;
  /*      = data.guarantors[0].grEsignSucceed;
        = data.guarantors[0].grEsignUuid;
        = data.guarantors[0].grPicture;*/
