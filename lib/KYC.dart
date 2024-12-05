@@ -106,7 +106,6 @@ class _KYCPageState extends State<KYCPage> {
 
     // selectedTitle = titleList.isNotEmpty ? titleList[0] : null;
 
-
     geolocator(context);
     super.initState();
 // Fetch states using the required cat_key
