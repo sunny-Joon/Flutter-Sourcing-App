@@ -5,6 +5,7 @@ import 'package:flutter_sourcing_app/Models/BankNamesModel.dart';
 import 'package:flutter_sourcing_app/Models/GroupModel.dart';
 import 'package:flutter_sourcing_app/Models/KycScanningModel.dart';
 import 'package:flutter_sourcing_app/Models/common_int_model.dart';
+import 'package:flutter_sourcing_app/Models/getCollectionModel.dart';
 import 'package:flutter_sourcing_app/Models/leaderboardModel.dart';
 import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
 import 'package:flutter_sourcing_app/Models/qr_payments_model.dart';
@@ -289,7 +290,7 @@ abstract class ApiService {
       @Query("type") String type);
 
   @GET("Collection/GetFiCollection")
-  Future<QrPaymentsModel> GetFiCollection(
+  Future<GetCollectionModel> GetFiCollection(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Query("SmCode") String SmCode,

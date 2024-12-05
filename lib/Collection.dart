@@ -9,6 +9,7 @@ import 'GlobalClass.dart';
 import 'Models/BorrowerListModel.dart';
 import 'Models/GroupModel.dart';
 import 'Models/branch_model.dart';
+import 'Models/getCollectionModel.dart';
 
 class Collection extends StatefulWidget {
   final BranchDataModel BranchData;
@@ -30,10 +31,14 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
   late TabController _tabController;
   List<bool> checkboxValues = List<bool>.filled(5, false); // Initialize with false values
   List<int> emiAmounts = List<int>.generate(5, (index) => (index + 1) * 100); // Sample EMI amounts
-  int interestAmount = 100;
-  int lateFee = 20;
-  int totalAmount = 0;
+  double interestAmount = 100;
+  double lateFee = 20;
+  double totalAmount = 0;
+  late String casecode="",borrower = "";
 
+
+
+  late GetCollectionDataModel collectionDataModel;
   @override
   void initState() {
     super.initState();
@@ -133,8 +138,16 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                       ],
 
                     ),
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: 'Case Code: ', style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)), // Static text color
+                          TextSpan(text: casecode, style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold)), // Dynamic text color
+                        ],
+                      ),
+                    ),
                     Container(
-                      height: MediaQuery.of(context).size.height - 380,
+                      height: MediaQuery.of(context).size.height - 450,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Colors.grey.shade100, Colors.grey.shade300],
@@ -159,15 +172,53 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Interest Amount: ₹$interestAmount'),
-                              Text('Late Fee: ₹$lateFee'),
+                              Flexible(
+                                child: Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(text: 'Borrower: ', style: TextStyle(color: Colors.black)), // Static text color
+                                      TextSpan(text: borrower, style: TextStyle(color: Colors.green)), // Dynamic text color
+                                    ],
+                                  ),
+                                  maxLines: 2, // Allow text to wrap to a second line if necessary
+                                  overflow: TextOverflow.ellipsis, // Handle overflow gracefully
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10), // Add some space between rows
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(text: 'Interest Amount: ₹', style: TextStyle(color: Colors.black)), // Static text color
+                                    TextSpan(text: interestAmount.toString(), style: TextStyle(color: Colors.green)), // Dynamic text color
+                                  ],
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(text: 'Late Fee: ₹', style: TextStyle(color: Colors.black)), // Static text color
+                                    TextSpan(text: lateFee.toString(), style: TextStyle(color: Colors.green)), // Dynamic text color
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(height: 10),
-                          Text('Total Amount: ₹$totalAmount'),
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(text: 'Total Amount: ₹', style: TextStyle(color: Colors.black)), // Static text color
+                                TextSpan(text: totalAmount.toString(), style: TextStyle(color: Colors.green)), // Dynamic text color
+                              ],
+                            ),
+                          ),
                           SizedBox(height: 20),
                           ElevatedButton(
-
                             onPressed: () {
                               // Submit button action
                             },
@@ -198,18 +249,19 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Submit',
-                                  style: TextStyle(fontFamily: "Poppins-Regular",
+                                  style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
                                     fontSize: 16,
                                     color: Colors.black, // Text color
                                   ),
                                 ),
                               ),
                             ),
-                          )
-
+                          ),
                         ],
                       ),
                     ),
+
                   ],
                 ),
               ),
@@ -389,6 +441,14 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
           .GetFiCollection(GlobalClass.token, GlobalClass.dbName, "BBAB002073","2024-11-20")
           .then((value) async {
         if (value.statuscode == 200) {
+          setState(() {
+            collectionDataModel = value.data[0];
+            lateFee = collectionDataModel.futureDue;
+            interestAmount = collectionDataModel.instsAmtDue;
+            borrower = collectionDataModel.custName;
+            casecode = collectionDataModel.caseCode;
+
+          });
            EasyLoading.dismiss();
           print("object112222");
 
