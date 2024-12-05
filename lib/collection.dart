@@ -4,11 +4,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart'; // Add this import for date formatting
 import 'package:provider/provider.dart';
 
-import 'ApiService.dart';
-import 'GlobalClass.dart';
-import 'Models/BorrowerListModel.dart';
-import 'Models/GroupModel.dart';
+import 'Models/borrower_list_model.dart';
 import 'Models/branch_model.dart';
+import 'Models/group_model.dart';
+import 'api_service.dart';
+import 'global_class.dart';
 
 class Collection extends StatefulWidget {
   final BranchDataModel BranchData;

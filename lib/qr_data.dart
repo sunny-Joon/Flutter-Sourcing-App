@@ -3,7 +3,7 @@ import 'package:archive/archive.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'QRScanPage.dart';
+import 'qr_scan_page.dart';
 
 class QRDATA extends StatefulWidget {
   const QRDATA({super.key, required this.title});
