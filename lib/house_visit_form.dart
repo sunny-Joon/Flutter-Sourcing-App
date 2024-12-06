@@ -38,8 +38,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   File? _image;
   final picker = ImagePicker();
   String _locationMessage = "";
-  late double _latitude;
-  late double _longitude;
+  late double _latitude=0.0;
+  late double _longitude=0.0;
 
   List<String> relation = ['Select','mother','father','husband','wife','brother','sister'];
   List<String> residing_type = ['Select','pucca','kaccha'];
@@ -210,10 +210,10 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                     children:
                     <Widget>[
                       SizedBox(height: 20),
-                      _buildTextField2('शाखा', _BranchNameController, TextInputType.number),
-                      _buildTextField2('क्षेत्र', _AreaCodeController, TextInputType.number),
-                      _buildTextField2('समूह', _GroupCodeController, TextInputType.number),
-                      _buildTextField2('केन्द्र', _CenterController, TextInputType.number),
+                      _buildTextField2('शाखा', _BranchNameController, TextInputType.text),
+                      _buildTextField2('क्षेत्र', _AreaCodeController, TextInputType.text),
+                      _buildTextField2('समूह', _GroupCodeController, TextInputType.text),
+                      _buildTextField2('केन्द्र', _CenterController, TextInputType.text),
                       _buildTextField2('ग्राह के लिये ऋण उपयोग के प्रतिशत का उल्लेख करें।', _LoanUsagePercentageController, TextInputType.number),
                       _buildTextField2('व्यापार से अनुमानित मासिक आय (रुपयों में)', _monthlyIncomeController, TextInputType.number),
                       _buildTextField2('अनुमानित मासिक बिक्री (रुपयों में)(या तो सेल का कोई रिकार्ड है उससे सत्यापन करें या ग्राहक से विचार विमर्श के माध्यम से)', _monthlySalesController, TextInputType.number),
@@ -226,9 +226,9 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                       _buildTextField2('कुल मासिक घरेलू खर्च', _TotalmonthlyhouseholdexpensesController, TextInputType.number),
                       _buildTextField2('परिवार के अन्य सदस्यों की शुद्ध मासिक आय', _NetmonthlyincomeotherfamilymembersController, TextInputType.number),
                       _buildTextField2('संदर्भ व्यक्ति का नाम 1', _Namereferenceperson1Controller, TextInputType.name),
-                      _buildTextField2('फोन नंबर 1', _Mobilereferenceperson1Controller, TextInputType.number),
+                      _buildTextField1('फोन नंबर 1', _Mobilereferenceperson1Controller, TextInputType.number,10),
                       _buildTextField2(' संदर्भ व्यक्ति का नाम 2', _Namereferenceperson2Controller, TextInputType.name),
-                      _buildTextField2('फोन नंबर 2', _Mobilereferenceperson2Controller, TextInputType.number),
+                      _buildTextField1('फोन नंबर 2', _Mobilereferenceperson2Controller, TextInputType.number,10),
                       _buildTextField2('व्यवसाय स्थान का पता', _AddressController, TextInputType.name),
 
 
@@ -427,8 +427,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     String Mobilereferenceperson2=_Mobilereferenceperson2Controller.text.toString();
     String Address=_AddressController.text.toString();
 
-    double Latitude=_latitude;
-    double Longitude=_longitude;
+  /*  double Latitude=_latitude;
+    double Longitude=_longitude;*/
 
     String Applicant_Status="N";
     String FamilymemberfromPaisalo="o";
@@ -519,8 +519,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         feedbacknearbyresident,
         UnderstandInsaurancePolicy,
         BusinessVerification,
-        Latitude,
-        Longitude,
+        _latitude,
+        _longitude,
         EmpCode,
         Address,
         Image!).then((response) {
@@ -578,6 +578,50 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     );
 
   }
+  Widget _buildTextField1(String label, TextEditingController controller, TextInputType inputType, int maxlength) {
+    return Container(
+      padding: EdgeInsets.all(4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: "Poppins-Regular",
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          ),
+          Container(
+            width: double.infinity, // Set the desired width
+            color: Colors.white,
+            child: Center(
+              child: TextFormField(
+                controller: controller,
+                keyboardType: inputType, // Set the input type
+                maxLength: maxlength, // Restrict input length
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                  counterText: '', // Optionally hide the counter below the input field
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter $label';
+                  }
+                  if (value.length > maxlength) {
+                    return '$label cannot exceed $maxlength characters';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Widget checkboxes(String label, String value, ValueChanged<String> onChanged) {
     return StatefulBuilder(
@@ -727,7 +771,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         _locationMessage =
         "${position.latitude},${position.longitude}";
         print(
-            " geolocatttion: $_locationMessage"); // Print the location message to the console
+            " geolocatttion: $_locationMessage");
         _latitude = position.latitude;
         _longitude =position.longitude;
       });
@@ -736,7 +780,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         _locationMessage = e.toString();
       });
       print(
-          " geolocatttion: $_locationMessage"); // Print the error message to the console
+          " geolocatttion: $_locationMessage");
     }
   }
   Future<Position> _getCurrentPosition() async {

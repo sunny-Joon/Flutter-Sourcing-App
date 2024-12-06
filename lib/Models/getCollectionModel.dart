@@ -11,7 +11,7 @@ String getCollectionModelToJson(GetCollectionModel data) => json.encode(data.toJ
 class GetCollectionModel {
   int statuscode;
   String message;
-  List<Datum> data;
+  List<GetCollectionDataModel> data;
 
   GetCollectionModel({
     required this.statuscode,
@@ -22,7 +22,7 @@ class GetCollectionModel {
   factory GetCollectionModel.fromJson(Map<String, dynamic> json) => GetCollectionModel(
     statuscode: json["statuscode"],
     message: json["message"],
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: List<GetCollectionDataModel>.from(json["data"].map((x) => GetCollectionDataModel.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -32,7 +32,7 @@ class GetCollectionModel {
   };
 }
 
-class Datum {
+class GetCollectionDataModel {
   String db;
   String dbName;
   String creator;
@@ -47,25 +47,25 @@ class Datum {
   String caseCode;
   String firstInstDate;
   int noOfInsts;
-  int totalDueAmt;
+  double totalDueAmt;
   int totalDueCnt;
-  int totalRecdAmt;
+  double totalRecdAmt;
   int totalRecdCnt;
-  int instsAmtDue;
+  double instsAmtDue;
   int nofInstDue;
   String instData;
-  int toBeDueAmt;
+  double toBeDueAmt;
   String toBeDueDate;
-  int futureDue;
+  double futureDue;
   String instDueAsOn;
   String isNachReg;
   String dataAsOn;
-  int interestAmt;
+  double interestAmt;
   String schmCode;
   String errormsg;
   bool isvalide;
 
-  Datum({
+  GetCollectionDataModel({
     required this.db,
     required this.dbName,
     required this.creator,
@@ -99,7 +99,7 @@ class Datum {
     required this.isvalide,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory GetCollectionDataModel.fromJson(Map<String, dynamic> json) => GetCollectionDataModel(
     db: json["db"]??"",
     dbName: json["dbName"]??"",
     creator: json["creator"]??"",

@@ -1,414 +1,367 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/Models/leader_board_model.dart';
-import 'package:gif/gif.dart';
+import 'Models/leader_board_model.dart';
 import 'api_service.dart';
-import 'global_class.dart';
 import 'const/appcolors.dart';
+import 'global_class.dart';
 
 class LeaderBoard extends StatefulWidget {
   @override
   _LeaderBoardState createState() => _LeaderBoardState();
 }
 
-class _LeaderBoardState extends State<LeaderBoard> with TickerProviderStateMixin {
+class _LeaderBoardState extends State<LeaderBoard> {
+  late List<LeaderboardDataModel> leaderboardDataModel = [];
+  AppColors appColors = AppColors();
+  String selectedPeriod = "January";
+  bool isDataAvailable = true;
+  String errorMessage = '';
 
-  late List<LeaderboardDataModel> leaderboardDataModel=[];
+  List<String> dropdownOptions = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
 
-  AppColors appColors = new AppColors();
-  int _current = 0;
-  late GifController _controllerGif;
-  int isLoading = 1;
-  //final CarouselController _controller = CarouselController();
   @override
   void initState() {
     super.initState();
-    _controllerGif = GifController(vsync: this);
-    _getLeaderBoardData(context);
-
+    _getLeaderBoardDataForPeriod(selectedPeriod); // Fetch initial data for January
   }
 
-  @override
-  void dispose() {
-    _controllerGif.dispose();
-    super.dispose();
-  }
-
-/*  final List<String> imgList = [
-    "assets/images/banner3.gif",
-    "assets/images/banner2.gif",
-  ];*/
-  Widget buildDot({required int index}) {
-    return Container(
-      width: 7,
-      height: 7,
-      margin: EdgeInsets.symmetric(horizontal: 2),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: _current == index ? Colors.white : Colors.grey,
-      ),
-    );
-  }
-
-  Future<void> _getLeaderBoardData(BuildContext contextDialog) async {
+  // Fetch leaderboard data for the selected period
+  Future<void> _getLeaderBoardDataForPeriod(String period) async {
     EasyLoading.show(status: "Loading...");
-
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
 
-    return await api
-        .leaderboardList(GlobalClass.token, GlobalClass.dbName, "1",
-            "2024-10-20", "2024-11-20")
-        .then((value) {
-      if (value.statuscode == 200) {
+    String startDate = getStartDateForPeriod(period);
+    String endDate = getEndDateForPeriod(period);
+
+    try {
+      var response = await api
+          .leaderboardList(GlobalClass.token, GlobalClass.dbName, "1", startDate, endDate);
+
+      if (response.statuscode == 200) {
+        if (response.data.isNotEmpty) {
+          setState(() {
+            leaderboardDataModel = response.data;
+            isDataAvailable = true;
+            errorMessage = '';
+          });
+        } else {
+          setState(() {
+            leaderboardDataModel.clear();
+            isDataAvailable = false;
+            errorMessage = 'No data available for $selectedPeriod.';
+          });
+        }
+      } else {
         setState(() {
-          leaderboardDataModel = value.data;
+          leaderboardDataModel.clear();
+          isDataAvailable = false;
+          errorMessage = 'No data available for $selectedPeriod'; // Error if statuscode is not 200
         });
-        print("lll$leaderboardDataModel.length");
-        EasyLoading.dismiss();
-      } else {}
+      }
+    } catch (err) {
+      setState(() {
+        leaderboardDataModel.clear();
+        isDataAvailable = false;
+        errorMessage = 'An error occurred for $selectedPeriod'; // Error if there’s any failure during the request
+      });
+    } finally {
       EasyLoading.dismiss();
-    }).catchError((err) {
-      EasyLoading.dismiss();
-    });
+    }
+  }
+
+
+
+
+  String getStartDateForPeriod(String period) {
+    DateTime now = DateTime.now();
+    int month = dropdownOptions.indexOf(period) + 1;
+    return DateTime(now.year, month, 1).toIso8601String().split('T')[0];
+  }
+
+  String getEndDateForPeriod(String period) {
+    DateTime now = DateTime.now();
+    int month = dropdownOptions.indexOf(period) + 1;
+    DateTime firstDayNextMonth = DateTime(now.year, month + 1, 1);
+    DateTime lastDayOfThisMonth = firstDayNextMonth.subtract(Duration(days: 1));
+    return lastDayOfThisMonth.toIso8601String().split('T')[0];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appColors.mainAppColor,
-      body:SingleChildScrollView(child:  Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 8,right: 8,top: 50),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  child: Container(
-                    // decoration: BoxDecoration(
-                    //   color: Colors.white,
-                    //   border: Border.all(width: 1, color: Colors.grey.shade300),
-                    //   borderRadius: BorderRadius.all(Radius.circular(5)),
-                    // ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8, top: 50),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      alignment: Alignment.center,
+                    ),
+                    onTap: () {
+                      // Navigator.of(context).pop();
+                    },
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        "ALL INDIA",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontFamily: "Poppins-Regular",
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        "LEADER BOARD",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Poppins-Regular",
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
                     height: 40,
                     width: 40,
                     alignment: Alignment.center,
-                    // child: Center(
-                    //   child: Icon(Icons.arrow_back_ios_sharp, size: 16),
-                    // ),
                   ),
-                  onTap: () {
-                   // Navigator.of(context).pop();
-                  },
-                ),
-                Column(
-                  children: [
-                    Text(
-                      "ALL INDIA",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontFamily: "Poppins-Regular",
-                          fontSize: 16),
-                    ),
-                    Text(
-                      "LEADER BOARD",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "Poppins-Regular",
-                          fontSize: 14),
-                    ),
-                  ],
-                ),
-                /*Center(
-                  child: Image.asset(
-                    'assets/Images/logo_white.png', // Replace with your logo asset path
-                    height: 40,
-                  ),
-                ),*/
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white38,
+                borderRadius: BorderRadius.circular(50.0),
+              ),
+              alignment: Alignment.center,
+              width: 80,
+              height: 80,
+              child: Image.asset('assets/Images/trophy_ic.png'),
+            ),
+            Stack(
+              alignment: Alignment.topCenter,
+              children: [
                 Container(
-                  height: 40,
-                  width: 40,
                   alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height / 1.4,
+                  child: null,
                 ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white38,
-              borderRadius: BorderRadius.circular(50.0),
-            ),
-            alignment: Alignment.center,
-            width: 80,
-            height: 80,
-            child:
-            Image.asset('assets/Images/trophy_ic.png'),
-          ),
-          /*Container(
-            child: Gif(
-              fit: BoxFit.fitWidth,
-              image: AssetImage("assets/images/render.gif"),
-              controller:
-                  _controllerGif, // if duration and fps is null, original gif fps will be used.
-              //fps: 30,
-              //duration: const Duration(seconds: 3),
-              autostart: Autostart.no,
-              onFetchCompleted: () {
-                _controllerGif.reset();
-                _controllerGif.forward();
-              },
-            ),
-          ),*/
-          Column(
-            children: [
-              /*Container(
-                decoration: BoxDecoration(),
-                child: Column(
-                  children: [
-                   */
-              /* SizedBox(
-                      height: MediaQuery.of(context).size.height / 20,
-                    ),
-                    Text(
-                      "ALL INDIA",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontFamily: 'Visbycfbold',
-                          fontSize: 16),
-                    ),
-                    Text(
-                      "LEADER BOARD",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Visbycfbold',
-                          fontSize: 14),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height / 50),
-                    *//**//*CarouselSlider.builder(
-                      itemCount:
-                          2, // Replace '3' with the total number of items
-                      itemBuilder:
-                          (BuildContext context, int index, int realIndex) {
-                        return Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            child: SizedBox(
-                              // Adjust the width as needed// Adjust the height as needed
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15.0),
-                                child: Image.asset(
-                                  imgList
-                                      .elementAt(index)
-                                      .toString(), // Replace with your image URL
-                                  fit: BoxFit
-                                      .cover, // Adjust the fit as needed (contain, cover, fill, etc.)
-                                ),
-                              ),
-                            ));
-                      },
-                      options: CarouselOptions(
-                        height: MediaQuery.of(context).size.height /
-                            7, // Adjust the height as needed
-                        viewportFraction:
-                            1.0, // Set to 1.0 to display only one item at a time
-                        enableInfiniteScroll:
-                            true, // Enable infinite scroll if needed
-                        reverse:
-                            false, // Set true/false for reversing the items
-                        autoPlay: true, // Set true/false for autoplay
-                        autoPlayInterval: Duration(
-                            seconds: 10), // Autoplay interval if needed
-                        autoPlayAnimationDuration: Duration(
-                            milliseconds: 3000), // Autoplay animation duration
-                        pauseAutoPlayOnTouch: false,
-                        // Pause autoplay on touch
-
-                        onPageChanged: (index, reason) {
-                          *//**//*
-                    *//**//*  setState(() {
-                            print("page index $index");
-                            _current = index;
-                          });*//**//*
-                    *//**//*
-                        },
-                      ),
-                    ),*//**/
-              /*
-                    SizedBox(height: MediaQuery.of(context).size.height / 48),
-                    *//**/
-              /*Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        2, // Replace '3' with the total number of items
-                        (index) => buildDot(index: index),
-                      ),
-                    ),*//**/
-              /*
-                    SizedBox(height: MediaQuery.of(context).size.height / 35),*/
-              /*
-                  ],
-                ),
-              ),*/
-              /* isLoading != 0
-                  ? isLoading == 1
-                      ?*/
-              Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  Container(
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height / 1.4,
-                      child: null),
-                  Positioned(
-                    // top: 40,
+                Positioned(
+                  child: Container(
+                    color: appColors.mainAppColor,
+                    alignment: Alignment.bottomCenter,
+                    width: MediaQuery.of(context).size.width / 1.1,
+                    height: MediaQuery.of(context).size.height / 1.6,
                     child: Container(
-                      color: appColors.mainAppColor,
-                      alignment: Alignment.bottomCenter,
-                      width: MediaQuery.of(context).size.width / 1.1,
-                      height:
-                      MediaQuery.of(context).size.height / 1.6,
-                      child: Container(
-                        margin: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                                'assets/Images/curvedBackground.png'), // Replace with the actual image path
-                            fit: BoxFit.fill,
-                          ),
+                      margin: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/Images/curvedBackground.png'),
+                          fit: BoxFit.fill,
                         ),
-                        padding: EdgeInsets.only(
-                            top: 65, left: 10, right: 10, bottom: 60),
-                        //  margin: EdgeInsets.only(top: 30,left: 10,right: 10),
-                        child: MediaQuery.removePadding(
-                          context: context,
-                          removeTop: true,
-                          child: ListView.builder(
-                            itemCount: leaderboardDataModel.length,
-                            itemBuilder: (context, index) {
-                              final item = leaderboardDataModel[index];
-                              final bool isFirstItem = index == 0;
+                      ),
+                      padding: const EdgeInsets.only(top: 65, left: 10, right: 10, bottom: 60),
+                      child: MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        child: ListView.builder(
+                          itemCount: leaderboardDataModel.length,
+                          itemBuilder: (context, index) {
+                            final item = leaderboardDataModel[index];
+                            final bool isFirstItem = index == 0;
 
-                              return Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 5.0, horizontal: 25.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Card(
-                                          clipBehavior:
-                                          Clip.antiAlias,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: appColors
-                                                  .mainAppColor,
-                                              gradient: isFirstItem
-                                                  ? const LinearGradient(
-                                                colors: [
-                                                  Colors.yellow,
-                                                  Colors
-                                                      .orangeAccent,
-                                                  Colors.yellow,
-                                                  Colors.orange,
-                                                  Colors.orange
-                                                ], // Define your gradient colors
-                                                begin: Alignment
-                                                    .topLeft,
-                                                end: Alignment
-                                                    .bottomCenter,
-                                              )
-                                                  : null, // No gradient for other items
-                                            ),
-                                            height: 20,
-                                            width: 20,
-                                            child: Center(
-                                              child: Text(
-                                                '${index + 1}',
-                                                style: TextStyle(fontFamily: "Poppins-Regular",
-                                                  fontSize: 14,
-                                                  color: Colors.white,
-                                                  fontWeight:
-                                                  FontWeight.bold,
-                                                ),
+                            return Container(
+                              padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 25.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Card(
+                                        clipBehavior: Clip.antiAlias,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: appColors.mainAppColor,
+                                            gradient: isFirstItem
+                                                ? const LinearGradient(
+                                              colors: [
+                                                Colors.yellow,
+                                                Colors.orangeAccent,
+                                                Colors.yellow,
+                                                Colors.orange,
+                                                Colors.orange
+                                              ],
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomCenter,
+                                            )
+                                                : null,
+                                          ),
+                                          height: 20,
+                                          width: 20,
+                                          child: Center(
+                                            child: Text(
+                                              '${index + 1}',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Container(
-                                          width:
-                                          MediaQuery.of(context)
-                                              .size
-                                              .width /
-                                              3,
-                                          child: Flexible(child: Text(
-                                            item.name,
-                                            style: TextStyle(fontFamily: "Poppins-Regular",
-                                              fontSize: 15,
-                                              color: Color(0xFFD42D3F),
-                                              fontWeight: isFirstItem
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal,
-                                            ),
-                                          ),),
-
-                                        ),
-                                      ],
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        item.totalDisbursementAmt,
-                                        style: TextStyle(fontFamily: "Poppins-Regular",
-                                          fontSize: 15,
-                                          color: Color(0xFFD42D3F),
-                                          /*decorationThickness: 1,
-                                                    decoration: TextDecoration.underline,*/
-                                          decorationColor: Color(0xFFD42D3F),
-                                          fontWeight: isFirstItem ? FontWeight.bold : FontWeight.normal,
+                                      ),
+                                      SizedBox(width: 5),
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width / 3,
+                                        child: Text(
+                                          item.name,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Color(0xFFD42D3F),
+                                            fontWeight: isFirstItem ? FontWeight.bold : FontWeight.normal,
+                                          ),
                                         ),
                                       ),
-                                    )
-
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
+                                    ],
+                                  ),
+                                  Text(
+                                    item.totalDisbursementAmt,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Color(0xFFD42D3F),
+                                      fontWeight: isFirstItem ? FontWeight.bold : FontWeight.normal,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
                   ),
-                  Positioned(
-                    top: 38,
-                    child: Text(
-                      'Last Month Achievers',
-                      style: TextStyle(fontFamily: "Poppins-Regular",
-                          color: appColors.mainAppColor,
-                          fontSize: 16,
-                         ),
-                    ),
+                ),
+                Positioned(
+                  top: 38,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                int index = dropdownOptions.indexOf(selectedPeriod);
+                                if (index > 0) {
+                                  selectedPeriod = dropdownOptions[index - 1];
+                                  _getLeaderBoardDataForPeriod(selectedPeriod);  // Fetch data for previous month
+                                }
+                              });
+                            },
+                            child: Icon(
+                              Icons.arrow_left,
+                              color: appColors.mainAppColor,
+                              size: 30,
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          Container(
+                            width: 100,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              selectedPeriod,
+                              style: TextStyle(
+                                color: appColors.mainAppColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                int index = dropdownOptions.indexOf(selectedPeriod);
+                                if (index < dropdownOptions.length - 1) {
+                                  selectedPeriod = dropdownOptions[index + 1];
+                                  _getLeaderBoardDataForPeriod(selectedPeriod);  // Fetch data for next month
+                                }
+                              });
+                            },
+                            child: Icon(
+                              Icons.arrow_right,
+                              color: appColors.mainAppColor,
+                              size: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (!isDataAvailable)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20), // Adjust the top padding for margin from the dropdown
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min, // Ensures the Column takes only the required space
+                              crossAxisAlignment: CrossAxisAlignment.center, // Centers the icon and text
+                              children: [
+                                Icon(
+                                  Icons.error, // Error icon
+                                  color: Colors.grey, // Red color for the error icon
+                                  size: 30, // Increased size for the icon
+                                ),
+                                SizedBox(height: 8), // Space between the icon and text
+                                Text(
+                                  errorMessage,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey, // Red color for error text
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+
+
+                    ],
                   ),
-                ],
-              )
-              /*: Container()
-                  : CircularProgressIndicator(
-                      color: appColors.white,
-                    ),*/
-            ],
-          ),
-        ],
-      )),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

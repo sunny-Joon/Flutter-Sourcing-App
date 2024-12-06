@@ -142,6 +142,13 @@ class GlobalClass {
     return age;
   }
 
+  static String getTodayDate() {
+    final now = DateTime.now();
+    return '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}';
+
+  }
+
+
   Future<File?> pickImage() async {
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: ImageSource.camera);
