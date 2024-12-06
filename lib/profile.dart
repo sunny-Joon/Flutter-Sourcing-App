@@ -4,10 +4,12 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/qr_payment_reports.dart';
 import 'package:flutter_sourcing_app/utils/current_location.dart';
 
+import 'package:provider/provider.dart';
+
+
 import 'api_service.dart';
 import 'global_class.dart';
 import 'login_page.dart';
-
 
 class Profile extends StatefulWidget {
   @override
@@ -21,7 +23,7 @@ class _ProfileState extends State<Profile> {
   final TextEditingController _mobileNoController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _designationController = TextEditingController();
-
+  final TextEditingController deviceSirNoController = TextEditingController();
   String tabName = "Punch In";
   Duration _remainingTime = Duration();
   String _timeDisplay = '';
@@ -113,170 +115,183 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFD42D3F),
-
-      body: Stack(
-        children: [
-          // Background sphere
-          Positioned(
-            top: -MediaQuery.of(context).size.width - 50,
-            left: -50,
-            right: -50,
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/Images/sphere.png'),
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
+        backgroundColor: Color(0xFFD42D3F),
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth:
+                MediaQuery.of(context).size.width , // Set a max width
+            maxHeight:
+                MediaQuery.of(context).size.height -45, // Set a max height
           ),
-
-          // Header with back, logo, and logout buttons
-          Positioned(
-            top: 35,
-            left: 10,
-            right: 10,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                 // _buildBackButton(context),
-                  SizedBox(width: 50,),
-                  _buildCenterLogo(),
-                  _buildLogoutButton(context),
-                ],
-              ),
-            ),
-          ),
-
-          // Main content: Profile picture, user details, and action cards
-          Positioned.fill(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.width / 3.6),
-                _buildProfilePicture(),
-                SizedBox(
-                  height: 30,
-                ),
-                _buildUserDetailsCard(),
-
-                Container(
-                  height: MediaQuery.of(context).size.height / 5,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: SingleChildScrollView(
-                      child: GridView.builder(
-                        padding: EdgeInsets.all(0),
-                        shrinkWrap:
-                            true, // Ensure the grid view doesn't expand infinitely
-                        physics:
-                            NeverScrollableScrollPhysics(), // Disable scrolling for GridView
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3, // Number of columns
-                          crossAxisSpacing: 1,
-                          mainAxisSpacing: 1,
-                        ),
-                        itemCount: 3, // Number of grid items
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return _buildGridItem(
-                                'QR Payment Report', Icons.qr_code, () {
-                              // Action for QR Payment Details
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => QrPaymentReports(),
-                                ),
-                              );
-                              // Add navigation or other actions here
-                            });
-                          } else if (index == 1) {
-                            return _buildGridItem(
-                                'Collection Report', Icons.currency_rupee, () {
-                              // Action for Get Collection Report
-                              print('Get Collection Report Clicked');
-                              // Add navigation or other actions here
-                            });
-                          } else if (index == 2) {
-                            return _buildGridItem(
-                                'Another Report', Icons.find_in_page_sharp, () {
-                              // Action for Another Report
-                              print('Another Report Clicked');
-                              // Add navigation or other actions here
-                            });
-                          } else {
-                            return _buildGridItem(
-                                'More Reports', Icons.insert_chart, () {
-                              // Action for More Reports
-                              print('More Reports Clicked');
-                              // Add navigation or other actions here
-                            });
-                          }
-                        },
-                      ),
+          child: Stack(
+            children: [
+              // Background sphere
+              Positioned(
+                top: -MediaQuery.of(context).size.width - 50,
+                left: -50,
+                right: -50,
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/Images/sphere.png'),
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),
-                Card(
-                  elevation: 10,
-                  clipBehavior: Clip.antiAlias,
-                  child: Container(
-                    color: Colors.green,
-                    width: MediaQuery.of(context).size.width - 50,
-                    child: InkWell(
-                      onTap: () {
-                        punchInOut(context);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 11.0),
-                        alignment: Alignment.center,
-                        child: Text(
-                          tabName,
-                          style: TextStyle(fontFamily: "Poppins-Regular",
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+              ),
+
+              // Header with back, logo, and logout buttons
+              Positioned(
+                top: 35,
+                left: 10,
+                right: 10,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // _buildBackButton(context),
+                      SizedBox(
+                        width: 50,
+                      ),
+                      _buildCenterLogo(),
+                      _buildLogoutButton(context),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Main content: Profile picture, user details, and action cards
+              Positioned.fill(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.width / 5),
+                    _buildProfilePicture(),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    _buildUserDetailsCard(),
+                    Container(
+                      height: MediaQuery.of(context).size.height / 6,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: SingleChildScrollView(
+                          child: GridView.builder(
+                            padding: EdgeInsets.all(0),
+                            shrinkWrap:
+                                true, // Ensure the grid view doesn't expand infinitely
+                            physics:
+                                NeverScrollableScrollPhysics(), // Disable scrolling for GridView
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3, // Number of columns
+                              crossAxisSpacing: 1,
+                              mainAxisSpacing: 1,
+                            ),
+                            itemCount: 3, // Number of grid items
+                            itemBuilder: (context, index) {
+                              if (index == 0) {
+                                return _buildGridItem(
+                                    'QR Payment Report', Icons.qr_code, () {
+                                  // Action for QR Payment Details
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => QrPaymentReports(),
+                                    ),
+                                  );
+                                  // Add navigation or other actions here
+                                });
+                              } else if (index == 1) {
+                                return _buildGridItem(
+                                    'Collection Report', Icons.currency_rupee,
+                                    () {
+                                  // Action for Get Collection Report
+                                  print('Get Collection Report Clicked');
+                                  // Add navigation or other actions here
+                                });
+                              } else if (index == 2) {
+                                return _buildGridItem(
+                                    'Morpho Recharge', Icons.find_in_page_sharp,
+                                    () {
+                                  showCustomAlertDialog(context);
+                                });
+                              } else {
+                                return _buildGridItem(
+                                    'More Reports', Icons.insert_chart, () {
+                                  // Action for More Reports
+                                  print('More Reports Clicked');
+                                  // Add navigation or other actions here
+                                });
+                              }
+                            },
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    Card(
+                      elevation: 10,
+                      clipBehavior: Clip.antiAlias,
+                      child: Container(
+                        color: Colors.green,
+                        width: MediaQuery.of(context).size.width - 50,
+                        child: InkWell(
+                          onTap: () {
+                            punchInOut(context);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 11.0),
+                            alignment: Alignment.center,
+                            child: Text(
+                              tabName,
+                              style: TextStyle(
+                                fontFamily: "Poppins-Regular",
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        )));
   }
 
   Widget _buildGridItem(String title, IconData icon, VoidCallback onTap) {
     return Card(
-
       color: Colors.white,
       elevation: 6,
       margin: EdgeInsets.all(6),
       child: InkWell(
         onTap: onTap,
-        child: Padding(padding: EdgeInsets.all(4),child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 20, color: Colors.grey),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: "Poppins-Regular",
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-                color: Colors.black,
+        child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 20, color: Colors.grey),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: "Poppins-Regular",
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
+                ),
               ),
-            ),
-          ],
-        ),),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -290,6 +305,26 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Widget _buildActionCard(String title) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+      child: ListTile(
+        title: Text(
+          title,
+          style: TextStyle(
+              fontFamily: "Poppins-Regular",
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[700]),
+        ),
+        trailing: Icon(Icons.arrow_forward),
+        onTap: () {
+          // Add your action here
+        },
+      ),
+    );
+  }
+
   Widget _buildLogoutButton(BuildContext context) {
     return InkWell(
       onTap: () {
@@ -300,25 +335,23 @@ class _ProfileState extends State<Profile> {
             content: Text('Do you want to Logout?'),
             actions: [
               TextButton(
-
-                onPressed: (){
+                onPressed: () {
                   EasyLoading.dismiss();
                   Navigator.of(context).pop(true);
-                 } ,
+                },
                 child: Text('No'),
               ),
               TextButton(
                 onPressed: () {
                   EasyLoading.dismiss();
-                  Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => LoginPage()));
                 }, // Exit the app
                 child: Text('Yes'),
               ),
             ],
           ),
         );
-
       },
       child: _buildIconContainer(Icons.logout, color: Color(0xFFD42D3F)),
     );
@@ -386,11 +419,15 @@ class _ProfileState extends State<Profile> {
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
         Text(label,
-            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11, fontWeight: FontWeight.bold)),
+            style: TextStyle(
+                fontFamily: "Poppins-Regular",
+                fontSize: 11,
+                fontWeight: FontWeight.bold)),
         Expanded(
           child: Text(
             controller.text,
-            style: TextStyle(fontFamily: "Poppins-Regular",color: Color(0xFFD42D3F)),
+            style: TextStyle(
+                fontFamily: "Poppins-Regular", color: Color(0xFFD42D3F)),
           ),
         ),
       ],
@@ -402,33 +439,18 @@ class _ProfileState extends State<Profile> {
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
         Text(label,
-            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11, fontWeight: FontWeight.bold)),
+            style: TextStyle(
+                fontFamily: "Poppins-Regular",
+                fontSize: 11,
+                fontWeight: FontWeight.bold)),
         Expanded(
           child: Text(
             timerDisplay,
-            style: TextStyle(fontFamily: "Poppins-Regular",color: Color(0xFFD42D3F)),
+            style: TextStyle(
+                fontFamily: "Poppins-Regular", color: Color(0xFFD42D3F)),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildActionCard(String title) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-      child: ListTile(
-        title: Text(
-          title,
-          style: TextStyle(fontFamily: "Poppins-Regular",
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[700]),
-        ),
-        trailing: Icon(Icons.arrow_forward),
-        onTap: () {
-          // Add your action here
-        },
-      ),
     );
   }
 
@@ -491,4 +513,128 @@ class _ProfileState extends State<Profile> {
     });
   }
 
+  void showCustomAlertDialog(BuildContext context) {
+    final TextEditingController deviceSirNoController =
+        TextEditingController(text: '2306I0052');
+
+    showDialog(
+      context: context,
+      barrierDismissible:
+          false, // Prevent closing the dialog by clicking outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Recharge'),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Morpho Device Sir No",
+                  style: TextStyle(
+                    fontFamily: "Poppins-Regular",
+                    fontSize: 13,
+                  ),
+                  textAlign: TextAlign.start,
+                ),
+                SizedBox(height: 1),
+                Container(
+                  width: double.infinity, // Set the desired width
+                  child: Center(
+                    child: TextFormField(
+                      maxLength: 11,
+                      controller: deviceSirNoController,
+                      keyboardType: TextInputType.text,
+                      // Set the input type
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        counterText: "",
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter Device Sir No';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  Map<String, dynamic> locationData =
+                      await currentLocation().getCurrentLocation();
+                  var _latitude = 0.0;
+                  var _longitude = 0.0;
+                  _latitude = locationData['latitude'];
+                  _longitude = locationData['longitude'];
+                  MorphoRechargeApi(context, _latitude, _longitude);
+                } catch (e) {
+                  print("Error getting current location: $e");
+                }
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red, // Background color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0), // Rounded corners
+                ),
+                minimumSize: Size(100, 50), // Width and height of the button
+              ),
+              child: Text('Submit',
+                  style: TextStyle(color: Colors.white)), // Text color
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> MorphoRechargeApi(
+      BuildContext context, double latitude, double longitude) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
+    final api = Provider.of<ApiService>(context, listen: false);
+    Map<String, dynamic> requestBody = {
+      "creator": "AGRA",
+      "groupCode": "009",
+      "cityCode": "2299",
+      "deviceSirNo": deviceSirNoController.text,
+      "Lat": latitude.toString(),
+      "Long": longitude.toString()
+    };
+
+    await api
+        .morphorecharge(GlobalClass.dbName, GlobalClass.token, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+      } else {
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(
+            context, "Unsuccessful to send Request", 1);
+      }
+    }).catchError((error) {
+      EasyLoading.dismiss();
+      GlobalClass.showUnsuccessfulAlert(context, "Server side Error", 1);
+    });
+  }
 }
