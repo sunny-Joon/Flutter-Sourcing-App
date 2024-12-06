@@ -5,10 +5,8 @@ import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
- import 'package:flutter_sourcing_app/MasterAPIs/ckyc_repository.dart';
 
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
-import 'package:flutter_sourcing_app/Models/place_codes_model.dart';
 import 'package:flutter_sourcing_app/const/validators.dart';
 import 'package:flutter_sourcing_app/qr_scan_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -20,7 +18,9 @@ import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 
 import 'DATABASE/database_helper.dart';
+import 'MasterAPIs/ckyc_repository.dart';
 import 'Models/group_model.dart';
+import 'Models/place_codes_model.dart';
 import 'Models/range_category_model.dart';
 import 'api_service.dart';
 import 'global_class.dart';

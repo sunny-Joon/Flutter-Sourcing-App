@@ -439,7 +439,6 @@ class _ProfileState extends State<Profile> {
     try {
       Map<String, dynamic> locationData =
       await _locationService.getCurrentLocation();
-
       _latitude = locationData['latitude'];
       _longitude = locationData['longitude'];
 
