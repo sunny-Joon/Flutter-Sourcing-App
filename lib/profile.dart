@@ -230,45 +230,6 @@ class _ProfileState extends State<Profile> {
                             },
                           ),
                         ),
-
-                        itemCount: 3, // Number of grid items
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return _buildGridItem(
-                                'QR Payment Report', Icons.qr_code, () {
-                              // Action for QR Payment Details
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => QrPaymentReports(),
-                                ),
-                              );
-                              // Add navigation or other actions here
-                            });
-                          } else if (index == 1) {
-                            return _buildGridItem(
-                                'Collection Report', Icons.currency_rupee, () {
-                              // Action for Get Collection Report
-                              print('Get Collection Report Clicked');
-                              // Add navigation or other actions here
-                            });
-                          } else if (index == 2) {
-                            return _buildGridItem(
-                                'Morpho Recharge', Icons.fingerprint, () {
-                              // Action for Another Report
-                              print('Another Report Clicked');
-                              // Add navigation or other actions here
-                            });
-                          } else {
-                            return _buildGridItem(
-                                'More Reports', Icons.insert_chart, () {
-                              // Action for More Reports
-                              print('More Reports Clicked');
-                              // Add navigation or other actions here
-                            });
-                          }
-                        },
-
                       ),
                     ),
                     Card(
