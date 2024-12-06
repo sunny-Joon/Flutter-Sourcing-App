@@ -573,103 +573,56 @@ EasyLoading.dismiss();
 
   Widget consentText() {
     return RichText(
-
       text: TextSpan(
-        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 12.0, color: Colors.black), // Default text style
-        children: <TextSpan>[
+        style: TextStyle(fontSize: 16, color: Colors.black),
+        children: [
           TextSpan(
-            text: 'TERMS & CONDITIONS FOR ONLINE PAYMENTS TO BE MADE TO PAISALO DIGITAL LTD\n\n',
-            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,color: Color(0xffb41d2d)),
-          ),
-          TextSpan(
-            text: 'Name of NBFC: PAISALO DIGITAL LTD\n'
-                'CSC POCKET 52 CR PARK NEAR POLICE STATION\n'
-                'NEW DELHI -110019\n'
-                'WWW.PAISALO.IN\n\n',
-          ),
-          TextSpan(
-            text: 'Online Charges Payments:\n',
-            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
+            text: 'I hereby authorize NSDL e-Gov on behalf of Paisalo Digital Limited to:\n\n',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
           TextSpan(
             text:
-            'This online payment system is provided by PAISALO DIGITAL LTD. The PAISALO DIGITAL LTD may update these terms from time to time, and any changes will be effective immediately on being set out on this portal. Please ensure that you are aware of the current terms. The country of domicile of PAISALO DIGITAL LTD is India, and legal jurisdiction is New Delhi, India.\n\n',
-          ),
-          TextSpan(
-            text: 'Please read these terms carefully before using the online payment facility. Using the online payment facility on this website indicates that you accept these terms. If you do not accept these terms, do not use this facility.\n\n',
-          ),
-          TextSpan(
-            text: 'All payments are subject to the following conditions:\n',
-            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
+            '1. Use my Aadhaar details for Loan Document eSignature and authenticate my identity through the Aadhaar '
+                'Authentication system (Aadhaar based e-KYC services of UIDAI) in accordance with the provisions of the '
+                'Aadhaar (Targeted Delivery of Financial and other Subsidies, Benefits and Services) Act, 2016 and the allied '
+                'rules and regulations notified thereunder and for no other purpose.\n\n',
           ),
           TextSpan(
             text:
-            '- The description of items is specific to you when you log in with your user ID and unique password.\n'
-                '- All charges quoted are in Indian Rupees.\n'
-                '- PAISALO DIGITAL LTD reserves the right to change the charges at any time.\n'
-                '- Your payment to PAISALO DIGITAL LTD will normally reach PAISALO DIGITAL LTD\'s account within two working days.\n'
-                '- We cannot accept liability for a payment not reaching the correct account of PAISALO DIGITAL LTD due to quoting an incorrect account number or incorrect details by you. Neither can we accept liability if payment is refused or declined by the net banking/credit/debit card supplier for any reason.\n'
-                '- If the banker/card supplier declines payment, PAISALO DIGITAL LTD is under no obligation to bring this fact to your attention.\n'
-                '- It is for you (the customer) to check with your bank/credit/debit card supplier that payment has been deducted from your account.\n'
-                '- In no event, PAISALO DIGITAL LTD will be liable for any damages whatsoever arising out of the use, computer virus, malware, inability to use, or the results of use of this site or any websites linked to this site, or the materials or information contained at any or all such sites, whether based on warranty, contract, tort, or any other legal theory and whether or not advised of the possibility of such damages.\n\n',
-          ),
-          TextSpan(
-            text: 'Refund Policy:\n',
-            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
+            '2. Authenticate my Aadhaar through OTP or Biometric for authenticating my identity through the Aadhaar '
+                'Authentication system for obtaining my e-KYC through Aadhaar based e-KYC services of UIDAI and use my Photo '
+                'and Demographic details (Name, Gender, Date of Birth, and Address) for Loan Document eSignature.\n\n',
           ),
           TextSpan(
             text:
-            'Refunds, if applicable, at the discretion of the management, will only be made as per the sources of net banking/debit/credit card used for the original transaction. For the avoidance of doubt, nothing in this policy shall require PAISALO DIGITAL LTD to refund the charges (or part thereof) unless such charges (or part thereof) have previously been paid by the customer through online payment mode and the same has been credited into the accounts of PAISALO DIGITAL LTD and has the approval of the management for refund. The refunded amount will be credited back to the source account within 7 working days.\n\n',
-          ),
-          TextSpan(
-            text: 'Cancel and Return Policy:\n',
-            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
-          ),
-          TextSpan(
-            text:
-            'Cancel and Return, if applicable, at the discretion of the management, will only be made as per the sources of net banking/debit/credit card used for the original transaction. For the avoidance of doubt, nothing in this policy shall require PAISALO DIGITAL LTD to cancel and return the charges (or part thereof) unless such charges (or part thereof) have previously been paid by the customer through online payment mode and the same has been credited into the accounts of PAISALO DIGITAL LTD and has the approval of the management for cancel and return. The cancellation and return will take up to 20 working days.\n\n',
-          ),
-          TextSpan(
-            text: 'Privacy Policy:\n',
-            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
+            '3. I understand that security and confidentiality of personal identity data provided, for the purpose of Aadhaar '
+                'based authentication is ensured by NSDL e-Gov and the data will be stored by NSDL e-Gov till such time as mentioned '
+                'in guidelines from UIDAI from time to time.\n\n',
           ),
           TextSpan(
             text:
-            'This privacy policy applies to all of the fees, payment of dues, charges, and related payments payable to PAISALO DIGITAL LTD through online mode. Sometimes, we may post specific privacy notices to explain in more detail. If you have any questions about this privacy policy, please feel free to contact us through our email DELHI@PAISALO.IN.\n\n',
-          ),
-          TextSpan(
-            text: 'Changes to our Privacy Policy:\n',
-            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
-          ),
-          TextSpan(
-            text:
-            'PAISALO DIGITAL LTD reserves the entire right to modify/amend/remove this privacy statement anytime and without any reason. Nothing contained herein creates or is intended to create a contract/agreement between PAISALO DIGITAL LTD and any user visiting the website or providing identifying information of any kind.\n\n',
-          ),
-          TextSpan(
-            text: 'DND Policy:\n',
-            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
-          ),
-          TextSpan(
-            text:
-            'If you wish to stop any further SMS/email alerts/contacts from our side, all you need to do is to send an email to DELHI@PAISALO.IN with your registered mobile number, and you will be excluded from the ‘alerts list’.\n\n',
-          ),
-          TextSpan(
-            text: 'Contact Email: DELHI@PAISALO.IN\n\n',
-          ),
-          TextSpan(
-            text: 'Terms of Payment:\n',
-            style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold),
-          ),
-          TextSpan(
-            text:
-            '1. Charges, taxes applicable for online payment through the payment gateway will be borne by the customer.\n'
-                '2. In respect of any failed transactions of any of the customers processed through this service, the amount will be refunded after deducting the transaction charges.\n\n',
+            '4. I have understood that the system of downloading the copy of loan document for my record from the link '
+                'provided by the company through email or SMS post e-signing of the loan document. I shall download the copy of '
+                'loan documents as per my convenience at a later stage.\n\n',
           ),
         ],
       ),
-    );
+    )
+    ;
   }
 
-  String consentRawText = "I hereby authorize NSDL e-Gov on behalf of Paisalo Digital Limited to- 1. Use my Aadhaar details for Loan Document eSignature and authenticate my identity through the Aadhaar Authentication system (Aadhaar based e-KYC services of UIDAI) in accordance with the provisions of the Aadhaar (Targeted Delivery of Financial and other Subsidies, Benefits and Services) Act, 2016 and the allied rules and regulations notified thereunder and for no other purpose. 2. Authenticate my Aadhaar through OTP or Biometric for authenticating my identity through the Aadhaar Authentication system for obtaining my e-KYC through Aadhaar based e-KYC services of UIDAI and use my Photo and Demographic details (Name, Gender, Date of Birth and Address) for Loan Document eSignature. 3. I understand that Security and confidentiality of personal identity data provided, for the purpose of Aadhaar based authentication is ensured by NSDL e-Gov and the data will be stored by NSDL e-Gov till such time as mentioned in guidelines from UIDAI from time to time. 4. I have understood that the system of downloading the copy of loan document for my record from the link provided by the company through email or SMS post e-signing of the loan document. I shall download the copy of loan documents as per my convenience at later stage.";
-
+  String consentRawText = "I hereby authorize NSDL e-Gov on behalf of Paisalo Digital Limited to- "
+      "1. Use my Aadhaar details for Loan Document eSignature and authenticate my identity through the Aadhaar "
+      "Authentication system (Aadhaar based e-KYC services of UIDAI) in accordance with the provisions of the Aadhaar "
+      "(Targeted Delivery of Financial and other Subsidies, Benefits and Services) Act, 2016 and the allied rules and "
+      "regulations notified thereunder and for no other purpose. "
+      "2. Authenticate my Aadhaar through OTP or Biometric for authenticating my identity through the Aadhaar "
+      "Authentication system for obtaining my e-KYC through Aadhaar based e-KYC services of UIDAI and use my Photo and "
+      "Demographic details (Name, Gender, Date of Birth and Address) for Loan Document eSignature. "
+      "3. I understand that Security and confidentiality of personal identity data provided, for the purpose of Aadhaar "
+      "based authentication is ensured by NSDL e-Gov and the data will be stored by NSDL e-Gov till such time as "
+      "mentioned in guidelines from UIDAI from time to time. "
+      "4. I have understood that the system of downloading the copy of loan document for my record from the link "
+      "provided by the company through email or SMS post e-signing of the loan document. I shall download the copy of "
+      "loan documents as per my convenience at a later stage.";
 }

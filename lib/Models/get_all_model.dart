@@ -91,8 +91,8 @@ class ApplicationgetAllDataModel {
   int userId;
   int propertyArea;
   bool isExserviceman;
-  String latitude;
-  String longitude;
+  double latitude;
+  double longitude;
   String geoDateTime;
   String eSignUuid;
   bool isNameVerify;
@@ -144,8 +144,8 @@ class ApplicationgetAllDataModel {
   String financialStatus;
   String relationWithBorrower;
   String loanReason;
-  String expenses;
-  String income;
+  int expenses;
+  int income;
   List<FiIncomeExpense> fiIncomeExpenses;
   List<FamilyMember> familyMembers;
   List<Guarantor> guarantors;
@@ -299,14 +299,14 @@ class ApplicationgetAllDataModel {
     subDistrict: json["sub_District"]??"testing",
     village: json["village"]??"testing",
     aadharNo: json["aadhar_no"]??"testing",
-    isAadharVerified: json["isAadharVerified"]??"testing",
+    isAadharVerified: json["isAadharVerified"],
     panNo: json["pan_no"]??"testing",
-    isPanVerified: json["isPanVerified"]??"testing",
+    isPanVerified: json["isPanVerified"],
     dl: json["dl"]??"testing",
     dLExpiry: json["dL_Expiry"]??"testing",
-    isDlVerified: json["isDlVerified"]??"testing",
+    isDlVerified: json["isDlVerified"],
     voterId: json["voter_id"]??"testing",
-    isVoterVerified: json["isVoterVerified"]??"testing",
+    isVoterVerified: json["isVoterVerified"] ,
     passbook: json["passbook"]??"testing",
     passport: json["passport"]??"testing",
     passportExpiry: json["passport_expiry"]??"testing",
@@ -314,28 +314,28 @@ class ApplicationgetAllDataModel {
     bankName: json["bank_name"]??"testing",
     bankIfcs: json["bank_IFCS"]??"testing",
     bankAddress: json["bank_address"]??"testing",
-    isHouseRental: json["is_house_rental"]??"Yes",
-    loanAmount: json["loan_amount"]??"testing",
+    isHouseRental: json["is_house_rental"],
+    loanAmount: json["loan_amount"],
     loanDuration: json["loan_Duration"]??"testing",
-    emi: json["emi"]??"testing",
+    emi: json["emi"]??0,
     vehicleType: json["vehicle_type"]??"testing",
     depedentPerson: json["depedent_person"]??"2",
     groupCode: json["group_code"]??"testing",
     branchCode: json["branch_code"]??"testing",
     religion: json["religion"]??"Hindu",
     smCode: json["smCode"]??"testing",
-    isPhnnoVerified: json["is_phnno_verified"]??"testing",
-    userId: json["user_Id"]??"testing",
+    isPhnnoVerified: json["is_phnno_verified"],
+    userId: json["user_Id"],
     propertyArea: json["property_area"]==0?1:json["property_area"],
-    isExserviceman: json["is_exserviceman"]??"testing",
-    latitude: json["latitude"]??"testing",
-    longitude: json["longitude"]??"testing",
+    isExserviceman: json["is_exserviceman"],
+    latitude: json["latitude"]??0.0,
+    longitude: json["longitude"]??0.0,
     geoDateTime: json["geoDateTime"]??"testing",
     eSignUuid: json["eSignUUID"]??"testing",
-    isNameVerify: json["isNameVerify"]??"testing",
+    isNameVerify: json["isNameVerify"],
     noOfChildren: json["no_of_children"]==0?1:json["no_of_children"],
     emailId: json["email_Id"]??"testing",
-    isHandicap: json["isHandicap"]??"Yes",
+    isHandicap: json["isHandicap"],
     handicapType: json["handicap_type"]??"Yes",
     placeOfBirth: json["place_Of_Birth"]??"testing",
     forM60TnxDt: json["forM60_TNX_DT"]??"testing",
@@ -343,12 +343,12 @@ class ApplicationgetAllDataModel {
     maritaLStatus: json["maritaL_STATUS"]??"testing",
     reservatioNCategory: json["reservatioN_CATEGORY"]??"testing",
     encProperty: json["enc_Property"]??"testing",
-    isActive: json["isActive"]??"testing",
+    isActive: json["isActive"],
     createdOn: json["createdOn"]??"testing",
     createdBy: json["createdBy"]??"testing",
     modifiedOn: json["modifiedOn"]??"testing",
     modifiedBy: json["modifiedBy"]??"testing",
-    approved: json["approved"]??"testing",
+    approved: json["approved"],
     residentialType: json["residential_type"]??"testing",
     houseOwnerName: json["house_owner_Name"]??"Self",
     rentofHouse: json["rentofHouse"]??"testing",
@@ -375,14 +375,14 @@ class ApplicationgetAllDataModel {
     fatheRLastName: json["fatheR_LAST_NAME"]??"testing",
     schoolingChildren: json["schoolingChildren"]==0?1:json["schoolingChildren"],
     otherDependents: json["otherDependents"]==0?1:json["otherDependents"] ,
-    isCkyCisDone: json["isCKYCisDone"]??"testing",
+    isCkyCisDone: json["isCKYCisDone"],
     errormsg: json["errormsg"]??"testing",
-    isvalid: json["isvalid"]??"testing",
+    isvalid: json["isvalid"],
     financialStatus: json["financialStatus"]??"testing",
     relationWithBorrower: json["relation_With_Borrower"]??"testing",
     loanReason: json["loan_Reason"]??"testing",
-    expenses: json["expenses"]??"testing",
-    income: json["income"]??"testing",
+    expenses: json["expenses"]??0,
+    income: json["income"]??0,
     fiIncomeExpenses: List<FiIncomeExpense>.from(json["fiIncomeExpenses"].map((x) => FiIncomeExpense.fromJson(x))),
     familyMembers: List<FamilyMember>.from(json["familyMembers"].map((x) => FamilyMember.fromJson(x))),
     guarantors: List<Guarantor>.from(json["guarantors"].map((x) => Guarantor.fromJson(x))),

@@ -592,6 +592,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _buildPreviousButton(),
                       SizedBox(width: 8),
@@ -3685,7 +3686,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     if (_currentStep == 0) {
       return SizedBox.shrink(); // Don't show the button on the first page
     }
-    return Flexible(
+    return Expanded(
+
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.grey,
@@ -6073,6 +6075,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         EasyLoading.dismiss();
 
         if (!value.data[0].placeOfBirth.isEmpty) {
+
           personalInfo(value.data[0]);
         }
         if (!value.data[0].motheRFirstName.isEmpty) {
@@ -6094,7 +6097,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
           guarrantors(value.data[0]);
         }
       } else {
-        setState(() {});
+        setState(() {
+
+        });
       }
     }).catchError((err) {
       print("ERRORRRR$err");
