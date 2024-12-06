@@ -75,6 +75,7 @@ class GlobalClass {
   // Private method to show an alert dialog
   static void showAlert(BuildContext context, String title, String message, Color color, int a) {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -140,6 +141,13 @@ class GlobalClass {
     }
     return age;
   }
+
+  static String getTodayDate() {
+    final now = DateTime.now();
+    return '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}';
+
+  }
+
 
   Future<File?> pickImage() async {
     final picker = ImagePicker();

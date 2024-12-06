@@ -6,6 +6,7 @@ import 'package:flutter_sourcing_app/utils/current_location.dart';
 
 import 'package:provider/provider.dart';
 
+
 import 'api_service.dart';
 import 'global_class.dart';
 import 'login_page.dart';
@@ -27,6 +28,10 @@ class _ProfileState extends State<Profile> {
   Duration _remainingTime = Duration();
   String _timeDisplay = '';
   Timer? _timer;
+
+
+
+
 
   @override
   void initState() {
@@ -225,6 +230,45 @@ class _ProfileState extends State<Profile> {
                             },
                           ),
                         ),
+
+                        itemCount: 3, // Number of grid items
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return _buildGridItem(
+                                'QR Payment Report', Icons.qr_code, () {
+                              // Action for QR Payment Details
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => QrPaymentReports(),
+                                ),
+                              );
+                              // Add navigation or other actions here
+                            });
+                          } else if (index == 1) {
+                            return _buildGridItem(
+                                'Collection Report', Icons.currency_rupee, () {
+                              // Action for Get Collection Report
+                              print('Get Collection Report Clicked');
+                              // Add navigation or other actions here
+                            });
+                          } else if (index == 2) {
+                            return _buildGridItem(
+                                'Morpho Recharge', Icons.fingerprint, () {
+                              // Action for Another Report
+                              print('Another Report Clicked');
+                              // Add navigation or other actions here
+                            });
+                          } else {
+                            return _buildGridItem(
+                                'More Reports', Icons.insert_chart, () {
+                              // Action for More Reports
+                              print('More Reports Clicked');
+                              // Add navigation or other actions here
+                            });
+                          }
+                        },
+
                       ),
                     ),
                     Card(
@@ -450,12 +494,46 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> punchInOut(BuildContext context) async {
+    var _latitude=0.0;
+    var _longitude=0.0;
+    currentLocation _locationService = currentLocation();
+    try {
+      Map<String, dynamic> locationData =
+      await _locationService.getCurrentLocation();
+      _latitude = locationData['latitude'];
+      _longitude = locationData['longitude'];
+
+    } catch (e) {
+      print("Error getting current location: $e");
+
+    }
+
+
+    if (_latitude == 0.0 || _longitude == 0.0) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Location Error"),
+          content: Text("Please enable your location services or open location settings."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();  // Close the dialog
+              },
+              child: Text("OK"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     EasyLoading.show(
       status: 'Loading...',
     );
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     Map<String, dynamic> requestBody = {
-      "location": "100745868994",
+      "location": "$_latitude,$_longitude",
     };
     String type = "PUNCHOUT";
     return await api

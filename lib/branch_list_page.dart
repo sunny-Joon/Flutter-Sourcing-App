@@ -7,7 +7,7 @@ import 'kyc.dart';
 import 'Models/branch_model.dart';
 import 'Branch_recycler_item.dart';
 import 'api_service.dart';
-import 'borrower_list.dart';
+
 import 'global_class.dart';
 
 class BranchListPage extends StatefulWidget {
