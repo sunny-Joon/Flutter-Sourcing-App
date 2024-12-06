@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/Models/GroupModel.dart';
-import 'package:flutter_sourcing_app/Models/branch_model.dart';
+ import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:provider/provider.dart';
-import 'ApiService.dart';
-import 'BorrowerListItem.dart';
-import 'Collection.dart';
-import 'FirstEsign.dart';
-import 'GlobalClass.dart';
-import 'ApplicationForms.dart';
-import 'HouseVisitForm.dart';
-import 'Models/BorrowerListModel.dart';
+ import 'collection.dart';
+import 'Models/borrower_list_model.dart';
+import 'Models/group_model.dart';
+import 'api_service.dart';
+import 'application_forms.dart';
+import 'brrower_list_item.dart';
+import 'first_esign.dart';
+import 'global_class.dart';
+import 'house_visit_form.dart';
+
 
 class BorrowerList extends StatefulWidget {
   final BranchDataModel BranchData;
@@ -191,6 +192,18 @@ print("object++12");
                         );
                         break;
                         case 'COLLECTION':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Collection(
+                              BranchData: widget.BranchData,
+                              GroupData: widget.GroupData,
+                              selectedData: item,
+                            ),
+                          ),
+                        );
+                        break;
+                        case 'Dealer':
                         Navigator.push(
                           context,
                           MaterialPageRoute(

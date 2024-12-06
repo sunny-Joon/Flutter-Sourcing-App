@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'ApiService.dart';
-import 'Branch_List_Page.dart';
-import 'GlobalClass.dart';
-import 'LeaderBoard.dart';
-import 'HomePage.dart';
-import 'Models/RangeCategoryModel.dart';
-import 'OnBoarding.dart';
-import 'Profile.dart';
-import 'Collection.dart';
-import 'DATABASE/DatabaseHelper.dart';
+
+import 'branch_list_page.dart';
+
+import 'DATABASE/database_helper.dart';
+import 'Models/range_category_model.dart';
+import 'profile.dart';
+
+import 'api_service.dart';
 import 'const/appcolors.dart';
+import 'global_class.dart';
+import 'home_page.dart';
+import 'leader_board.dart';
+import 'on_boarding.dart';
 
 
 class Fragments extends StatefulWidget {

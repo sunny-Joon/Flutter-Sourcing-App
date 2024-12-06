@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:intl/intl.dart'; // Add this import for date formatting
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-import 'ApiService.dart';
-import 'GlobalClass.dart';
-import 'Models/BorrowerListModel.dart';
-import 'Models/GroupModel.dart';
+import 'Models/borrower_list_model.dart';
 import 'Models/branch_model.dart';
 import 'Models/getCollectionModel.dart';
+import 'Models/group_model.dart';
+import 'api_service.dart';
+import 'global_class.dart';
+
 
 class Collection extends StatefulWidget {
   final BranchDataModel BranchData;
@@ -363,104 +363,104 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
 
           SizedBox(height: 16),
           // Custom Numeric Keypad with Gradient Buttons
-            Padding(padding: EdgeInsets.all(8),child:  Expanded(
-              child: GridView.builder(
-                shrinkWrap: true,
-                itemCount: 12, // 9 digits + 3 buttons (Clear, 0, 00)
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // Number of columns
-                  crossAxisSpacing: 6.0, // Reduced spacing between buttons
-                  mainAxisSpacing: 6.0,  // Reduced spacing between buttons
-                  childAspectRatio: 1.4, // Slightly adjusted aspect ratio
-                ),
-                itemBuilder: (context, index) {
-                  String label;
-                  if (index < 9) {
-                    label = '${index + 1}';
-                  } else if (index == 9) {
-                    label = '0';
-                  } else if (index == 10) {
-                    label = 'Clear';
-                  } else {
-                    label = '00'; // Replacing Enter with 00
-                  }
+          Padding(padding: EdgeInsets.all(8),child:  Expanded(
+            child: GridView.builder(
+              shrinkWrap: true,
+              itemCount: 12, // 9 digits + 3 buttons (Clear, 0, 00)
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // Number of columns
+                crossAxisSpacing: 6.0, // Reduced spacing between buttons
+                mainAxisSpacing: 6.0,  // Reduced spacing between buttons
+                childAspectRatio: 1.4, // Slightly adjusted aspect ratio
+              ),
+              itemBuilder: (context, index) {
+                String label;
+                if (index < 9) {
+                  label = '${index + 1}';
+                } else if (index == 9) {
+                  label = '0';
+                } else if (index == 10) {
+                  label = 'Clear';
+                } else {
+                  label = '00'; // Replacing Enter with 00
+                }
 
-                  return GestureDetector(
-                    onTap: () {
-                      if (label == 'Clear') {
-                        _controller.clear(); // Clear the text field
-                      } else if (label == '00') {
-                        String newValue = _controller.text + '00'; // Add '00' to the text
-                        _controller.text = _formatNumber(newValue); // Format and update
-                      } else {
-                        String newValue = _controller.text + label;
-                        _controller.text = _formatNumber(newValue); // Format and update
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.white, // Start with white
-                            Colors.grey.shade200, // Light grey
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.4),
-                            blurRadius: 4.0,
-                            spreadRadius: 2.0,
-                          ),
+                return GestureDetector(
+                  onTap: () {
+                    if (label == 'Clear') {
+                      _controller.clear(); // Clear the text field
+                    } else if (label == '00') {
+                      String newValue = _controller.text + '00'; // Add '00' to the text
+                      _controller.text = _formatNumber(newValue); // Format and update
+                    } else {
+                      String newValue = _controller.text + label;
+                      _controller.text = _formatNumber(newValue); // Format and update
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white, // Start with white
+                          Colors.grey.shade200, // Light grey
                         ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      child: Center(
-                        child: Text(
-                          label,
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, color: Colors.black),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.4),
+                          blurRadius: 4.0,
+                          spreadRadius: 2.0,
                         ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        label,
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, color: Colors.black),
                       ),
                     ),
-                  );
-                },
-              ),
-            ),) ,
+                  ),
+                );
+              },
+            ),
+          ),) ,
         ],
       ),
     );
   }
 
-    Future<void> getCollectionData(BuildContext context) async {
-      EasyLoading.show(status: 'Loading...');
+  Future<void> getCollectionData(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
 
-      final api = Provider.of<ApiService>(context, listen: false);
+    final api = Provider.of<ApiService>(context, listen: false);
 
-      return await api
-          .GetFiCollection(GlobalClass.token, GlobalClass.dbName, "BBAB002073","2024-11-20")
-          .then((value) async {
-        if (value.statuscode == 200) {
-          setState(() {
-            collectionDataModel = value.data[0];
-            lateFee = collectionDataModel.futureDue;
-            interestAmount = collectionDataModel.instsAmtDue;
-            borrower = collectionDataModel.custName;
-            casecode = collectionDataModel.caseCode;
+    return await api
+        .GetFiCollection(GlobalClass.token, GlobalClass.dbName, "BBAB002073","2024-11-20")
+        .then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          collectionDataModel = value.data[0];
+          lateFee = collectionDataModel.futureDue;
+          interestAmount = collectionDataModel.instsAmtDue;
+          borrower = collectionDataModel.custName;
+          casecode = collectionDataModel.caseCode;
 
-          });
-           EasyLoading.dismiss();
-          print("object112222");
-
-        }
-
-        else {
-          setState(() {});
-        }
-      }).catchError((err) {
-        print("ERRORRRR$err");
+        });
         EasyLoading.dismiss();
-      });
-    }
+        print("object112222");
+
+      }
+
+      else {
+        setState(() {});
+      }
+    }).catchError((err) {
+      print("ERRORRRR$err");
+      EasyLoading.dismiss();
+    });
+  }
 
 }
