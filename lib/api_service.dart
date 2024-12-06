@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/Models/bank_names_model.dart';
+import 'package:flutter_sourcing_app/Models/getCollectionModel.dart';
 import 'package:flutter_sourcing_app/Models/group_model.dart';
 import 'package:flutter_sourcing_app/Models/kyc_scanning_model.dart';
 import 'package:flutter_sourcing_app/Models/common_int_model.dart';
@@ -26,7 +27,7 @@ import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
 import 'Models/ocr_response_model.dart';
 import 'Models/track_location_request.dart';
-part 'ApiService.g.dart';
+part 'api_service.g.dart';
 
 
 
@@ -289,7 +290,7 @@ abstract class ApiService {
       @Query("type") String type);
 
   @GET("Collection/GetFiCollection")
-  Future<QrPaymentsModel> GetFiCollection(
+  Future<GetCollectionModel> GetFiCollection(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Query("SmCode") String SmCode,
@@ -301,6 +302,12 @@ abstract class ApiService {
 
   @POST("FiSourcing/AddFiExtraDetail")
   Future<GlobalModel> updatePersonalDetails(
+      @Header("dbname") String dbname,
+      @Header("Authorization") String token,
+      @Body() Map<String, dynamic> body);
+
+  @POST("Tracklocations/InsertMorphoRechargeDetails")
+  Future<GlobalModel> morphorecharge(
       @Header("dbname") String dbname,
       @Header("Authorization") String token,
       @Body() Map<String, dynamic> body);

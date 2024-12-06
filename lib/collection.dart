@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:intl/intl.dart'; // Add this import for date formatting
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import 'Models/borrower_list_model.dart';
 import 'Models/branch_model.dart';
+import 'Models/getCollectionModel.dart';
 import 'Models/group_model.dart';
 import 'api_service.dart';
 import 'global_class.dart';
+
 
 class Collection extends StatefulWidget {
   final BranchDataModel BranchData;
@@ -30,10 +31,14 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
   late TabController _tabController;
   List<bool> checkboxValues = List<bool>.filled(5, false); // Initialize with false values
   List<int> emiAmounts = List<int>.generate(5, (index) => (index + 1) * 100); // Sample EMI amounts
-  int interestAmount = 100;
-  int lateFee = 20;
-  int totalAmount = 0;
+  double interestAmount = 100;
+  double lateFee = 20;
+  double totalAmount = 0;
+  late String casecode="",borrower = "";
 
+
+
+  late GetCollectionDataModel collectionDataModel;
   @override
   void initState() {
     super.initState();
@@ -133,8 +138,16 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                       ],
 
                     ),
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: 'Case Code: ', style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)), // Static text color
+                          TextSpan(text: casecode, style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold)), // Dynamic text color
+                        ],
+                      ),
+                    ),
                     Container(
-                      height: MediaQuery.of(context).size.height - 380,
+                      height: MediaQuery.of(context).size.height - 450,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Colors.grey.shade100, Colors.grey.shade300],
@@ -159,15 +172,53 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Interest Amount: ₹$interestAmount'),
-                              Text('Late Fee: ₹$lateFee'),
+                              Flexible(
+                                child: Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(text: 'Borrower: ', style: TextStyle(color: Colors.black)), // Static text color
+                                      TextSpan(text: borrower, style: TextStyle(color: Colors.green)), // Dynamic text color
+                                    ],
+                                  ),
+                                  maxLines: 2, // Allow text to wrap to a second line if necessary
+                                  overflow: TextOverflow.ellipsis, // Handle overflow gracefully
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10), // Add some space between rows
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(text: 'Interest Amount: ₹', style: TextStyle(color: Colors.black)), // Static text color
+                                    TextSpan(text: interestAmount.toString(), style: TextStyle(color: Colors.green)), // Dynamic text color
+                                  ],
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(text: 'Late Fee: ₹', style: TextStyle(color: Colors.black)), // Static text color
+                                    TextSpan(text: lateFee.toString(), style: TextStyle(color: Colors.green)), // Dynamic text color
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(height: 10),
-                          Text('Total Amount: ₹$totalAmount'),
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(text: 'Total Amount: ₹', style: TextStyle(color: Colors.black)), // Static text color
+                                TextSpan(text: totalAmount.toString(), style: TextStyle(color: Colors.green)), // Dynamic text color
+                              ],
+                            ),
+                          ),
                           SizedBox(height: 20),
                           ElevatedButton(
-
                             onPressed: () {
                               // Submit button action
                             },
@@ -198,18 +249,19 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Submit',
-                                  style: TextStyle(fontFamily: "Poppins-Regular",
+                                  style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
                                     fontSize: 16,
                                     color: Colors.black, // Text color
                                   ),
                                 ),
                               ),
                             ),
-                          )
-
+                          ),
                         ],
                       ),
                     ),
+
                   ],
                 ),
               ),
@@ -311,96 +363,104 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
 
           SizedBox(height: 16),
           // Custom Numeric Keypad with Gradient Buttons
-            Padding(padding: EdgeInsets.all(8),child:  Expanded(
-              child: GridView.builder(
-                shrinkWrap: true,
-                itemCount: 12, // 9 digits + 3 buttons (Clear, 0, 00)
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // Number of columns
-                  crossAxisSpacing: 6.0, // Reduced spacing between buttons
-                  mainAxisSpacing: 6.0,  // Reduced spacing between buttons
-                  childAspectRatio: 1.4, // Slightly adjusted aspect ratio
-                ),
-                itemBuilder: (context, index) {
-                  String label;
-                  if (index < 9) {
-                    label = '${index + 1}';
-                  } else if (index == 9) {
-                    label = '0';
-                  } else if (index == 10) {
-                    label = 'Clear';
-                  } else {
-                    label = '00'; // Replacing Enter with 00
-                  }
+          Padding(padding: EdgeInsets.all(8),child:  Expanded(
+            child: GridView.builder(
+              shrinkWrap: true,
+              itemCount: 12, // 9 digits + 3 buttons (Clear, 0, 00)
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // Number of columns
+                crossAxisSpacing: 6.0, // Reduced spacing between buttons
+                mainAxisSpacing: 6.0,  // Reduced spacing between buttons
+                childAspectRatio: 1.4, // Slightly adjusted aspect ratio
+              ),
+              itemBuilder: (context, index) {
+                String label;
+                if (index < 9) {
+                  label = '${index + 1}';
+                } else if (index == 9) {
+                  label = '0';
+                } else if (index == 10) {
+                  label = 'Clear';
+                } else {
+                  label = '00'; // Replacing Enter with 00
+                }
 
-                  return GestureDetector(
-                    onTap: () {
-                      if (label == 'Clear') {
-                        _controller.clear(); // Clear the text field
-                      } else if (label == '00') {
-                        String newValue = _controller.text + '00'; // Add '00' to the text
-                        _controller.text = _formatNumber(newValue); // Format and update
-                      } else {
-                        String newValue = _controller.text + label;
-                        _controller.text = _formatNumber(newValue); // Format and update
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.white, // Start with white
-                            Colors.grey.shade200, // Light grey
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.4),
-                            blurRadius: 4.0,
-                            spreadRadius: 2.0,
-                          ),
+                return GestureDetector(
+                  onTap: () {
+                    if (label == 'Clear') {
+                      _controller.clear(); // Clear the text field
+                    } else if (label == '00') {
+                      String newValue = _controller.text + '00'; // Add '00' to the text
+                      _controller.text = _formatNumber(newValue); // Format and update
+                    } else {
+                      String newValue = _controller.text + label;
+                      _controller.text = _formatNumber(newValue); // Format and update
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white, // Start with white
+                          Colors.grey.shade200, // Light grey
                         ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      child: Center(
-                        child: Text(
-                          label,
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, color: Colors.black),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.4),
+                          blurRadius: 4.0,
+                          spreadRadius: 2.0,
                         ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        label,
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, color: Colors.black),
                       ),
                     ),
-                  );
-                },
-              ),
-            ),) ,
+                  ),
+                );
+              },
+            ),
+          ),) ,
         ],
       ),
     );
   }
 
-    Future<void> getCollectionData(BuildContext context) async {
-      EasyLoading.show(status: 'Loading...');
+  Future<void> getCollectionData(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
 
-      final api = Provider.of<ApiService>(context, listen: false);
+    final api = Provider.of<ApiService>(context, listen: false);
 
-      return await api
-          .GetFiCollection(GlobalClass.token, GlobalClass.dbName, "BBAB002073","2024-11-20")
-          .then((value) async {
-        if (value.statuscode == 200) {
-           EasyLoading.dismiss();
-          print("object112222");
+    return await api
+        .GetFiCollection(GlobalClass.token, GlobalClass.dbName, "BBAB002073","2024-11-20")
+        .then((value) async {
+      if (value.statuscode == 200) {
+        setState(() {
+          collectionDataModel = value.data[0];
+          lateFee = collectionDataModel.futureDue;
+          interestAmount = collectionDataModel.instsAmtDue;
+          borrower = collectionDataModel.custName;
+          casecode = collectionDataModel.caseCode;
 
-        }
-
-        else {
-          setState(() {});
-        }
-      }).catchError((err) {
-        print("ERRORRRR$err");
+        });
         EasyLoading.dismiss();
-      });
-    }
+        print("object112222");
+
+      }
+
+      else {
+        setState(() {});
+      }
+    }).catchError((err) {
+      print("ERRORRRR$err");
+      EasyLoading.dismiss();
+    });
+  }
 
 }

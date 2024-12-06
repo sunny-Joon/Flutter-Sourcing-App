@@ -33,9 +33,10 @@ class _BranchListPageState extends State<BranchListPage> {
   Future<void> _fetchBranchList() async {
     EasyLoading.show(status: 'Loading...',);
 
-    final apiService = Provider.of<ApiService>(context, listen: false);
 
-      await apiService.getBranchList(GlobalClass.token,GlobalClass.dbName,GlobalClass.creator).then((response){
+    final apiService = Provider.of<ApiService>(context, listen: false);
+    try{
+      await apiService.getBranchList(GlobalClass.token,GlobalClass.dbName,GlobalClass.creator).then((response) {
         if (response.statuscode == 200) {
           setState(() {
             _items = response.data; // Store the response data
@@ -45,16 +46,20 @@ class _BranchListPageState extends State<BranchListPage> {
 
           print('Branch List retrieved successfully');
         } else {
-          EasyLoading.dismiss();
-
-          print('Failed to retrieve branch list');
+          GlobalClass.showUnsuccessfulAlert(
+              context, "Not abl;e to fetch Group List", 1);
           setState(() {
-
+            EasyLoading.dismiss();
           });
         }
-      }).catchError((err){
+      });
+    }catch (e) {
+      print('Error: $e');
+      GlobalClass.showErrorAlert(context,"Server Side Error",2);
+      setState(() {
         EasyLoading.dismiss();
       });
+    }
   }
 
   @override
