@@ -208,209 +208,211 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-      body: Column(children: [
-        SizedBox(height: 40),
-        Padding(
-          padding: EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InkWell(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                        width: 1, color: Colors.grey.shade300),
-                    borderRadius:
-                    BorderRadius.all(Radius.circular(5)),
+
+      body: SingleChildScrollView(
+        child: Column(children: [
+          SizedBox(height: 40),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                          width: 1, color: Colors.grey.shade300),
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(5)),
+                    ),
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    child: Center(
+                      child:
+                      Icon(Icons.arrow_back_ios_sharp, size: 16),
+                    ),
                   ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                Center(
+                  child: Image.asset(
+                    'assets/Images/logo_white.png',
+                    // Replace with your logo asset path
+                    height: 30,
+                  ),
+                ),
+                Container(
                   height: 40,
                   width: 40,
                   alignment: Alignment.center,
-                  child: Center(
-                    child:
-                    Icon(Icons.arrow_back_ios_sharp, size: 16),
-                  ),
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              Center(
-                child: Image.asset(
-                  'assets/Images/logo_white.png',
-                  // Replace with your logo asset path
-                  height: 30,
-                ),
-              ),
-              Container(
-                height: 40,
-                width: 40,
-                alignment: Alignment.center,
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        _isLoading
-            ? Center(
-          child: CircularProgressIndicator(),
-        )
-            :   Column(
+          _isLoading
+              ? Center(
+            child: CircularProgressIndicator(),
+          )
+              :   Column(
             children: [
               Padding(
-                  padding: const EdgeInsets.all(20.0),
-                    child:
-                    Container(
-                          padding: EdgeInsets.all(20),
-                          height: MediaQuery.of(context).size.height-180,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black,
-                                blurRadius: 7,
+                padding: const EdgeInsets.all(20.0),
+                child:
+                Container(
+                  padding: EdgeInsets.all(20),
+                  height: MediaQuery.of(context).size.height-180,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black,
+                        blurRadius: 7,
+                      ),
+                    ],
+                  ),
+                  child: SingleChildScrollView(
+                    child:Form(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Device Id:- ${_deviceIdController}',
+                            style: TextStyle(fontFamily: "Poppins-Regular",
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'User Id:- ${_userIdController}',
+                            style: TextStyle(fontFamily: "Poppins-Regular",
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold),
+                          ),
+
+                          //SizedBox(height:2 ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Request Type',
+                            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                          ),
+
+                          Container(
+                            alignment: Alignment.center,
+                            margin:
+                            EdgeInsets.symmetric(vertical: 4),
+                            padding: EdgeInsets.all(4),
+                            // height: 55,
+                            // Fixed height
+                            decoration: BoxDecoration(
+                              border:
+                              Border.all(color: Colors.grey),
+                              borderRadius:
+                              BorderRadius.circular(5),
+                            ),
+                            child: DropdownButton<String>(
+                              value: _selectedRequestType,
+                              isExpanded: true,
+                              iconSize: 24,
+                              elevation: 16,
+                              style: TextStyle(fontFamily: "Poppins-Regular",
+                                  color: Colors.black,
+                                  fontSize: 13),
+                              underline: Container(
+                                height: 2,
+                                color: Colors
+                                    .transparent, // Set to transparent to remove default underline
+                              ),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _selectedRequestType = newValue!;
+                                });
+                              },
+                              items:
+                              _requestTypes.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+
+                          SizedBox(height: 4),
+                          Text(
+                            'Creator',
+                            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                          ),
+
+                          Container(
+                            alignment: Alignment.center,
+                            //height: 55,
+                            // Fixed height
+                            margin:
+                            EdgeInsets.symmetric(vertical: 4),
+                            padding: EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              border:
+                              Border.all(color: Colors.grey),
+                              borderRadius:
+                              BorderRadius.circular(5),
+                            ),
+                            child: DropdownButton<String>(
+                              value: _selectedCreator,
+                              isExpanded: true,
+                              iconSize: 24,
+                              elevation: 16,
+                              style: TextStyle(fontFamily: "Poppins-Regular",
+                                  color: Colors.black,
+                                  fontSize: 16),
+                              underline: Container(
+                                height: 2,
+                                color: Colors
+                                    .transparent, // Set to transparent to remove default underline
+                              ),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _selectedCreator = newValue!;
+                                  _fetchBranchList(context, _selectedCreator!);
+                                });
+                              },
+                              items: _creators.map(
+                                      (CreatorListDataModel value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value.creator,
+                                      child: Text(value.creator),
+                                    );
+                                  }).toList(),
+                            ),
+                          ),
+
+                          Row(
+                            children: [
+                              // Expanded widget makes the TextField take up the available space
+                              Expanded(
+                                child: _buildTextField(
+                                    'Branch Codes',
+                                    _branchController,
+                                    TextInputType.name,
+                                    false,
+                                    _branchFocus,100
+                                ),
+                              ),
+                              // IconButton will be placed on the right of the TextField
+                              IconButton(
+                                onPressed: () {
+                                  _showMultiSelect();  // Define your action for the icon button
+                                },
+                                icon: Icon(Icons.arrow_drop_down_circle_sharp),
                               ),
                             ],
                           ),
-                          child: SingleChildScrollView(
-                            child:Form(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Device Id:- ${_deviceIdController}',
-                                  style: TextStyle(fontFamily: "Poppins-Regular",
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  'User Id:- ${_userIdController}',
-                                  style: TextStyle(fontFamily: "Poppins-Regular",
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold),
-                                ),
 
-                                //SizedBox(height:2 ),
-                                SizedBox(height: 4),
-                                Text(
-                                  'Request Type',
-                                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
-                                ),
-
-                                Container(
-                                  alignment: Alignment.center,
-                                  margin:
-                                  EdgeInsets.symmetric(vertical: 4),
-                                  padding: EdgeInsets.all(4),
-                                  // height: 55,
-                                  // Fixed height
-                                  decoration: BoxDecoration(
-                                    border:
-                                    Border.all(color: Colors.grey),
-                                    borderRadius:
-                                    BorderRadius.circular(5),
-                                  ),
-                                  child: DropdownButton<String>(
-                                    value: _selectedRequestType,
-                                    isExpanded: true,
-                                    iconSize: 24,
-                                    elevation: 16,
-                                    style: TextStyle(fontFamily: "Poppins-Regular",
-                                        color: Colors.black,
-                                        fontSize: 13),
-                                    underline: Container(
-                                      height: 2,
-                                      color: Colors
-                                          .transparent, // Set to transparent to remove default underline
-                                    ),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        _selectedRequestType = newValue!;
-                                      });
-                                    },
-                                    items:
-                                    _requestTypes.map((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-
-                                SizedBox(height: 4),
-                                Text(
-                                  'Creator',
-                                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
-                                ),
-
-                                Container(
-                                  alignment: Alignment.center,
-                                  //height: 55,
-                                  // Fixed height
-                                  margin:
-                                  EdgeInsets.symmetric(vertical: 4),
-                                  padding: EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    border:
-                                    Border.all(color: Colors.grey),
-                                    borderRadius:
-                                    BorderRadius.circular(5),
-                                  ),
-                                  child: DropdownButton<String>(
-                                    value: _selectedCreator,
-                                    isExpanded: true,
-                                    iconSize: 24,
-                                    elevation: 16,
-                                    style: TextStyle(fontFamily: "Poppins-Regular",
-                                        color: Colors.black,
-                                        fontSize: 16),
-                                    underline: Container(
-                                      height: 2,
-                                      color: Colors
-                                          .transparent, // Set to transparent to remove default underline
-                                    ),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        _selectedCreator = newValue!;
-                                        _fetchBranchList(context, _selectedCreator!);
-                                      });
-                                    },
-                                    items: _creators.map(
-                                            (CreatorListDataModel value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value.creator,
-                                            child: Text(value.creator),
-                                          );
-                                        }).toList(),
-                                  ),
-                                ),
-
-                                Row(
-                                  children: [
-                                    // Expanded widget makes the TextField take up the available space
-                                    Expanded(
-                                      child: _buildTextField(
-                                          'Branch Codes',
-                                          _branchController,
-                                          TextInputType.name,
-                                          false,
-                                          _branchFocus
-                                      ),
-                                    ),
-                                    // IconButton will be placed on the right of the TextField
-                                    IconButton(
-                                      onPressed: () {
-                                        _showMultiSelect();  // Define your action for the icon button
-                                      },
-                                      icon: Icon(Icons.arrow_drop_down_circle_sharp),
-                                    ),
-                                  ],
-                                ),
-
-                                /*_buildLabeledDropdownField(
+                          /*_buildLabeledDropdownField(
                                 context,
                                 'Creator',
                                 'Creator',
@@ -435,103 +437,110 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                   });
                                 },
                                 BranchDataModel),*/
-                                //SizedBox(height:2 ),
-                                _buildTextField('Name', _nameController,
-                                    TextInputType.name, true, _nameFocus),
-                                //SizedBox(height:2 ),
-                                _buildTextField(
-                                    'Mobile',
-                                    _mobileNoController,
-                                    TextInputType.number,
-                                    true,
-                                    _mobileNoFocus),
-                                //SizedBox(height:2 ),
-                                _buildTextField(
-                                    'IMEI No. 1',
-                                    _imei1Controller,
-                                    TextInputType.number,
-                                    true,
-                                    _imei1Focus),
-                                //SizedBox(height:2 ),
-                                _buildTextField(
-                                    'IMEI No. 2',
-                                    _imei2Controller,
-                                    TextInputType.number,
-                                    true,
-                                    _imei2Focus),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(children: [
-                                      Icon(Icons.location_on_outlined,color: Colors.red,),
-                                      Text("${_locationMessage}",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.red,fontWeight: FontWeight.bold),),
+                          //SizedBox(height:2 ),
+                          _buildTextField('Name', _nameController,
+                              TextInputType.name, true, _nameFocus,40),
+                          //SizedBox(height:2 ),
+                          _buildTextField(
+                              'Mobile',
+                              _mobileNoController,
+                              TextInputType.number,
+                              true,
+                              _mobileNoFocus,
+                            10
 
-                                    ],),
-                                    InkWell(
-                                      onTap: (){geolocator();},
+                          ),
+                          //SizedBox(height:2 ),
+                          _buildTextField(
+                              'IMEI No. 1',
+                              _imei1Controller,
+                              TextInputType.number,
+                              true,
+                              _imei1Focus,
+                            15
+                          ),
+                          //SizedBox(height:2 ),
+                          _buildTextField(
+                              'IMEI No. 2',
+                              _imei2Controller,
+                              TextInputType.number,
+                              true,
+                              _imei2Focus,15),
 
-                                      child:  Card(
-                                        elevation: 5,
-                                        shape: CircleBorder(),
-                                        child: Padding(padding: EdgeInsets.all(3),child: Icon(Icons.refresh,size: 30,color: Color(0xffb41d2d),),),
-                                      ),
-                                    )
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(children: [
+                                Icon(Icons.location_on_outlined,color: Colors.red,),
+                                Text("${_locationMessage}",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.red,fontWeight: FontWeight.bold),),
 
+                              ],),
+                              InkWell(
+                                onTap: (){geolocator();},
 
-                                  ],
+                                child:  Card(
+                                  elevation: 5,
+                                  shape: CircleBorder(),
+                                  child: Padding(padding: EdgeInsets.all(3),child: Icon(Icons.refresh,size: 30,color: Color(0xffb41d2d),),),
                                 ),
+                              )
 
-                                //SizedBox(height:2 ),
-                                if (_errorText != null)
-                                  Text(
-                                    _errorText!,
-                                    style: TextStyle(fontFamily: "Poppins-Regular",
-                                        color: Color(0xFFD42D3F), fontSize: 13),
-                                  ),
-                                //SizedBox(height:2 ),
-                                Center(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      if (validate()) {
-                                        _saveMappingReq(context);
-                                      }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFFD42D3F),
-                                      minimumSize: Size(150,
-                                          36), // Set the width to 150 and the height to 36 (or your preferred height)
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            0), // Rectangular shape
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                          vertical:
-                                          12), // Adjust vertical padding as needed
-                                    ),
-                                    child: Text(
-                                      'Save',
-                                      style:
-                                      TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
-                                    ),
-                                  ),
+
+                            ],
+                          ),
+
+                          //SizedBox(height:2 ),
+                          if (_errorText != null)
+                            Text(
+                              _errorText!,
+                              style: TextStyle(fontFamily: "Poppins-Regular",
+                                  color: Color(0xFFD42D3F), fontSize: 13),
+                            ),
+                          //SizedBox(height:2 ),
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (validate()) {
+                                  _saveMappingReq(context);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFFD42D3F),
+                                minimumSize: Size(150,
+                                    36), // Set the width to 150 and the height to 36 (or your preferred height)
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(
+                                      0), // Rectangular shape
                                 ),
-                              ],
+                                padding: EdgeInsets.symmetric(
+                                    vertical:
+                                    12), // Adjust vertical padding as needed
+                              ),
+                              child: Text(
+                                'Save',
+                                style:
+                                TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
+                      ),
+                    ),
                   ),
+                ),
 
               )// _buildNextButton(context),
             ],
           ),
-      ],)
+        ],),
+      )
 
     );
   }
 
   Widget _buildTextField(String label, TextEditingController controller,
-      TextInputType inputType, bool YN, FocusNode FN) {
+      TextInputType inputType, bool YN, FocusNode FN,int maxLength) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -550,12 +559,14 @@ class _SharedeviceidState extends State<Sharedeviceid> {
             width: double.infinity, // Set the desired width
             child: Center(
               child: TextFormField(
+                maxLength: maxLength,
                 controller: controller,
                 focusNode: FN,
                 keyboardType: inputType,
                 // Set the input type
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
+                  counterText: ""
                 ),
                 enabled: YN,
               ),
@@ -640,18 +651,18 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
 
-        if (value.data[0].errormsg == null || value.data[0].errormsg.isEmpty) {
+
           GlobalClass.showSuccessAlert(
               context, value.message,2);
-        } else {
-          GlobalClass.showUnsuccessfulAlert(
-              context, value.data[0].errormsg,1);
-        }
+
       } else {
         EasyLoading.dismiss();
         GlobalClass.showErrorAlert(
             context,value.message,1);
       }
+    }).catchError((err){
+      EasyLoading.dismiss();
+      GlobalClass.showUnsuccessfulAlert(context, "Device details are not saved or updated", 1);
     });
   }
 

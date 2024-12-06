@@ -75,6 +75,7 @@ class GlobalClass {
   // Private method to show an alert dialog
   static void showAlert(BuildContext context, String title, String message, Color color, int a) {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
