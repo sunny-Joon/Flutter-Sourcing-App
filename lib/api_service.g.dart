@@ -1383,7 +1383,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<QrPaymentsModel> GetFiCollection(
+  Future<GetCollectionModel> GetFiCollection(
     String token,
     String dbname,
     String SmCode,
@@ -1400,7 +1400,7 @@ class _ApiService implements ApiService {
     };
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<QrPaymentsModel>(Options(
+    final _options = _setStreamType<GetCollectionModel>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -1417,9 +1417,9 @@ class _ApiService implements ApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late QrPaymentsModel _value;
+    late GetCollectionModel _value;
     try {
-      _value = QrPaymentsModel.fromJson(_result.data!);
+      _value = GetCollectionModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -1450,6 +1450,48 @@ class _ApiService implements ApiService {
         .compose(
           _dio.options,
           'FiSourcing/AddFiExtraDetail',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late GlobalModel _value;
+    try {
+      _value = GlobalModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<GlobalModel> morphorecharge(
+    String dbname,
+    String token,
+    Map<String, dynamic> body,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{
+      r'dbname': dbname,
+      r'Authorization': token,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options = _setStreamType<GlobalModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'Tracklocations/InsertMorphoRechargeDetails',
           queryParameters: queryParameters,
           data: _data,
         )
