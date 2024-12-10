@@ -511,8 +511,9 @@ class _KYCPageState extends State<KYCPage> {
                                   child: _imageFile == null
                                       ? InkWell(
                                     onTap:() async {
-                                      setState(() async {
-                                        _imageFile = await GlobalClass().pickImage();
+                                      File? pickedFile=await GlobalClass().pickImage();
+                                      setState(()  {
+                                        _imageFile = pickedFile;
                                       });
                                     } ,
                                     child: ClipOval(
@@ -538,8 +539,9 @@ class _KYCPageState extends State<KYCPage> {
                                       ),
                                     ),
                                       onTap:()async {
-                                      setState(() async {
-                                        _imageFile = await GlobalClass().pickImage();
+                                      File? pickedFile=await GlobalClass().pickImage();
+                                      setState(()  {
+                                        _imageFile = pickedFile;
                                       });
                                       } ,
                                   ),
