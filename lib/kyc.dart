@@ -510,8 +510,10 @@ class _KYCPageState extends State<KYCPage> {
                                 child: Center(
                                   child: _imageFile == null
                                       ? InkWell(
-                                    onTap:(){
-                                      GlobalClass().pickImage();
+                                    onTap:() async {
+                                      setState(() async {
+                                        _imageFile = await GlobalClass().pickImage();
+                                      });
                                     } ,
                                     child: ClipOval(
                                       child: Container(
@@ -535,9 +537,11 @@ class _KYCPageState extends State<KYCPage> {
                                         fit: BoxFit.cover,
                                       ),
                                     ),
-                                      onTap:(){
-                                        GlobalClass().pickImage();
-                                      }
+                                      onTap:()async {
+                                      setState(() async {
+                                        _imageFile = await GlobalClass().pickImage();
+                                      });
+                                      } ,
                                   ),
                                 )),
                           ],
@@ -1065,7 +1069,7 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  Future<void> getDataFromOCR(String type, BuildContext context) async {
+  Future<void>        getDataFromOCR(String type, BuildContext context) async {
     EasyLoading.show();
     File? pickedImage = await GlobalClass().pickImage();
 
@@ -3220,7 +3224,8 @@ bool checkIdMendate(){
                 addressParts.sublist(1, addressParts.length - 1).join(' ');
           }
         }
-      }else{
+      }
+      else{
 
         _aadharIdController.text = dataList[1];
         List<String> nameParts = dataList[2].split(" ");
