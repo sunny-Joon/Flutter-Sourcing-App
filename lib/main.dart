@@ -9,6 +9,7 @@ import 'package:flutter_sourcing_app/stepper_ss.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'api_service.dart';
+import 'crif.dart';
 import 'global_class.dart';
 import 'login_page.dart';
 import 'Models/global_model.dart';
@@ -75,6 +76,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
          home: SplashScreen(),
+       //  home: LoanEligibilityPage(),
        //  home: DealerHomePage(),
          builder: EasyLoading.init(),
          // home:MultiStepForm(),
