@@ -153,7 +153,6 @@ class GlobalClass {
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: ImageSource.camera);
     final croppedImage =_cropImage(new File(pickedImage!.path));
-
     return croppedImage != null ? croppedImage : null;
   }
   Future<File?> _cropImage(File imageFile) async {
