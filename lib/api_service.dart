@@ -108,8 +108,7 @@ abstract class ApiService {
 
   @POST("IdentityVerification/Get")
   Future<DocsVerify> verifyDocs(
-      @Body() Map<String, dynamic> body,
-      );
+      @Body() Map<String, dynamic> body);
 
   @POST("Masters/CreatePunchInOrOut")
   Future<GlobalModel> punchInOut(
@@ -122,13 +121,10 @@ abstract class ApiService {
   Future<CommonIntModel> mobileOtpSend(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body,
-      );
+      @Body() Map<String, dynamic> body);
 
   @GET("{ifsc}")
   Future<Ifcsc> ifscVerify (@Path("ifsc") String ifsc);
-
-
 
   @POST("FiSourcing/InsertFiSourcedata")
   @MultiPart()
@@ -164,13 +160,27 @@ abstract class ApiService {
       @Part( name:"IsMarried") bool isMarried,
       @Part( name:"GroupCode") String groupCode,
       @Part( name:"BranchCode") String branchCode,
-
       @Part( name:"Relation_with_Borrower") String relation_with_Borrower,
       @Part( name:"Bank_name") String bank_name,
       @Part( name:"Loan_Duration") String loan_Duration,
       @Part( name:"Loan_amount") String loan_amount,
       @Part( name:"Loan_Reason") String loan_Reason,
       @Part( name: "Picture") File Picture);
+
+  @POST("FiSourcing/FiDocsUploads")
+  @MultiPart()
+  Future <GlobalModel> FiDocsUploads(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Part(name: "AadhaarCard") File AadhaarCard,
+      @Part( name:"AadhaarCardBack") File AadhaarCardBack,
+      @Part( name:"VoterId") File VoterId,
+      @Part( name:"VoterIdBack") File VoterIdBack,
+      @Part( name:"DrivingLicense") File DrivingLicense,
+      @Part( name:"Pan") File Pan,
+      @Part( name:"PassPort") File PassPort,
+      @Part( name:"PassBook") File PassBook,
+      );
 
   @POST("FiSourcing/FiDocsUploadSingleFile")
   @MultiPart()

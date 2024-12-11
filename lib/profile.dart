@@ -546,7 +546,7 @@ class _ProfileState extends State<Profile> {
 
   void showCustomAlertDialog(BuildContext context) {
     final TextEditingController deviceSirNoController =
-        TextEditingController(text: '2306I0052');
+        TextEditingController();
 
     showDialog(
       context: context,
@@ -573,7 +573,7 @@ class _ProfileState extends State<Profile> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Morpho Device Sir No",
+                  "Morpho Device S/N",
                   style: TextStyle(
                     fontFamily: "Poppins-Regular",
                     fontSize: 13,
@@ -594,8 +594,11 @@ class _ProfileState extends State<Profile> {
                         counterText: "",
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter Device Sir No';
+                        String pattern = r'[0-9]{4}I[0-9]{6}'; // Note the 'r' prefix for a raw string
+                        RegExp regExp = RegExp(pattern);
+
+                        if (value == null || value.isEmpty || !regExp.hasMatch(value)) {
+                          return 'Please enter valid Device S/N';
                         }
                         return null;
                       },

@@ -598,6 +598,111 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<GlobalModel> FiDocsUploads(
+    String token,
+    String dbname,
+    File AadhaarCard,
+    File AadhaarCardBack,
+    File VoterId,
+    File VoterIdBack,
+    File DrivingLicense,
+    File Pan,
+    File PassPort,
+    File PassBook,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{
+      r'Authorization': token,
+      r'dbname': dbname,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    final _data = FormData();
+    _data.files.add(MapEntry(
+      'AadhaarCard',
+      MultipartFile.fromFileSync(
+        AadhaarCard.path,
+        filename: AadhaarCard.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    _data.files.add(MapEntry(
+      'AadhaarCardBack',
+      MultipartFile.fromFileSync(
+        AadhaarCardBack.path,
+        filename: AadhaarCardBack.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    _data.files.add(MapEntry(
+      'VoterId',
+      MultipartFile.fromFileSync(
+        VoterId.path,
+        filename: VoterId.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    _data.files.add(MapEntry(
+      'VoterIdBack',
+      MultipartFile.fromFileSync(
+        VoterIdBack.path,
+        filename: VoterIdBack.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    _data.files.add(MapEntry(
+      'DrivingLicense',
+      MultipartFile.fromFileSync(
+        DrivingLicense.path,
+        filename: DrivingLicense.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    _data.files.add(MapEntry(
+      'Pan',
+      MultipartFile.fromFileSync(
+        Pan.path,
+        filename: Pan.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    _data.files.add(MapEntry(
+      'PassPort',
+      MultipartFile.fromFileSync(
+        PassPort.path,
+        filename: PassPort.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    _data.files.add(MapEntry(
+      'PassBook',
+      MultipartFile.fromFileSync(
+        PassBook.path,
+        filename: PassBook.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    final _options = _setStreamType<GlobalModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'multipart/form-data',
+    )
+        .compose(
+          _dio.options,
+          'FiSourcing/FiDocsUploads',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late GlobalModel _value;
+    try {
+      _value = GlobalModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<GlobalModel> uploadFiDocs(
     String token,
     String dbname,
