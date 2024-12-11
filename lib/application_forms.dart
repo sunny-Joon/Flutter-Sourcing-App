@@ -83,11 +83,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
   List<RangeCategoryDataModel> income_type = [];
   List<RangeCategoryDataModel> bank = [];
   List<RangeCategoryDataModel> education = [];
-
   List<RangeCategoryDataModel> health = [];
   List<RangeCategoryDataModel> schoolType = [];
   List<RangeCategoryDataModel> occupationType = [];
-
   List<RangeCategoryDataModel> roofType = [];
   List<RangeCategoryDataModel> toiletType = [];
   List<RangeCategoryDataModel> houseType = [];
