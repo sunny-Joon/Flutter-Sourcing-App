@@ -43,8 +43,8 @@ class _GroupListPageState extends State<GroupListPage> {
 
     try {
       final response = await apiService.getGroupList(
-        /*GlobalClass.token,*/
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiR1JTVDAwMjA2NCIsIklNRUlOTyI6Ijg2MTk1MDA1ODU0OTcxMiIsIkRldmljZVNyTm8iOiIwNjQ2NDk4NTg1NDc3MjQ0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9leHBpcmF0aW9uIjoiRGVjIFR1ZSAxMCAyMDI0IDA1OjE2OjM4IEFNIiwibmJmIjoxNzMzNzIxMzk4LCJleHAiOjE3MzM3ODc5OTgsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcxODgiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTg4In0.PPRhjmu8NK8Wv_Tim2nub77xSWA0LS-1-3OLga2LfzE",
+        GlobalClass.token,
+      //  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiR1JTVDAwMjA2NCIsIklNRUlOTyI6Ijg2MTk1MDA1ODU0OTcxMiIsIkRldmljZVNyTm8iOiIwNjQ2NDk4NTg1NDc3MjQ0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9leHBpcmF0aW9uIjoiRGVjIFR1ZSAxMCAyMDI0IDA1OjE2OjM4IEFNIiwibmJmIjoxNzMzNzIxMzk4LCJleHAiOjE3MzM3ODc5OTgsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcxODgiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTg4In0.PPRhjmu8NK8Wv_Tim2nub77xSWA0LS-1-3OLga2LfzE",
         GlobalClass.dbName,
         GlobalClass.creator,
         // GlobalClass.creator,

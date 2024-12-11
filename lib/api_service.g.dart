@@ -1515,7 +1515,7 @@ class _ApiService implements ApiService {
   Future<GlobalModel> saveHouseVisit(
     String token,
     String dbname,
-    String FICode,
+    String fi_Id,
     String Creator,
     String BranchName,
     String AreaCode,
@@ -1600,8 +1600,8 @@ class _ApiService implements ApiService {
     _headers.removeWhere((k, v) => v == null);
     final _data = FormData();
     _data.fields.add(MapEntry(
-      'FICode',
-      FICode,
+      'fi_Id',
+      fi_Id,
     ));
     _data.fields.add(MapEntry(
       'Creator',

@@ -433,7 +433,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     String Applicant_Status="N";
     String FamilymemberfromPaisalo="o";
 
-    String FICode=widget.selectedData.id.toString();
+    String fi_Id=widget.selectedData.id.toString();
     String Creator=GlobalClass.creator;
     int HouseMonthlyRent=45;
     String EmpCode=GlobalClass.id;
@@ -449,7 +449,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
 
     await api.saveHouseVisit(
       GlobalClass.token,GlobalClass.dbName,
-        FICode,
+        fi_Id,
         Creator,
         BranchName,
         AreaCode,

@@ -323,7 +323,7 @@ abstract class ApiService {
   Future <GlobalModel> saveHouseVisit(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Part(name: "FICode") String FICode,
+      @Part(name: "fi_Id") String fi_Id,
       @Part( name:"Creator") String Creator,
       @Part( name:"BranchName") String BranchName,
       @Part( name:"AreaCode") String AreaCode,
