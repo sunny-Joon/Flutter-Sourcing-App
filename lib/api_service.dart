@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter_sourcing_app/collectionborrowerlist.dart';
+import 'package:flutter_sourcing_app/Models/CollectionBorrowerListModel.dart';
 import 'package:flutter_sourcing_app/Models/bank_names_model.dart';
 
 import 'package:flutter_sourcing_app/Models/details_by_smcode_response.dart';
@@ -172,14 +174,16 @@ abstract class ApiService {
   Future <GlobalModel> FiDocsUploads(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Part(name: "AadhaarCard") File AadhaarCard,
-      @Part( name:"AadhaarCardBack") File AadhaarCardBack,
-      @Part( name:"VoterId") File VoterId,
-      @Part( name:"VoterIdBack") File VoterIdBack,
-      @Part( name:"DrivingLicense") File DrivingLicense,
-      @Part( name:"Pan") File Pan,
-      @Part( name:"PassPort") File PassPort,
-      @Part( name:"PassBook") File PassBook,
+      @Part(name: "FI_ID") String FI_ID,
+      @Part(name: "GrNo") String GrNo,
+      @Part(name: "AadhaarCard") File? AadhaarCard,
+      @Part( name:"AadhaarCardBack") File? AadhaarCardBack,
+      @Part( name:"VoterId") File? VoterId,
+      @Part( name:"VoterIdBack") File? VoterIdBack,
+      @Part( name:"DrivingLicense") File? DrivingLicense,
+      @Part( name:"Pan") File? Pan,
+      @Part( name:"PassPort") File? PassPort,
+      @Part( name:"PassBook") File? PassBook,
       );
 
   @POST("FiSourcing/FiDocsUploadSingleFile")
@@ -311,9 +315,6 @@ abstract class ApiService {
       @Query("GetDate") String GetDate);
 
 
-
-
-
   @POST("FiSourcing/AddFiExtraDetail")
   Future<GlobalModel> updatePersonalDetails(
       @Header("dbname") String dbname,
@@ -417,6 +418,17 @@ abstract class ApiService {
       @Query("Branch_code") String Branch_code,
       @Query("Creator") String Creator,
       @Query("Type") int Type,
+      );
+
+  @GET("Collection/GetPandingCollectionGroupCode")
+  Future<CollectionBorrowerListModel> CollectionBorrowerList(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("Imei") String Imei,
+      @Query("BranchCode") String BranchCode,
+      @Query("GroupCode") String GroupCode,
+      @Query("UserId") String UserId,
+      @Query("GetDate") String GetDate,
       );
 
   @GET("FiSourcing/GetFiUploadedDocuments")

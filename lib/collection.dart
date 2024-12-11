@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_sourcing_app/Models/CollectionBorrowerListModel.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'Models/borrower_list_model.dart';
@@ -12,14 +13,11 @@ import 'global_class.dart';
 
 
 class Collection extends StatefulWidget {
-  final BranchDataModel BranchData;
-  final GroupDataModel GroupData;
-  final BorrowerListDataModel selectedData;
+
+  final CollectionBorrowerListDataModel selectedData;
 
   const Collection({
     super.key,
-    required this.BranchData,
-    required this.GroupData,
     required this.selectedData,
   });
 

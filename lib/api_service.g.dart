@@ -601,79 +601,106 @@ class _ApiService implements ApiService {
   Future<GlobalModel> FiDocsUploads(
     String token,
     String dbname,
-    File AadhaarCard,
-    File AadhaarCardBack,
-    File VoterId,
-    File VoterIdBack,
-    File DrivingLicense,
-    File Pan,
-    File PassPort,
-    File PassBook,
+    String FI_ID,
+    String GrNo,
+    File? AadhaarCard,
+    File? AadhaarCardBack,
+    File? VoterId,
+    File? VoterIdBack,
+    File? DrivingLicense,
+    File? Pan,
+    File? PassPort,
+    File? PassBook,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{
       r'Authorization': token,
       r'dbname': dbname,
     };
     _headers.removeWhere((k, v) => v == null);
     final _data = FormData();
-    _data.files.add(MapEntry(
-      'AadhaarCard',
-      MultipartFile.fromFileSync(
-        AadhaarCard.path,
-        filename: AadhaarCard.path.split(Platform.pathSeparator).last,
-      ),
+    _data.fields.add(MapEntry(
+      'FI_ID',
+      FI_ID,
     ));
-    _data.files.add(MapEntry(
-      'AadhaarCardBack',
-      MultipartFile.fromFileSync(
-        AadhaarCardBack.path,
-        filename: AadhaarCardBack.path.split(Platform.pathSeparator).last,
-      ),
+    _data.fields.add(MapEntry(
+      'GrNo',
+      GrNo,
     ));
-    _data.files.add(MapEntry(
-      'VoterId',
-      MultipartFile.fromFileSync(
-        VoterId.path,
-        filename: VoterId.path.split(Platform.pathSeparator).last,
-      ),
-    ));
-    _data.files.add(MapEntry(
-      'VoterIdBack',
-      MultipartFile.fromFileSync(
-        VoterIdBack.path,
-        filename: VoterIdBack.path.split(Platform.pathSeparator).last,
-      ),
-    ));
-    _data.files.add(MapEntry(
-      'DrivingLicense',
-      MultipartFile.fromFileSync(
-        DrivingLicense.path,
-        filename: DrivingLicense.path.split(Platform.pathSeparator).last,
-      ),
-    ));
-    _data.files.add(MapEntry(
-      'Pan',
-      MultipartFile.fromFileSync(
-        Pan.path,
-        filename: Pan.path.split(Platform.pathSeparator).last,
-      ),
-    ));
-    _data.files.add(MapEntry(
-      'PassPort',
-      MultipartFile.fromFileSync(
-        PassPort.path,
-        filename: PassPort.path.split(Platform.pathSeparator).last,
-      ),
-    ));
-    _data.files.add(MapEntry(
-      'PassBook',
-      MultipartFile.fromFileSync(
-        PassBook.path,
-        filename: PassBook.path.split(Platform.pathSeparator).last,
-      ),
-    ));
+    if (AadhaarCard != null) {
+      _data.files.add(MapEntry(
+        'AadhaarCard',
+        MultipartFile.fromFileSync(
+          AadhaarCard.path,
+          filename: AadhaarCard.path.split(Platform.pathSeparator).last,
+        ),
+      ));
+    }
+    if (AadhaarCardBack != null) {
+      _data.files.add(MapEntry(
+        'AadhaarCardBack',
+        MultipartFile.fromFileSync(
+          AadhaarCardBack.path,
+          filename: AadhaarCardBack.path.split(Platform.pathSeparator).last,
+        ),
+      ));
+    }
+    if (VoterId != null) {
+      _data.files.add(MapEntry(
+        'VoterId',
+        MultipartFile.fromFileSync(
+          VoterId.path,
+          filename: VoterId.path.split(Platform.pathSeparator).last,
+        ),
+      ));
+    }
+    if (VoterIdBack != null) {
+      _data.files.add(MapEntry(
+        'VoterIdBack',
+        MultipartFile.fromFileSync(
+          VoterIdBack.path,
+          filename: VoterIdBack.path.split(Platform.pathSeparator).last,
+        ),
+      ));
+    }
+    if (DrivingLicense != null) {
+      _data.files.add(MapEntry(
+        'DrivingLicense',
+        MultipartFile.fromFileSync(
+          DrivingLicense.path,
+          filename: DrivingLicense.path.split(Platform.pathSeparator).last,
+        ),
+      ));
+    }
+    if (Pan != null) {
+      _data.files.add(MapEntry(
+        'Pan',
+        MultipartFile.fromFileSync(
+          Pan.path,
+          filename: Pan.path.split(Platform.pathSeparator).last,
+        ),
+      ));
+    }
+    if (PassPort != null) {
+      _data.files.add(MapEntry(
+        'PassPort',
+        MultipartFile.fromFileSync(
+          PassPort.path,
+          filename: PassPort.path.split(Platform.pathSeparator).last,
+        ),
+      ));
+    }
+    if (PassBook != null) {
+      _data.files.add(MapEntry(
+        'PassBook',
+        MultipartFile.fromFileSync(
+          PassBook.path,
+          filename: PassBook.path.split(Platform.pathSeparator).last,
+        ),
+      ));
+    }
     final _options = _setStreamType<GlobalModel>(Options(
       method: 'POST',
       headers: _headers,
@@ -2077,6 +2104,57 @@ class _ApiService implements ApiService {
     late BorrowerListModel _value;
     try {
       _value = BorrowerListModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<CollectionBorrowerListModel> CollectionBorrowerList(
+    String token,
+    String dbName,
+    String Imei,
+    String BranchCode,
+    String GroupCode,
+    String UserId,
+    String GetDate,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'Imei': Imei,
+      r'BranchCode': BranchCode,
+      r'GroupCode': GroupCode,
+      r'UserId': UserId,
+      r'GetDate': GetDate,
+    };
+    final _headers = <String, dynamic>{
+      r'Authorization': token,
+      r'dbname': dbName,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<CollectionBorrowerListModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'Collection/GetPandingCollectionGroupCode',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late CollectionBorrowerListModel _value;
+    try {
+      _value = CollectionBorrowerListModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

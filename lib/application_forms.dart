@@ -4004,6 +4004,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           onTap: () async {
             File? pickedImage = await GlobalClass().pickImage();
             if (pickedImage != null) {
+              print("vmsdfjk");
               setState(() {
                 _selectedImage = pickedImage;
                 onImagePicked(pickedImage); // Update the image path
@@ -4094,9 +4095,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 1,
             GrNo: "0",
             onImagePicked: (File file) {
-              setState(() {
+             // setState(() {
                 adhaarFront = file;
-              });
+              //});
             }));
         listItems.add(_buildListItem(
             title: "Aadhar Back",
@@ -4104,9 +4105,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 27,
             GrNo: '0',
             onImagePicked: (File file) {
-              setState(() {
+             // setState(() {
                 adhaarBack = file;
-              });
+             // });
             }));
       }
 
@@ -4117,9 +4118,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 3,
             GrNo: '0',
             onImagePicked: (File file) {
-              setState(() {
+             // setState(() {
                 voterFront = file;
-              });
+             // });
             }));
         listItems.add(_buildListItem(
             title: "Voter Back",
@@ -4127,9 +4128,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 26,
             GrNo: '0',
             onImagePicked: (File file) {
-              setState(() {
+            //  setState(() {
                 voterback = file;
-              });
+           //   });
             }));
       }
 
@@ -4140,9 +4141,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 4,
             GrNo: '0',
             onImagePicked: (File file) {
-              setState(() {
+            //  setState(() {
                 panFront = file;
-              });
+           //   });
             }));
       }
 
@@ -4153,9 +4154,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 15,
             GrNo: '0',
             onImagePicked: (File file) {
-              setState(() {
+          //    setState(() {
                 dlFront = file;
-              });
+         //     });
             }));
       }
       if (doc.passportExists == true) {
@@ -4165,9 +4166,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: doc.passportCheckListId,
             GrNo: '0',
             onImagePicked: (File file) {
-              setState(() {
+       //       setState(() {
                 passport = file;
-              });
+        //      });
             }));
       }
 
@@ -5473,14 +5474,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
           .FiDocsUploads(
         GlobalClass.token,
         GlobalClass.dbName,
-        adhaarFront!,
-        adhaarBack!,
-        voterFront!,
-        voterback!,
-        dlFront!,
-        panFront!,
-        passport!,
-        passbook!,
+        widget.selectedData.id.toString(),
+        "0",
+        adhaarFront,
+        adhaarBack,
+        voterFront,
+        voterback,
+        dlFront,
+        panFront,
+        passport,
+        passbook,
       )
           .then((value) async {
         if (value.statuscode == 200) {
