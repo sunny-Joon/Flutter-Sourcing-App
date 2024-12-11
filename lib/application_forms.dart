@@ -3809,7 +3809,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
           });
           }else*/
           if (_currentStep == 0) {
-            if (personalInfoEditable) {
+            setState(() {
+              _currentStep=6;
+            });
+            /*if (personalInfoEditable) {
               if (_stepOneValidations()) {
                 AddFiExtraDetail(context);
               }
@@ -3817,7 +3820,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 _currentStep++;
               });
-            }
+            }*/
           } else if (_currentStep == 1) {
             if(FiFamilyEditable){
               if ( _stepTwoValidations()) {
@@ -3877,10 +3880,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 _currentStep++;
               });
             }
-
-
           } else if (_currentStep == 6) {
-            setState(() {});
+              FiDocsUploadsApi(context);
           }
         },
         child: Text(
@@ -4056,7 +4057,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       size: 30,
                     ),
                     onPressed: () {
-                      UploadFiDocs(context, title, _selectedImage, GrNo, id);
+                    //  UploadFiDocs(context, title, _selectedImage, GrNo, id);
                       print('Title: $title');
                       print('Path: $path');
                     },
@@ -4093,7 +4094,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 1,
             GrNo: "0",
             onImagePicked: (File file) {
-              adhaarFront = file;
+              setState(() {
+                adhaarFront = file;
+              });
             }));
         listItems.add(_buildListItem(
             title: "Aadhar Back",
@@ -4101,7 +4104,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 27,
             GrNo: '0',
             onImagePicked: (File file) {
-              adhaarBack = file;
+              setState(() {
+                adhaarBack = file;
+              });
             }));
       }
 
@@ -4112,7 +4117,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 3,
             GrNo: '0',
             onImagePicked: (File file) {
-              voterFront = file;
+              setState(() {
+                voterFront = file;
+              });
             }));
         listItems.add(_buildListItem(
             title: "Voter Back",
@@ -4120,7 +4127,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 26,
             GrNo: '0',
             onImagePicked: (File file) {
-              voterback = file;
+              setState(() {
+                voterback = file;
+              });
             }));
       }
 
@@ -4131,7 +4140,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 4,
             GrNo: '0',
             onImagePicked: (File file) {
-              panFront = file;
+              setState(() {
+                panFront = file;
+              });
             }));
       }
 
@@ -4142,7 +4153,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 15,
             GrNo: '0',
             onImagePicked: (File file) {
-              dlFront = file;
+              setState(() {
+                dlFront = file;
+              });
             }));
       }
       if (doc.passportExists == true) {
@@ -4152,7 +4165,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: doc.passportCheckListId,
             GrNo: '0',
             onImagePicked: (File file) {
-              passport = file;
+              setState(() {
+                passport = file;
+              });
             }));
       }
 
@@ -4163,7 +4178,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 2,
             GrNo: '0',
             onImagePicked: (File file) {
-              passbook = file;
+              setState(() {
+                passbook = file;
+              });
             }));
       }
 
@@ -5441,43 +5458,95 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-  Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file,
+  Future<void> FiDocsUploadsApi(BuildContext context) async {
+    try {
+      EasyLoading.show(status: 'Loading...');
+
+      String? Image;
+      if (_imageFile == null) {
+        Image = 'Null';
+      }
+
+      final api = Provider.of<ApiService>(context, listen: false);
+
+      await api
+          .FiDocsUploads(
+        GlobalClass.token,
+        GlobalClass.dbName,
+        adhaarFront!,
+        adhaarBack!,
+        voterFront!,
+        voterback!,
+        dlFront!,
+        panFront!,
+        passport!,
+        passbook!,
+      )
+          .then((value) async {
+        if (value.statuscode == 200) {
+          EasyLoading.dismiss();
+          GlobalClass.showSnackBar(context, "Saved all");
+
+        } else if (value.statuscode == 400) {
+          EasyLoading.dismiss();
+
+          GlobalClass.showSnackBar(context, "Something went wrong in API");
+        }
+      }).catchError((error) {
+        GlobalClass.showSnackBar(context, "Error: ${error.toString()}");
+        EasyLoading.dismiss();
+      });
+    } catch (e) {
+      GlobalClass.showSnackBar(
+          context, "An unexpected error occurred: ${e.toString()}");
+      EasyLoading.dismiss();
+    }
+  }
+  /*Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file,
       String? grNo, int? checklistid) async {
     EasyLoading.show(
       status: 'Loading...',
     );
-    if (file == null) {
+  */
+  /*  if (file == null) {
       GlobalClass.showUnsuccessfulAlert(context, "Please upload $tittle", 1);
     } else {
       final api = Provider.of<ApiService>(context, listen: false);
 //https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//38//FiDocuments//VoterIDBorrower0711_2024_43_01.png
 
-      /* String baseUrl = 'https://predeptest.paisalo.in:8084';
+      *//**/
+  /* String baseUrl = 'https://predeptest.paisalo.in:8084';
 
     // Replace the front part of the file path and ensure the path uses forward slashes
     String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
 
     // Join the base URL with the modified path
     String finalUrl = '$baseUrl/$modifiedPath';
-    File file = File(finalUrl);*/
+    File file = File(finalUrl);*//**/
+  /*
       return await api
           .uploadFiDocs(GlobalClass.token, GlobalClass.dbName, FIID.toString(),
               int.parse(grNo!), checklistid!, tittle.toString(), file!)
           .then((value) async {
         if (value.statuscode == 200) {
           GetDocs(context);
-          /*setState(() {
+          *//**/
+  /*setState(() {
           _currentStep += 1;
           Fi_Id = value.data[0].fiId.toString();
-        });*/
+        });*//**/
+  /*
           EasyLoading.dismiss();
         } else {
           EasyLoading.dismiss();
         }
       });
-    }
-    EasyLoading.dismiss();
-  }
+    }*/
+  /*
+   // EasyLoading.dismiss();
+
+
+  }*/
 
   Future<void> verifyDocs(BuildContext context, String idNoController,
       String type, String ifsc, String dob) async {
