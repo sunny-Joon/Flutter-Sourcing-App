@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter_sourcing_app/Models/common_string_model.dart';
 import 'package:flutter_sourcing_app/collectionborrowerlist.dart';
 import 'package:flutter_sourcing_app/Models/CollectionBorrowerListModel.dart';
 import 'package:flutter_sourcing_app/Models/bank_names_model.dart';
@@ -45,6 +46,7 @@ class ApiConfig {
   static const String baseUrl5 = 'https://erpservice.paisalo.in:980/PDL.KYC.API/api/';
   static const String baseUrl6 = 'https://ocr.paisalo.in:950/api/';
   static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
+  static const String baseUrl8 = 'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
 
 }
 
@@ -538,6 +540,7 @@ abstract class ApiService {
       @Header("Authorization") String authorization,
 
       );
+
   @POST("Tracklocations/InsertBranchVisit")
   @MultiPart()
   Future<GlobalModel> insertBranchVisit(
@@ -553,5 +556,10 @@ abstract class ApiService {
       @Part(name: "Address")  String address,
       @Part(name: "Picture")  File picture
       );
+
+
+
+  @GET("DocGen/GetDocument")
+  Future<CommonStringModel> getDocument(@Body() Map<String, dynamic> body);
 }
 
