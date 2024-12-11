@@ -115,14 +115,70 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFD42D3F),
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
+      backgroundColor: const Color(0xFFD42D3F),
+      endDrawer: Container(
+        width: 80,
+        height: 300, // Set the width of the drawer
+        child: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              // Home ListTile with QR Payment Report
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                  // Navigate to QR Payment Reports
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => QrPaymentReports()),
+                  );
+                },
+                title: Column(
+                  children: const [
+                    Icon(Icons.currency_rupee),
+                    SizedBox(height: 5),
+                    Text('QR Payment Report', style: TextStyle(fontSize: 9)),
+                  ],
+                ),
+              ),
+              // Settings ListTile with Collection Report
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                  print('Get Collection Report Clicked');
+                },
+                title: Column(
+                  children: const [
+                    Icon(Icons.currency_rupee),
+                    SizedBox(height: 5),
+                    Text('Collection Report', style: TextStyle(fontSize: 8)),
+                  ],
+                ),
+              ),
+              // About ListTile with Morpho Recharge
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                  showCustomAlertDialog(context);
+                },
+                title: Column(
+                  children: const [
+                    Icon(Icons.info),
+                    SizedBox(height: 5),
+                    Text('Morpho Recharge', style: TextStyle(fontSize: 8)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      endDrawerEnableOpenDragGesture: true,
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxWidth:
-                MediaQuery.of(context).size.width , // Set a max width
-            maxHeight:
-                MediaQuery.of(context).size.height -45, // Set a max height
+            maxWidth: MediaQuery.of(context).size.width,
+            maxHeight: MediaQuery.of(context).size.height - 45,
           ),
           child: Stack(
             children: [
@@ -133,7 +189,7 @@ class _ProfileState extends State<Profile> {
                 right: -50,
                 child: Container(
                   height: MediaQuery.of(context).size.height,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/Images/sphere.png'),
                       fit: BoxFit.contain,
@@ -141,8 +197,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
-
-              // Header with back, logo, and logout buttons
+              // Header with logo and logout buttons
               Positioned(
                 top: 35,
                 left: 10,
@@ -152,86 +207,60 @@ class _ProfileState extends State<Profile> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // _buildBackButton(context),
-                      SizedBox(
-                        width: 50,
-                      ),
+                      SizedBox(width: 50),
                       _buildCenterLogo(),
                       _buildLogoutButton(context),
                     ],
                   ),
                 ),
               ),
-
-              // Main content: Profile picture, user details, and action cards
+              // Main content
               Positioned.fill(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: MediaQuery.of(context).size.width / 5),
                     _buildProfilePicture(),
-                    SizedBox(
-                      height: 30,
-                    ),
+                    SizedBox(height: 30),
                     _buildUserDetailsCard(),
+                    // Action cards
                     Container(
                       height: MediaQuery.of(context).size.height / 6,
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: SingleChildScrollView(
-                          child: GridView.builder(
-                            padding: EdgeInsets.all(0),
-                            shrinkWrap:
-                                true, // Ensure the grid view doesn't expand infinitely
-                            physics:
-                                NeverScrollableScrollPhysics(), // Disable scrolling for GridView
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3, // Number of columns
-                              crossAxisSpacing: 1,
-                              mainAxisSpacing: 1,
-                            ),
-                            itemCount: 3, // Number of grid items
-                            itemBuilder: (context, index) {
-                              if (index == 0) {
-                                return _buildGridItem(
-                                    'QR Payment Report', Icons.qr_code, () {
-                                  // Action for QR Payment Details
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => QrPaymentReports(),
-                                    ),
-                                  );
-                                  // Add navigation or other actions here
-                                });
-                              } else if (index == 1) {
-                                return _buildGridItem(
-                                    'Collection Report', Icons.currency_rupee,
-                                    () {
-                                  // Action for Get Collection Report
-                                  print('Get Collection Report Clicked');
-                                  // Add navigation or other actions here
-                                });
-                              } else if (index == 2) {
-                                return _buildGridItem(
-                                    'Morpho Recharge', Icons.find_in_page_sharp,
-                                    () {
-                                  showCustomAlertDialog(context);
-                                });
-                              } else {
-                                return _buildGridItem(
-                                    'More Reports', Icons.insert_chart, () {
-                                  // Action for More Reports
-                                  print('More Reports Clicked');
-                                  // Add navigation or other actions here
-                                });
-                              }
-                            },
+                        child: GridView.builder(
+                          padding: EdgeInsets.all(0),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 1,
+                            mainAxisSpacing: 1,
                           ),
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return _buildGridItem('QR Payment Report', Icons.qr_code, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => QrPaymentReports()),
+                                );
+                              });
+                            } else if (index == 1) {
+                              return _buildGridItem('Collection Report', Icons.currency_rupee, () {
+                                print('Get Collection Report Clicked');
+                              });
+                            } else if (index == 2) {
+                              return _buildGridItem('Morpho Recharge', Icons.find_in_page_sharp, () {
+                                showCustomAlertDialog(context);
+                              });
+                            }
+                            return const SizedBox();
+                          },
                         ),
                       ),
                     ),
+                    // Punch In/Out button
                     Card(
                       elevation: 10,
                       clipBehavior: Clip.antiAlias,
@@ -243,11 +272,11 @@ class _ProfileState extends State<Profile> {
                             punchInOut(context);
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 11.0),
+                            padding: const EdgeInsets.symmetric(vertical: 11.0),
                             alignment: Alignment.center,
                             child: Text(
                               tabName,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: "Poppins-Regular",
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -263,7 +292,9 @@ class _ProfileState extends State<Profile> {
               ),
             ],
           ),
-        )));
+        ),
+      ),
+    );
   }
 
   Widget _buildGridItem(String title, IconData icon, VoidCallback onTap) {
