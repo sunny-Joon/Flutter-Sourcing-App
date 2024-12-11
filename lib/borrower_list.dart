@@ -191,30 +191,6 @@ print("object++12");
                           ),
                         );
                         break;
-                        case 'COLLECTION':
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Collection(
-                              BranchData: widget.BranchData,
-                              GroupData: widget.GroupData,
-                              selectedData: item,
-                            ),
-                          ),
-                        );
-                        break;
-                        case 'Dealer':
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Collection(
-                              BranchData: widget.BranchData,
-                              GroupData: widget.GroupData,
-                              selectedData: item,
-                            ),
-                          ),
-                        );
-                        break;
                     }
                   },
                 );
