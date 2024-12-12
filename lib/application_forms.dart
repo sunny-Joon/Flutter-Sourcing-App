@@ -92,7 +92,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   List<String> titleList = ["Select", "Mr.", "Mrs.", "Miss"];
   List<String> accType = ["Select", "Current", "Savings", "Salary"];
-   String expense = "";
+  String expense = "";
   String income = "";
   String lati = "";
   String longi = "";
@@ -304,7 +304,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? selectedBank;
   String? Fi_Id;
   String qrResult = "";
-  File? _imageFile;
+  late String _imageFile;
+  File? grPic;
   File? adhaarFront;
   File? adhaarBack;
   File? panFront;
@@ -314,7 +315,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   File? passport;
   File? passbook;
 
-  late String name,ficode,creator;
+  late String name, ficode, creator;
 
   @override
   void initState() {
@@ -323,6 +324,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
     creator = widget.selectedData.creator;
     ficode = widget.selectedData.fiCode.toString();
     name = widget.selectedData.fullName;
+
+    _imageFile = widget.selectedData.profilePic;
+    String baseUrl = 'https://predeptest.paisalo.in:8084';
+
+    // Replace the front part of the file path and ensure the path uses forward slashes
+    String? modifiedPath =
+        _imageFile.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
+
+    // Join the base URL with the modified path
+    _imageFile = '$baseUrl/$modifiedPath';
+    print(_imageFile);
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     getAllDataApi(context);
@@ -531,9 +543,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ),
                 ),
                 _buildProgressIndicator(),
-                SizedBox(height: 50),
+                SizedBox(height: 60),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height - 240,
+                  height: MediaQuery.of(context).size.height - 250,
                   child: Stack(clipBehavior: Clip.none, children: [
                     Container(
                       //height: MediaQuery.of(context).size.height - 230,
@@ -555,74 +567,124 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       ),
                     ),
                     Positioned(
-                        top: -50, // Adjust the position as needed
-                        left: 0,
-                        right: 0,
-                        child: Text(name,
-                          style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                        )
-                    ),
-                    Positioned(
                         top: -35, // Adjust the position as needed
                         left: 0,
                         right: 0,
-                        child: Text(ficode,
+                        child: Text(
+                          "FiCode-Creator",
                           style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                        )
-                    ),
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        )),
                     Positioned(
                         top: -20, // Adjust the position as needed
                         left: 0,
                         right: 0,
-                        child: Text(creator,
+                        child: Text(
+                          "$ficode - $creator",
                           style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                        )
-                    ),
-                    Positioned(
-                        top: -35, // Adjust the position as needed
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: _imageFile == null
-                              ? InkWell(
-                                  child: ClipOval(
-                                    child: Container(
-                                      width: 70,
-                                      height: 70,
-                                      color: Colors.grey,
-                                      child: Icon(
-                                        Icons.person,
-                                        size: 50.0,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  onTap: _pickImage,
-                                )
-                              : InkWell(
-                                  child: ClipOval(
-                                    child: Image.file(
-                                      File(_imageFile!.path),
-                                      width: 70,
-                                      height: 70,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  onTap: _pickImage,
-                                ),
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
                         )),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: _currentStep == 5
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                  Transform.translate(
+                                    offset: Offset(0, -55), // Adjust the vertical offset as needed
+                                    child: ClipOval(
+                                    child: _imageFile.isNotEmpty
+                                        ? Image.network(
+                                            _imageFile,
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Container(
+                                            width: 50,
+                                            height: 50,
+                                            color: Colors.grey,
+                                            child: Icon(
+                                              Icons.person,
+                                              size: 35.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                  ),
+                                  ),
+                                SizedBox(width: 10,),
+                                Transform.translate(
+                                  offset: Offset(0, -55), // Adjust the vertical offset as needed
+                                  child:  grPic == null
+                                        ? InkWell(
+                                      onTap:() async {
+                                        File? pickedFile=await GlobalClass().pickImage();
+                                        setState(()  {
+                                          grPic = pickedFile;
+                                        });
+                                      } ,
+                                      child: ClipOval(
+                                        child: Container(
+                                          width: 50,
+                                          height: 50,
+                                          color: Colors.grey,
+                                          child: Icon(
+                                            Icons.person,
+                                            size: 35.0,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                        : InkWell(
+                                      child: ClipOval(
+                                        child: Image.file(
+                                          File(grPic!.path),
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      onTap:()async {
+                                        File? pickedFile=await GlobalClass().pickImage();
+                                        setState(()  {
+                                          grPic = pickedFile;
+                                        });
+                                      } ,
+                                    ),
+                                )
+                              ],
+                            )
+                          : Transform.translate(
+                              offset: Offset(0,
+                                  -55), // Adjust the vertical offset as needed
+                              child: ClipOval(
+                                child: _imageFile!.isNotEmpty
+                                    ? Image.network(
+                                        _imageFile,
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Container(
+                                        width: 50,
+                                        height: 50,
+                                        color: Colors.grey,
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 35.0,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                    ),
                   ]),
                 ),
                 SizedBox(height: 10),
@@ -706,13 +768,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
             : (isActive ? Colors.green : Colors.grey.shade300),
       ),
       child: CircleAvatar(
-        radius: 10,
+        radius: 7,
         backgroundColor: isCompleted ? Colors.green : Colors.white,
         child: Text(
           (step + 1).toString(),
           style: TextStyle(
               fontFamily: "Poppins-Regular",
-              fontSize: 10,
+              fontSize: 7,
               color: isCompleted
                   ? Colors.white
                   : (isActive ? Color(0xFFD42D3F) : Colors.grey)),
@@ -3829,7 +3891,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               pageTitle = "Guarantor Form";
               _currentStep -= 1;
             });
-          }else if (_currentStep == 7) {
+          } else if (_currentStep == 7) {
             setState(() {
               pageTitle = "Upload DocS";
               _currentStep -= 1;
@@ -3885,7 +3947,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               UploadFiDocsEditable = true;
             });
-          }else if (_currentStep == 7) {
+          } else if (_currentStep == 7) {
             setState(() {
               UploadFiDocsEditable = true;
             });
@@ -3911,23 +3973,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
         onPressed: () {
-           if (_currentStep == 0) {
           setState(() {
             _currentStep++;
           });
-          }else
-          if (_currentStep == 0) {
-            // setState(() {
-            //   _currentStep=6;
-            // });
-            /*if (personalInfoEditable) {
-              setState(() {
-                _currentStep = 6;
-              });*/
 
-              /*setState(() {
-              _currentStep=6;
-            });*/
+          /*if (_currentStep == 0) {
               if (personalInfoEditable) {
                 if (_stepOneValidations()) {
                   AddFiExtraDetail(context);
@@ -3994,8 +4044,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             } else if (_currentStep == 7) {
               FiDocsUploadsApi(context, "1");
-            }
-          },
+            }*/
+        },
         child: Text(
           _currentStep == 7 ? "SUBMIT" : "NEXT",
           style: TextStyle(
@@ -4336,7 +4386,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-               adhaarFront = file;
+                adhaarFront = file;
               });
             },
           ));
@@ -4347,7 +4397,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-              adhaarBack = file;
+                adhaarBack = file;
               });
             },
           ));
@@ -4361,7 +4411,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-             voterFront = file;
+                voterFront = file;
               });
             },
           ));
@@ -4372,7 +4422,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-              voterFront = file;
+                voterFront = file;
               });
             },
           ));
@@ -4400,7 +4450,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-               dlFront = file;
+                dlFront = file;
               });
             },
           ));
@@ -4708,14 +4758,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-  void _pickImage() async {
+  /*void _pickImage() async {
     File? pickedImage = await GlobalClass().pickImage();
     if (pickedImage != null) {
       setState(() {
         _imageFile = pickedImage;
       });
     }
-  }
+  }*/
 
   Future<void> _selectDate(BuildContext context, String type) async {
     DateTime now = DateTime.now();
@@ -5816,14 +5866,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-  Future<void> FiDocsUploadsApi(BuildContext context,String GurNum) async {
+  Future<void> FiDocsUploadsApi(BuildContext context, String GurNum) async {
     try {
       EasyLoading.show(status: 'Loading...');
 
-      String? Image;
+      /*String? Image;
       if (_imageFile == null) {
         Image = 'Null';
-      }
+      }*/
 
       final api = Provider.of<ApiService>(context, listen: false);
 
@@ -6382,7 +6432,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     final api = Provider.of<ApiService>(context, listen: false);
 
-    return await api
+    /*return await api
         .saveGurrantor(
             GlobalClass.token,
             GlobalClass.dbName,
@@ -6427,7 +6477,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }).catchError((error) {
       showToast_Error(error);
       EasyLoading.dismiss();
-    });
+    });*/
   }
 
   String formatDate(String date, dateFormat) {

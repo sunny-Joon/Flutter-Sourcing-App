@@ -93,7 +93,7 @@ class KycScanningDataModel {
 
   factory KycScanningDataModel.fromJson(Map<String, dynamic> json) => KycScanningDataModel(
     fiId: json["fi_Id"],
-    docname: json["docname"],
+    docname: json["docname"]??"",
     addharExists: json["addharExists"]??"",
     aadharPath: json["aadharPath"]??"",
     aadharCheckListId: json["aadharCheckListId"]??"",
@@ -117,8 +117,8 @@ class KycScanningDataModel {
     passportCheckListId: json["passportCheckListId"]??"",
     passportPath: json["passportPath"]??"",
     grDocs: List<GrDoc>.from(json["grDocs"].map((x) => GrDoc.fromJson(x))),
-    errormsg: json["errormsg"],
-    isvalide: json["isvalide"],
+    errormsg: json["errormsg"]??"",
+    isvalide: json["isvalide"]??"",
   );
 
 
