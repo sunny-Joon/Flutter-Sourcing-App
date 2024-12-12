@@ -34,32 +34,32 @@ class KycScanningModel {
 
 class KycScanningDataModel {
   int fiId;
-  dynamic docname;
+  String docname;
   bool addharExists;
-  dynamic aadharPath;
+  String aadharPath;
   int aadharCheckListId;
-  dynamic aadharBPath;
+  String aadharBPath;
   int aadharBCheckListId;
   bool voterExists;
   String voterPath;
   int voterCheckListId;
-  dynamic voterBPath;
+  String voterBPath;
   int voterBCheckListId;
   bool panExists;
-  dynamic panPath;
+  String panPath;
   int panCheckListId;
   bool drivingExists;
-  dynamic drivingPath;
+  String drivingPath;
   int drivingCheckListId;
   bool passBookExists;
   String passBookPath;
   int passBookCheckListId;
   bool passportExists;
   int passportCheckListId;
-  dynamic passportPath;
+  String passportPath;
   List<GrDoc> grDocs;
-  dynamic errormsg;
-  dynamic isvalide;
+  String errormsg;
+  String isvalide;
 
   KycScanningDataModel({
     required this.fiId,
@@ -120,6 +120,7 @@ class KycScanningDataModel {
     errormsg: json["errormsg"],
     isvalide: json["isvalide"],
   );
+
 
   Map<String, dynamic> toJson() => {
     "fi_Id": fiId,
