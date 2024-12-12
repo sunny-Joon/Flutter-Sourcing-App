@@ -39,8 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     // Define your custom color
     const Color customColor = Color(0xFFD42D3F);
     TextEditingController passwordControllerlogin = TextEditingController(text: '12345');
-    final TextEditingController mobileControllerlogin =
-        TextEditingController(text: 'GRST002064');
+    final TextEditingController mobileControllerlogin = TextEditingController(text: 'GRST002064');
     String deviceId = '';
 
     // Check and request permissions
@@ -128,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                         controller: mobileControllerlogin,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'GRST000223',
+                          hintText: 'ABCD123456',
                           hintStyle: TextStyle(fontFamily: "Poppins-Regular",color: Colors.grey.shade400), // Hint color grey
                         ),
                         style: TextStyle(fontSize: 18),
@@ -137,11 +136,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
 
-                  SizedBox(height: 5),
+                  SizedBox(height: 2),
                   Text(
                     'User Name must be at least 10 characters',
                     style: TextStyle(fontFamily: "Poppins-Regular",
-                      color: customColor,
+                      color: Colors.grey,
                       fontSize: 12,
                     ),
                   ),
@@ -191,11 +190,11 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: 2),
                   Text(
                     'Password must be at least 5 characters',
                     style: TextStyle(fontFamily: "Poppins-Regular",
-                      color: customColor,
+                      color: Colors.grey,
                       fontSize: 12,
                     ),
                   ),
@@ -396,7 +395,7 @@ class _LoginPageState extends State<LoginPage> {
       "password": userPassword,
       "GsmId": "SSTST002064"
     };
-
+    // String? DeviceID = await generateDeviceId(userName) as String?;
     return await api
         .getLogins("0646498585477244", GlobalClass.dbName, requestBody)
         .then((value) async {
@@ -409,7 +408,7 @@ class _LoginPageState extends State<LoginPage> {
           GlobalClass.deviceId = value.data.tokenDetails.deviceSrNo;
           GlobalClass.id = value.data.tokenDetails.userName;
           GlobalClass.validity = value.data.tokenDetails.validity;
-          GlobalClass.imei = value.data.foImei.toString() ?? '';
+          GlobalClass.imei = value.data.tokenDetails.imeino;
           print('object0');
 
           if(value.data.foImei.length>0) {
@@ -419,8 +418,10 @@ class _LoginPageState extends State<LoginPage> {
             GlobalClass.mobile=value.data.foImei[0].mobNo;
             GlobalClass.userName=value.data.foImei[0].name;
             GlobalClass.designation=value.data.foImei[0].designation;
+            EasyLoading.dismiss();
 
           }else{
+            EasyLoading.dismiss();
             PopupDialog.showPopup(
                 context, value.statuscode.toString(), value.message);
           }
@@ -428,15 +429,17 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Fragments()));
         }
+        EasyLoading.dismiss();
 
       } else {
         EasyLoading.dismiss();
         PopupDialog.showPopup(
             context, value.statuscode.toString(), value.message);
-        //  _showErrorDialog(context);
-
       }
 
+    }).catchError((error){
+      EasyLoading.dismiss();
+      GlobalClass.showErrorAlert(context, error.toString(), 1);
     });
   }
 

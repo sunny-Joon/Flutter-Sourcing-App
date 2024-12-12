@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/Models/CollectionBorrowerListModel.dart';
+import 'package:flutter_sourcing_app/Models/collectionborrowerlistmodel.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'Models/borrower_list_model.dart';
-import 'Models/branch_model.dart';
 import 'Models/getCollectionModel.dart';
-import 'Models/group_model.dart';
 import 'api_service.dart';
 import 'global_class.dart';
-
 
 class Collection extends StatefulWidget {
 
@@ -27,20 +23,21 @@ class Collection extends StatefulWidget {
 
 class _CollectionState extends State<Collection> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<bool> checkboxValues = List<bool>.filled(5, false); // Initialize with false values
-  List<int> emiAmounts = List<int>.generate(5, (index) => (index + 1) * 100); // Sample EMI amounts
-  double interestAmount = 100;
-  double lateFee = 20;
+  List<bool> checkboxValues = []; // Initialize with false values
+  late List<int> emiAmounts; // Sample EMI amounts
+  double interestAmount = 0;
+  double lateFee = 0;
   double totalAmount = 0;
   late String casecode="",borrower = "";
 
-
-
   late GetCollectionDataModel collectionDataModel;
+
   @override
   void initState() {
     super.initState();
-    getCollectionData(context);
+      setValues();
+    emiAmounts = widget.selectedData.instData.map((inst) => int.parse(inst.amount)).toList();
+    checkboxValues = List<bool>.filled(emiAmounts.length, false);
     _tabController = TabController(length: 3, vsync: this);
   }
 
@@ -218,8 +215,8 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                           SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: () {
-                              // Submit button action
-                            },
+                                saveReceipt(context);
+                                },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.transparent, // Make the button background transparent
                               shadowColor: Colors.transparent, // Remove the default shadow
@@ -273,7 +270,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
   Widget cashPaymentWidget() {
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: checkboxValues.length, // Sample item count
+      itemCount: checkboxValues.length,
       itemBuilder: (context, index) {
         return Card(
           elevation: 4.0,
@@ -302,7 +299,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                 },
               ),
               title: Text('EMI Amount: ₹${emiAmounts[index]}'),
-              subtitle: Text('Date: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}'),
+              subtitle: Text('Due Date: ${widget.selectedData.instData[index].dueDate}'),
             ),
           ),
         );
@@ -430,34 +427,59 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
     );
   }
 
-  Future<void> getCollectionData(BuildContext context) async {
+  void setValues() {
+    setState(() {
+      interestAmount=widget.selectedData.interestAmt;
+      borrower=widget.selectedData.custName;
+      casecode=widget.selectedData.caseCode;
+      totalAmount=widget.selectedData.totalDueAmt;
+    });
+  }
+
+
+
+  Future<void> saveReceipt(BuildContext context) async {
     EasyLoading.show(status: 'Loading...');
 
     final api = Provider.of<ApiService>(context, listen: false);
-
-    return await api
-        .GetFiCollection(GlobalClass.token, GlobalClass.dbName, "BBAB002073","2024-11-20")
+    Map<String, dynamic> requestBody = {
+      "VDATE":"2024-11-30",
+        "InstRcvID": 120,
+        "IMEI": 357874100796785,
+        "CaseCode": "UCJS020242",
+        "RcptNo": 1001,
+        "InstRcvAmt": 190,
+        "InstRcvDateTimeUTC": "2024-11-29T10:00:00Z",
+        "Flag": "E",
+        "CreationDate": "2024-11-29T10:22:27",
+        "BatchNo": 1,
+        "BatchDate": "2024-11-29T00:00:00",
+        "FoCode": "FO12345",
+        "DataBaseName": "YourDatabaseName",
+        "Creator": "AGRA",
+        "CustName": "John Doe",
+        "PartyCd": "PARTY123",
+        "PayFlag": "E",
+        "SmsMobNo": "9876543210",
+        "InterestAmt": 100,
+        "CollPoint": "FIELD",
+        "PaymentMode": "CASH",
+        "collBranchCode": "BR123",
+        "txnId": "TXN123456",
+        "TransactionId": "TRANS123456"
+    };
+    return await api.RcPosting(GlobalClass.token, GlobalClass.dbName,requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
-        setState(() {
-          collectionDataModel = value.data[0];
-          lateFee = collectionDataModel.futureDue;
-          interestAmount = collectionDataModel.instsAmtDue;
-          borrower = collectionDataModel.custName;
-          casecode = collectionDataModel.caseCode;
-
-        });
         EasyLoading.dismiss();
-        print("object112222");
-
-      }
-
-      else {
-        setState(() {});
+        GlobalClass.showSuccessAlert(context, value.message, 2);
+      }else {
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
       }
     }).catchError((err) {
-      print("ERRORRRR$err");
       EasyLoading.dismiss();
+      GlobalClass.showErrorAlert(context, err, 1);
     });
   }
 

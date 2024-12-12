@@ -315,10 +315,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
   File? passport;
   File? passbook;
 
+  late String name,ficode,creator;
+
   @override
   void initState() {
     super.initState();
     FIID = widget.selectedData.id;
+    creator = widget.selectedData.creator;
+    ficode = widget.selectedData.fiCode.toString();
+    name = widget.selectedData.fullName;
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     getAllDataApi(context);
@@ -549,6 +554,42 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         key: _formKey,
                         child: _getStepContent(),
                       ),
+                    ),
+                    Positioned(
+                        top: -50, // Adjust the position as needed
+                        left: 0,
+                        right: 0,
+                        child: Text(name,
+                          style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                        )
+                    ),
+                    Positioned(
+                        top: -35, // Adjust the position as needed
+                        left: 0,
+                        right: 0,
+                        child: Text(ficode,
+                          style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                        )
+                    ),
+                    Positioned(
+                        top: -20, // Adjust the position as needed
+                        left: 0,
+                        right: 0,
+                        child: Text(creator,
+                          style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                        )
                     ),
                     Positioned(
                         top: -35, // Adjust the position as needed
@@ -3801,16 +3842,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
         onPressed: () {
-          /* if (_currentStep == 0) {
+           if (_currentStep == 0) {
           setState(() {
-            _currentStep+=6;
+            _currentStep++;
           });
-          }else*/
+          }else
           if (_currentStep == 0) {
-            setState(() {
+            /*setState(() {
               _currentStep=6;
-            });
-            /*if (personalInfoEditable) {
+            });*/
+            if (personalInfoEditable) {
               if (_stepOneValidations()) {
                 AddFiExtraDetail(context);
               }
@@ -3818,7 +3859,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 _currentStep++;
               });
-            }*/
+            }
           } else if (_currentStep == 1) {
             if(FiFamilyEditable){
               if ( _stepTwoValidations()) {

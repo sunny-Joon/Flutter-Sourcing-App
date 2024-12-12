@@ -1,6 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_sourcing_app/CollectionBorrowerList.dart';
+import 'package:flutter_sourcing_app/collectionbranchlist.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +37,7 @@ class _FragmentsState extends State<Fragments> {
     LeaderBoard(),
     OnBoarding(),
     //Collection(),
-    BranchListPage(intentFrom: 'COLLECTION'),
+    CollectionBranchListPage(),
     Profile(),
   ];
 
