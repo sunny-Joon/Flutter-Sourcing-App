@@ -3917,91 +3917,85 @@ class _ApplicationPageState extends State<ApplicationPage> {
           });
           }else
           if (_currentStep == 0) {
-
             // setState(() {
             //   _currentStep=6;
             // });
-            if (personalInfoEditable) {
+            /*if (personalInfoEditable) {
+              setState(() {
+                _currentStep = 6;
+              });*/
 
-
-            setState(() {
-              _currentStep = 6;
-            });
-
-            /*setState(() {
+              /*setState(() {
               _currentStep=6;
             });*/
-            if (personalInfoEditable) {
-
-
-              if (_stepOneValidations()) {
-                AddFiExtraDetail(context);
+              if (personalInfoEditable) {
+                if (_stepOneValidations()) {
+                  AddFiExtraDetail(context);
+                }
+              } else {
+                setState(() {
+                  _currentStep++;
+                });
               }
-            } else {
+            } else if (_currentStep == 1) {
+              if (FiFamilyEditable) {
+                if (_stepTwoValidations()) {
+                  AddFiFamilyDetail(context);
+                }
+              } else {
+                setState(() {
+                  _currentStep++;
+                });
+              }
+            } else if (_currentStep == 2) {
+              if (FiIncomeEditable) {
+                if (_stepThreeValidations()) {
+                  AddFiIncomeAndExpense(context);
+                }
+              } else {
+                setState(() {
+                  _currentStep++;
+                });
+              }
+            } else if (_currentStep == 3) {
+              if (FinancialInfoEditable) {
+                if (_stepFourValidations()) {
+                  AddFinancialInfo(context);
+                }
+              } else {
+                setState(() {
+                  _currentStep++;
+                });
+              }
+            } else if (_currentStep == 4) {
+              if (femMemIncomeEditable) {
+                if (_stepFiveValidations()) {
+                  FiFemMemIncome(context);
+                }
+              } else {
+                setState(() {
+                  _currentStep++;
+                });
+              }
+            } else if (_currentStep == 5) {
+              if (GuarantorEditable) {
+                if (_stepSixValidations()) {
+                  saveGuarantorMethod(context);
+                }
+              } else {
+                setState(() {
+                  _currentStep++;
+                });
+              }
+            } else if (_currentStep == 6) {
+              FiDocsUploadsApi(context, "0");
               setState(() {
                 _currentStep++;
               });
+            } else if (_currentStep == 7) {
+              FiDocsUploadsApi(context, "1");
             }
-          } else if (_currentStep == 1) {
-            if (FiFamilyEditable) {
-              if (_stepTwoValidations()) {
-                AddFiFamilyDetail(context);
-              }
-            } else {
-              setState(() {
-                _currentStep++;
-              });
-            }
-          } else if (_currentStep == 2) {
-            if (FiIncomeEditable) {
-              if (_stepThreeValidations()) {
-                AddFiIncomeAndExpense(context);
-              }
-            } else {
-              setState(() {
-                _currentStep++;
-              });
-            }
-          } else if (_currentStep == 3) {
-            if (FinancialInfoEditable) {
-              if (_stepFourValidations()) {
-                AddFinancialInfo(context);
-              }
-            } else {
-              setState(() {
-                _currentStep++;
-              });
-            }
-          } else if (_currentStep == 4) {
-            if (femMemIncomeEditable) {
-              if (_stepFiveValidations()) {
-                FiFemMemIncome(context);
-              }
-            } else {
-              setState(() {
-                _currentStep++;
-              });
-            }
-          } else if (_currentStep == 5) {
-            if (GuarantorEditable) {
-              if (_stepSixValidations()) {
-                saveGuarantorMethod(context);
-              }
-            } else {
-              setState(() {
-                _currentStep++;
-              });
-            }
-          } else if (_currentStep == 6) {
-            FiDocsUploadsApi(context,"0");
-            setState(() {
-              _currentStep++;
-            });
-
-        } else if (_currentStep == 7) {
-            FiDocsUploadsApi(context,"1");
-          }
-        },
+          },
         child: Text(
           _currentStep == 7 ? "SUBMIT" : "NEXT",
           style: TextStyle(
