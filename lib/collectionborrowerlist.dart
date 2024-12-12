@@ -1,163 +1,163 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sourcing_app/Models/CollectionBorrowerListModel.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts package
+import 'package:flutter_sourcing_app/Models/collectionborrowerlistmodel.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:provider/provider.dart';
-import 'collection.dart';
-import 'Models/borrower_list_model.dart';
-import 'Models/group_model.dart';
+
+import 'Models/collectionbranchlistmodel.dart';
 import 'api_service.dart';
-import 'application_forms.dart';
-import 'first_esign.dart';
+import 'collection.dart';
 import 'global_class.dart';
-import 'house_visit_form.dart';
 
 
-class CollectionBorrowerList extends StatefulWidget {
+ class CollectionBorrowerList extends StatefulWidget {
+   final CollectionBranchListDataModel Branchdata;
 
-  @override
-  _CollectionBorrowerListState createState() => _CollectionBorrowerListState();
-}
+   const CollectionBorrowerList({super.key, required this.Branchdata});
 
-class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
-  List<CollectionBorrowerListDataModel> _borrowerItems = [];
+   @override
+   State<CollectionBorrowerList> createState() => _CollectionBorrowerListState();
+ }
+
+ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
+
+   List<CollectionBorrowerListDataModel> _borrowerItems = [];
 
 
-  @override
-  void initState() {
-    super.initState();
-    // if(widget.page =="E SIGN"){
-    _fetchBorrowerList(1);
-    // }else{
-    //   _fetchBorrowerList(0);
-    //   }
-  }
+   @override
+   void initState() {
+     super.initState();
+     // if(widget.page =="E SIGN"){
+     _fetchCollectionBorrowerList(1);
+     // }else{
+     //   _fetchBorrowerList(0);
+     //   }
+   }
 
-  Future<void> _fetchBorrowerList(int type) async {
-    EasyLoading.show(status: 'Loading...',);
+   Future<void> _fetchCollectionBorrowerList(int type) async {
+     EasyLoading.show(status: 'Loading...',);
 
-    final apiService = Provider.of<ApiService>(context, listen: false);
+     final apiService = Provider.of<ApiService>(context, listen: false);
 
-    await apiService.CollectionBorrowerList(
-        GlobalClass.token,
-        GlobalClass.dbName,
-        GlobalClass.imei,
-        "",//widget.BranchData.branchCode,
-        "0001",//widget.GroupData.groupCode,
-        GlobalClass.id,
-        GlobalClass.getTodayDate(),
-    ).then((response) {
-      if (response.statuscode == 200) {
-        setState(() {
-          _borrowerItems = response.data;
-        });
-        EasyLoading.dismiss();
-        print("object++12");
-      } else {
-        setState(() {
-        });
-        EasyLoading.dismiss();
+     await apiService.CollectionBorrowerList(
+         GlobalClass.token,
+         GlobalClass.dbName,
+         GlobalClass.imei,
+         "",//widget.BranchData.branchCode,
+         "0001",//widget.GroupData.groupCode,
+         "GRST002946",//GlobalClass.id,
+         "2024-11-20"//GlobalClass.getTodayDate(),
+     ).then((response) {
+       if (response.statuscode == 200) {
+         setState(() {
+           _borrowerItems = response.data;
+         });
+         EasyLoading.dismiss();
+         print("object++12");
+       } else {
+         setState(() {
+         });
+         EasyLoading.dismiss();
 
-      }
-    });
-  }
+       }
+     });
+   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFD42D3F),
-      body: /*_isLoading
+   @override
+   Widget build(BuildContext context) {
+     return Scaffold(
+       backgroundColor: Color(0xFFD42D3F),
+       body: /*_isLoading
           ? Center(child: CircularProgressIndicator())*/
-      /*:*/ Column(
-        children: [
-          SizedBox(height: 50),
-          Padding(padding: EdgeInsets.all(8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(width: 1, color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                    ),
-                    height: 40,
-                    width: 40,
-                    alignment: Alignment.center,
-                    child: Center(
-                      child: Icon(Icons.arrow_back_ios_sharp, size: 16),
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                Center(
-                  child: Image.asset(
-                    'assets/Images/logo_white.png', // Replace with your logo asset path
-                    height: 40,
-                  ),
-                ),
-                Container(
-                  height: 40,
-                  width: 40,
-                  alignment: Alignment.center,
-                ),
-              ],
-            ),
-          ),
-          Card(
-            margin: EdgeInsets.only(bottom: 0, top: 0, left: 10, right: 10),
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: TextField(
-              style: TextStyle(
-                  fontFamily: "Poppins-Regular"
-              ),
-              decoration: InputDecoration(
+       /*:*/ Column(
+         children: [
+           SizedBox(height: 50),
+           Padding(padding: EdgeInsets.all(8),
+             child: Row(
+               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+               crossAxisAlignment: CrossAxisAlignment.start,
+               children: [
+                 InkWell(
+                   child: Container(
+                     decoration: BoxDecoration(
+                       color: Colors.white,
+                       border: Border.all(width: 1, color: Colors.grey.shade300),
+                       borderRadius: BorderRadius.all(Radius.circular(5)),
+                     ),
+                     height: 40,
+                     width: 40,
+                     alignment: Alignment.center,
+                     child: Center(
+                       child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                     ),
+                   ),
+                   onTap: () {
+                     Navigator.of(context).pop();
+                   },
+                 ),
+                 Center(
+                   child: Image.asset(
+                     'assets/Images/logo_white.png', // Replace with your logo asset path
+                     height: 40,
+                   ),
+                 ),
+                 Container(
+                   height: 40,
+                   width: 40,
+                   alignment: Alignment.center,
+                 ),
+               ],
+             ),
+           ),
+           Card(
+             margin: EdgeInsets.only(bottom: 0, top: 0, left: 10, right: 10),
+             elevation: 8,
+             shape: RoundedRectangleBorder(
+               borderRadius: BorderRadius.circular(8),
+             ),
+             child: TextField(
+               style: TextStyle(
+                   fontFamily: "Poppins-Regular"
+               ),
+               decoration: InputDecoration(
 
-                hintText: 'Search...',
-                contentPadding: EdgeInsets.all(10),
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _borrowerItems.length,
-              itemBuilder: (context, index) {
-                final item = _borrowerItems[index];
-                return CollectionBorrowerListItem(
-                  name: item.custName,
-                  fiCode: item.caseCode.toString(),
-                  //mobile: item.pPhone,
-                  creator: item.creator,
-                  // address: item.currentAddress,
-                 // pic:item.profilePic,
-                  onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Collection(
-                              selectedData: item,
-                            ),
-                          ),
-                        );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+                 hintText: 'Search...',
+                 contentPadding: EdgeInsets.all(10),
+                 border: InputBorder.none,
+               ),
+             ),
+           ),
+           Expanded(
+             child: ListView.builder(
+               itemCount: _borrowerItems.length,
+               itemBuilder: (context, index) {
+                 final item = _borrowerItems[index];
+                 return CollectionBorrowerListItem(
+                   name: item.custName,
+                   fiCode: item.caseCode.toString(),
+                   //mobile: item.pPhone,
+                   creator: item.creator,
+                   // address: item.currentAddress,
+                   // pic:item.profilePic,
+                   onTap: () {
+                     Navigator.push(
+                       context,
+                       MaterialPageRoute(
+                         builder: (context) => Collection(
+                           selectedData: item,
+                         ),
+                       ),
+                     );
+                   },
+                 );
+               },
+             ),
+           ),
+         ],
+       ),
+     );
+   }
+ }
 
 
 String transformFilePathToUrl(String filePath) {
@@ -320,6 +320,7 @@ void main() {
       ),
     ),
   ));
-}
+ }
+
 
 

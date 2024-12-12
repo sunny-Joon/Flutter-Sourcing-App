@@ -90,22 +90,22 @@ class FoImei {
   });
 
   factory FoImei.fromJson(Map<String, dynamic> json) => FoImei(
-    imeino: json["imeino"],
-    actualYn: json["actualYN"],
-    isActive: json["isActive"],
-    newAppVerison: json["newAppVerison"],
-    appDownPath: json["appDownPath"],
-    requestUrl: json["requestUrl"],
-    simno: json["simno"],
-    creator: json["creator"],
-    creatorUserId: json["creator_UserID"],
-    targetCommAmt: json["targetCommAmt"],
-    name: json["name"],
-    roleName: json["roleName"],
-    designation: json["designation"],
-    departmentName: json["departmentName"],
-    mobNo: json["mobNO"],
-    tag: json["tag"],
+    imeino: json["imeino"]??"",
+    actualYn: json["actualYN"]??"",
+    isActive: json["isActive"]??"",
+    newAppVerison: json["newAppVerison"]??"",
+    appDownPath: json["appDownPath"]??"",
+    requestUrl: json["requestUrl"]??"",
+    simno: json["simno"]??"",
+    creator: json["creator"]??"",
+    creatorUserId: json["creator_UserID"]??"",
+    targetCommAmt: json["targetCommAmt"]??"",
+    name: json["name"]??"",
+    roleName: json["roleName"]??"",
+    designation: json["designation"]??"",
+    departmentName: json["departmentName"]??"",
+    mobNo: json["mobNO"]??"",
+    tag: json["tag"]??"",
   );
 
   Map<String, dynamic> toJson() => {
@@ -134,12 +134,12 @@ class TokenDetails {
   String userName;
   String imeino;
   String deviceSrNo;
-  dynamic password;
+  String password;
   String validity;
-  dynamic refreshToken;
-  dynamic role;
+  String refreshToken;
+  String role;
   int guId;
-  DateTime expiredTime;
+  String expiredTime;
 
   TokenDetails({
     required this.id,
@@ -147,26 +147,26 @@ class TokenDetails {
     required this.userName,
     required this.imeino,
     required this.deviceSrNo,
-    this.password,
+    required this.password,
     required this.validity,
-    this.refreshToken,
-    this.role,
+    required this.refreshToken,
+    required this.role,
     required this.guId,
     required this.expiredTime,
   });
 
   factory TokenDetails.fromJson(Map<String, dynamic> json) => TokenDetails(
-    id: json["id"],
-    token: json["token"],
-    userName: json["userName"],
-    imeino: json["imeino"],
-    deviceSrNo: json["deviceSrNo"],
-    password: json["password"],
-    validity: json["validity"],
-    refreshToken: json["refreshToken"],
-    role: json["role"],
-    guId: json["guId"],
-    expiredTime: DateTime.parse(json["expiredTime"]),
+    id: json["id"]??"",
+    token: json["token"]??"",
+    userName: json["userName"]??"",
+    imeino: json["imeino"]??"",
+    deviceSrNo: json["deviceSrNo"]??"",
+    password: json["password"]??"",
+    validity: json["validity"]??"",
+    refreshToken: json["refreshToken"]??"",
+    role: json["role"]??"",
+    guId: json["guId"]??"",
+    expiredTime: json["expiredTime"]??"",
   );
 
   Map<String, dynamic> toJson() => {
@@ -180,6 +180,6 @@ class TokenDetails {
     "refreshToken": refreshToken,
     "role": role,
     "guId": guId,
-    "expiredTime": expiredTime.toIso8601String(),
+    "expiredTime": expiredTime,
   };
 }

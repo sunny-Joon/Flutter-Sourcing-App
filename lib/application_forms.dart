@@ -314,10 +314,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
   File? passport;
   File? passbook;
 
+  late String name,ficode,creator;
+
   @override
   void initState() {
     super.initState();
     FIID = widget.selectedData.id;
+    creator = widget.selectedData.creator;
+    ficode = widget.selectedData.fiCode.toString();
+    name = widget.selectedData.fullName;
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     getAllDataApi(context);
@@ -479,7 +484,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 Padding(
                   padding: EdgeInsets.all(8),
@@ -548,6 +553,42 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         key: _formKey,
                         child: _getStepContent(),
                       ),
+                    ),
+                    Positioned(
+                        top: -50, // Adjust the position as needed
+                        left: 0,
+                        right: 0,
+                        child: Text(name,
+                          style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                        )
+                    ),
+                    Positioned(
+                        top: -35, // Adjust the position as needed
+                        left: 0,
+                        right: 0,
+                        child: Text(ficode,
+                          style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                        )
+                    ),
+                    Positioned(
+                        top: -20, // Adjust the position as needed
+                        left: 0,
+                        right: 0,
+                        child: Text(creator,
+                          style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                        )
                     ),
                     Positioned(
                         top: -35, // Adjust the position as needed
@@ -623,6 +664,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         return _buildStepSix();
       case 6:
         return _buildStepSeven();
+      case 7:
+        return _buildStepEight();
       default:
         return _buildStepOne();
     }
@@ -645,6 +688,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         _stepIndicator(5),
         _lineIndicator(),
         _stepIndicator(6),
+        _lineIndicator(),
+        _stepIndicator(7),
       ],
     );
   }
@@ -653,7 +698,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     bool isActive = _currentStep == step;
     bool isCompleted = _currentStep > step;
     return Container(
-      padding: EdgeInsets.all(4),
+      padding: EdgeInsets.all(2),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: isCompleted
@@ -661,12 +706,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
             : (isActive ? Colors.green : Colors.grey.shade300),
       ),
       child: CircleAvatar(
-        radius: 12,
+        radius: 10,
         backgroundColor: isCompleted ? Colors.green : Colors.white,
         child: Text(
           (step + 1).toString(),
           style: TextStyle(
               fontFamily: "Poppins-Regular",
+              fontSize: 10,
               color: isCompleted
                   ? Colors.white
                   : (isActive ? Color(0xFFD42D3F) : Colors.grey)),
@@ -765,7 +811,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                   selectedDependent = newValue!;
                                 });
                               }
-                            : null, // Disable onChanged when isEnabled is false
+                            : null,
+                        // Disable onChanged when isEnabled is false
                         items: onetonine.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -1485,9 +1532,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 });
               }, String),
             ),
-            SizedBox(
-                width:
-                    16.0), // Optional spacing between the dropdown and the column
+            SizedBox(width: 16.0),
+            // Optional spacing between the dropdown and the column
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1952,7 +1998,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   _currentEMIController,
                   TextInputType.number,
                   FiIncomeEditable,
-                  _currentEMIFocus),
+                  _currentEMIFocus,
+                  6),
             ),
             SizedBox(width: 10), // Spacing between the two columns
             Flexible(
@@ -2289,7 +2336,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       _future_IncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
-                      _future_IncomeFocus),
+                      _future_IncomeFocus,
+                      6),
                 ),
                 Flexible(
                   child: _buildTextField2(
@@ -2297,7 +2345,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       _agriculture_incomeController,
                       TextInputType.number,
                       FiIncomeEditable,
-                      _agriculture_incomeFocus),
+                      _agriculture_incomeFocus,
+                      6),
                 ),
               ],
             ),
@@ -2309,7 +2358,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       _any_RentalIncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
-                      _any_RentalIncomeFocus),
+                      _any_RentalIncomeFocus,
+                      6),
                 ),
                 Flexible(
                   child: _buildTextField2(
@@ -2317,7 +2367,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       _annuaL_INCOMEController,
                       TextInputType.number,
                       FiIncomeEditable,
-                      _annuaL_INCOMEFocus),
+                      _annuaL_INCOMEFocus,
+                      6),
                 ),
               ],
             ),
@@ -2329,7 +2380,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       _other_IncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
-                      _other_IncomeFocus),
+                      _other_IncomeFocus,
+                      6),
                 ),
                 Flexible(
                   child: _buildTextField2(
@@ -2337,7 +2389,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       _pensionIncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
-                      _pensionIncomeFocus),
+                      _pensionIncomeFocus,
+                      6),
                 ),
               ],
             ),
@@ -2349,7 +2402,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       _otheR_THAN_AGRICULTURAL_INCOMEController,
                       TextInputType.number,
                       FiIncomeEditable,
-                      _otheR_THAN_AGRICULTURAL_INCOMEFocus),
+                      _otheR_THAN_AGRICULTURAL_INCOMEFocus,
+                      6),
                 ),
               ],
             ),
@@ -2380,31 +2434,41 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2('Rent', _rentController,
-                      TextInputType.number, FiIncomeEditable, _rentFocus),
+                      TextInputType.number, FiIncomeEditable, _rentFocus, 6),
                 ),
                 Flexible(
                   child: _buildTextField2('Food', _foodingController,
-                      TextInputType.number, FiIncomeEditable, _foodingFocus),
+                      TextInputType.number, FiIncomeEditable, _foodingFocus, 6),
                 ),
               ],
             ),
             Row(
               children: [
                 Flexible(
-                  child: _buildTextField2('Education', _educationController,
-                      TextInputType.number, FiIncomeEditable, _educationFocus),
+                  child: _buildTextField2(
+                      'Education',
+                      _educationController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _educationFocus,
+                      6),
                 ),
                 Flexible(
                   child: _buildTextField2('Health', _healthController,
-                      TextInputType.number, FiIncomeEditable, _healthFocus),
+                      TextInputType.number, FiIncomeEditable, _healthFocus, 6),
                 ),
               ],
             ),
             Row(
               children: [
                 Flexible(
-                  child: _buildTextField2('Travelling', _travellingController,
-                      TextInputType.number, FiIncomeEditable, _travellingFocus),
+                  child: _buildTextField2(
+                      'Travelling',
+                      _travellingController,
+                      TextInputType.number,
+                      FiIncomeEditable,
+                      _travellingFocus,
+                      6),
                 ),
                 Flexible(
                   child: _buildTextField2(
@@ -2412,7 +2476,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       _entertainmentController,
                       TextInputType.number,
                       FiIncomeEditable,
-                      _entertainmentFocus),
+                      _entertainmentFocus,
+                      6),
                 ),
               ],
             ),
@@ -2424,11 +2489,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       _spendOnChildrenController,
                       TextInputType.number,
                       FiIncomeEditable,
-                      _spendOnChildrenFocus),
+                      _spendOnChildrenFocus,
+                      6),
                 ),
                 Flexible(
                   child: _buildTextField2('Others', _othersController,
-                      TextInputType.number, FiIncomeEditable, _othersFocus),
+                      TextInputType.number, FiIncomeEditable, _othersFocus, 6),
                 ),
               ],
             ),
@@ -2542,12 +2608,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   _buildTextField('IFSC', _bank_IFCSController,
                       FinancialInfoEditable, _bank_IFCSFocus),
                   _buildTextField2(
-                    'BANK ACCOUNT',
-                    _bank_AcController,
-                    TextInputType.number,
-                    FinancialInfoEditable,
-                    _bank_AcFocus,
-                  ),
+                      'BANK ACCOUNT',
+                      _bank_AcController,
+                      TextInputType.number,
+                      FinancialInfoEditable,
+                      _bank_AcFocus,
+                      20),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
@@ -2683,12 +2749,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Flexible(
                 child: _buildTextField2('Age', _AgeController,
-                    TextInputType.number, femMemIncomeEditable, _AgeFocus),
+                    TextInputType.number, femMemIncomeEditable, _AgeFocus, 2),
               ),
               SizedBox(width: 10), // Adds space between the fields
               Flexible(
-                child: _buildTextField2('Income', _IncomeController,
-                    TextInputType.number, femMemIncomeEditable, _IncomeFocus),
+                child: _buildTextField2(
+                    'Income',
+                    _IncomeController,
+                    TextInputType.number,
+                    femMemIncomeEditable,
+                    _IncomeFocus,
+                    6),
               ),
             ],
           ),
@@ -3144,8 +3215,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
           Row(
             children: [
               Flexible(
-                  child: _buildTextField2('Aadhaar Id', _aadharIdController,
-                      TextInputType.number, GuarantorEditable, _aadharIdFocus)),
+                  child: _buildTextField2(
+                      'Aadhaar Id',
+                      _aadharIdController,
+                      TextInputType.number,
+                      GuarantorEditable,
+                      _aadharIdFocus,
+                      12)),
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 // Add 10px padding from above
@@ -3240,7 +3316,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ],
           ),
           _buildTextField2('Guardian Name', _guardianController,
-              TextInputType.name, GuarantorEditable, _guardianFocus),
+              TextInputType.name, GuarantorEditable, _guardianFocus, 20),
           Row(
             children: [
               Flexible(
@@ -3404,7 +3480,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ),
           _buildTextField2('Mobile no', _phoneController, TextInputType.number,
-              GuarantorEditable, _phoneFocus),
+              GuarantorEditable, _phoneFocus, 10),
           Row(
             children: [
               // Age Box
@@ -3650,8 +3726,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       GuarantorEditable, _p_CityFocus)),
               SizedBox(width: 10),
               Flexible(
-                  child: _buildTextField2('Pincode', _pincodeController,
-                      TextInputType.number, GuarantorEditable, _pincodeFocus)),
+                  child: _buildTextField2(
+                      'Pincode',
+                      _pincodeController,
+                      TextInputType.number,
+                      GuarantorEditable,
+                      _pincodeFocus,
+                      6)),
             ],
           ),
         ],
@@ -3668,7 +3749,29 @@ class _ApplicationPageState extends State<ApplicationPage> {
             child: _isPageLoading
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _buildKycDocumentList(), // Call the function here
+                    children: _buildKycDocumentList(
+                        isStepSeven: true), // Call the function here
+                  )
+                : Center(
+                    child: CircularProgressIndicator(
+                      color: Color(0xFFD42D3F),
+                    ),
+                  ),
+          )),
+    ); // Call the function her
+  }
+
+  Widget _buildStepEight() {
+    return SingleChildScrollView(
+      child: Container(
+          height: MediaQuery.of(context).size.height - 250,
+          width: double.infinity, // Set the width to the full screen size
+          child: SingleChildScrollView(
+            child: _isPageLoading
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildKycDocumentListGur(
+                        isStepEight: true), // Call the function here
                   )
                 : Center(
                     child: CircularProgressIndicator(
@@ -3684,7 +3787,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
       return SizedBox.shrink(); // Don't show the button on the first page
     }
     return Expanded(
-
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.grey,
@@ -3725,6 +3827,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
           } else if (_currentStep == 6) {
             setState(() {
               pageTitle = "Guarantor Form";
+              _currentStep -= 1;
+            });
+          }else if (_currentStep == 7) {
+            setState(() {
+              pageTitle = "Upload DocS";
               _currentStep -= 1;
             });
           }
@@ -3778,6 +3885,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               UploadFiDocsEditable = true;
             });
+          }else if (_currentStep == 7) {
+            setState(() {
+              UploadFiDocsEditable = true;
+            });
           }
         },
         child: Text(
@@ -3800,16 +3911,29 @@ class _ApplicationPageState extends State<ApplicationPage> {
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
         onPressed: () {
-          /* if (_currentStep == 0) {
+           if (_currentStep == 0) {
           setState(() {
-            _currentStep+=6;
+            _currentStep++;
           });
-          }else*/
+          }else
           if (_currentStep == 0) {
+
             // setState(() {
             //   _currentStep=6;
             // });
             if (personalInfoEditable) {
+
+
+            setState(() {
+              _currentStep = 6;
+            });
+
+            /*setState(() {
+              _currentStep=6;
+            });*/
+            if (personalInfoEditable) {
+
+
               if (_stepOneValidations()) {
                 AddFiExtraDetail(context);
               }
@@ -3819,70 +3943,67 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             }
           } else if (_currentStep == 1) {
-            if(FiFamilyEditable){
-              if ( _stepTwoValidations()) {
+            if (FiFamilyEditable) {
+              if (_stepTwoValidations()) {
                 AddFiFamilyDetail(context);
               }
-            }else{
+            } else {
               setState(() {
                 _currentStep++;
               });
             }
-
-
           } else if (_currentStep == 2) {
-            if(FiIncomeEditable){
-              if(_stepThreeValidations()) {
+            if (FiIncomeEditable) {
+              if (_stepThreeValidations()) {
                 AddFiIncomeAndExpense(context);
               }
-            }else{
+            } else {
               setState(() {
                 _currentStep++;
               });
             }
-
-
           } else if (_currentStep == 3) {
-            if(FinancialInfoEditable){
-              if(_stepFourValidations()){
+            if (FinancialInfoEditable) {
+              if (_stepFourValidations()) {
                 AddFinancialInfo(context);
               }
-            }else{
+            } else {
               setState(() {
                 _currentStep++;
               });
             }
-
-
           } else if (_currentStep == 4) {
-            if(femMemIncomeEditable){
-              if(_stepFiveValidations()) {
+            if (femMemIncomeEditable) {
+              if (_stepFiveValidations()) {
                 FiFemMemIncome(context);
               }
-            }else{
+            } else {
               setState(() {
                 _currentStep++;
               });
             }
-
-
-
           } else if (_currentStep == 5) {
-            if(GuarantorEditable){
-              if(_stepSixValidations()) {
+            if (GuarantorEditable) {
+              if (_stepSixValidations()) {
                 saveGuarantorMethod(context);
               }
-            }else{
+            } else {
               setState(() {
                 _currentStep++;
               });
             }
           } else if (_currentStep == 6) {
-              FiDocsUploadsApi(context);
+            FiDocsUploadsApi(context,"0");
+            setState(() {
+              _currentStep++;
+            });
+
+        } else if (_currentStep == 7) {
+            FiDocsUploadsApi(context,"1");
           }
         },
         child: Text(
-          _currentStep == 6 ? "SUBMIT" : "NEXT",
+          _currentStep == 7 ? "SUBMIT" : "NEXT",
           style: TextStyle(
               fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 13),
         ),
@@ -3932,7 +4053,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Widget _buildTextField2(String label, TextEditingController controller,
-      TextInputType inputType, bool saved, FocusNode FN) {
+      TextInputType inputType, bool saved, FocusNode FN, int maxlength) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 0),
@@ -3950,16 +4071,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
           SizedBox(height: 1),
           Container(
             width: double.infinity, // Set the desired width
-            //height: 45, // Set the desired height
             child: Center(
               child: TextFormField(
                 enabled: saved,
                 controller: controller,
                 focusNode: FN,
                 keyboardType: inputType,
-                // Set the input type
+                maxLength: maxlength,
+                // Set the maximum length
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
+                  counterText:
+                      '', // Optional: hides the counter below the field
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -4055,7 +4178,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       size: 30,
                     ),
                     onPressed: () {
-                    //  UploadFiDocs(context, title, _selectedImage, GrNo, id);
+                      //  UploadFiDocs(context, title, _selectedImage, GrNo, id);
                       print('Title: $title');
                       print('Path: $path');
                     },
@@ -4069,7 +4192,240 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-  List<Widget> _buildKycDocumentList() {
+  List<Widget> _buildKycDocumentList({required bool isStepSeven}) {
+    List<Widget> listItems = [];
+    if (_isPageLoading) {
+      if (isStepSeven) {
+        KycScanningDataModel doc = getData.data;
+
+        listItems.add(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Borrower Docs",
+              style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+            ),
+          ),
+        );
+
+        if (doc.addharExists == true) {
+          listItems.add(_buildListItem(
+            title: "Aadhar Front",
+            path: doc.aadharPath,
+            id: 1,
+            GrNo: "0",
+            onImagePicked: (File file) {
+              setState(() {
+                adhaarFront = file;
+              });
+            },
+          ));
+          listItems.add(_buildListItem(
+            title: "Aadhar Back",
+            path: doc.aadharBPath,
+            id: 27,
+            GrNo: '0',
+            onImagePicked: (File file) {
+              setState(() {
+                adhaarBack = file;
+              });
+            },
+          ));
+        }
+
+        if (doc.voterExists == true) {
+          listItems.add(_buildListItem(
+            title: "Voter Front",
+            path: doc.voterPath,
+            id: 3,
+            GrNo: '0',
+            onImagePicked: (File file) {
+              setState(() {
+                voterFront = file;
+              });
+            },
+          ));
+          listItems.add(_buildListItem(
+            title: "Voter Back",
+            path: doc.voterBPath,
+            id: 26,
+            GrNo: '0',
+            onImagePicked: (File file) {
+              setState(() {
+                voterFront = file;
+              });
+            },
+          ));
+        }
+
+        if (doc.panExists == true) {
+          listItems.add(_buildListItem(
+            title: "Pan Front",
+            path: doc.panPath,
+            id: 4,
+            GrNo: '0',
+            onImagePicked: (File file) {
+              setState(() {
+                panFront = file;
+              });
+            },
+          ));
+        }
+
+        if (doc.drivingExists == true) {
+          listItems.add(_buildListItem(
+            title: "DL Front",
+            path: doc.drivingPath,
+            id: 15,
+            GrNo: '0',
+            onImagePicked: (File file) {
+              setState(() {
+                dlFront = file;
+              });
+            },
+          ));
+        }
+
+        if (doc.passportExists == true) {
+          listItems.add(_buildListItem(
+            title: "Passport",
+            path: doc.passportPath,
+            id: doc.passportCheckListId,
+            GrNo: '0',
+            onImagePicked: (File file) {
+              setState(() {
+                adhaarFront = file;
+              });
+            },
+          ));
+        }
+
+        if (doc.passBookExists == true) {
+          listItems.add(_buildListItem(
+            title: "Passbook Front",
+            path: doc.passBookPath,
+            id: 2,
+            GrNo: '0',
+            onImagePicked: (File file) {
+              setState(() {
+                passbook = file;
+              });
+            },
+          ));
+        }
+      }
+    }
+    return listItems;
+  }
+
+  List<Widget> _buildKycDocumentListGur({required bool isStepEight}) {
+    List<Widget> listItems1 = [];
+    if (_isPageLoading) {
+      if (isStepEight) {
+        GrDoc grDoc = getData.data.grDocs[0];
+
+        listItems1.add(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Co Borrower Docs",
+              style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+            ),
+          ),
+        );
+
+        if (grDoc.addharExists == true) {
+          listItems1.add(_buildListItem(
+            title: "Aadhar Front",
+            path: grDoc.aadharPath,
+            id: 7,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+               adhaarFront = file;
+              });
+            },
+          ));
+          listItems1.add(_buildListItem(
+            title: "Aadhar Back",
+            path: grDoc.aadharBPath,
+            id: 7,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+              adhaarBack = file;
+              });
+            },
+          ));
+        }
+
+        if (grDoc.voterExists == true) {
+          listItems1.add(_buildListItem(
+            title: "Voter Front",
+            path: grDoc.voterPath,
+            id: 5,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+             voterFront = file;
+              });
+            },
+          ));
+          listItems1.add(_buildListItem(
+            title: "Voter Back",
+            path: grDoc.voterBPath,
+            id: 5,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+              voterFront = file;
+              });
+            },
+          ));
+        }
+
+        if (grDoc.panExists == true) {
+          listItems1.add(_buildListItem(
+            title: "Pan Front",
+            path: grDoc.panPath,
+            id: 8,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+                panFront = file;
+              });
+            },
+          ));
+        }
+
+        if (grDoc.drivingExists == true) {
+          listItems1.add(_buildListItem(
+            title: "DL Front",
+            path: grDoc.drivingPath,
+            id: 16,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+               dlFront = file;
+              });
+            },
+          ));
+        }
+      }
+    } else {
+      listItems1.add(
+        Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFFD42D3F),
+          ),
+        ),
+      );
+    }
+
+    return listItems1;
+  }
+
+  /* List<Widget> _buildKycDocumentList() {
     List<Widget> listItems = [];
 
     if (_isPageLoading) {
@@ -4092,8 +4448,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 1,
             GrNo: "0",
             onImagePicked: (File file) {
-             // setState(() {
-                adhaarFront = file;
+              // setState(() {
+              adhaarFront = file;
               //});
             }));
         listItems.add(_buildListItem(
@@ -4102,9 +4458,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 27,
             GrNo: '0',
             onImagePicked: (File file) {
-             // setState(() {
-                adhaarBack = file;
-             // });
+              // setState(() {
+              adhaarBack = file;
+              // });
             }));
       }
 
@@ -4115,9 +4471,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 3,
             GrNo: '0',
             onImagePicked: (File file) {
-             // setState(() {
-                voterFront = file;
-             // });
+              // setState(() {
+              voterFront = file;
+              // });
             }));
         listItems.add(_buildListItem(
             title: "Voter Back",
@@ -4125,9 +4481,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 26,
             GrNo: '0',
             onImagePicked: (File file) {
-            //  setState(() {
-                voterback = file;
-           //   });
+              //  setState(() {
+              voterback = file;
+              //   });
             }));
       }
 
@@ -4138,9 +4494,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 4,
             GrNo: '0',
             onImagePicked: (File file) {
-            //  setState(() {
-                panFront = file;
-           //   });
+              //  setState(() {
+              panFront = file;
+              //   });
             }));
       }
 
@@ -4151,9 +4507,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: 15,
             GrNo: '0',
             onImagePicked: (File file) {
-          //    setState(() {
-                dlFront = file;
-         //     });
+              //    setState(() {
+              dlFront = file;
+              //     });
             }));
       }
       if (doc.passportExists == true) {
@@ -4163,9 +4519,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             id: doc.passportCheckListId,
             GrNo: '0',
             onImagePicked: (File file) {
-       //       setState(() {
-                passport = file;
-        //      });
+              //       setState(() {
+              passport = file;
+              //      });
             }));
       }
 
@@ -4181,6 +4537,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             }));
       }
+    }
+
+    List<Widget> _buildKycDocumentListGur() {
+      List<Widget> listItems = [];
 
       for (var grDoc in doc.grDocs) {
         // Add Guarantor Docs title
@@ -4193,6 +4553,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ),
         );
+
 
         if (grDoc.addharExists == true) {
           listItems.add(_buildListItem(
@@ -4264,7 +4625,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       );
     }
     return listItems;
-  }
+  }*/
 
   Widget _buildLabeledDropdownField<T>(
       String labelText,
@@ -4288,11 +4649,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
             SizedBox(height: 8),
             SizedBox(
-              width: double
-                  .infinity, // Ensure the dropdown takes the full width available
+              width: double.infinity,
+              // Ensure the dropdown takes the full width available
               child: DropdownButtonFormField<T>(
-                isExpanded:
-                    true, // Ensure the dropdown expands to fit its content
+                isExpanded: true,
+                // Ensure the dropdown expands to fit its content
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
@@ -4759,7 +5120,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please enter Address Line 1 (Permanent)");
       _address1FocusP.requestFocus();
       return false;
-    } /*else if (address2ControllerP.text.isEmpty) {
+    }
+    /*else if (address2ControllerP.text.isEmpty) {
       showToast_Error("Please enter Address Line 2 (Permanent)");
       _address2FocusP.requestFocus();
       return false;
@@ -4777,7 +5139,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please enter Address Line 1 (Current)");
       _address1FocusC.requestFocus();
       return false;
-    } /*else if (address2ControllerC.text.isEmpty) {
+    }
+    /*else if (address2ControllerC.text.isEmpty) {
       showToast_Error("Please enter Address Line 2 (Current)");
       _address2FocusC.requestFocus();
       return false;
@@ -4807,15 +5170,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please enter Pincode (Current)");
       _pincodeFocusC.requestFocus();
       return false;
-    }else if (selectedDistrict==null) {
+    } else if (selectedDistrict == null) {
       showToast_Error("Please select District");
 
       return false;
-    }else if (selectedSubDistrict==null) {
+    } else if (selectedSubDistrict == null) {
       showToast_Error("Please select Sub-District");
 
       return false;
-    }else if (selectedVillage==null) {
+    } else if (selectedVillage == null) {
       showToast_Error("Please select village");
 
       return false;
@@ -5052,7 +5415,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please Enter First Name");
       _fnameFocus.requestFocus();
       return false;
-    } /*else if (_mnameController.text.isEmpty) {
+    }
+    /*else if (_mnameController.text.isEmpty) {
       showToast_Error("Please Enter Middle Name");
       _mnameFocus.requestFocus();
       return false;
@@ -5073,7 +5437,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please Enter Age");
       _ageFocus.requestFocus();
       return false;
-    } /*if (_voterController.text.isEmpty) {
+    }
+    /*if (_voterController.text.isEmpty) {
       if (_panController.text.isEmpty) {
         showToast_Error("Please Enter PAN");
         _panFocus.requestFocus();
@@ -5089,7 +5454,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please Enter Address Line 1");
       _p_Address1Focus.requestFocus();
       return false;
-    } /*else if (_p_Address2Controller.text.isEmpty) {
+    }
+    /*else if (_p_Address2Controller.text.isEmpty) {
       showToast_Error("Please Enter Address Line 2");
       _p_Address2Focus.requestFocus();
       return false;
@@ -5456,7 +5822,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-  Future<void> FiDocsUploadsApi(BuildContext context) async {
+  Future<void> FiDocsUploadsApi(BuildContext context,String GurNum) async {
     try {
       EasyLoading.show(status: 'Loading...');
 
@@ -5467,12 +5833,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
       final api = Provider.of<ApiService>(context, listen: false);
 
-      await api
-          .FiDocsUploads(
+      await api.FiDocsUploads(
         GlobalClass.token,
         GlobalClass.dbName,
         widget.selectedData.id.toString(),
-        "0",
+        GurNum,
         adhaarFront,
         adhaarBack,
         voterFront,
@@ -5481,12 +5846,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
         panFront,
         passport,
         passbook,
-      )
-          .then((value) async {
+      ).then((value) async {
         if (value.statuscode == 200) {
           EasyLoading.dismiss();
           GlobalClass.showSnackBar(context, "Saved all");
-
         } else if (value.statuscode == 400) {
           EasyLoading.dismiss();
 
@@ -5502,6 +5865,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       EasyLoading.dismiss();
     }
   }
+
   /*Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file,
       String? grNo, int? checklistid) async {
     EasyLoading.show(
@@ -5514,7 +5878,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       final api = Provider.of<ApiService>(context, listen: false);
 //https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//38//FiDocuments//VoterIDBorrower0711_2024_43_01.png
 
-      *//**/
+      */ /**/
   /* String baseUrl = 'https://predeptest.paisalo.in:8084';
 
     // Replace the front part of the file path and ensure the path uses forward slashes
@@ -5522,7 +5886,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     // Join the base URL with the modified path
     String finalUrl = '$baseUrl/$modifiedPath';
-    File file = File(finalUrl);*//**/
+    File file = File(finalUrl);*/ /**/
   /*
       return await api
           .uploadFiDocs(GlobalClass.token, GlobalClass.dbName, FIID.toString(),
@@ -5530,11 +5894,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
           .then((value) async {
         if (value.statuscode == 200) {
           GetDocs(context);
-          *//**/
+          */ /**/
   /*setState(() {
           _currentStep += 1;
           Fi_Id = value.data[0].fiId.toString();
-        });*//**/
+        });*/ /**/
   /*
           EasyLoading.dismiss();
         } else {
@@ -6144,7 +6508,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
         EasyLoading.dismiss();
 
         if (!value.data[0].placeOfBirth.isEmpty) {
-
           personalInfo(value.data[0]);
         }
         if (!value.data[0].motheRFirstName.isEmpty) {
@@ -6166,9 +6529,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           guarrantors(value.data[0]);
         }
       } else {
-        setState(() {
-
-        });
+        setState(() {});
       }
     }).catchError((err) {
       print("ERRORRRR$err");

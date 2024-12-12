@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
+
 import 'package:flutter_sourcing_app/Models/common_string_model.dart';
+
+import 'package:flutter_sourcing_app/Models/attendancestatusmodel.dart';
+
 import 'package:flutter_sourcing_app/collectionborrowerlist.dart';
-import 'package:flutter_sourcing_app/Models/CollectionBorrowerListModel.dart';
+import 'package:flutter_sourcing_app/Models/collectionborrowerlistmodel.dart';
 import 'package:flutter_sourcing_app/Models/bank_names_model.dart';
 
 import 'package:flutter_sourcing_app/Models/details_by_smcode_response.dart';
@@ -20,7 +24,9 @@ import 'package:flutter_sourcing_app/Models/xml_response.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
+import 'Models/collectionbranchlistmodel.dart';
 import 'Models/borrower_list_model.dart';
+import 'Models/common_bool_model.dart';
 import 'Models/creator_list_model.dart';
 import 'Models/global_model.dart';
 import 'Models/global_model2.dart';
@@ -316,6 +322,17 @@ abstract class ApiService {
       @Query("SmCode") String SmCode,
       @Query("GetDate") String GetDate);
 
+  @GET("Masters/GetMobileAppAttendance")
+  Future<AttendanceStatusModel> AttendanceStatus(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Query("UserName") String UserName);
+
+  @POST("Collection/SaveReceipt")
+  Future<CommonBoolModel> RcPosting(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body);
 
   @POST("FiSourcing/AddFiExtraDetail")
   Future<GlobalModel> updatePersonalDetails(
@@ -431,6 +448,14 @@ abstract class ApiService {
       @Query("GroupCode") String GroupCode,
       @Query("UserId") String UserId,
       @Query("GetDate") String GetDate,
+      );
+
+  @GET("Collection/Getmappedfoforcoll")
+  Future<CollectionBranchListModel> CollectionBranchList(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("Imei") String Imei,
+      @Query("UserId") String UserId,
       );
 
   @GET("FiSourcing/GetFiUploadedDocuments")
