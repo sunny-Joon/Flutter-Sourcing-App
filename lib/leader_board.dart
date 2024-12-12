@@ -35,7 +35,8 @@ class _LeaderBoardState extends State<LeaderBoard> {
   @override
   void initState() {
     super.initState();
-    _getLeaderBoardDataForPeriod(selectedPeriod); // Fetch initial data for January
+    selectedPeriod = getCurrentMonth();
+    _getLeaderBoardDataForPeriod(selectedPeriod);
   }
 
   // Fetch leaderboard data for the selected period
@@ -48,7 +49,8 @@ class _LeaderBoardState extends State<LeaderBoard> {
 
     try {
       var response = await api
-          .leaderboardList(GlobalClass.token, GlobalClass.dbName, "1", startDate, endDate);
+          .leaderboardList(
+          GlobalClass.token, GlobalClass.dbName, "1", startDate, endDate);
 
       if (response.statuscode == 200) {
         if (response.data.isNotEmpty) {
@@ -68,21 +70,21 @@ class _LeaderBoardState extends State<LeaderBoard> {
         setState(() {
           leaderboardDataModel.clear();
           isDataAvailable = false;
-          errorMessage = 'No data available for $selectedPeriod'; // Error if statuscode is not 200
+          errorMessage =
+          'No data available for $selectedPeriod'; // Error if statuscode is not 200
         });
       }
     } catch (err) {
       setState(() {
         leaderboardDataModel.clear();
         isDataAvailable = false;
-        errorMessage = 'An error occurred for $selectedPeriod'; // Error if there’s any failure during the request
+        errorMessage =
+        'An error occurred for $selectedPeriod'; // Error if there’s any failure during the request
       });
     } finally {
       EasyLoading.dismiss();
     }
   }
-
-
 
 
   String getStartDateForPeriod(String period) {
@@ -167,24 +169,35 @@ class _LeaderBoardState extends State<LeaderBoard> {
               children: [
                 Container(
                   alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height / 1.4,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height / 1.4,
                   child: null,
                 ),
                 Positioned(
                   child: Container(
                     color: appColors.mainAppColor,
                     alignment: Alignment.bottomCenter,
-                    width: MediaQuery.of(context).size.width / 1.1,
-                    height: MediaQuery.of(context).size.height / 1.6,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width / 1.1,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height / 1.6,
                     child: Container(
                       margin: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/Images/curvedBackground.png'),
+                          image: AssetImage(
+                              'assets/Images/curvedBackground.png'),
                           fit: BoxFit.fill,
                         ),
                       ),
-                      padding: const EdgeInsets.only(top: 65, left: 10, right: 10, bottom: 60),
+                      padding: const EdgeInsets.only(
+                          top: 65, left: 10, right: 10, bottom: 60),
                       child: MediaQuery.removePadding(
                         context: context,
                         removeTop: true,
@@ -195,9 +208,11 @@ class _LeaderBoardState extends State<LeaderBoard> {
                             final bool isFirstItem = index == 0;
 
                             return Container(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 25.0),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5.0, horizontal: 25.0),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -236,13 +251,17 @@ class _LeaderBoardState extends State<LeaderBoard> {
                                       ),
                                       SizedBox(width: 5),
                                       SizedBox(
-                                        width: MediaQuery.of(context).size.width / 3,
+                                        width: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width / 3,
                                         child: Text(
                                           item.name,
                                           style: TextStyle(
                                             fontSize: 15,
                                             color: Color(0xFFD42D3F),
-                                            fontWeight: isFirstItem ? FontWeight.bold : FontWeight.normal,
+                                            fontWeight: isFirstItem ? FontWeight
+                                                .bold : FontWeight.normal,
                                           ),
                                         ),
                                       ),
@@ -253,7 +272,9 @@ class _LeaderBoardState extends State<LeaderBoard> {
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: Color(0xFFD42D3F),
-                                      fontWeight: isFirstItem ? FontWeight.bold : FontWeight.normal,
+                                      fontWeight: isFirstItem
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                     ),
                                   ),
                                 ],
@@ -275,10 +296,12 @@ class _LeaderBoardState extends State<LeaderBoard> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                int index = dropdownOptions.indexOf(selectedPeriod);
+                                int index = dropdownOptions.indexOf(
+                                    selectedPeriod);
                                 if (index > 0) {
                                   selectedPeriod = dropdownOptions[index - 1];
-                                  _getLeaderBoardDataForPeriod(selectedPeriod);  // Fetch data for previous month
+                                  _getLeaderBoardDataForPeriod(
+                                      selectedPeriod); // Fetch data for previous month
                                 }
                               });
                             },
@@ -310,10 +333,12 @@ class _LeaderBoardState extends State<LeaderBoard> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                int index = dropdownOptions.indexOf(selectedPeriod);
+                                int index = dropdownOptions.indexOf(
+                                    selectedPeriod);
                                 if (index < dropdownOptions.length - 1) {
                                   selectedPeriod = dropdownOptions[index + 1];
-                                  _getLeaderBoardDataForPeriod(selectedPeriod);  // Fetch data for next month
+                                  _getLeaderBoardDataForPeriod(
+                                      selectedPeriod); // Fetch data for next month
                                 }
                               });
                             },
@@ -327,23 +352,29 @@ class _LeaderBoardState extends State<LeaderBoard> {
                       ),
                       if (!isDataAvailable)
                         Padding(
-                          padding: const EdgeInsets.only(top: 20), // Adjust the top padding for margin from the dropdown
+                          padding: const EdgeInsets.only(top: 20),
+                          // Adjust the top padding for margin from the dropdown
                           child: Center(
                             child: Column(
-                              mainAxisSize: MainAxisSize.min, // Ensures the Column takes only the required space
-                              crossAxisAlignment: CrossAxisAlignment.center, // Centers the icon and text
+                              mainAxisSize: MainAxisSize.min,
+                              // Ensures the Column takes only the required space
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              // Centers the icon and text
                               children: [
                                 Icon(
                                   Icons.error, // Error icon
-                                  color: Colors.grey, // Red color for the error icon
+                                  color: Colors.grey,
+                                  // Red color for the error icon
                                   size: 30, // Increased size for the icon
                                 ),
-                                SizedBox(height: 8), // Space between the icon and text
+                                SizedBox(height: 8),
+                                // Space between the icon and text
                                 Text(
                                   errorMessage,
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.grey, // Red color for error text
+                                    color: Colors.grey,
+                                    // Red color for error text
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -351,8 +382,6 @@ class _LeaderBoardState extends State<LeaderBoard> {
                             ),
                           ),
                         ),
-
-
 
                     ],
                   ),
@@ -363,5 +392,10 @@ class _LeaderBoardState extends State<LeaderBoard> {
         ),
       ),
     );
+  }
+
+  String getCurrentMonth() {
+    DateTime now = DateTime.now();
+    return dropdownOptions[now.month - 1];
   }
 }
