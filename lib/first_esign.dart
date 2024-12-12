@@ -43,8 +43,8 @@ class _FirstEsignState extends State<FirstEsign> {
   @override
   void initState() {
     super.initState();
+    fetchFirstESignPDF(widget.selectedData);
     print("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}.pdf");
-    _loadPdf("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}.pdf");
   }
 
   Future<void> _loadPdf(String url) async {
@@ -252,10 +252,36 @@ class _FirstEsignState extends State<FirstEsign> {
 
 
 
+  Future<void> fetchFirstESignPDF(BorrowerListDataModel selectedData) async {
+    
+
+    final requestBody = {
+      "Creator": selectedData.creator,
+      "GroupCode": selectedData.groupCode,
+      "Code": selectedData.fiCode,
+      "F_Id": selectedData.id,
+      "Type": "FirsteSign",
+      "CityCode": selectedData.branchCode,
+      "DbName": "PDLERP",
+    };
+
+
+      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl8).getDocument(requestBody);
+        if(response.statuscode==200){
+          print("https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "").replaceAll("\\", "/")}");
+          _loadPdf("https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "").replaceAll("\\", "/")}");
+
+        }else{
+          GlobalClass.showUnsuccessfulAlert(context, "Pdf Not Found\nContact to Administrator", 2);
+        }
+
+ 
+  }
 
 
 
 }
+
 
 class DialogContent extends StatefulWidget {
   final String borrowerAdharNumber;

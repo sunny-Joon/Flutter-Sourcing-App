@@ -92,8 +92,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   List<String> titleList = ["Select", "Mr.", "Mrs.", "Miss"];
   List<String> accType = ["Select", "Current", "Savings", "Salary"];
-  String titleselected = "Select";
-  String expense = "";
+   String expense = "";
   String income = "";
   String lati = "";
   String longi = "";
@@ -3919,6 +3918,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
           }else
           if (_currentStep == 0) {
 
+            // setState(() {
+            //   _currentStep=6;
+            // });
+            if (personalInfoEditable) {
+
+
             setState(() {
               _currentStep = 6;
             });
@@ -3927,6 +3932,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               _currentStep=6;
             });*/
             if (personalInfoEditable) {
+
 
               if (_stepOneValidations()) {
                 AddFiExtraDetail(context);
@@ -6356,7 +6362,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     print("object");
     String fi_ID = FIID.toString();
     String gr_Sno = "1";
-    String title = titleselected;
+    String title = selectedTitle!;
     String fname = _fnameController.text.toString();
     String mname = _mnameController.text.toString();
     String lname = _lnameController.text.toString();
@@ -6668,7 +6674,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void guarrantors(ApplicationgetAllDataModel data) {
     setState(() {
       GuarantorEditable = false;
-      titleselected = data.guarantors[0].grTitle;
+      selectedTitle = data.guarantors[0].grTitle;
       _fnameController.text = data.guarantors[0].grFname;
       _mnameController.text = data.guarantors[0].grMname;
       _lnameController.text = data.guarantors[0].grLname;
