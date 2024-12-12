@@ -3842,11 +3842,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
         onPressed: () {
-          /* if (_currentStep == 0) {
+           if (_currentStep == 0) {
           setState(() {
-            _currentStep+=6;
+            _currentStep++;
           });
-          }else*/
+          }else
           if (_currentStep == 0) {
             /*setState(() {
               _currentStep=6;
