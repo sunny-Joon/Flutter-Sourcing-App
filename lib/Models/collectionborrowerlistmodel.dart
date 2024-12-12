@@ -47,23 +47,23 @@ class CollectionBorrowerListDataModel {
   String caseCode;
   String firstInstDate;
   int noOfInsts;
-  int totalDueAmt;
+  double totalDueAmt;
   int totalDueCnt;
-  int totalRecdAmt;
+  double totalRecdAmt;
   int totalRecdCnt;
-  int instsAmtDue;
+  double instsAmtDue;
   int nofInstDue;
   List<InstDatum> instData;
-  int toBeDueAmt;
+  double toBeDueAmt;
   String toBeDueDate;
-  int futureDue;
+  double futureDue;
   String instDueAsOn;
   String isNachReg;
   String dataAsOn;
-  int interestAmt;
+  double interestAmt;
   String schmCode;
   String errormsg;
-  bool isvalide;
+  String isvalide;
 
   CollectionBorrowerListDataModel({
     required this.db,

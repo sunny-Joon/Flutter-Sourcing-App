@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/qr_payment_reports.dart';
 import 'package:flutter_sourcing_app/utils/current_location.dart';
-
 import 'package:provider/provider.dart';
-
-
 import 'api_service.dart';
 import 'global_class.dart';
 import 'login_page.dart';
@@ -24,18 +21,15 @@ class _ProfileState extends State<Profile> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _designationController = TextEditingController();
   final TextEditingController deviceSirNoController = TextEditingController();
-  String tabName = "Punch In";
+  String tabName = "";
   Duration _remainingTime = Duration();
   String _timeDisplay = '';
   Timer? _timer;
-
-
-
-
-
+  bool punchCard = true;
   @override
   void initState() {
     super.initState();
+    attendanceStatus(context);
     _initializeControllers();
     _startTimer();
   }
@@ -265,12 +259,12 @@ class _ProfileState extends State<Profile> {
                       elevation: 10,
                       clipBehavior: Clip.antiAlias,
                       child: Container(
-                        color: Colors.green,
+                        color: punchCard ? Colors.green : Colors.grey,
                         width: MediaQuery.of(context).size.width - 50,
                         child: InkWell(
-                          onTap: () {
+                          onTap: punchCard ? () {
                             punchInOut(context);
-                          },
+                          } : null,
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 11.0),
                             alignment: Alignment.center,
@@ -323,35 +317,6 @@ class _ProfileState extends State<Profile> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildBackButton(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).pop();
-      },
-      child: _buildIconContainer(Icons.arrow_back_ios_sharp),
-    );
-  }
-
-  Widget _buildActionCard(String title) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-      child: ListTile(
-        title: Text(
-          title,
-          style: TextStyle(
-              fontFamily: "Poppins-Regular",
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[700]),
-        ),
-        trailing: Icon(Icons.arrow_forward),
-        onTap: () {
-          // Add your action here
-        },
       ),
     );
   }
@@ -527,15 +492,20 @@ class _ProfileState extends State<Profile> {
     Map<String, dynamic> requestBody = {
       "location": "$_latitude,$_longitude",
     };
-    String type = "PUNCHOUT";
+
     return await api
-        .punchInOut(GlobalClass.token, GlobalClass.dbName, requestBody, type)
+        .punchInOut(GlobalClass.token, GlobalClass.dbName, requestBody, tabName)
         .then((value) {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
-        setState(() {
-          tabName = "PUNCH OUT";
-        });
+        if(tabName == "PUNCHOUT"){
+          punchCard = false;
+          tabName = "PUNCHIN";
+        }else {
+          setState(() {
+            tabName = "PUNCHOUT";
+          });
+        }
         GlobalClass.showSuccessAlert(context, value.message, 1);
       } else {
         EasyLoading.dismiss();
@@ -669,6 +639,46 @@ class _ProfileState extends State<Profile> {
     }).catchError((error) {
       EasyLoading.dismiss();
       GlobalClass.showUnsuccessfulAlert(context, "Server side Error", 1);
+    });
+  }
+
+
+  Future<void> attendanceStatus(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    await api.AttendanceStatus(GlobalClass.token,GlobalClass.dbName,  GlobalClass.id)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        if(value.data.length >0){
+          if(value.data[0].inTime !=null && value.data[0].outTime!=null){
+            setState(() {
+              punchCard = false;
+              tabName = "PUNCHIN";
+            });
+          }else{
+            setState(() {
+              tabName = "PUNCHOUT";
+            });
+          }
+        }else{
+          setState(() {
+            tabName = "PUNCHIN";
+          });
+        }
+
+        EasyLoading.dismiss();
+      } else {
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(
+            context, "Attendance Status Fail", 1);
+      }
+    }).catchError((error) {
+      EasyLoading.dismiss();
+      GlobalClass.showUnsuccessfulAlert(context, error.toString(), 1);
     });
   }
 }
