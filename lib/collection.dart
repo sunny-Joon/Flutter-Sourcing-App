@@ -29,13 +29,14 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
   double lateFee = 0;
   double totalAmount = 0;
   late String casecode="",borrower = "";
-
+  late String qrCodeUrl="";
   late GetCollectionDataModel collectionDataModel;
 
   @override
   void initState() {
     super.initState();
       setValues();
+      getQr(context);
     emiAmounts = widget.selectedData.instData.map((inst) => int.parse(inst.amount)).toList();
     checkboxValues = List<bool>.filled(emiAmounts.length, false);
     _tabController = TabController(length: 3, vsync: this);
@@ -207,8 +208,8 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                           Text.rich(
                             TextSpan(
                               children: [
-                                TextSpan(text: 'Total Amount: ₹', style: TextStyle(color: Colors.black)), // Static text color
-                                TextSpan(text: totalAmount.toString(), style: TextStyle(color: Colors.green)), // Dynamic text color
+                                TextSpan(text: 'Total Amount: ₹', style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)), // Static text color
+                                TextSpan(text: totalAmount.toString(), style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold)), // Dynamic text color
                               ],
                             ),
                           ),
@@ -309,10 +310,15 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
 
   Widget qrPaymentWidget() {
     return Center(
-      child: Icon(
-        Icons.qr_code,
-        size: 200,
-        color: Colors.grey,
+      child: Image.network(
+        qrCodeUrl,
+        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+          return Icon(
+            Icons.qr_code,
+            size: 200,
+            color: Colors.grey,
+          );
+        },
       ),
     );
   }
@@ -360,8 +366,10 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
           ),),
 
           SizedBox(height: 16),
+
           // Custom Numeric Keypad with Gradient Buttons
-          Padding(padding: EdgeInsets.all(8),child:  Expanded(
+          Container(
+            height: 200, // Fixed height to ensure it fits within the available space
             child: GridView.builder(
               padding: EdgeInsets.all(0),
               shrinkWrap: true,
@@ -371,6 +379,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                 crossAxisSpacing: 5.0, // Reduced spacing between buttons
                 mainAxisSpacing: 9.0,  // Reduced spacing between buttons
                 childAspectRatio: 1.8, // Slightly adjusted aspect ratio
+
               ),
               itemBuilder: (context, index) {
                 String label;
@@ -397,7 +406,6 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                     }
                   },
                   child: Container(
-
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -419,7 +427,11 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                     child: Center(
                       child: Text(
                         label,
-                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, color: Colors.black),
+                        style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
 
@@ -427,7 +439,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                 );
               },
             ),
-          ),) ,
+          ),
         ],
       ),
     );
@@ -489,4 +501,25 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
     });
   }
 
+  Future<void> getQr(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
+
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api.QrGeneration(GlobalClass.token, GlobalClass.dbName,"UCDL000471"/*widget.selectedData.caseCode*/,"Link")
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        setState(() {
+          qrCodeUrl = value.data[0].qrCodeUrl;
+        });
+      }else {
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(context, "${value.message} (QR Code)", 1);
+      }
+    }).catchError((err) {
+      EasyLoading.dismiss();
+      GlobalClass.showErrorAlert(context, err, 1);
+    });
+  }
 }

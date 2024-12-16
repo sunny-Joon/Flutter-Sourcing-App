@@ -48,7 +48,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   late ApiService apiService;
 
   bool _isPageLoading = false;
-  int _currentStep = 0;
+  int _currentStep = 5;
   final _formKey = GlobalKey<FormState>();
   bool _isEditing = false;
   bool personalInfoEditable = true;
@@ -93,7 +93,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   List<String> titleList = ["Select", "Mr.", "Mrs.", "Miss"];
   List<String> accType = ["Select", "Current", "Savings", "Salary"];
-   String expense = "";
+  String expense = "";
   String income = "";
   String lati = "";
   String longi = "";
@@ -305,7 +305,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? selectedBank;
   String? Fi_Id;
   String qrResult = "";
-  File? _imageFile;
+  late String _imageFile;
+  File? grPic;
   File? adhaarFront;
   File? adhaarFront_coborrower;
   File? adhaarBack;
@@ -321,7 +322,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   File? passport;
   File? passbook;
 
-  late String name,ficode,creator;
+  late String name, ficode, creator;
 
   @override
   void initState() {
@@ -330,6 +331,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
     creator = widget.selectedData.creator;
     ficode = widget.selectedData.fiCode.toString();
     name = widget.selectedData.fullName;
+
+    _imageFile = widget.selectedData.profilePic;
+    String baseUrl = 'https://predeptest.paisalo.in:8084';
+
+    // Replace the front part of the file path and ensure the path uses forward slashes
+    String? modifiedPath =
+        _imageFile.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
+
+    // Join the base URL with the modified path
+    _imageFile = '$baseUrl/$modifiedPath';
+    print(_imageFile);
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     getAllDataApi(context);
@@ -538,9 +550,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ),
                 ),
                 _buildProgressIndicator(),
-                SizedBox(height: 50),
+                SizedBox(height: 60),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height - 240,
+                  height: MediaQuery.of(context).size.height - 250,
                   child: Stack(clipBehavior: Clip.none, children: [
                     Container(
                       //height: MediaQuery.of(context).size.height - 230,
@@ -562,74 +574,124 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       ),
                     ),
                     Positioned(
-                        top: -50, // Adjust the position as needed
-                        left: 0,
-                        right: 0,
-                        child: Text(name,
-                          style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                        )
-                    ),
-                    Positioned(
                         top: -35, // Adjust the position as needed
                         left: 0,
                         right: 0,
-                        child: Text(ficode,
+                        child: Text(
+                          "FiCode-Creator",
                           style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                        )
-                    ),
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        )),
                     Positioned(
                         top: -20, // Adjust the position as needed
                         left: 0,
                         right: 0,
-                        child: Text(creator,
+                        child: Text(
+                          "$ficode - $creator",
                           style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                        )
-                    ),
-                    Positioned(
-                        top: -35, // Adjust the position as needed
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: _imageFile == null
-                              ? InkWell(
-                                  child: ClipOval(
-                                    child: Container(
-                                      width: 70,
-                                      height: 70,
-                                      color: Colors.grey,
-                                      child: Icon(
-                                        Icons.person,
-                                        size: 50.0,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  onTap: _pickImage,
-                                )
-                              : InkWell(
-                                  child: ClipOval(
-                                    child: Image.file(
-                                      File(_imageFile!.path),
-                                      width: 70,
-                                      height: 70,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  onTap: _pickImage,
-                                ),
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
                         )),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: _currentStep == 5
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                  Transform.translate(
+                                    offset: Offset(0, -55), // Adjust the vertical offset as needed
+                                    child: ClipOval(
+                                    child: _imageFile.isNotEmpty
+                                        ? Image.network(
+                                            _imageFile,
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Container(
+                                            width: 50,
+                                            height: 50,
+                                            color: Colors.grey,
+                                            child: Icon(
+                                              Icons.person,
+                                              size: 35.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                  ),
+                                  ),
+                                SizedBox(width: 10,),
+                                Transform.translate(
+                                  offset: Offset(0, -55), // Adjust the vertical offset as needed
+                                  child:  grPic == null
+                                        ? InkWell(
+                                      onTap:() async {
+                                        File? pickedFile=await GlobalClass().pickImage();
+                                        setState(()  {
+                                          grPic = pickedFile;
+                                        });
+                                      } ,
+                                      child: ClipOval(
+                                        child: Container(
+                                          width: 50,
+                                          height: 50,
+                                          color: Colors.grey,
+                                          child: Icon(
+                                            Icons.person,
+                                            size: 35.0,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                        : InkWell(
+                                      child: ClipOval(
+                                        child: Image.file(
+                                          File(grPic!.path),
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      onTap:()async {
+                                        File? pickedFile=await GlobalClass().pickImage();
+                                        setState(()  {
+                                          grPic = pickedFile;
+                                        });
+                                      } ,
+                                    ),
+                                )
+                              ],
+                            )
+                          : Transform.translate(
+                              offset: Offset(0,
+                                  -55), // Adjust the vertical offset as needed
+                              child: ClipOval(
+                                child: _imageFile!.isNotEmpty
+                                    ? Image.network(
+                                        _imageFile,
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Container(
+                                        width: 50,
+                                        height: 50,
+                                        color: Colors.grey,
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 35.0,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                    ),
                   ]),
                 ),
                 SizedBox(height: 10),
@@ -713,13 +775,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
             : (isActive ? Colors.green : Colors.grey.shade300),
       ),
       child: CircleAvatar(
-        radius: 10,
+        radius: 7,
         backgroundColor: isCompleted ? Colors.green : Colors.white,
         child: Text(
           (step + 1).toString(),
           style: TextStyle(
               fontFamily: "Poppins-Regular",
-              fontSize: 10,
+              fontSize: 7,
               color: isCompleted
                   ? Colors.white
                   : (isActive ? Color(0xFFD42D3F) : Colors.grey)),
@@ -3836,7 +3898,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               pageTitle = "Guarantor Form";
               _currentStep -= 1;
             });
-          }else if (_currentStep == 7) {
+          } else if (_currentStep == 7) {
             setState(() {
               pageTitle = "Upload DocS";
               _currentStep -= 1;
@@ -3885,14 +3947,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
               femMemIncomeEditable = true;
             });
           } else if (_currentStep == 5) {
-            setState(() {
-              GuarantorEditable = true;
-            });
+              DeleteGur(context);
           } else if (_currentStep == 6) {
             setState(() {
               UploadFiDocsEditable = true;
             });
-          }else if (_currentStep == 7) {
+          } else if (_currentStep == 7) {
             setState(() {
               UploadFiDocsEditable = true;
             });
@@ -3918,23 +3978,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
         onPressed: () {
-           if (_currentStep == 0) {
           setState(() {
             _currentStep++;
           });
-          }else
-          if (_currentStep == 0) {
-            // setState(() {
-            //   _currentStep=6;
-            // });
-            /*if (personalInfoEditable) {
-              setState(() {
-                _currentStep = 6;
-              });*/
 
-              /*setState(() {
-              _currentStep=6;
-            });*/
+          /*if (_currentStep == 0) {
               if (personalInfoEditable) {
                 if (_stepOneValidations()) {
                   AddFiExtraDetail(context);
@@ -4006,8 +4054,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
             } else if (_currentStep == 7) {
               FiDocsUploadsApi(context, "1");
-            }
-          },
+            }*/
+        },
         child: Text(
           _currentStep == 7 ? "SUBMIT" : "NEXT",
           style: TextStyle(
@@ -4104,35 +4152,26 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
+
   Widget _buildListItem({
     required String title,
-    String? path,
+    File? file,
+    String? path, // URL path for the image
     int? id,
     String? GrNo,
-    required Function(File) onImagePicked,
   }) {
-    String baseUrl = 'https://predeptest.paisalo.in:8084';
-
-    // Replace the front part of the file path and ensure the path uses forward slashes
-    String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
-
-    // Join the base URL with the modified path
-    String finalUrl = '$baseUrl/$modifiedPath';
-    print("path $path");
-    print("modifiedPath $modifiedPath");
-    print("finalURL $finalUrl");
-
-    File? _selectedImage;
-
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
+        File? _selectedImage = file;
+
         return GestureDetector(
           onTap: () async {
             File? pickedImage = await GlobalClass().pickImage();
             if (pickedImage != null) {
-              print("vmsdfjk");
+              print("Image picked");
               setState(() {
                 _selectedImage = pickedImage;
+
                switch(id){
                  case 1:
                    adhaarFront=pickedImage;
@@ -4174,11 +4213,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                    dlFront_coborrower=pickedImage;
                    break;
                }
+
               });
             }
           },
           child: Card(
-
             color:
                 path!.isNotEmpty ? Colors.green : Colors.yellowAccent.shade700,
             // Set color based on path
@@ -4252,112 +4291,84 @@ class _ApplicationPageState extends State<ApplicationPage> {
         if (doc.addharExists == true) {
           listItems.add(_buildListItem(
             title: "Aadhar Front",
-            path: doc.aadharPath,
+            file: adhaarFront,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerAadhar3011_2024_35_39.jfif", // Example URL path
             id: 1,
             GrNo: "0",
-            onImagePicked: (File file) {
-              setState(() {
-                adhaarFront = file;
-              });
-            },
           ));
           listItems.add(_buildListItem(
             title: "Aadhar Back",
-            path: doc.aadharBPath,
+            file: adhaarBack,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerAadharBack3011_2024_35_39.jfif", // Example URL path
             id: 27,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                adhaarBack = file;
-              });
-            },
           ));
         }
 
         if (doc.voterExists == true) {
           listItems.add(_buildListItem(
             title: "Voter Front",
-            path: doc.voterPath,
+            file: voterFront,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerVoterFront3011_2024_35_39.jfif", // Example URL path
             id: 3,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                voterFront = file;
-              });
-            },
           ));
           listItems.add(_buildListItem(
             title: "Voter Back",
-            path: doc.voterBPath,
+            file: voterback,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerVoterBack3011_2024_35_39.jfif", // Example URL path
             id: 26,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                voterFront = file;
-              });
-            },
           ));
         }
 
         if (doc.panExists == true) {
           listItems.add(_buildListItem(
             title: "Pan Front",
-            path: doc.panPath,
+            file: panFront,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerPan3011_2024_35_39.jfif", // Example URL path
             id: 4,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                panFront = file;
-              });
-            },
           ));
         }
 
         if (doc.drivingExists == true) {
           listItems.add(_buildListItem(
             title: "DL Front",
-            path: doc.drivingPath,
+            file: dlFront,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerDL3011_2024_35_39.jfif", // Example URL path
             id: 15,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                dlFront = file;
-              });
-            },
           ));
         }
 
         if (doc.passportExists == true) {
           listItems.add(_buildListItem(
             title: "Passport",
-            path: doc.passportPath,
+            file: passport,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerPassport3011_2024_35_39.jfif", // Example URL path
             id: doc.passportCheckListId,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                adhaarFront = file;
-              });
-            },
           ));
         }
 
 
           listItems.add(_buildListItem(
             title: "Passbook Front",
-            path: doc.passBookPath,
+            file: passbook,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerPassbook3011_2024_35_39.jfif", // Example URL path
             id: 2,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                passbook = file;
-              });
-            },
           ));
 
       }
     }
     return listItems;
   }
+
+
+
+
 
   List<Widget> _buildKycDocumentListGur({required bool isStepEight}) {
     List<Widget> listItems1 = [];
@@ -4375,7 +4386,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
         );
 
-        if (grDoc.addharExists == true) {
+        /*if (grDoc.addharExists == true) {
           listItems1.add(_buildListItem(
             title: "Aadhar Front",
             path: grDoc.aadharPath,
@@ -4451,7 +4462,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             },
           ));
-        }
+        }*/
       }
     } else {
       listItems1.add(
@@ -4755,14 +4766,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-  void _pickImage() async {
+  /*void _pickImage() async {
     File? pickedImage = await GlobalClass().pickImage();
     if (pickedImage != null) {
       setState(() {
         _imageFile = pickedImage;
       });
     }
-  }
+  }*/
 
   Future<void> _selectDate(BuildContext context, String type) async {
     DateTime now = DateTime.now();
@@ -5838,7 +5849,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
       EasyLoading.dismiss();
     });
   }
+  File? createFileFromPath(String? path) {
+    if (path == null || path.isEmpty) {
+      return null;
+    }
+    String baseUrl = 'https://predeptest.paisalo.in:8084';
+    // Replace the front part of the file path and ensure the path uses forward slashes
+    String modifiedPath = path.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
 
+    // Join the base URL with the modified path
+    String finalUrl = '$baseUrl/$modifiedPath';
+
+    // Return a File object based on the modified path
+    return File(finalUrl);
+  }
   Future<void> GetDocs(BuildContext context) async {
     print("111object");
     EasyLoading.show(
@@ -5853,6 +5877,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           getData = value;
+          adhaarFront = createFileFromPath(getData.data.aadharPath);
+          adhaarBack = createFileFromPath(getData.data.aadharBPath);
+          panFront = createFileFromPath(getData.data.panPath);
+          voterFront = createFileFromPath(getData.data.voterPath);
+          voterback = createFileFromPath(getData.data.voterBPath);
+          dlFront = createFileFromPath(getData.data.drivingPath);
+          passport = createFileFromPath(getData.data.passportPath);
+          passbook = createFileFromPath(getData.data.passBookPath);
+
           _isPageLoading = true;
           EasyLoading.dismiss();
         });
@@ -5869,14 +5902,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-  Future<void> FiDocsUploadsApi(BuildContext context,String GurNum) async {
+  Future<void> FiDocsUploadsApi(BuildContext context, String GurNum) async {
     try {
       EasyLoading.show(status: 'Loading...');
 
-      String? Image;
+      /*String? Image;
       if (_imageFile == null) {
         Image = 'Null';
-      }
+      }*/
 
       final api = Provider.of<ApiService>(context, listen: false);
 
@@ -6444,7 +6477,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     final api = Provider.of<ApiService>(context, listen: false);
 
-    return await api
+    /*return await api
         .saveGurrantor(
             GlobalClass.token,
             GlobalClass.dbName,
@@ -6489,7 +6522,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }).catchError((error) {
       showToast_Error(error);
       EasyLoading.dismiss();
-    });
+    });*/
   }
 
   String formatDate(String date, dateFormat) {
@@ -6585,6 +6618,31 @@ class _ApplicationPageState extends State<ApplicationPage> {
           guarrantors(value.data[0]);
         }
       } else {
+        setState(() {});
+      }
+    }).catchError((err) {
+      print("ERRORRRR$err");
+      EasyLoading.dismiss();
+    });
+  }
+
+  Future<void> DeleteGur(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
+
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .deleteGurrantor(GlobalClass.token, GlobalClass.dbName, FIID.toString())
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        GlobalClass.showSuccessAlert(context, "${value.message} Save Guarantor again", 1);
+        setState(() {
+          GuarantorEditable = true;
+        });
+
+      } else {
+        EasyLoading.dismiss();
         setState(() {});
       }
     }).catchError((err) {

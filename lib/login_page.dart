@@ -314,7 +314,7 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
-      floatingActionButton: buildSupportFAB(),
+      floatingActionButton: buildSupportFAB(context),
     );
   }
 
@@ -523,7 +523,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget buildSupportFAB() {
+  Widget buildSupportFAB(BuildContext context) {
     return SpeedDial(
       icon: Icons.support,
       activeIcon: Icons.close,
@@ -541,21 +541,39 @@ class _LoginPageState extends State<LoginPage> {
             );
           },
         ),
-
         SpeedDialChild(
           child: Icon(FontAwesomeIcons.whatsapp),
           label: 'WhatsApp Support',
-          onTap: () => _launchURL('https://wa.me/8595847059'),
+          onTap: () async {
+            const whatsappUrl = 'https://wa.me/918595847059?text=Hello';
+            if (await canLaunch(whatsappUrl)) {
+              await launch(whatsappUrl);
+            } else {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('Error'),
+                  content: Text('WhatsApp is not installed. Please install WhatsApp first.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
         ),
         SpeedDialChild(
           child: Icon(Icons.call),
           label: 'Call Support',
-          onTap: () => _makePhoneCall('91:+8595847059'),
+          onTap: () => _makePhoneCall('918595847059'),
         ),
         SpeedDialChild(
           child: Icon(Icons.message),
           label: 'Text Support',
-          onTap: () => _sendTextMessage('91:+8595847059'),
+          onTap: () => _sendTextMessage('918595847059'),
         ),
         SpeedDialChild(
           child: Icon(Icons.email),
@@ -565,6 +583,7 @@ class _LoginPageState extends State<LoginPage> {
       ],
     );
   }
+
   Future<void> _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -587,7 +606,11 @@ class _LoginPageState extends State<LoginPage> {
       scheme: 'sms',
       path: phoneNumber,
     );
-    await launchUrl(launchUri);
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else {
+      throw 'Could not launch SMS app';
+    }
   }
 
   Future<void> _sendEmail(String emailAddress) async {
@@ -597,4 +620,5 @@ class _LoginPageState extends State<LoginPage> {
     );
     await launchUrl(launchUri);
   }
+
 }
