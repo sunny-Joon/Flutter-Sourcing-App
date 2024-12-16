@@ -104,34 +104,22 @@ class _MyHomePageState extends State<QRDATA> {
       decodedData.add(decodedString);
 
       test+=decodedString;
-
-
-
-
     }
-
     return test;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
-
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
         title: Text(widget.title),
       ),
       body: SingleChildScrollView(
-
         child: Column(
-
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
             Text(
               '$qrResult',
               style: Theme.of(context).textTheme.headlineMedium,

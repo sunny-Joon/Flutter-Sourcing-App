@@ -85,7 +85,6 @@ abstract class ApiService {
 
   }
 
-
   @POST("Account/GetToken")
   Future<LoginModel> getLogins(
       @Header("devid") String devid,
