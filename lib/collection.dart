@@ -143,7 +143,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                       ),
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height - 450,
+                      height: MediaQuery.of(context).size.height/2,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Colors.grey.shade100, Colors.grey.shade300],
@@ -343,35 +343,43 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          AbsorbPointer(
-            child: TextField(
-              controller: _controller,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly, // Only allow digits
-              ],
-              decoration: InputDecoration(
-                labelText: 'Lump sum Amount',
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (value) {
-                _controller.value = _controller.value.copyWith(
-                  text: _formatNumber(value),
-                  selection: TextSelection.collapsed(offset: _controller.text.length),
-                );
-              },
+          AbsorbPointer(child: TextField(
+            maxLength: 7,
+            readOnly: true,
+            controller: _controller,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly, // Only allow digits
+            ],
+            decoration: InputDecoration(
+              counterText: "",
+              labelText: 'Lump sum Amount',
+              border: OutlineInputBorder(),
             ),
-          ),
+            // onChanged: (value) {
+            //   _controller.value = _controller.value.copyWith(
+            //     text: _formatNumber(value),
+            //     selection: TextSelection.collapsed(offset: _controller.text.length),
+            //
+            //   );
+            // },
+          ),),
+
+          SizedBox(height: 16),
+
           // Custom Numeric Keypad with Gradient Buttons
           Container(
             height: 200, // Fixed height to ensure it fits within the available space
             child: GridView.builder(
+              padding: EdgeInsets.all(0),
+              shrinkWrap: true,
               itemCount: 12, // 9 digits + 3 buttons (Clear, 0, 00)
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, // Number of columns
-                crossAxisSpacing: 6.0, // Reduced spacing between buttons
-                mainAxisSpacing: 6.0, // Reduced spacing between buttons
-                childAspectRatio: 1.4, // Slightly adjusted aspect ratio
+                crossAxisSpacing: 5.0, // Reduced spacing between buttons
+                mainAxisSpacing: 9.0,  // Reduced spacing between buttons
+                childAspectRatio: 1.8, // Slightly adjusted aspect ratio
+
               ),
               itemBuilder: (context, index) {
                 String label;
@@ -398,8 +406,6 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                     }
                   },
                   child: Container(
-                    height: 200, // Fixed height to ensure it fits within the available space
-
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -428,6 +434,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                         ),
                       ),
                     ),
+
                   ),
                 );
               },

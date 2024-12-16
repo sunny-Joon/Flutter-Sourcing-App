@@ -143,6 +143,7 @@ print("object++12");
           ),
           Expanded(
             child: ListView.builder(
+              padding: EdgeInsets.all(0),
               itemCount: _borrowerItems.length,
               itemBuilder: (context, index) {
                 final item = _borrowerItems[index];
@@ -168,16 +169,8 @@ print("object++12");
                         );
                         break;
                       case 'E SIGN':
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FirstEsign(
-                              BranchData: widget.BranchData,
-                              GroupData: widget.GroupData,
-                              selectedData: item,
-                            ),
-                          ),
-                        );
+                        _showPopup(context,item);
+
                         break;
                         case 'HouseVisit':
                         Navigator.push(
@@ -199,6 +192,94 @@ print("object++12");
           ),
         ],
       ),
+    );
+  }
+
+  void _showPopup(BuildContext context,BorrowerListDataModel item) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical:16,horizontal: 12),
+            // Add padding around the content
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Adhaar Front Button
+                SizedBox(
+                  height: 50,
+                  width: double.infinity, // Match the width of the dialog
+                  child: TextButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FirstEsign(
+                            BranchData: widget.BranchData,
+                            GroupData: widget.GroupData,
+                            selectedData: item,
+                            type: 1,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'First E-Sign',
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Color(0xFFD42D3F),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius.circular(5), // Adjust as needed
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20), // Space between buttons
+                // Adhaar Back Button
+                SizedBox(
+                  height: 50,
+
+                  width: double.infinity, // Match the width of the dialog
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FirstEsign(
+                            BranchData: widget.BranchData,
+                            GroupData: widget.GroupData,
+                            selectedData: item,
+                            type: 2,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Second E-Sign',
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Color(0xFFD42D3F),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius.circular(5), // Adjust as needed
+                      ),
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

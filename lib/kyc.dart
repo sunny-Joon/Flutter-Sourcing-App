@@ -3410,6 +3410,7 @@ bool checkIdMendate(){
             setState(() {
 
               FiType = "OLD";
+              Fi_Code=value.data[0].fiCode.toString();
               Fi_Id = value.data[0].fiId.toString();
               selectedTitle = value.data[0].title.trim();
               _nameController.text = value.data[0].fName;
@@ -3428,10 +3429,13 @@ bool checkIdMendate(){
               _mobileNoController.text = value.data[0].pPhone;
               _dobController.text = value.data[0].dob.toString().split("T")[0];
               // _ageController.text =value.data[0].;
-              stateselected= states
-                  .firstWhere((item) =>
-              item.descriptionEn.toLowerCase() ==
-                  value.data[0].pState.toLowerCase());
+              if(value.data[0].pState.isNotEmpty){
+                stateselected= states
+                    .firstWhere((item) =>
+                item.descriptionEn.toLowerCase() ==
+                    value.data[0].pState.toLowerCase());
+              }
+
               _fatherFirstNameController.text = value.data[0].fatheRFirstName;
               _fatherMiddleNameController.text = value.data[0].fatheRMiddleName;
               _fatherLastNameController.text = value.data[0].fatheRLastName;
@@ -3451,16 +3455,20 @@ bool checkIdMendate(){
               /*stateselected = states.firstWhere((item) =>
               item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/
               _loan_amountController.text =value.data[0].loanAmount.toString();
-             // selectedLoanReason = value.data[0].;
-            //  selectedloanDuration = value.data[0].loanDuration;
-          //    bankselected = value.data[0].bankName;
-              EasyLoading.dismiss();
+             EasyLoading.dismiss();
 
             });
+            GlobalClass.showAlert(
+              contextDialog,
+              "KYC Already Exist with same Aadhaar",
+              "Ficode: ${Fi_Code}\nCreator: ${GlobalClass.creator}\nBorrower Name: ${value.data[0].fName } ${value.data[0].mName } ${value.data[0].lName} ",
+              Colors.red,
+              1,
+            );
           } else {
-            String A = value.data[0].fiCode.toString();
+            String ficode = value.data[0].fiCode.toString();
             GlobalClass.showErrorAlert(context,
-                "Kyc is Already Done on this Adhaar Id(FiCode is $A)", 2);
+                "Kyc is Already Done on this Adhaar Id(FiCode is $ficode)", 2);
           }
         }
       } else {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:dio/dio.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:flutter_sourcing_app/Models/xml_response.dart';
 import 'package:flutter_sourcing_app/api_service.dart';
 import 'package:flutter_sourcing_app/global_class.dart';
 import 'package:flutter_sourcing_app/Models/borrower_list_model.dart';
@@ -24,12 +27,12 @@ class FirstEsign extends StatefulWidget {
   final BranchDataModel BranchData;
   final GroupDataModel GroupData;
   final BorrowerListDataModel selectedData;
-
+  final int type;
   const FirstEsign({
     super.key,
     required this.BranchData,
     required this.GroupData,
-    required this.selectedData,
+    required this.selectedData, required this.type,
   });
   @override
   _FirstEsignState createState() => _FirstEsignState();
@@ -122,7 +125,11 @@ class _FirstEsignState extends State<FirstEsign> {
             child: isLoading
                 ? Center(child: CircularProgressIndicator())
                 : PDFView(
+
+              autoSpacing: true,
               filePath: localPath,
+              swipeHorizontal: true,
+
             ),
           ),
           SizedBox(height: 10,),
@@ -260,7 +267,7 @@ class _FirstEsignState extends State<FirstEsign> {
       "GroupCode": selectedData.groupCode,
       "Code": selectedData.fiCode,
       "F_Id": selectedData.id,
-      "Type": "FirsteSign",
+      "Type": widget.type==1?"FirsteSign":"SecondeSign",
       "CityCode": selectedData.branchCode,
       "DbName": "PDLERP",
     };
@@ -501,6 +508,14 @@ class _DialogContentState extends State<DialogContent> {
       print("Failed to invoke Java function: ${e.message}");
     }
   }
+  void parseResponse(XmlResponse xmlResponse) {
+    final Content content = xmlResponse.content;
+
+    // Access the headers inside content
+    for (var header in content.headers) {
+      print("Header: $header");
+    }
+  }
   void sendXMlToServer(String result) {
     EasyLoading.show(status: "Data sending to server...");
     try{
@@ -510,6 +525,7 @@ class _DialogContentState extends State<DialogContent> {
           GlobalClass.showSuccessAlert(context,"ESign Has been done",3);
           //Navigator.of(context).pop();
         }else{
+          parseResponse(value);
           GlobalClass.showUnsuccessfulAlert(context,"ESign Has not been done",1);
 
         }
@@ -534,11 +550,11 @@ EasyLoading.dismiss();
       // API call
       final xmlResponse = await _apiServiceForESign.saveAgreements(
 
-        "250069", // Ficode
-        "hoagra", // Creator
+        widget.selectedBorrower.fiCode.toString(), // Ficode
+        widget.selectedBorrower.creator, // Creator
         consentRawText,   // ConsentText
         authType=="Biometric"?"2":"1",      // authMode
-        "1",      // F_Id
+        widget.selectedBorrower.id.toString(),      // F_Id
         "1",      // SignType
       );
     EasyLoading.dismiss();

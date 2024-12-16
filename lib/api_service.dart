@@ -515,7 +515,7 @@ abstract class ApiService {
       );
 
 
-  @GET("Masters/Verify")
+  @GET("Masters/OTPVerify")
   Future<CommonIntModel> otpVerify(
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
