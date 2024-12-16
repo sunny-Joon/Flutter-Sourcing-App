@@ -1427,7 +1427,7 @@ class _KYCPageState extends State<KYCPage> {
                   SizedBox(height: 1),
                   Container(
                       padding: EdgeInsets.zero,
-                      width: double.infinity, // Set the desired width
+                      width: double.infinity,
                       child: Center(
                         child: TextFormField(
                           keyboardType: TextInputType.number,
