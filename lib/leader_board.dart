@@ -42,10 +42,11 @@ class _LeaderBoardState extends State<LeaderBoard> {
   @override
   void initState() {
     super.initState();
-    _getLeaderBoardDataForPeriod(selectedPeriod); // Fetch initial data for January
+    int currentMonthIndex = DateTime.now().month - 1;
+    selectedPeriod = dropdownOptions[currentMonthIndex];
+    _getLeaderBoardDataForPeriod(selectedPeriod);
   }
 
-  // Fetch leaderboard data for the selected period
   Future<void> _getLeaderBoardDataForPeriod(String period) async {
     EasyLoading.show(status: "Loading...");
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
