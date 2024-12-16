@@ -2534,7 +2534,7 @@ class _ApiService implements ApiService {
     )
         .compose(
           _dio.options,
-          'Masters/Verify',
+          'Masters/OTPVerify',
           queryParameters: queryParameters,
           data: _data,
         )

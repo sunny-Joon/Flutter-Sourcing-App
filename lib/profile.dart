@@ -111,9 +111,11 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       backgroundColor: const Color(0xFFD42D3F),
       endDrawer: Container(
-        width: 80,
-        height: 300, // Set the width of the drawer
+
+        width: 120,
+        height: MediaQuery.of(context).size.height/1.5, // Set the width of the drawer
         child: Drawer(
+          backgroundColor: Colors.white,
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
@@ -241,12 +243,16 @@ class _ProfileState extends State<Profile> {
                                 );
                               });
                             } else if (index == 1) {
-                              return _buildGridItem('Collection Report', Icons.currency_rupee, () {
-                                print('Get Collection Report Clicked');
-                              });
-                            } else if (index == 2) {
+
+
                               return _buildGridItem('Morpho Recharge', Icons.find_in_page_sharp, () {
                                 showCustomAlertDialog(context);
+                              });
+                            } else if (index == 2) {
+                              return _buildGridItem('Other Reports', Icons.currency_rupee, () {
+
+                                Scaffold.of(context).openEndDrawer();
+
                               });
                             }
                             return const SizedBox();

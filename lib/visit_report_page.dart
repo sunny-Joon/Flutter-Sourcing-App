@@ -426,7 +426,7 @@ import 'package:flutter_sourcing_app/utils/current_location.dart';
       }
 
 
-  apiService.insertBranchVisit(GlobalClass.dbName, GlobalClass.token, meetingType!, _smCodeController.text, _amountController.text, _lat!.toString(), _long!.toString(), GlobalClass.userName, _commentController.text, _aadress!, imageFile!).then((value){
+  apiService.insertBranchVisit(GlobalClass.dbName, GlobalClass.token, meetingType!, _smCodeController.text, _amountController.text.isEmpty?"0":_amountController.text, _lat!.toString(), _long!.toString(), GlobalClass.userName, _commentController.text, _aadress!, imageFile!).then((value){
     if(value.statuscode==200){
         GlobalClass.showSuccessAlert(context, "Record saved Successfully", 2);
     }else{

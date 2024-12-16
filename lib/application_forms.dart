@@ -57,6 +57,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool FinancialInfoEditable = true;
   bool femMemIncomeEditable = true;
   bool GuarantorEditable = true;
+  bool borrowerDocsUploded = false;
   bool UploadFiDocsEditable = true;
 
   String pageTitle = "Personal Info";
@@ -306,11 +307,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String qrResult = "";
   File? _imageFile;
   File? adhaarFront;
+  File? adhaarFront_coborrower;
   File? adhaarBack;
+  File? adhaarBack_coborrower;
   File? panFront;
+  File? panFront_coborrower;
   File? voterFront;
+  File? voterFront_coborrower;
   File? voterback;
+  File? voterback_coborrower;
   File? dlFront;
+  File? dlFront_coborrower;
   File? passport;
   File? passbook;
 
@@ -3743,7 +3750,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Widget _buildStepSeven() {
     return SingleChildScrollView(
       child: Container(
-          height: MediaQuery.of(context).size.height - 250,
+          height: MediaQuery.of(context).size.height - 280,
           width: double.infinity, // Set the width to the full screen size
           child: SingleChildScrollView(
             child: _isPageLoading
@@ -3988,10 +3995,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 });
               }
             } else if (_currentStep == 6) {
+            if(!borrowerDocsUploded){
               FiDocsUploadsApi(context, "0");
+
+            }else{
               setState(() {
                 _currentStep++;
               });
+            }
+
             } else if (_currentStep == 7) {
               FiDocsUploadsApi(context, "1");
             }
@@ -4121,63 +4133,98 @@ class _ApplicationPageState extends State<ApplicationPage> {
               print("vmsdfjk");
               setState(() {
                 _selectedImage = pickedImage;
-                onImagePicked(pickedImage); // Update the image path
+               switch(id){
+                 case 1:
+                   adhaarFront=pickedImage;
+                   break;
+                   case 27:
+                   adhaarBack=pickedImage;
+                   break;
+                   case 3:
+                   voterFront=pickedImage;
+                   break;
+                   case 26:
+                   voterback=pickedImage;
+                   break;
+                   case 4:
+                   panFront=pickedImage;
+                   break;
+                   case 15:
+                   dlFront=pickedImage;
+                   break;
+                   case 2:
+                   passbook=pickedImage;
+                   break;
+                   case 7:
+                   adhaarFront_coborrower=pickedImage;
+                   break;
+                   case 29:
+                   adhaarBack_coborrower=pickedImage;
+                   break;
+                   case 5:
+                   voterFront_coborrower=pickedImage;
+                   break;
+                   case 28:
+                   voterback_coborrower=pickedImage;
+                   break;
+                   case 8:
+                   panFront_coborrower=pickedImage;
+                   break;
+                   case 16:
+                   dlFront_coborrower=pickedImage;
+                   break;
+               }
               });
             }
           },
           child: Card(
+
             color:
                 path!.isNotEmpty ? Colors.green : Colors.yellowAccent.shade700,
             // Set color based on path
             margin: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _selectedImage != null
-                      ? Image.file(
-                          _selectedImage!,
-                          width: 50,
-                          height: 50,
-                        )
-                      : path != null
-                          ? Image.network(
-                              finalUrl,
-                              width: 50,
-                              height: 50,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Icon(
-                                  Icons.hide_image_outlined,
-                                  size: 30,
-                                );
-                              },
-                            )
-                          : Image.asset(
-                              'assets/Images/rupees.png',
-                              width: 50,
-                              height: 50,
-                            ),
-                  Text(
-                    title,
-                    style: TextStyle(
-                        fontFamily: "Poppins-Regular",
-                        color: path.isNotEmpty
-                            ? Colors.white
-                            : Colors.black), // Change text color if needed
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.upload,
-                      size: 30,
+            child: Container(
+              height: 70,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+
+                    Text(
+                      title,
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: path.isNotEmpty
+                              ? Colors.white
+                              : Colors.black), // Change text color if needed
                     ),
-                    onPressed: () {
-                      //  UploadFiDocs(context, title, _selectedImage, GrNo, id);
-                      print('Title: $title');
-                      print('Path: $path');
-                    },
-                  ),
-                ],
+                    _selectedImage != null
+                        ? Image.file(
+                      _selectedImage!,
+                      width: 50,
+                      height: 50,
+                    )
+                        : path != null
+                        ? Image.network(
+                      finalUrl,
+                      width: 50,
+                      height: 50,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.hide_image_outlined,
+                          size: 30,
+                        );
+                      },
+                    )
+                        : Image.asset(
+                      'assets/Images/rupees.png',
+                      width: 50,
+                      height: 50,
+                    )
+
+                  ],
+                ),
               ),
             ),
           ),
@@ -4294,7 +4341,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ));
         }
 
-        if (doc.passBookExists == true) {
+
           listItems.add(_buildListItem(
             title: "Passbook Front",
             path: doc.passBookPath,
@@ -4306,7 +4353,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             },
           ));
-        }
+
       }
     }
     return listItems;
@@ -4336,18 +4383,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-               adhaarFront = file;
+               adhaarFront_coborrower = file;
               });
             },
           ));
           listItems1.add(_buildListItem(
             title: "Aadhar Back",
             path: grDoc.aadharBPath,
-            id: 7,
+            id: 29,
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-              adhaarBack = file;
+              adhaarBack_coborrower = file;
               });
             },
           ));
@@ -4361,18 +4408,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-             voterFront = file;
+             voterFront_coborrower = file;
               });
             },
           ));
           listItems1.add(_buildListItem(
             title: "Voter Back",
             path: grDoc.voterBPath,
-            id: 5,
+            id: 28,
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-              voterFront = file;
+              voterFront_coborrower = file;
               });
             },
           ));
@@ -4386,7 +4433,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-                panFront = file;
+                panFront_coborrower = file;
               });
             },
           ));
@@ -4400,7 +4447,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-               dlFront = file;
+               dlFront_coborrower = file;
               });
             },
           ));
@@ -5810,6 +5857,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
           EasyLoading.dismiss();
         });
         EasyLoading.dismiss();
+        if(value.data.aadharPath.isNotEmpty){
+          setState(() {
+            borrowerDocsUploded=true;
+
+          });
+        }
       } else {
         EasyLoading.dismiss();
       }
@@ -5832,22 +5885,31 @@ class _ApplicationPageState extends State<ApplicationPage> {
         GlobalClass.dbName,
         widget.selectedData.id.toString(),
         GurNum,
-        adhaarFront,
-        adhaarBack,
-        voterFront,
-        voterback,
-        dlFront,
-        panFront,
-        passport,
-        passbook,
+       GurNum=="0"? adhaarFront:adhaarFront_coborrower,
+        GurNum=="0"? adhaarBack:adhaarBack_coborrower,
+        GurNum=="0"? voterFront:voterFront_coborrower,
+        GurNum=="0"? voterback:voterback_coborrower,
+        GurNum=="0"? dlFront:dlFront_coborrower,
+        GurNum=="0"? panFront:panFront_coborrower,
+        GurNum=="0"? passport:null,
+        GurNum=="0"? passbook:null,
       ).then((value) async {
         if (value.statuscode == 200) {
           EasyLoading.dismiss();
-          GlobalClass.showSnackBar(context, "Saved all");
+          GlobalClass.showSuccessAlert(context, "${value.message} \n${value.data[0].errormsg}", 1);
+          setState(() {
+            _currentStep++;
+          });
         } else if (value.statuscode == 400) {
           EasyLoading.dismiss();
 
-          GlobalClass.showSnackBar(context, "Something went wrong in API");
+          GlobalClass.showUnsuccessfulAlert(context, "${value.message} \n${value.data[0].errormsg}", 1);
+
+
+        }else{
+          EasyLoading.dismiss();
+
+          GlobalClass.showUnsuccessfulAlert(context, "${value.message} \n${value.data[0].errormsg}", 1);
         }
       }).catchError((error) {
         GlobalClass.showSnackBar(context, "Error: ${error.toString()}");
@@ -6642,7 +6704,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _bank_AcController.text = data.bankName;
       _bank_IFCSController.text = data.bankIfcs;
       bankAddress = data.bankAddress;
-      _bankOpeningDateController.text = data.bankAcOpenDate;
+      _bankOpeningDateController.text = data.bankAcOpenDate.split("T")[0];
     });
   }
 
@@ -6668,12 +6730,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void guarrantors(ApplicationgetAllDataModel data) {
     setState(() {
       GuarantorEditable = false;
-      selectedTitle = data.guarantors[0].grTitle;
+    //  selectedTitle = data.guarantors[0].grTitle;
       _fnameController.text = data.guarantors[0].grFname;
       _mnameController.text = data.guarantors[0].grMname;
       _lnameController.text = data.guarantors[0].grLname;
       _guardianController.text = data.guarantors[0].grGuardianName;
-      relationselected = data.guarantors[0].grRelationWithBorrower;
+     // relationselected = data.guarantors[0].grRelationWithBorrower;
       _p_Address1Controller.text = data.guarantors[0].grPAddress1;
       _p_Address2Controller.text = data.guarantors[0].grPAddress2;
       _p_Address3Controller.text = data.guarantors[0].grPAddress3;
@@ -6682,7 +6744,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           item.descriptionEn.toLowerCase() ==
           data.guarantors[0].grPState.toLowerCase());
       genderselected = data.guarantors[0].grGender;
-      religionselected = data.guarantors[0].grReligion;
+    //  religionselected = data.guarantors[0].grReligion;
 
       _pincodeController.text = data.guarantors[0].grPincode.toString();
       _dobController.text = data.guarantors[0].grDob.toString();
