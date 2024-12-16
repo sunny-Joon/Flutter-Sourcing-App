@@ -48,7 +48,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   late ApiService apiService;
 
   bool _isPageLoading = false;
-  int _currentStep = 0;
+  int _currentStep = 5;
   final _formKey = GlobalKey<FormState>();
   bool _isEditing = false;
   bool personalInfoEditable = true;
@@ -3940,9 +3940,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               femMemIncomeEditable = true;
             });
           } else if (_currentStep == 5) {
-            setState(() {
-              GuarantorEditable = true;
-            });
+              DeleteGur(context);
           } else if (_currentStep == 6) {
             setState(() {
               UploadFiDocsEditable = true;
@@ -4142,79 +4140,88 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
+
   Widget _buildListItem({
     required String title,
-    String? path,
+    File? file,
+    String? path, // URL path for the image
     int? id,
     String? GrNo,
-    required Function(File) onImagePicked,
   }) {
-    String baseUrl = 'https://predeptest.paisalo.in:8084';
-
-    // Replace the front part of the file path and ensure the path uses forward slashes
-    String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
-
-    // Join the base URL with the modified path
-    String finalUrl = '$baseUrl/$modifiedPath';
-    print("path $path");
-    print("modifiedPath $modifiedPath");
-    print("finalURL $finalUrl");
-
-    File? _selectedImage;
-
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
+        File? _selectedImage = file;
+
         return GestureDetector(
           onTap: () async {
             File? pickedImage = await GlobalClass().pickImage();
             if (pickedImage != null) {
-              print("vmsdfjk");
+              print("Image picked");
               setState(() {
                 _selectedImage = pickedImage;
-                onImagePicked(pickedImage); // Update the image path
+                // Update the corresponding file state based on the title
+                if (title == "Aadhar Front") {
+                  adhaarFront = pickedImage;
+                } else if (title == "Aadhar Back") {
+                  adhaarBack = pickedImage;
+                } else if (title == "Voter Front") {
+                  voterFront = pickedImage;
+                } else if (title == "Voter Back") {
+                  voterback = pickedImage;
+                } else if (title == "Pan Front") {
+                  panFront = pickedImage;
+                } else if (title == "DL Front") {
+                  dlFront = pickedImage;
+                } else if (title == "Passport") {
+                  passport = pickedImage;
+                } else if (title == "Passbook Front") {
+                  passbook = pickedImage;
+                }
               });
             }
           },
           child: Card(
-            color:
-                path!.isNotEmpty ? Colors.green : Colors.yellowAccent.shade700,
-            // Set color based on path
+            color: (_selectedImage != null || (path != null && path.isNotEmpty))
+                ? Colors.green
+                : Colors.yellowAccent.shade700,
             margin: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _selectedImage != null
-                      ? Image.file(
-                          _selectedImage!,
-                          width: 50,
-                          height: 50,
-                        )
-                      : path != null
-                          ? Image.network(
-                              finalUrl,
-                              width: 50,
-                              height: 50,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Icon(
-                                  Icons.hide_image_outlined,
-                                  size: 30,
-                                );
-                              },
-                            )
-                          : Image.asset(
-                              'assets/Images/rupees.png',
-                              width: 50,
-                              height: 50,
-                            ),
+                  if (_selectedImage != null)
+                    Image.file(
+                      _selectedImage,
+                      width: 50,
+                      height: 50,
+                    )
+                  else if (path != null && path.isNotEmpty)
+                    Image.network(
+                      path,
+                      width: 50,
+                      height: 50,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.hide_image_outlined,
+                          size: 30,
+                        );
+                      },
+                    )
+                  else
+                    Image.asset(
+                      'assets/Images/rupees.png',
+                      width: 50,
+                      height: 50,
+                    ),
                   Text(
                     title,
                     style: TextStyle(
-                        fontFamily: "Poppins-Regular",
-                        color: path.isNotEmpty
-                            ? Colors.white
-                            : Colors.black), // Change text color if needed
+                      fontFamily: "Poppins-Regular",
+                      color: (_selectedImage != null || (path != null && path.isNotEmpty))
+                          ? Colors.white
+                          : Colors.black,
+                    ),
                   ),
                   IconButton(
                     icon: Icon(
@@ -4222,9 +4229,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       size: 30,
                     ),
                     onPressed: () {
-                      //  UploadFiDocs(context, title, _selectedImage, GrNo, id);
                       print('Title: $title');
-                      print('Path: $path');
+                      if (_selectedImage != null) {
+                        print('File path: ${_selectedImage}');
+                      } else {
+                        print('URL path: $path');
+                      }
                     },
                   ),
                 ],
@@ -4255,112 +4265,84 @@ class _ApplicationPageState extends State<ApplicationPage> {
         if (doc.addharExists == true) {
           listItems.add(_buildListItem(
             title: "Aadhar Front",
-            path: doc.aadharPath,
+            file: adhaarFront,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerAadhar3011_2024_35_39.jfif", // Example URL path
             id: 1,
             GrNo: "0",
-            onImagePicked: (File file) {
-              setState(() {
-                adhaarFront = file;
-              });
-            },
           ));
           listItems.add(_buildListItem(
             title: "Aadhar Back",
-            path: doc.aadharBPath,
+            file: adhaarBack,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerAadharBack3011_2024_35_39.jfif", // Example URL path
             id: 27,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                adhaarBack = file;
-              });
-            },
           ));
         }
 
         if (doc.voterExists == true) {
           listItems.add(_buildListItem(
             title: "Voter Front",
-            path: doc.voterPath,
+            file: voterFront,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerVoterFront3011_2024_35_39.jfif", // Example URL path
             id: 3,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                voterFront = file;
-              });
-            },
           ));
           listItems.add(_buildListItem(
             title: "Voter Back",
-            path: doc.voterBPath,
+            file: voterback,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerVoterBack3011_2024_35_39.jfif", // Example URL path
             id: 26,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                voterFront = file;
-              });
-            },
           ));
         }
 
         if (doc.panExists == true) {
           listItems.add(_buildListItem(
             title: "Pan Front",
-            path: doc.panPath,
+            file: panFront,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerPan3011_2024_35_39.jfif", // Example URL path
             id: 4,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                panFront = file;
-              });
-            },
           ));
         }
 
         if (doc.drivingExists == true) {
           listItems.add(_buildListItem(
             title: "DL Front",
-            path: doc.drivingPath,
+            file: dlFront,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerDL3011_2024_35_39.jfif", // Example URL path
             id: 15,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                dlFront = file;
-              });
-            },
           ));
         }
 
         if (doc.passportExists == true) {
           listItems.add(_buildListItem(
             title: "Passport",
-            path: doc.passportPath,
+            file: passport,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerPassport3011_2024_35_39.jfif", // Example URL path
             id: doc.passportCheckListId,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                adhaarFront = file;
-              });
-            },
           ));
         }
 
         if (doc.passBookExists == true) {
           listItems.add(_buildListItem(
             title: "Passbook Front",
-            path: doc.passBookPath,
+            file: passbook,
+            path: "https://predeptest.paisalo.in:8084/LOSDOC/FiDocs/10002/FiDocuments/BorrowerPassbook3011_2024_35_39.jfif", // Example URL path
             id: 2,
             GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                passbook = file;
-              });
-            },
           ));
         }
       }
     }
     return listItems;
   }
+
+
+
+
 
   List<Widget> _buildKycDocumentListGur({required bool isStepEight}) {
     List<Widget> listItems1 = [];
@@ -4378,7 +4360,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
         );
 
-        if (grDoc.addharExists == true) {
+        /*if (grDoc.addharExists == true) {
           listItems1.add(_buildListItem(
             title: "Aadhar Front",
             path: grDoc.aadharPath,
@@ -4454,7 +4436,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             },
           ));
-        }
+        }*/
       }
     } else {
       listItems1.add(
@@ -5841,7 +5823,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
       EasyLoading.dismiss();
     });
   }
+  File? createFileFromPath(String? path) {
+    if (path == null || path.isEmpty) {
+      return null;
+    }
+    String baseUrl = 'https://predeptest.paisalo.in:8084';
+    // Replace the front part of the file path and ensure the path uses forward slashes
+    String modifiedPath = path.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
 
+    // Join the base URL with the modified path
+    String finalUrl = '$baseUrl/$modifiedPath';
+
+    // Return a File object based on the modified path
+    return File(finalUrl);
+  }
   Future<void> GetDocs(BuildContext context) async {
     print("111object");
     EasyLoading.show(
@@ -5856,6 +5851,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           getData = value;
+          adhaarFront = createFileFromPath(getData.data.aadharPath);
+          adhaarBack = createFileFromPath(getData.data.aadharBPath);
+          panFront = createFileFromPath(getData.data.panPath);
+          voterFront = createFileFromPath(getData.data.voterPath);
+          voterback = createFileFromPath(getData.data.voterBPath);
+          dlFront = createFileFromPath(getData.data.drivingPath);
+          passport = createFileFromPath(getData.data.passportPath);
+          passbook = createFileFromPath(getData.data.passBookPath);
+
           _isPageLoading = true;
           EasyLoading.dismiss();
         });
@@ -6573,6 +6577,31 @@ class _ApplicationPageState extends State<ApplicationPage> {
           guarrantors(value.data[0]);
         }
       } else {
+        setState(() {});
+      }
+    }).catchError((err) {
+      print("ERRORRRR$err");
+      EasyLoading.dismiss();
+    });
+  }
+
+  Future<void> DeleteGur(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
+
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .deleteGurrantor(GlobalClass.token, GlobalClass.dbName, FIID.toString())
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        GlobalClass.showSuccessAlert(context, "${value.message} Save Guarantor again", 1);
+        setState(() {
+          GuarantorEditable = true;
+        });
+
+      } else {
+        EasyLoading.dismiss();
         setState(() {});
       }
     }).catchError((err) {

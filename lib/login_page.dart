@@ -545,7 +545,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Icon(FontAwesomeIcons.whatsapp),
           label: 'WhatsApp Support',
           onTap: () async {
-            const whatsappUrl = 'https://wa.me/8595847059';
+            const whatsappUrl = 'https://wa.me/918595847059?text=Hello';
             if (await canLaunch(whatsappUrl)) {
               await launch(whatsappUrl);
             } else {
@@ -573,7 +573,7 @@ class _LoginPageState extends State<LoginPage> {
         SpeedDialChild(
           child: Icon(Icons.message),
           label: 'Text Support',
-          onTap: () => _sendTextMessage('sms:+918595847059'),
+          onTap: () => _sendTextMessage('918595847059'),
         ),
         SpeedDialChild(
           child: Icon(Icons.email),
@@ -606,7 +606,11 @@ class _LoginPageState extends State<LoginPage> {
       scheme: 'sms',
       path: phoneNumber,
     );
-    await launchUrl(launchUri);
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else {
+      throw 'Could not launch SMS app';
+    }
   }
 
   Future<void> _sendEmail(String emailAddress) async {
@@ -616,4 +620,5 @@ class _LoginPageState extends State<LoginPage> {
     );
     await launchUrl(launchUri);
   }
+
 }

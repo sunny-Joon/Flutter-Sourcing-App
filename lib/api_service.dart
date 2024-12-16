@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter_sourcing_app/Models/qrcode_model.dart';
 
 import 'package:flutter_sourcing_app/Models/common_string_model.dart';
 
@@ -114,6 +115,12 @@ abstract class ApiService {
   Future<RangeCategoryModel> RangeCategory(
       @Header("Authorization") String token,
       @Header("dbname") String dbName);
+
+  @GET("FiSourcing/DeleteGuarantor")
+  Future<GlobalModel> deleteGurrantor(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Header("Fi_Id") String Fi_Id);
 
 
   @POST("IdentityVerification/Get")
@@ -464,9 +471,20 @@ abstract class ApiService {
       @Header("dbname") String dbName,
       @Query("Fi_Id") String Fi_Id);
 
+  @GET("Collection/GetQRLinkStatus")
+  Future<QrCodeModel> QrGeneration(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("SmCode") String SmCode,
+      @Query("Type") String Type);
+
 
   @POST("IdentityVerification/Get")
   Future<dynamic> verifyIdentity(@Body() Map<String, dynamic> body);
+
+  @POST("Collection/RcPromiseToPay")
+  Future<GlobalModel> promiseToPay(@Header("Authorization") String token,
+      @Header("dbname") String dbName,@Body() Map<String, dynamic> body);
 
 
   @POST("DocVerify/GetDLDetails")
