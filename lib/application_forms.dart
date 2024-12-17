@@ -3885,9 +3885,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               femMemIncomeEditable = true;
             });
           } else if (_currentStep == 5) {
-            setState(() {
-              GuarantorEditable = true;
-            });
+            DeleteGur(context);
           } else if (_currentStep == 6) {
             setState(() {
               UploadFiDocsEditable = true;
@@ -6762,4 +6760,28 @@ class _ApplicationPageState extends State<ApplicationPage> {
        = data.guarantors[0].grPicture;*/
     });
   }
+
+  Future<void> DeleteGur(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
+    final api = Provider.of<ApiService>(context, listen: false);
+    return await api
+        .deleteGurrantor(GlobalClass.token, GlobalClass.dbName, FIID.toString())
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        GlobalClass.showSuccessAlert(context, "${value.message} Save Guarantor again", 1);
+        setState(() {
+          GuarantorEditable = true;
+        });
+      } else {
+        EasyLoading.dismiss();
+        setState(() {});
+      }
+    }).catchError((err) {
+      print("ERRORRRR$err");
+      EasyLoading.dismiss();
+    });
+  }
+
+
 }

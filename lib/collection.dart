@@ -67,7 +67,6 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
           child: Column(
             children: [
-              SizedBox(height: 10),
               Padding(
                 padding: EdgeInsets.all(8),
                 child: Row(
@@ -182,7 +181,6 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                               ),
                             ],
                           ),
-                          SizedBox(height: 10), // Add some space between rows
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -213,7 +211,6 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                               ],
                             ),
                           ),
-                          SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: () {
                                 saveReceipt(context);
@@ -368,8 +365,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
           SizedBox(height: 16),
 
           // Custom Numeric Keypad with Gradient Buttons
-          Container(
-            height: 200, // Fixed height to ensure it fits within the available space
+          Padding(padding: EdgeInsets.all(8),child:  Expanded( // Fixed height to ensure it fits within the available space
             child: GridView.builder(
               padding: EdgeInsets.all(0),
               shrinkWrap: true,
@@ -440,6 +436,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
               },
             ),
           ),
+          )
         ],
       ),
     );

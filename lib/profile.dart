@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_sourcing_app/collection_report.dart';
 import 'package:flutter_sourcing_app/qr_payment_reports.dart';
 import 'package:flutter_sourcing_app/utils/current_location.dart';
 import 'package:provider/provider.dart';
@@ -141,7 +142,11 @@ class _ProfileState extends State<Profile> {
               ListTile(
                 onTap: () {
                   Navigator.pop(context); // Close the drawer
-                  print('Get Collection Report Clicked');
+                  // Navigate to QR Payment Reports
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CollectionStatus()),
+                  );
                 },
                 title: Column(
                   children: const [

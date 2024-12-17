@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter_sourcing_app/Models/collectionstatus_model.dart';
 import 'package:flutter_sourcing_app/Models/qrcode_model.dart';
 
 import 'package:flutter_sourcing_app/Models/common_string_model.dart';
 
 import 'package:flutter_sourcing_app/Models/attendancestatusmodel.dart';
+import 'package:flutter_sourcing_app/collection_report.dart';
 
 import 'package:flutter_sourcing_app/collectionborrowerlist.dart';
 import 'package:flutter_sourcing_app/Models/collectionborrowerlistmodel.dart';
@@ -120,6 +122,12 @@ abstract class ApiService {
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
       @Header("Fi_Id") String Fi_Id);
+
+  @GET("Collection/CollectionStatus")
+  Future<CollectionStatusModel> collectionStatus(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("SmCode") String SmCode);
 
 
   @POST("IdentityVerification/Get")
