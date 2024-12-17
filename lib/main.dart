@@ -174,7 +174,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
     try {
      GlobalModel response= await ApiService.create(baseUrl: ApiConfig.baseUrl1).VersionCheck(GlobalClass.dbName, appVersion,"S","1");
-
       if (response.statuscode == 200) {
 
         // if (appVersionModel.data is int) {
