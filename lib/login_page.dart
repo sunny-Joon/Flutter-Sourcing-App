@@ -204,9 +204,9 @@ class _LoginPageState extends State<LoginPage> {
                   //  padding: const EdgeInsets.symmetric(horizontal: 25),
                   ElevatedButton(
                       onPressed: () async {
-                      //  if(validateIdPassword(context,mobileControllerlogin.text, passwordControllerlogin.text)){
+                        if(validateIdPassword(context,mobileControllerlogin.text, passwordControllerlogin.text)){
                           _getLogin(mobileControllerlogin.text, passwordControllerlogin.text, context);
-                     //   }
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white, // Text color
