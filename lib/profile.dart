@@ -112,7 +112,6 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       backgroundColor: const Color(0xFFD42D3F),
       endDrawer: Container(
-
         width: 120,
         height: MediaQuery.of(context).size.height/1.5, // Set the width of the drawer
         child: Drawer(
@@ -403,7 +402,7 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow(Icons.perm_identity, 'ID ', _idController),
+            _buildDetailRow(Icons.credit_card, 'ID ', _idController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
             _buildDetailRow(Icons.person, 'Name ', _nameController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
@@ -411,9 +410,9 @@ class _ProfileState extends State<Profile> {
             Divider(thickness: 2, indent: 16, endIndent: 16),
             _buildDetailRow(Icons.work, 'Designation ', _designationController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.map, 'Creator ', _creatorController),
-            Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildTimerRow(Icons.timer, 'Time Remaining ', _timeDisplay),
+            _buildDetailRow(Icons.admin_panel_settings, 'Creator ', _creatorController),
+            // Divider(thickness: 2, indent: 16, endIndent: 16),
+            // _buildTimerRow(Icons.timer, 'Time Remaining ', _timeDisplay),
           ],
         ),
       ),

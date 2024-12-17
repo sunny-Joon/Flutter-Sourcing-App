@@ -51,10 +51,10 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
       backgroundColor: Color(0xFFD42D3F),
 
       body: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(0.0),
         child: Column(
           children: [
-            SizedBox(height: 20),
+            SizedBox(height: 50),
             Padding(padding: EdgeInsets.all(8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,16 +105,9 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start, // Align the column items to the left
                       children: [
-                        Text(
-                          'Smcode',
-                          style: TextStyle(fontFamily: "Poppins-Regular",
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black, // Text color for 'Smcode'
-                          ),
-                        ),
+
                         Container(
-                          width: MediaQuery.of(context).size.width-65, // Control the width of the TextField
+                          width: MediaQuery.of(context).size.width-20, // Control the width of the TextField
                           child: TextField(
                             controller: _searchController,
                             decoration: InputDecoration(
