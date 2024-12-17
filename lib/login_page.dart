@@ -203,7 +203,9 @@ class _LoginPageState extends State<LoginPage> {
                   //  padding: const EdgeInsets.symmetric(horizontal: 25),
                   ElevatedButton(
                       onPressed: () async {
-                        _getLogin(mobileControllerlogin.text, passwordControllerlogin.text, context);
+                        if(validateIdPassword(context,mobileControllerlogin.text, passwordControllerlogin.text)){
+                          _getLogin(mobileControllerlogin.text, passwordControllerlogin.text, context);
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white, // Text color
@@ -619,6 +621,15 @@ class _LoginPageState extends State<LoginPage> {
       path: emailAddress,
     );
     await launchUrl(launchUri);
+  }
+
+  bool validateIdPassword(BuildContext context,String Id,String password) {
+    if(Id == null || Id =="" || password == null || password == "" || password.length<5 || Id.length <10 || Id.length>11){
+      GlobalClass.showErrorAlert(context, "Wrong Id or Password", 1);
+      return false;
+    }else{
+      return true;
+    }
   }
 
 }
