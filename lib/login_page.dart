@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/global_class.dart';
@@ -388,6 +389,69 @@ class _LoginPageState extends State<LoginPage> {
 
     return statuses.every((status) => status.isGranted);
   }
+  void handleDioError(dynamic error) {
+    if (error is DioException) {
+      if (error.type == DioExceptionType.badResponse) {
+        if (error.response != null && error.response?.data != null) {
+          final data = error.response?.data;
+          if (data is Map<String, dynamic>) {
+            // Check for 'message' field
+            if (data.containsKey('message')) {
+              print('Message: ${data['message']}');
+            }
+
+            // Check for 'errors' field (if exists)
+            if (data.containsKey('errors')) {
+              final errors = data['errors'];
+              if (errors is Map<String, dynamic>) {
+                errors.forEach((key, value) {
+                  print('$key: $value');
+                });
+              }
+            }
+
+            // Check for 'data' field
+            if (data.containsKey('data')) {
+              final dataField = data['data'];
+              if (dataField is Map<String, dynamic>) {
+                // Access nested 'foImei' or any other nested fields
+                if (dataField.containsKey('foImei')) {
+                  final foImei = dataField['foImei'];
+                  if (foImei is Map<String, dynamic>) {
+                    if (foImei.containsKey('errormsg')) {
+                      print('Error message from foImei: ${foImei['errormsg']}');
+                    }
+                    if (foImei.containsKey('isValidate')) {
+                      print('Is Validate: ${foImei['isValidate']}');
+                    }
+                  }
+                }
+              }
+            } else {
+              print('Data field not found in response');
+            }
+          } else {
+            print('Response data is not a Map<String, dynamic>');
+          }
+        } else {
+          print('Response or response data is null');
+        }
+      } else {
+        print('DioError type: ${error.type}');
+        print('Error message: ${error.message}');
+      }
+    } else if (error is MapEntry<dynamic, dynamic>) {
+      print('Expected error: ${error.toString()}');
+    } else {
+      print('Unexpected error: ${error.toString()}');
+      if (error is TypeError) {
+        print('TypeError: ${error}');
+      }
+    }
+  }
+
+
+
 
   Future<void> _getLogin( String userName, String userPassword, BuildContext context) async {
      EasyLoading.show(status: 'Loading...',);
@@ -401,47 +465,100 @@ class _LoginPageState extends State<LoginPage> {
     return await api
         .getLogins("0646498585477244", GlobalClass.dbName, requestBody)
         .then((value) async {
-      if (value.statuscode == 200) {
-        refToken = value.data.tokenDetails.token.toString();
-        if (value.message == 'Login Successfully !!') {
-          // Assign values to GlobalClass static members
+          try{
+            if (value.statuscode == 200) {
+              refToken = value.data.tokenDetails.token.toString();
+              if (value.message == 'Login Successfully !!') {
+                // Assign values to GlobalClass static members
 
-          GlobalClass.token = 'Bearer ' + refToken;
-          GlobalClass.deviceId = value.data.tokenDetails.deviceSrNo;
-          GlobalClass.id = value.data.tokenDetails.userName;
-          GlobalClass.validity = value.data.tokenDetails.validity;
-          GlobalClass.imei = value.data.tokenDetails.imeino;
-          print('object0');
+                GlobalClass.token = 'Bearer ' + refToken;
+                GlobalClass.deviceId = value.data.tokenDetails.deviceSrNo;
+                GlobalClass.id = value.data.tokenDetails.userName;
+                GlobalClass.validity = value.data.tokenDetails.validity;
+                GlobalClass.imei = value.data.tokenDetails.imeino;
+                print('object0');
 
-          if(value.data.foImei.length>0) {
-            print('object');
-            GlobalClass.target = value.data.foImei[0].targetCommAmt;
-            GlobalClass.creator = value.data.foImei[0].creator ?? '';
-            GlobalClass.mobile=value.data.foImei[0].mobNo;
-            GlobalClass.userName=value.data.foImei[0].name;
-            GlobalClass.designation=value.data.foImei[0].designation;
-            EasyLoading.dismiss();
+                if(value.data.foImei.length>0) {
+                  print('object');
+                  GlobalClass.target = value.data.foImei[0].targetCommAmt;
+                  GlobalClass.creator = value.data.foImei[0].creator ?? '';
+                  GlobalClass.mobile=value.data.foImei[0].mobNo;
+                  GlobalClass.userName=value.data.foImei[0].name;
+                  GlobalClass.designation=value.data.foImei[0].designation;
+                  EasyLoading.dismiss();
 
-          }else{
-            EasyLoading.dismiss();
-            PopupDialog.showPopup(
-                context, value.statuscode.toString(), value.message);
+                }
+                else{
+                  EasyLoading.dismiss();
+                  GlobalClass.showUnsuccessfulAlert(
+                      context, value.statuscode.toString() + ","+ value.message,1);
+                }
+                EasyLoading.dismiss();
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => Fragments()));
+              }
+              else{
+                EasyLoading.dismiss();
+                GlobalClass.showUnsuccessfulAlert(
+                    context, value.statuscode.toString() + ","+ value.message,1);
+              }
+
+            }
+            else {
+              EasyLoading.dismiss();
+              GlobalClass.showUnsuccessfulAlert(
+                  context, value.statuscode.toString() + ","+ value.message,1);
+            }
+
+          }catch(err){
+            GlobalClass.showErrorAlert(context, "SOMETHING WENT WRONG", 1);
+            handleDioError(err);
           }
-          EasyLoading.dismiss();
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => Fragments()));
-        }
-        EasyLoading.dismiss();
-
-      } else {
-        EasyLoading.dismiss();
-        PopupDialog.showPopup(
-            context, value.statuscode.toString(), value.message);
-      }
 
     }).catchError((error){
-      EasyLoading.dismiss();
-      GlobalClass.showErrorAlert(context, error.toString(), 1);
+      if (error is DioException) {
+        if (error.type == DioExceptionType.badResponse) {
+          if (error.response != null && error.response?.data != null) {
+            final data = error.response?.data;
+            if (data is Map<String, dynamic>) {
+              // Access the 'message' key
+              if (data.containsKey('message')) {
+                print('Message: ${data['message']}');
+              } else {
+                print('Message key not found');
+              }
+
+              // Further parsing (if necessary)
+              if (data.containsKey('data')) {
+                final dataField = data['data'];
+                if (dataField is Map<String, dynamic>) {
+                  if (dataField.containsKey('foImei')) {
+                    final foImei = dataField['foImei'];
+                    if (foImei is Map<String, dynamic>) {
+                      if (foImei.containsKey('errormsg')) {
+                        print('Error message from foImei: ${foImei['errormsg']}');
+                      }
+                      if (foImei.containsKey('isValidate')) {
+                        print('Is Validate: ${foImei['isValidate']}');
+                      }
+                    }
+                  }
+                }
+              }
+            } else {
+              print('Response data is not a Map<String, dynamic>');
+            }
+          } else {
+            print('Response or response data is null');
+          }
+        } else {
+          print('DioError type: ${error.type}');
+          print('Error message: ${error.message}');
+        }
+      } else {
+        EasyLoading.dismiss();
+        print('Unexpected error: ${error.toString()}');
+      }
     });
   }
 
