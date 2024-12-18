@@ -46,9 +46,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   late KycScanningModel getData;
   late ApiService apiService_OCR;
   late ApiService apiService;
+  List<ApplicationgetAllDataModel> BorrowerInfo = [];
+  final picker = ImagePicker();
 
   bool _isPageLoading = false;
-  int _currentStep = 0;
+  int _currentStep = 5;
   final _formKey = GlobalKey<FormState>();
   bool _isEditing = false;
   bool personalInfoEditable = true;
@@ -306,6 +308,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? Fi_Id;
   String qrResult = "";
   File? _imageFile;
+  late String _imageFile2;
   File? adhaarFront;
   File? adhaarFront_coborrower;
   File? adhaarBack;
@@ -326,6 +329,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   @override
   void initState() {
     super.initState();
+    _imageFile2 = GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
     FIID = widget.selectedData.id;
     creator = widget.selectedData.creator;
     ficode = widget.selectedData.fiCode.toString();
@@ -602,23 +606,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         left: 0,
                         right: 0,
                         child: Center(
-                          child: _imageFile == null
-                              ? InkWell(
-                                  child: ClipOval(
-                                    child: Container(
-                                      width: 70,
-                                      height: 70,
-                                      color: Colors.grey,
-                                      child: Icon(
-                                        Icons.person,
-                                        size: 50.0,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                          child: InkWell(
+                                  child: CircleAvatar(
+                                    radius: 35,
+                                    backgroundImage: NetworkImage(_imageFile2),
                                   ),
                                   onTap: _pickImage,
                                 )
-                              : InkWell(
+                             /* : InkWell(
                                   child: ClipOval(
                                     child: Image.file(
                                       File(_imageFile!.path),
@@ -628,7 +623,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                     ),
                                   ),
                                   onTap: _pickImage,
-                                ),
+                                ),*/
                         )),
                   ]),
                 ),
@@ -3742,6 +3737,25 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       6)),
             ],
           ),
+          _imageFile == null
+              ? Text('No image selected.')
+              : Image.file(_imageFile!),
+          ElevatedButton(
+            onPressed: getImage,
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero, // Makes the corners square
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Icon(Icons.camera_alt),
+                SizedBox(width: 8), // Optional: Adds space between the icon and text
+                Text('Click Guarantor Pic'),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -3838,7 +3852,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             });
           }else if (_currentStep == 7) {
             setState(() {
-              pageTitle = "Upload DocS";
+              pageTitle = "Upload Docs";
               _currentStep -= 1;
             });
           }
@@ -3916,23 +3930,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
         onPressed: () {
-           if (_currentStep == 0) {
-          setState(() {
-            _currentStep++;
-          });
-          }else
           if (_currentStep == 0) {
-            // setState(() {
-            //   _currentStep=6;
-            // });
-            /*if (personalInfoEditable) {
-              setState(() {
-                _currentStep = 6;
-              });*/
-
-              /*setState(() {
-              _currentStep=6;
-            });*/
               if (personalInfoEditable) {
                 if (_stepOneValidations()) {
                   AddFiExtraDetail(context);
@@ -3940,6 +3938,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Family Details";
                 });
               }
             } else if (_currentStep == 1) {
@@ -3950,6 +3949,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Income & Expense";
+
                 });
               }
             } else if (_currentStep == 2) {
@@ -3960,6 +3961,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Financial Info.";
+
                 });
               }
             } else if (_currentStep == 3) {
@@ -3970,6 +3973,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Family Income";
+
                 });
               }
             } else if (_currentStep == 4) {
@@ -3980,6 +3985,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Guarantor Form";
+
                 });
               }
             } else if (_currentStep == 5) {
@@ -3990,6 +3997,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Upload Docs";
+
                 });
               }
             } else if (_currentStep == 6) {
@@ -3999,6 +4008,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
             }else{
               setState(() {
                 _currentStep++;
+                pageTitle = "Upload Gr Docs";
+
               });
             }
 
@@ -6560,6 +6571,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         .then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
+        BorrowerInfo = value.data;
+        Future.delayed(Duration.zero, () => showIDCardDialog(context,BorrowerInfo[0]));
 
         if (!value.data[0].placeOfBirth.isEmpty) {
           personalInfo(value.data[0]);
@@ -6588,6 +6601,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }).catchError((err) {
       print("ERRORRRR$err");
       EasyLoading.dismiss();
+      GlobalClass.showErrorAlert(context, "Corrupt Case", 2);
+
     });
   }
 
@@ -6777,10 +6792,142 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {});
       }
     }).catchError((err) {
-      print("ERRORRRR$err");
+      GlobalClass.showErrorAlert(context, "Server Side Error", 2);
       EasyLoading.dismiss();
+      Navigator.of(context).pop();
     });
   }
 
+  void showIDCardDialog(BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
+    final String name = [
+      borrowerInfo.fName,
+      borrowerInfo.mName,
+      borrowerInfo.lName
+    ].where((part) => part != null && part.isNotEmpty).join(" ");
+    final String aadhaarNo = borrowerInfo.aadharNo;
+    final String panNo = borrowerInfo.panNo;
+    final String dl = borrowerInfo.dl;
+    final String voterId = borrowerInfo.voterId;
+    final String dob = borrowerInfo.dob;
+    final String loanAmt = borrowerInfo.loanAmount.toString();
+    final String imageUrl = GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
+     // Replace with your image URL
 
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent closing dialog when tapping outside
+      builder: (BuildContext context) {
+        return WillPopScope(
+            onWillPop: () async => false, // Prevent closing dialog with back button
+        child: AlertDialog(
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        ),
+          title: Center(child: Text('Borrower Details',style: TextStyle(
+        fontSize: 16,))),
+          content: SingleChildScrollView(
+            child: Container(
+              width: 300,
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 2), // Border around image
+                      borderRadius: BorderRadius.circular(50), // Circle border
+                    ),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(imageUrl),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  // Name
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 5),
+                  // Adhaar No.
+                  Text(
+                    'UID: $aadhaarNo',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 5),
+                  // PAN, DL, Voter No. (showing all if they exist)
+                  Column(
+                    children: [
+                      if (voterId.isNotEmpty)
+                        Text('Voter: $voterId', style: TextStyle(fontSize: 16)),
+                      if (panNo.isNotEmpty)
+                        Text('Pan: $panNo', style: TextStyle(fontSize: 16)),
+                      if (dl.isNotEmpty)
+                        Text('DL: $dl', style: TextStyle(fontSize: 16)),
+                    ],
+                  ),
+                  SizedBox(height: 5),
+                  // DOB
+                  Text('DOB: ${dob.split('T')[0]}', style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 5),
+                  // Loan Amount
+                  if (loanAmt.isNotEmpty)
+                  Text('Loan Amt: $loanAmt', style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 20),
+                  // Buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          print('Verification Confirmed');
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Verify',style: TextStyle(
+                            color: Colors.white)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          print('Verification Rejected');
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Reject',style: TextStyle(
+                          color: Colors.white)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
+        );
+      },
+    );
+  }
+
+  Future getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _imageFile = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 }
