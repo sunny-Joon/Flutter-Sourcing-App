@@ -2981,7 +2981,7 @@ bool checkIdMendate(){
     }else if ((int.parse(_expenseController.text)<=((int.parse(_incomeController.text))*0.5))) {
       showToast_Error("Expense should be greater than 50 % of Income");
       return false;
-    } else if (selectedMarritalStatus!.toLowerCase() != "unmarried") {
+    } else if (selectedMarritalStatus!.toLowerCase() == "married") {
       if (_spouseFirstNameController.text.isEmpty) {
         showToast_Error("Please enter spouse first name");
         return false;

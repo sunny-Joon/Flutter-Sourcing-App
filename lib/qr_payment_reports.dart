@@ -57,6 +57,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
             return Container(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: 16.0),
               child: Column(
+
                 children: [
                   SizedBox(height: 20),
                   Padding(

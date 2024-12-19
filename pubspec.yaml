@@ -68,7 +68,6 @@ dependencies:
   xml: ^6.2.2
   google_fonts: ^6.2.1
   geocoding: ^3.0.0
-
   flutter_gif: ^0.0.4
   dropdown_search: ^6.0.1
   shared_preferences: ^2.3.3
