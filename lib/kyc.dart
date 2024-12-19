@@ -2427,6 +2427,7 @@ class _KYCPageState extends State<KYCPage> {
               ),
             ],
           ),
+
           voterCardHolderName == null
               ? Text(
                   "Please search voter card holder name for verification",
@@ -2442,6 +2443,7 @@ class _KYCPageState extends State<KYCPage> {
               ),
             ],
           ),
+
           _buildDatePickerField(context, 'Passport Expiry Date',
               _passportExpiryController, "passExp"),
           _buildLabeledDropdownField(
@@ -2790,7 +2792,7 @@ class _KYCPageState extends State<KYCPage> {
         onPressed: () {
           if (_currentStep == 0) {
             if(FiType == "NEW") {
-            if (firstPageFieldVelidate()) {
+            if (firstPageFieldValidate()) {
                 saveFiMethod(context);
               }
             }else{
@@ -2931,11 +2933,13 @@ bool checkIdMendate(){
     }
   }
 
-  bool firstPageFieldVelidate() {
+  bool firstPageFieldValidate() {
     if (_aadharIdController.text.isEmpty) {
       showToast_Error("Please enter correct aadhaar id");
       return false;
-    } else if (selectedTitle == null) {
+    } else if(_errorMessageAadhaar.isNotEmpty){
+      showToast_Error("Please enter valid aadhaar id");
+    }else if (selectedTitle == null) {
       showToast_Error("Please choose title");
       return false;
     } else if (_nameController.text.isEmpty) {
@@ -2955,7 +2959,7 @@ bool checkIdMendate(){
       return false;
     } else if (_mobileNoController.text.isEmpty ||
         _mobileNoController.text.length != 10) {
-      showToast_Error("Please enter mobile correct number");
+      showToast_Error("Please enter correct mobile number");
       return false;
     } else if (_dobController.text.isEmpty) {
       showToast_Error("Please enter date of birth");
@@ -3025,10 +3029,10 @@ bool checkIdMendate(){
       showToast_Error("Please capture borrower profile picture");
       return false;
     }
-    // else if (!otpVerified) {
-    //   showToast_Error("Please Verify Mobile number with OTP!!");
-    //   return false;
-    // }
+    else if (!otpVerified) {
+      showToast_Error("Please Verify Mobile number with OTP!!");
+      return false;
+    }
     return true;
   }
 

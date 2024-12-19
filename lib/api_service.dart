@@ -121,7 +121,7 @@ abstract class ApiService {
   Future<GlobalModel> deleteGurrantor(
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
-      @Header("Fi_Id") String Fi_Id);
+      @Query("Fi_Id") String Fi_Id);
 
   @GET("Collection/CollectionStatus")
   Future<CollectionStatusModel> collectionStatus(
