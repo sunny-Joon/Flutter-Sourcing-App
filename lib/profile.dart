@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/collection_report.dart';
 import 'package:flutter_sourcing_app/qr_payment_reports.dart';
 import 'package:flutter_sourcing_app/utils/current_location.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'api_service.dart';
 import 'global_class.dart';
 import 'login_page.dart';
@@ -26,6 +30,9 @@ class _ProfileState extends State<Profile> {
   Duration _remainingTime = Duration();
   String _timeDisplay = '';
   Timer? _timer;
+  File? _imageFile;
+  String? _imagePath;
+  final picker = ImagePicker();
   bool punchCard = true;
   @override
   void initState() {
@@ -33,7 +40,10 @@ class _ProfileState extends State<Profile> {
     attendanceStatus(context);
     _initializeControllers();
     _startTimer();
+    _loadImage();
   }
+
+
 
   void _initializeControllers() {
     _creatorController.text = GlobalClass.creator;
@@ -106,6 +116,43 @@ class _ProfileState extends State<Profile> {
     _timer?.cancel();
     super.dispose();
   }
+  Future<void> _loadImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? imagePath = prefs.getString('imagePath'); // Fetch the saved image path
+
+    if (imagePath != null && imagePath.isNotEmpty) {
+      setState(() {
+        _imagePath = imagePath; // Save the path to _imagePath
+        _imageFile = File(imagePath); // Convert the path to a File object
+      });
+    } else {
+      print('No image found in SharedPreferences.');
+    }
+  }
+
+
+
+  Future<void> getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile.path);
+      await _cropImage(imageFile);
+    } else {
+      print('No image selected.');
+    }
+  }
+
+  Future<void> _saveImage(File image) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String path = image.path;
+    await prefs.setString('imagePath', path);
+    setState(() {
+      _imageFile = image;
+      _imagePath = path;
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +166,6 @@ class _ProfileState extends State<Profile> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              // Home ListTile with QR Payment Report
               ListTile(
                 onTap: () {
                   Navigator.pop(context); // Close the drawer
@@ -383,15 +429,38 @@ class _ProfileState extends State<Profile> {
       height: 30,
     );
   }
-
   Widget _buildProfilePicture() {
     return Center(
-      child: CircleAvatar(
-        radius: 50.0,
-        backgroundImage: AssetImage('assets/Images/user_ic.png'),
+      child: GestureDetector(
+        onTap: getImage, // Trigger image selection
+        child: CircleAvatar(
+          radius: 60,
+          backgroundColor: Colors.grey[200],
+          child: _imageFile == null
+              ? ClipOval(
+            child: Image.asset(
+              'assets/Images/user_ic.png', // Default image if no image exists
+              width: 120, // Image width
+              height: 120, // Image height
+              fit: BoxFit.cover,
+            ),
+          )
+              : ClipOval(
+            child: Image.file(
+              _imageFile!, // Use _imageFile, which is a File object
+              width: 120,
+              height: 120,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
       ),
     );
   }
+
+
+
+
 
   Widget _buildUserDetailsCard() {
     return Card(
@@ -687,5 +756,37 @@ class _ProfileState extends State<Profile> {
       EasyLoading.dismiss();
       GlobalClass.showUnsuccessfulAlert(context, error.toString(), 1);
     });
+  }
+  Future<void> _cropImage(File imageFile) async {
+    if (imageFile != null) {
+      CroppedFile? cropped = await ImageCropper().cropImage(
+        sourcePath: imageFile.path,
+        compressQuality: 100,
+        maxHeight: 700,
+        maxWidth: 700,
+        compressFormat: ImageCompressFormat.jpg,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarColor: Color(0xFFD42D3F),
+            toolbarTitle: 'Crop',
+            toolbarWidgetColor: Colors.white,
+            cropGridColor: Colors.black,
+            backgroundColor: Color(0xFFD42D3F),
+            cropFrameColor: Color(0xFFD42D3F),
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false,
+          ),
+          IOSUiSettings(title: 'Crop')
+        ],
+      );
+
+      if (cropped != null) {
+        setState(() {
+          _imageFile = File(cropped.path);
+        });
+
+        await _saveImage(_imageFile!);
+      }
+    }
   }
 }
