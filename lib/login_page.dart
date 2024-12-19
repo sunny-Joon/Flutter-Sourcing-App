@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
     String deviceId = '';
 
     // Check and request permissions
-    _checkAndRequestPermissions(context);
+   // _checkAndRequestPermissions(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -377,7 +377,6 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> _checkPermissions() async {
     final permissions = [
       Permission.camera,
-      Permission.microphone,
       Permission.location,
       Permission.storage,
       Permission.phone,

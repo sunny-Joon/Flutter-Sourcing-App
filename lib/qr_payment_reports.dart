@@ -152,80 +152,45 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                     ),
                   ),
 
-                  SizedBox(height: 16.0),
 
-                  // Responsive Table
-                  Expanded(
-                    child: _qrPaymentsList.isEmpty
-                        ? Center(child: Text('No data available'))
-                        : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        width: screenWidth,
-                        child: SingleChildScrollView(
-                          child: Table(
-                            border: TableBorder.all(color: Colors.black, width: 1),
-                            columnWidths: {
-                              0: FlexColumnWidth(1),
-                              1: FlexColumnWidth(3),
-                              2: FlexColumnWidth(2),
-                              3: FlexColumnWidth(3),
-                            },
-                            children: [
-                              TableRow(
-                                decoration: BoxDecoration(color: Colors.grey.shade300),
-                                children: [
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'S.No',
-                                        style: TextStyle(
-                                          fontFamily: "Poppins-Regular",
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Transaction ID',
-                                        style: TextStyle(
-                                          fontFamily: "Poppins-Regular",
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Amount',
-                                        style: TextStyle(
-                                          fontFamily: "Poppins-Regular",
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all( 8.0),
-                                      child: Text(
-                                        'Date',
-                                        style: TextStyle(
-                                          fontFamily: "Poppins-Regular",
-                                          fontWeight: FontWeight.bold,
+            Card(
+              color: Colors.white,
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(5), // Padding inside the Card
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start, // Align the column items to the left
+                      children: [
 
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                        Container(
+
+                          width: MediaQuery.of(context).size.width-30, // Control the width of the TextField
+                          child: TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              hintText: 'Enter Case code',
+                              filled: true, // Set the background color of the TextField
+                              fillColor: Colors.white, // Set the background color to white
+                              contentPadding: EdgeInsets.all(10), // Padding inside the TextField
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(3), // Rounded corners
+                                borderSide: BorderSide.none, // No border outline
+                              ),
+                              suffixIcon: IconButton( // Place the search icon at the end (right side)
+                                icon: Icon(Icons.search),
+                                onPressed: () {
+                                  RegExp regex = RegExp(r'^[A-Za-z]{4}\d{6}$');
+                                 if(_searchController.text.isNotEmpty && regex.hasMatch(_searchController.text)) {
+                                     _qrPayments(_searchController.text); // Call your API function here
+                                  } else {
+                                   GlobalClass.showErrorAlert(context, "Please Enter Correct Case code",1);
+                                  }
+                                },
                               ),
                               for (int i = 0; i < _qrPaymentsList.length; i++)
                                 TableRow(

@@ -47,7 +47,7 @@ class _FirstEsignState extends State<FirstEsign> {
   void initState() {
     super.initState();
     fetchFirstESignPDF(widget.selectedData);
-    print("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}.pdf");
+    print("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}");
   }
 
   Future<void> _loadPdf(String url) async {
@@ -320,6 +320,7 @@ class _DialogContentState extends State<DialogContent> {
   @override
   Widget build(BuildContext context) {
     return Container(
+
       margin: const EdgeInsets.all(16), // Add 6 pixels margin around the dialog
       decoration: BoxDecoration(
         color: Colors.transparent, // Background color
@@ -330,6 +331,7 @@ class _DialogContentState extends State<DialogContent> {
         elevation: 10,
         clipBehavior: Clip.antiAlias,
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: Padding(
             padding: const EdgeInsets.all(16.0), // Inner padding for content
             child: Column(
@@ -349,7 +351,7 @@ class _DialogContentState extends State<DialogContent> {
                 SizedBox(height: 5),
                 Text(
                   "Please Read Below Consent before Proceed",
-                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 12, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5),
                 Expanded(
@@ -509,7 +511,7 @@ class _DialogContentState extends State<DialogContent> {
     }
   }
   void parseResponse(XmlResponse xmlResponse) {
-    final Content content = xmlResponse.content;
+    final Content content = xmlResponse.responseMessage.content;
 
     // Access the headers inside content
     for (var header in content.headers) {
@@ -520,13 +522,13 @@ class _DialogContentState extends State<DialogContent> {
     EasyLoading.show(status: "Data sending to server...");
     try{
       _apiServiceForESign.sendXMLtoServer(result).then((value){
-        if(value.statusCode==200){
+        if(value.responseMessage.statusCode==200){
           LiveTrackRepository().saveLivetrackData( "",   "ESign",widget.selectedBorrower.id);
           GlobalClass.showSuccessAlert(context,"ESign Has been done",3);
           //Navigator.of(context).pop();
         }else{
           parseResponse(value);
-          GlobalClass.showUnsuccessfulAlert(context,"ESign Has not been done",1);
+          GlobalClass.showUnsuccessfulAlert(context,value.validationMessage ,1);
 
         }
       }).catchError((onError){
@@ -617,7 +619,7 @@ EasyLoading.dismiss();
   Widget consentText() {
     return RichText(
       text: TextSpan(
-        style: TextStyle(fontSize: 16, color: Colors.black),
+        style: TextStyle(fontSize: 10, color: Colors.black),
         children: [
           TextSpan(
             text: 'I hereby authorize NSDL e-Gov on behalf of Paisalo Digital Limited to:\n\n',
