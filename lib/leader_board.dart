@@ -112,9 +112,17 @@ class _LeaderBoardState extends State<LeaderBoard> {
         children: [
           // GIF background
           Positioned.fill(
-            child: Image.asset(
-              imgList[0],  // Use the first image in the list (GIF)
-              fit: BoxFit.cover,  // Make sure it covers the entire screen
+            child: Align(
+              alignment: Alignment.topCenter,  // Center the GIF in the background
+              child: SizedBox(
+                // width: MediaQuery.of(context).size.width * 50,  // Adjust width (e.g., 70% of screen width)
+                // height: MediaQuery.of(context).size.height * 50, // Adjust height (e.g., 70% of screen height)
+                child: Image.asset(
+                  imgList[0],  // Use the first image in the list (GIF)
+                  fit: BoxFit.contain,  // Maintain aspect ratio
+                  gaplessPlayback: true,  // Ensure continuous animation without glitches
+                ),
+              ),
             ),
           ),
           // The rest of the content

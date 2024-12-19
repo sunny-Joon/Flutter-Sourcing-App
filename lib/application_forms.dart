@@ -46,6 +46,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   late KycScanningModel getData;
   late ApiService apiService_OCR;
   late ApiService apiService;
+  late ApiService apiService_protean;
 
   bool _isPageLoading = false;
   int _currentStep = 0;
@@ -106,6 +107,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
   List<PlaceData> listSubDistrictCodes = [];
   List<PlaceData> listVillagesCodes = [];
 
+  bool isPanVerified = false,
+      isDrivingLicenseVerified = false,
+      isVoterIdVerified = false,
+      isPassportVerified = false;
+
+  bool panVerified = false;
+  bool dlVerified = false;
+  bool voterVerified = false;
+
+  String panCardHolderName =
+      "Please search PAN card holder name for verification";
+
+  String? dlCardHolderName;
+  String? voterCardHolderName;
   //fiextra
   List<String> onetonine = [
     'Select',
@@ -125,6 +140,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Color iconPan = Color(0xFFD42D3F);
   Color iconDl = Color(0xFFD42D3F);
   Color iconVoter = Color(0xFFD42D3F);
+  Color iconPassport = Colors.red;
 
 //FIEXTRA
   String? selectedDependent;
@@ -326,6 +342,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   @override
   void initState() {
     super.initState();
+    apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
     FIID = widget.selectedData.id;
     creator = widget.selectedData.creator;
     ficode = widget.selectedData.fiCode.toString();
@@ -1004,9 +1021,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     focusNode: _mobileFocusNode,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
+                      hintMaxLines: 10,
                       errorText: _mobileError,
                     ),
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly, // Only digits allowed
+                      LengthLimitingTextInputFormatter(10),   // Maximum length of 10
+                    ],
                   ),
                 )),
             SizedBox(height: 10),
@@ -1313,6 +1335,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             errorText: _pinErrorP,
                           ),
                           keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly, // Only digits allowed
+                            LengthLimitingTextInputFormatter(6),   // Maximum length of 10
+                          ],
                         ),
                       ),
                     ],
@@ -3574,22 +3600,23 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                       "pancard", "", "");
                                 },
                                 child: Container(
-                                  padding: EdgeInsets.all(10),
+                                  padding: EdgeInsets.all(3),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color:
-                                    iconPan, // Use the state variable for color
+                                    color: panVerified ? Colors.green : Colors.grey,
                                   ),
                                   child: Icon(
-                                    iconPan == Colors.green
-                                        ? Icons.check_circle
-                                        : Icons.check_circle_outline,
+                                    Icons.check_circle,
                                     color: Colors.white,
                                   ),
                                 ),
                               )),
                         ],
                       ),
+                      Text(panCardHolderName,
+                          style: TextStyle(fontFamily: "Poppins-Regular",
+                              color: !panVerified ? Colors.grey.shade400 : Colors.green,
+                              fontSize: !panVerified ? 11 : 14)),
                       Row(
                         children: [
                           Flexible(
@@ -3621,6 +3648,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               )),
                         ],
                       ),
+
+                      dlCardHolderName == null
+                          ? Text(
+                        "Please search driving license holder name for verification",
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.grey.shade400, fontSize: 11),
+                      )
+                          : Text(dlCardHolderName!,
+                          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.green, fontSize: 14)),
+
+
                       SizedBox(height: 4),
                       Text(
                         'OR',
@@ -3661,7 +3698,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                 ),
                               )),
                         ],
+                      ),
+
+                      voterCardHolderName == null
+                          ? Text(
+                        "Please search voter card holder name for verification",
+                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.grey.shade400, fontSize: 11),
                       )
+                          : Text(voterCardHolderName!,
+                          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.green, fontSize: 14)),
+
                     ],
                   ),
                 )),
@@ -4005,6 +4051,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
           } else if (_currentStep == 7) {
             FiDocsUploadsApi(context, "1");
           }
+
+          setState(() {
+            _currentStep = 5; // Skip directly to step 6
+          });
         },
         child: Text(
           _currentStep == 7 ? "SUBMIT" : "NEXT",
@@ -5985,11 +6035,21 @@ class _ApplicationPageState extends State<ApplicationPage> {
     return await api.verifyDocs(requestBody).then((value) {
       if (value.statusCode == 200) {
         setState(() {
-          bankAccHolder = value.data.fullName.toString();
+          if (type == "passport") {
+            setState() {
+              iconPassport = Colors.green;
+            }
+          }
+          if (type == "pancard") {
+            iconPan = Colors.green;
+          }
+          if (type == "drivinglicense") {
+            iconPassport = Colors.green;
+          }
+          if (type == "voterid") {
+            iconPassport = Colors.green;
+          }
         });
-        EasyLoading.dismiss();
-      } else {
-        EasyLoading.dismiss();
       }
     });
   }
@@ -6016,6 +6076,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       // Handle response
       if (response is Map<String, dynamic>) {
         Map<String, dynamic> responseData = response["data"];
+        print("responce is mapped");
         // Parse JSON object if it’s a map
         if (type == "bankaccount") {
           setState(() {
@@ -6025,17 +6086,176 @@ class _ApplicationPageState extends State<ApplicationPage> {
               bankAccHolder = "Account no. is Not Verified!!";
             }
           });
-        } else {}
+        }
+        else if (type == "pancard") {
+          setState(() {
+            if (response["error"] == null) {
+              panCardHolderName =
+              "${responseData['first_name']} ${responseData['last_name']}";
+              panVerified = true;
+            }else{
+              panCardHolderName = "PAN no. is wrong please check";
+              panVerified = false;
+            }
+          });
+
+        }
+        else if (type == "drivinglicense") {
+          setState(() {
+            dlCardHolderName = "${responseData['name']}";
+            dlVerified = true;
+          });
+        } else if (type == "voterid") {
+          setState(() {
+            voterCardHolderName = "${responseData['name']}";
+            voterVerified = true;
+
+          });
+
+        }
+        showToast_Error("Unexpected Response: $response");
+        print("Unexpected Response: $response");
+        EasyLoading.dismiss();
+      }else {
+        if (type == "pancard") {
+          setState(() {
+            panCardHolderName = "PAN no is not verified";
+            panVerified = false;
+          });
+        } else if (type == "drivinglicense") {
+          setState(() {
+            dlCardHolderName = "Driving License is not verified";
+            dlVerified = false;
+          });
+        } else if (type == "voterid") {
+          setState(() {
+            voterCardHolderName = "Voter no. is not verified";
+            voterVerified = false;
+          });
+        }
         showToast_Error("Unexpected Response: $response");
         print("Unexpected Response: $response");
         EasyLoading.dismiss();
       }
       EasyLoading.dismiss();
     } catch (e) {
+      print(e);
       showToast_Error("An error occurred: $e");
 
+      if (type == "pancard") {
+        setState(() {
+          panCardHolderName = "PAN no is not verified";
+          panVerified = false;
+        });
+      } else if (type == "drivinglicense") {
+        setState(() {
+          dlCardHolderName = "Driving License is not verified";
+          dlVerified = false;
+        });
+      } else if (type == "voterid") {
+        setState(() {
+          voterCardHolderName = "Voter no. is not verified";
+          voterVerified = false;
+        });
+      }
       EasyLoading.dismiss();
     }
+  }
+
+  void dlVerifyByProtean(String userid, String dlNo, String dob) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
+    try {
+      // Initialize Dio
+
+      // Create ApiService instance
+
+      // API body
+      Map<String, dynamic> requestBody = {
+        "userID": userid,
+        "dlno": dlNo,
+        "dob": dob
+      };
+
+      // Hit the API
+
+      final response =
+      await apiService_protean.getDLDetailsProtean(requestBody);
+
+      EasyLoading.show(
+        status: 'Loading...',
+      );
+
+      // Handle response
+      if (response is Map<String, dynamic>) {
+        Map<String, dynamic> responseData = response["data"];
+        // Parse JSON object if it’s a map
+        setState(() {
+          if (responseData['result']['name'] != null) {
+            dlCardHolderName = "${responseData['result']['name']}";
+            dlVerified = true;
+          } else {
+            docVerifyIDC("drivinglicense", _dlController.text, "",
+                _dobController.text);
+          }
+        });
+      } else {
+        docVerifyIDC("drivinglicense", _dlController.text, "",
+            _dobController.text);
+      }
+    } catch (e) {
+      // Handle errors
+      docVerifyIDC("drivinglicense", _dlController.text, "",
+          _dobController.text);
+    }
+    EasyLoading.dismiss();
+  }
+
+  void voterVerifyByProtean(String userid, String voterNo) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
+    try {
+      // Initialize Dio
+
+      // Create ApiService instance
+
+      // API body
+      Map<String, dynamic> requestBody = {
+        "userID": userid,
+        "voterno": voterNo,
+      };
+
+      // Hit the API
+      final response =
+      await apiService_protean.getVoteretailsProtean(requestBody);
+
+      // Handle response
+      if (response is Map<String, dynamic>) {
+        Map<String, dynamic> responseData = response["data"];
+        // Parse JSON object if it’s a map
+        setState(() {
+          if (responseData['result'].responseData['name'] != null) {
+            voterCardHolderName =
+            "${responseData['result'].responseData['name']}";
+            voterVerified = true;
+          } else {
+            docVerifyIDC("voterid", _voterController.text, "", "");
+          }
+        });
+      } else {
+        docVerifyIDC("voterid", _voterController.text, "", "");
+      }
+    } catch (e) {
+      // Handle errors
+      docVerifyIDC("voterid", _voterController.text, "", "");
+    }
+    EasyLoading.show(
+      status: 'Loading...',
+    );
   }
 
   Future<void> ifscVerify(BuildContext context, String ifsc) async {
@@ -6729,12 +6949,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void guarrantors(ApplicationgetAllDataModel data) {
     setState(() {
       GuarantorEditable = false;
-      //  selectedTitle = data.guarantors[0].grTitle;
+        selectedTitle = data.guarantors[0].grTitle;
       _fnameController.text = data.guarantors[0].grFname;
       _mnameController.text = data.guarantors[0].grMname;
       _lnameController.text = data.guarantors[0].grLname;
       _guardianController.text = data.guarantors[0].grGuardianName;
-      // relationselected = data.guarantors[0].grRelationWithBorrower;
+       relationselected = data.guarantors[0].grRelationWithBorrower;
       _p_Address1Controller.text = data.guarantors[0].grPAddress1;
       _p_Address2Controller.text = data.guarantors[0].grPAddress2;
       _p_Address3Controller.text = data.guarantors[0].grPAddress3;
@@ -6743,7 +6963,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       item.descriptionEn.toLowerCase() ==
           data.guarantors[0].grPState.toLowerCase());
       genderselected = data.guarantors[0].grGender;
-      //  religionselected = data.guarantors[0].grReligion;
+        religionselected = data.guarantors[0].grReligion;
 
       _pincodeController.text = data.guarantors[0].grPincode.toString();
       _dobController.text = data.guarantors[0].grDob.toString();
