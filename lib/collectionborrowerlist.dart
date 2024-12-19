@@ -84,17 +84,12 @@ import 'global_class.dart';
        context: context,
        builder: (BuildContext context) {
          return AlertDialog(
-           title: Text(
-             'Choose an option',
-             style: TextStyle(
-                 color: Color(0xFFD42D3F), fontWeight: FontWeight.bold),
-           ),
            backgroundColor: Colors.white, // Red background
            content: Column(
              mainAxisSize: MainAxisSize.min,
              children: [
                _buildShinyButton(
-                 'Payee',
+                 'EMI Paying',
                      () {
                    Navigator.pop(context);
                    Navigator.push(
@@ -105,9 +100,15 @@ import 'global_class.dart';
                    );
                  },
                ),
-               SizedBox(height: 10),
+               SizedBox(height: 5),
+               Text(
+                 'OR',
+                 style: TextStyle(
+                     color: Color(0xFFD42D3F), fontWeight: FontWeight.bold),
+               ),
+               SizedBox(height: 5),
                _buildShinyButton(
-                 'Not Payee',
+                 'EMI Not Paying',
                      () {
                    _showNotPayeeDialog(context);
                  },

@@ -3930,6 +3930,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
         onPressed: () {
+
           if (_currentStep == 0) {
               if (personalInfoEditable) {
                 if (_stepOneValidations()) {
@@ -3950,7 +3951,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 setState(() {
                   _currentStep++;
                   pageTitle = "Income & Expense";
-
                 });
               }
             } else if (_currentStep == 2) {
@@ -3986,7 +3986,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 setState(() {
                   _currentStep++;
                   pageTitle = "Guarantor Form";
-
                 });
               }
             } else if (_currentStep == 5) {
@@ -3998,7 +3997,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 setState(() {
                   _currentStep++;
                   pageTitle = "Upload Docs";
-
                 });
               }
             } else if (_currentStep == 6) {
@@ -4009,7 +4007,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 _currentStep++;
                 pageTitle = "Upload Gr Docs";
-
               });
             }
 

@@ -125,10 +125,10 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                                 icon: Icon(Icons.search),
                                 onPressed: () {
                                   RegExp regex = RegExp(r'^[A-Za-z]{4}\d{6}$');
-                                 if(_searchController.text.isNotEmpty && regex.hasMatch(_searchController.text)) {
-                                     _qrPayments(_searchController.text); // Call your API function here
+                                  if(_searchController.text.isNotEmpty && regex.hasMatch(_searchController.text)) {
+                                    _qrPayments(_searchController.text); // Call your API function here
                                   } else {
-                                   GlobalClass.showErrorAlert(context, "Please Enter Correct Case code",1);
+                                    GlobalClass.showErrorAlert(context, "Please Enter Correct Case code",1);
                                   }
                                 },
                               ),
