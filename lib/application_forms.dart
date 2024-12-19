@@ -3589,11 +3589,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               padding: EdgeInsets.all(3),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: dlVerified ? Colors.green : Colors.grey,
+                                color: panVerified ? Colors.white : Colors.grey,
                               ),
                               child: Icon(
                                 Icons.check_circle,
-                                color: Colors.white,
+                                color: panVerified ? Colors.green : Colors.white,
                               ),
                             ),
                           )),
@@ -5823,17 +5823,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statusCode == 200) {
         setState(() {
           bankAccHolder = value.data.fullName.toString();
-          if (type == "passport") {
-            iconPassport = Colors.green;
-          }
+          /*if (type == "passport") {
+            panVerified = true;
+          }*/
           if (type == "pancard") {
-            iconPan = Colors.green;
+            panVerified = true;
+         //   panCardHolderName = value.
           }
           if (type == "drivinglicense") {
-            iconDl = Colors.green;
+            dlVerified = true;
           }
           if (type == "voterid") {
-            iconVoter = Colors.green;
+            voterVerified = true;
           }
         });
         EasyLoading.dismiss();
