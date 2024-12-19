@@ -52,6 +52,7 @@ class BorrowerListDataModel {
   bool isvalid;
   String eSignDoc;
   String profilePic;
+  String homeVisit;
 
   BorrowerListDataModel({
     required this.id,
@@ -73,6 +74,7 @@ class BorrowerListDataModel {
     required this.isvalid,
     required this.eSignDoc,
     required this.profilePic,
+    required this.homeVisit,
   });
 
   factory BorrowerListDataModel.fromJson(Map<String, dynamic> json) => BorrowerListDataModel(
@@ -95,6 +97,7 @@ class BorrowerListDataModel {
     isvalid: json["isvalid"]??"",
     eSignDoc: json["eSignDoc"]??"",
     profilePic: json["profilePic"]??"",
+    homeVisit: json["homeVisit"]??"No",
   );
 
   Map<String, dynamic> toJson() => {

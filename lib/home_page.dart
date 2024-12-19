@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       backgroundColor: Color(0xFFD42D3F),
       body: SingleChildScrollView(
         child: Column(
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
               margin: EdgeInsets.symmetric(
                   horizontal: 15.0), // 15dp margin on left and right
               padding:
-                  EdgeInsets.only(left: 30.0, right: 30, top: 30, bottom: 50),
+              EdgeInsets.only(left: 30.0, right: 30, top: 30, bottom: 50),
               decoration: BoxDecoration(
                 color: Color(0xFFD42D3F),
                 borderRadius: BorderRadius.circular(18),
@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
-                          Color(0xFFD42D3F), // Button background color
+                      Color(0xFFD42D3F), // Button background color
                       padding: EdgeInsets.symmetric(
                           horizontal: 30, vertical: 10), // Button padding
                       shape: RoundedRectangleBorder(
@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                           padding: const EdgeInsets.all(10.0),
                           child: Column(
                             mainAxisAlignment:
-                                MainAxisAlignment.center, // Center vertically
+                            MainAxisAlignment.center, // Center vertically
                             children: [
                               Text(
                                 'Current Earning',
@@ -210,7 +210,7 @@ class _HomePageState extends State<HomePage> {
                                   readOnly: true, // Make it read-only
                                   decoration: InputDecoration(
                                     border:
-                                        InputBorder.none, // Remove underline
+                                    InputBorder.none, // Remove underline
                                   ),
                                 ),
                               ),
@@ -284,6 +284,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
 
   Future<int?> _showAlertDialog(BuildContext context) async {
     _currentSliderValue = 2500; // Reset slider value to initial value

@@ -112,8 +112,8 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       backgroundColor: const Color(0xFFD42D3F),
       endDrawer: Container(
-        width: 120,
-        height: MediaQuery.of(context).size.height/1.5, // Set the width of the drawer
+        width:110,
+        height: MediaQuery.of(context).size.height/3, // Set the width of the drawer
         child: Drawer(
           backgroundColor: Colors.white,
           child: ListView(
@@ -159,7 +159,8 @@ class _ProfileState extends State<Profile> {
               ListTile(
                 onTap: () {
                   Navigator.pop(context); // Close the drawer
-                  showCustomAlertDialog(context);
+                  MorphoRechargeDialog.show(context);
+
                 },
                 title: Column(
                   children: const [
@@ -199,7 +200,7 @@ class _ProfileState extends State<Profile> {
               ),
               // Header with logo and logout buttons
               Positioned(
-                top: 35,
+                top: 50,
                 left: 10,
                 right: 10,
                 child: Padding(
@@ -250,12 +251,15 @@ class _ProfileState extends State<Profile> {
 
 
                               return _buildGridItem('Morpho Recharge', Icons.find_in_page_sharp, () {
-                                showCustomAlertDialog(context);
+                          MorphoRechargeDialog.show(context);;
                               });
                             } else if (index == 2) {
-                              return _buildGridItem('Other Reports', Icons.currency_rupee, () {
+                              return _buildGridItem('Collection Reports', Icons.currency_rupee, () {
 
-                                Scaffold.of(context).openEndDrawer();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => CollectionStatus()),
+                                );
 
                               });
                             }
@@ -524,130 +528,9 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  void showCustomAlertDialog(BuildContext context) {
-    final TextEditingController deviceSirNoController =
-        TextEditingController(text: '2306I0052');
 
-    showDialog(
-      context: context,
-      barrierDismissible:
-          false, // Prevent closing the dialog by clicking outside
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Recharge'),
-              IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Morpho Device Sir No",
-                  style: TextStyle(
-                    fontFamily: "Poppins-Regular",
-                    fontSize: 13,
-                  ),
-                  textAlign: TextAlign.start,
-                ),
-                SizedBox(height: 1),
-                Container(
-                  width: double.infinity, // Set the desired width
-                  child: Center(
-                    child: TextFormField(
-                      maxLength: 11,
-                      controller: deviceSirNoController,
-                      keyboardType: TextInputType.text,
-                      // Set the input type
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        counterText: "",
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter Device Sir No';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () async {
-                try {
-                  Map<String, dynamic> locationData =
-                      await currentLocation().getCurrentLocation();
-                  var _latitude = 0.0;
-                  var _longitude = 0.0;
-                  _latitude = locationData['latitude'];
-                  _longitude = locationData['longitude'];
-                  MorphoRechargeApi(context, _latitude, _longitude);
-                } catch (e) {
-                  print("Error getting current location: $e");
-                }
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red, // Background color
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0), // Rounded corners
-                ),
-                minimumSize: Size(100, 50), // Width and height of the button
-              ),
-              child: Text('Submit',
-                  style: TextStyle(color: Colors.white)), // Text color
-            ),
-          ],
-        );
-      },
-    );
-  }
 
-  Future<void> MorphoRechargeApi(
-      BuildContext context, double latitude, double longitude) async {
-    EasyLoading.show(
-      status: 'Loading...',
-    );
 
-    final api = Provider.of<ApiService>(context, listen: false);
-    Map<String, dynamic> requestBody = {
-      "creator": "AGRA",
-      "groupCode": "009",
-      "cityCode": "2299",
-      "deviceSirNo": deviceSirNoController.text,
-      "Lat": latitude.toString(),
-      "Long": longitude.toString()
-    };
-
-    await api
-        .morphorecharge(GlobalClass.dbName, GlobalClass.token, requestBody)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        EasyLoading.dismiss();
-      } else {
-        EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(
-            context, "Unsuccessful to send Request", 1);
-      }
-    }).catchError((error) {
-      EasyLoading.dismiss();
-      GlobalClass.showUnsuccessfulAlert(context, "Server side Error", 1);
-    });
-  }
 
 
   Future<void> attendanceStatus(BuildContext context) async {
@@ -687,5 +570,152 @@ class _ProfileState extends State<Profile> {
       EasyLoading.dismiss();
       GlobalClass.showUnsuccessfulAlert(context, error.toString(), 1);
     });
+  }
+}
+
+
+
+
+class MorphoRechargeDialog extends StatefulWidget {
+  @override
+  _MorphoRechargeDialogState createState() => _MorphoRechargeDialogState();
+
+  // Static method to open the dialog
+  static void show(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return MorphoRechargeDialog();
+      },
+    );
+  }
+}
+
+class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
+  final TextEditingController _deviceSirNoController =
+  TextEditingController();
+
+  @override
+  void dispose() {
+    _deviceSirNoController.dispose(); // Clean up the controller
+    super.dispose();
+  }
+
+  // API call function
+  Future<void> _MorphoRechargeApi(
+      BuildContext context, double latitude, double longitude) async {
+    EasyLoading.show(status: 'Loading...');
+
+    final api = Provider.of<ApiService>(context, listen: false);
+    Map<String, dynamic> requestBody = {
+      "creator": "AGRA",
+      "groupCode": "009",
+      "cityCode": "2299",
+      "deviceSirNo": _deviceSirNoController.text,
+      "Lat": latitude.toString(),
+      "Long": longitude.toString()
+    };
+
+    await api
+        .morphorecharge(GlobalClass.dbName, GlobalClass.token, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        GlobalClass.showSuccessAlert(
+            context, value.message, 2);
+      } else {
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(
+            context, "Unsuccessful to send Request", 1);
+      }
+    }).catchError((error) {
+      EasyLoading.dismiss();
+      GlobalClass.showUnsuccessfulAlert(context, "Server side Error", 1);
+    });
+  }
+
+  // Function to handle the "Submit" button
+  void _onSubmit() async {
+    if(_deviceSirNoController.text.isEmpty){
+      GlobalClass.showErrorAlert(context, "Please Enter Correct S/N of morpho device", 1);
+    }else{
+      try {
+        Map<String, dynamic> locationData =
+        await currentLocation().getCurrentLocation();
+        var _latitude = locationData['latitude'] ?? 0.0;
+        var _longitude = locationData['longitude'] ?? 0.0;
+
+        await _MorphoRechargeApi(context, _latitude, _longitude);
+
+      } catch (e) {
+        print("Error getting current location: $e");
+      }
+    }
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+      backgroundColor: Colors.white,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('Morpho Recharge',style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold),),
+          IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+
+            Container(
+              width: double.infinity,
+              child: TextFormField(
+                maxLength: 11,
+                controller: _deviceSirNoController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  hintText: "Enter Morpho S/N",
+                  border: OutlineInputBorder(),
+                  counterText: "",
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter Device S/N';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        ElevatedButton(
+          onPressed: _onSubmit,
+          style: ElevatedButton.styleFrom(
+            backgroundColor:  Color(0xFFD42D3F),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            minimumSize: Size(80, 40),
+          ),
+          child: Text(
+            'Submit',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -40,6 +40,7 @@ void requestPermissions() async {
   // Request permissions
   Map<Permission, PermissionStatus> statuses = await [
     Permission.camera,
+    Permission.microphone,
     Permission.phone,
     Permission.location,
     Permission.notification, // Note: Permission.internet is not needed, as it's automatically granted.

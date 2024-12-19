@@ -69,7 +69,7 @@ dependencies:
   google_fonts: ^6.2.1
   geocoding: ^3.0.0
   flutter_gif: ^0.0.4
-
+  back_button_interceptor: ^8.0.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2

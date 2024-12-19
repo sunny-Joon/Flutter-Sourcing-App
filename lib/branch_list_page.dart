@@ -47,7 +47,7 @@ class _BranchListPageState extends State<BranchListPage> {
           print('Branch List retrieved successfully');
         } else {
           GlobalClass.showUnsuccessfulAlert(
-              context, "Not abl;e to fetch Group List", 1);
+              context, "Not able to fetch Group List", 1);
           setState(() {
             EasyLoading.dismiss();
           });

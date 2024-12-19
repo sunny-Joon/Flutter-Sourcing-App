@@ -3919,6 +3919,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
            if (_currentStep == 0) {
           setState(() {
             _currentStep++;
+
           });
           }else
           if (_currentStep == 0) {
@@ -3940,6 +3941,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Family Details";
                 });
               }
             } else if (_currentStep == 1) {
@@ -3950,6 +3952,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Income & Expense";
                 });
               }
             } else if (_currentStep == 2) {
@@ -3960,6 +3963,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Financial Info.";
                 });
               }
             } else if (_currentStep == 3) {
@@ -3970,6 +3974,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Family Income";
                 });
               }
             } else if (_currentStep == 4) {
@@ -3980,6 +3985,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Guarantor Form";
                 });
               }
             } else if (_currentStep == 5) {
@@ -3990,6 +3996,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               } else {
                 setState(() {
                   _currentStep++;
+                  pageTitle = "Upload Docs";
                 });
               }
             } else if (_currentStep == 6) {
@@ -3999,6 +4006,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             }else{
               setState(() {
                 _currentStep++;
+                pageTitle = "Upload Docs";
               });
             }
 

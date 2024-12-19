@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/collectionstatus_model.dart';
 import 'package:provider/provider.dart';
@@ -65,18 +66,14 @@ class _CollectionStatusState extends State<CollectionStatus> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFD42D3F),
+
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFD42D3F), Color(0xFFD42D3F).withOpacity(0.8)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        padding: const EdgeInsets.all(8.0),
+
+        padding: const EdgeInsets.all(0.0),
         child: Column(
           children: [
-            SizedBox(height: 25),
+            SizedBox(height:50),
             Padding(
               padding: EdgeInsets.all(8),
               child: Row(
@@ -116,80 +113,112 @@ class _CollectionStatusState extends State<CollectionStatus> {
                 ],
               ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search by Case Code',
-                      border: OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.8),
+            Card(
+              color: Colors.white,
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(5), // Padding inside the Card
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start, // Align the column items to the left
+                      children: [
+
+                        Container(
+
+                          width: MediaQuery.of(context).size.width-35, // Control the width of the TextField
+                          child: TextField(
+                            maxLength: 10,
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              counterText: "",
+                              hintText: 'Enter Case code',
+                              filled: true, // Set the background color of the TextField
+                              fillColor: Colors.white, // Set the background color to white
+                              contentPadding: EdgeInsets.all(10), // Padding inside the TextField
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(3), // Rounded corners
+                                borderSide: BorderSide.none, // No border outline
+                              ),
+                              suffixIcon: IconButton( // Place the search icon at the end (right side)
+                                icon: Icon(Icons.search),
+                                  onPressed: () {
+                                    RegExp regex = RegExp(r'^[A-Za-z]{4}\d{6}$');
+                                    if(_searchController.text.isNotEmpty && regex.hasMatch(_searchController.text)) {
+                                      collectionStatus(context,_searchController.text); // Call your API function here
+                                    } else {
+                                      GlobalClass.showErrorAlert(context, "Please Enter Correct Case code",1);
+                                    }
+                                  }
+
+                              ),
+                            ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp(
+                                    '[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                                TextInputFormatter.withFunction(
+                                      (oldValue, newValue) => TextEditingValue(
+                                    text: newValue.text.toUpperCase(),
+                                    selection: newValue.selection,
+                                  ),
+                                ),
+                              ]
+                          ),
+                        )
+                      ],
                     ),
-                  ),
+                  ],
                 ),
-                SizedBox(width: 10),
-                Expanded(
-                  flex: 1,
-                  child: InkWell(
-                    onTap: () {
-                      collectionStatus(context, _searchController.text);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.grey, Colors.white],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 14),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Search',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Expanded(
               child: Row(
+
                 children: [
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFFFAE3E3), Color(0xFFD42D3F)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
-                          child: Text(
-                            'Installment (${emis.length})',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
+                    Padding(padding: EdgeInsets.only(left: 5,right: 5),child:     Container(
+
+
+                      width: MediaQuery.of(context).size.width/2,
+                      decoration: BoxDecoration(
+
+                        gradient: LinearGradient(
+                          colors: [Color(0xFFFAE3E3), Color(0xFFDFDFDF)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      child: Text(
+                        'Installment (${emis.length})',
+                        style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),),
                         Expanded(
+                          
                           child: ListView.builder(
+                            padding: EdgeInsets.all(5),
                             itemCount: emis.length,
                             itemBuilder: (context, index) {
                               return Card(
+
+                                elevation: 7,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      bottomRight: Radius.circular(20),
+                                    )
                                 ),
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -198,78 +227,69 @@ class _CollectionStatusState extends State<CollectionStatus> {
                                   child: Row(
                                     children: [
                                       // Left part for Date (parallelogram-like shape)
-
                                       Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.red,
+                                          color: Colors.blue,
                                           borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(20),
                                             bottomRight: Radius.circular(20),
                                           ),
                                         ),
                                         padding: EdgeInsets.only(
-                                            left: 10, right: 10),
+                                            left: 10, right: 10,top: 2,bottom: 2),
                                         child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                           children: [
                                             Text(
                                               monthName(DateTime.parse(
-                                                      emis[index]
-                                                          .pvNRcpDt
-                                                          .toString())
+                                                  emis[index]
+                                                      .pvNRcpDt
+                                                      .toString())
                                                   .month),
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 12,
+                                                fontSize: 10,
                                               ),
                                             ),
                                             Text(
                                               '${DateTime.parse(emis[index].pvNRcpDt.toString()).day}',
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 24,
+                                                fontSize: 18,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
+                                            Text(
+                                              '${DateTime.parse(emis[index].pvNRcpDt.toString()).year}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10,
+                                              ),
+                                            )
                                           ],
                                         ),
                                       ),
-
-                                      // Right part for amt
+                                      // Right part for cr
                                       Expanded(
                                         child: Container(
-                                          padding: EdgeInsets.only(
-                                              left: 10, right: 10),
+
+
+                                          padding: EdgeInsets.only(left: 10),
                                           child: Column(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
-                                              Container(
-                                                padding: EdgeInsets.only(left: 10,right: 10),
-                                                // Optional: for padding around the text
-                                                decoration: BoxDecoration(
-                                                  color: Colors
-                                                      .red, // Red background color
-                                                  borderRadius: BorderRadius
-                                                      .zero, // Ensures rectangular shape with no rounded corners
-                                                ),
-                                                child: Text(
-                                                  '${DateTime.parse(emis[index].pvNRcpDt.toString()).year}',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ),
+
                                               Text(
-                                                'Amt: ${emis[index].amt}',
+                                                textAlign: TextAlign.left,
+                                                '₹${emis[index].amt}/-',
                                                 style: TextStyle(
-                                                    fontSize: 16,
+                                                    fontSize: 18,
                                                     fontWeight:
-                                                        FontWeight.bold),
+                                                    FontWeight.w400),
                                               ),
                                             ],
                                           ),
@@ -293,31 +313,39 @@ class _CollectionStatusState extends State<CollectionStatus> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFFFAE3E3), Color(0xFFD42D3F)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
-                          child: Text(
-                            'Paid Installment (${emiCollections.length})',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
+                    Padding(padding: EdgeInsets.only(left: 5,right: 5),child:     Container(
+
+                      width: MediaQuery.of(context).size.width/2,
+
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xFFFAE3E3), Color(0xFFDFDFDF)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      child: Text(
+                        'Paid Installment (${emiCollections.length})',
+                        style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),),
                         Expanded(
                           child: ListView.builder(
+                            padding: EdgeInsets.all(5),
                             itemCount: emiCollections.length,
                             itemBuilder: (context, index) {
                               return Card(
+                                elevation: 7,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      bottomRight: Radius.circular(20),
+                                    )
                                 ),
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -328,14 +356,14 @@ class _CollectionStatusState extends State<CollectionStatus> {
                                       // Left part for Date (parallelogram-like shape)
                                       Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.red,
+                                          color: Colors.green,
                                           borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(20),
                                             bottomRight: Radius.circular(20),
                                           ),
                                         ),
                                         padding: EdgeInsets.only(
-                                            left: 10, right: 10),
+                                            left: 10, right: 10,top: 2,bottom: 2),
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -348,23 +376,31 @@ class _CollectionStatusState extends State<CollectionStatus> {
                                                   .month),
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 12,
+                                                fontSize: 10,
                                               ),
                                             ),
                                             Text(
                                               '${DateTime.parse(emiCollections[index].vdate.toString()).day}',
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 24,
+                                                fontSize: 18,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
+                                            Text(
+                                              '${DateTime.parse(emiCollections[index].vdate.toString()).year}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10,
+                                              ),
+                                            )
                                           ],
                                         ),
                                       ),
                                       // Right part for cr
                                       Expanded(
                                         child: Container(
+
                                           padding: EdgeInsets.only(left: 10),
                                           child: Column(
                                             mainAxisAlignment:
@@ -372,29 +408,14 @@ class _CollectionStatusState extends State<CollectionStatus> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Container(
-                                                padding: EdgeInsets.only(left: 10,right: 10),
-                                                // Optional: for padding around the text
-                                                decoration: BoxDecoration(
-                                                  color: Colors
-                                                      .red, // Red background color
-                                                  borderRadius: BorderRadius
-                                                      .zero, // Ensures rectangular shape with no rounded corners
-                                                ),
-                                                child: Text(
-                                                  '${DateTime.parse(emiCollections[index].vdate.toString()).year}',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ),
+
                                               Text(
-                                                'Cr: ${emiCollections[index].cr}',
+                                                textAlign: TextAlign.left,
+                                                '₹${emiCollections[index].cr}/-',
                                                 style: TextStyle(
-                                                    fontSize: 16,
+                                                    fontSize: 18,
                                                     fontWeight:
-                                                        FontWeight.bold),
+                                                        FontWeight.w400),
                                               ),
                                             ],
                                           ),

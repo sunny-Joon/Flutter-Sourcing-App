@@ -94,12 +94,13 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
             ),
 
             Card(
-              elevation: 8,
+              color: Colors.white,
+              elevation: 3,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(10), // Padding inside the Card
+                padding: const EdgeInsets.all(5), // Padding inside the Card
                 child: Row(
                   children: [
                     Column(
@@ -107,30 +108,27 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                       children: [
 
                         Container(
-                          width: MediaQuery.of(context).size.width-20, // Control the width of the TextField
+
+                          width: MediaQuery.of(context).size.width-30, // Control the width of the TextField
                           child: TextField(
                             controller: _searchController,
                             decoration: InputDecoration(
-                              hintText: 'Search',
+                              hintText: 'Enter Case code',
                               filled: true, // Set the background color of the TextField
                               fillColor: Colors.white, // Set the background color to white
                               contentPadding: EdgeInsets.all(10), // Padding inside the TextField
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8), // Rounded corners
+                                borderRadius: BorderRadius.circular(3), // Rounded corners
                                 borderSide: BorderSide.none, // No border outline
                               ),
                               suffixIcon: IconButton( // Place the search icon at the end (right side)
                                 icon: Icon(Icons.search),
                                 onPressed: () {
-                                  final smcode = _searchController.text;
-                                  if (smcode.isNotEmpty) {
-                                    // Print something or trigger your action here
-                                    print('Search initiated with: $smcode');
-                                    _qrPayments(smcode); // Call your API function here
+                                  RegExp regex = RegExp(r'^[A-Za-z]{4}\d{6}$');
+                                 if(_searchController.text.isNotEmpty && regex.hasMatch(_searchController.text)) {
+                                     _qrPayments(_searchController.text); // Call your API function here
                                   } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Please enter SMCODE')),
-                                    );
+                                   GlobalClass.showErrorAlert(context, "Please Enter Correct Case code",1);
                                   }
                                 },
                               ),
