@@ -1,74 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_sourcing_app/Models/collectionbranchlistmodel.dart';
 import 'package:flutter_sourcing_app/collectionborrowerlist.dart';
-import 'package:flutter_sourcing_app/collectiongrouplist.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'api_service.dart';
-import 'global_class.dart';
 
-class CollectionBranchListPage extends StatefulWidget {
+class CollectionGroupListPage extends StatefulWidget {
+  final CollectionBranchListDataModel SelectedData;
+  final List<CollectionBranchListDataModel> Branchdata;
+
+  const CollectionGroupListPage({
+    super.key,
+    required this.SelectedData,
+    required this.Branchdata,
+  });
+
   @override
-  _CollectionBranchListPageState createState() => _CollectionBranchListPageState();
+  _CollectionGroupListPageState createState() => _CollectionGroupListPageState();
 }
 
-class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
+class _CollectionGroupListPageState extends State<CollectionGroupListPage> {
   List<CollectionBranchListDataModel> _items = [];
-  List<CollectionBranchListDataModel> _allitems = [];
   String _searchText = '';
 
   @override
   void initState() {
     super.initState();
-    _fetchBranchList();
-  }
+    _items = widget.Branchdata.where((item) {
+      return item.focode == widget.SelectedData.focode;
+    }).toList();
 
-  Future<void> _fetchBranchList() async {
-    EasyLoading.show(status: 'Loading...');
-
-    final apiService = Provider.of<ApiService>(context, listen: false);
-    try {
-      await apiService.CollectionBranchList(
-          GlobalClass.token,
-          GlobalClass.dbName,
-          "861950058549712",
-          "GRST002946" /*GlobalClass.imei, GlobalClass.id*/
-      ).then((response) {
-        if (response.statuscode == 200) {
-          _allitems = response.data;
-
-          final focodeSet = <String>{};
-          final uniqueItems = response.data.where((item) => focodeSet.add(item.focode)).toList();
-
-          setState(() {
-            _items = uniqueItems; // Store the unique response data
-          });
-          EasyLoading.dismiss();
-
-          print('Branch List retrieved successfully');
-        } else {
-          GlobalClass.showUnsuccessfulAlert(
-              context, "Not able to fetch Group List", 1);
-          setState(() {
-            EasyLoading.dismiss();
-          });
-        }
-      });
-    } catch (e) {
-      print('Error: $e');
-      GlobalClass.showErrorAlert(context, "Server Side Error", 2);
-      setState(() {
-        EasyLoading.dismiss();
-      });
-    }
+    print("Filtered items in initState: ${widget.Branchdata.length}"); // Debug statement
+    print("Filtered items in initState: ${_items.length}"); // Debug statement
   }
 
   @override
   Widget build(BuildContext context) {
+    // Filter the items based on the search text
     final filteredItems = _items.where((item) {
       return item.areaCd.toLowerCase().contains(_searchText.toLowerCase());
     }).toList();
+
+
+    print("Filtered items in build: ${filteredItems.length}"); // Debug statement
 
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
@@ -81,10 +53,22 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: 40,
-                  width: 40,
-                  alignment: Alignment.center,
+                InkWell(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                          width: 1, color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    child: Icon(Icons.arrow_back_ios_sharp, size: 13),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
                 Center(
                   child: Image.asset(
@@ -130,14 +114,11 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CollectionGroupListPage(
-                          SelectedData: selectedItem,
-                          Branchdata: _allitems,
-                        ),
+                        builder: (context) => CollectionBorrowerList(Branchdata: selectedItem),
                       ),
                     );
                   },
-                  child: CollectionBranchListItem(item: filteredItems[index]),
+                  child: CollectionGroupListItem(item: filteredItems[index]),
                 );
               },
             ),
@@ -148,10 +129,10 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
   }
 }
 
-class CollectionBranchListItem extends StatelessWidget {
+class CollectionGroupListItem extends StatelessWidget {
   final CollectionBranchListDataModel item;
 
-  CollectionBranchListItem({required this.item});
+  CollectionGroupListItem({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +186,7 @@ class CollectionBranchListItem extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        '${item.focode}',
+                        '${item.areaCd}',
                         style: GoogleFonts.roboto(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -220,7 +201,7 @@ class CollectionBranchListItem extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.center,
                       child: Text(
-                        '${item.foName}',
+                        '${item.areaName}',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
