@@ -233,11 +233,10 @@ class _ApiService implements ApiService {
     String Fi_Id,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'Fi_Id': Fi_Id};
     final _headers = <String, dynamic>{
       r'Authorization': token,
       r'dbname': dbName,
-      r'Fi_Id': Fi_Id,
     };
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;

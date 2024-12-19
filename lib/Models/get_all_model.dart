@@ -88,8 +88,8 @@ class ApplicationgetAllDataModel {
   String religion;
   String smCode;
   bool isPhnnoVerified;
-  int userId;
-  int propertyArea;
+  String userId;
+  String propertyArea;
   bool isExserviceman;
   double latitude;
   double longitude;

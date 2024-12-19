@@ -16,448 +16,491 @@ import 'collection.dart';
 import 'global_class.dart';
 
 
- class CollectionBorrowerList extends StatefulWidget {
-   final CollectionBranchListDataModel Branchdata;
+class CollectionBorrowerList extends StatefulWidget {
+  final CollectionBranchListDataModel Branchdata;
 
-   const CollectionBorrowerList({super.key, required this.Branchdata});
+  const CollectionBorrowerList({super.key, required this.Branchdata});
 
-   @override
-   State<CollectionBorrowerList> createState() => _CollectionBorrowerListState();
- }
+  @override
+  State<CollectionBorrowerList> createState() => _CollectionBorrowerListState();
+}
 
- class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
+class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
 
-   List<CollectionBorrowerListDataModel> _borrowerItems = [];
-   List<RangeCategoryDataModel> reasonOfDelay = [];
-   String? selectedReason;
+  List<CollectionBorrowerListDataModel> _borrowerItems = [];
+  List<RangeCategoryDataModel> reasonOfDelay = [];
+  String? selectedReason;
 
 
-   @override
-   void initState() {
-     super.initState();
-     fetchData();
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
 
-     // if(widget.page =="E SIGN"){
-     _fetchCollectionBorrowerList(1);
-     // }else{
-     //   _fetchBorrowerList(0);
-     //   }
-   }
+    // if(widget.page =="E SIGN"){
+    _fetchCollectionBorrowerList(1);
+    // }else{
+    //   _fetchBorrowerList(0);
+    //   }
+  }
 
-   Future<void> fetchData() async {
-     reasonOfDelay = await DatabaseHelper().selectRangeCatData("land_owner");
-   }
+  Future<void> fetchData() async {
+    reasonOfDelay = await DatabaseHelper().selectRangeCatData("land_owner");
+  }
 
-   Future<void> _fetchCollectionBorrowerList(int type) async {
-     EasyLoading.show(status: 'Loading...',);
+  Future<void> _fetchCollectionBorrowerList(int type) async {
+    EasyLoading.show(status: 'Loading...',);
 
-     final apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+    final apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
 
-     await apiService.CollectionBorrowerList(
-         GlobalClass.token,
-         GlobalClass.dbName,
-         GlobalClass.imei,
-         "",
-         //widget.BranchData.branchCode,
-         "0001",
-         //widget.GroupData.groupCode,
-         "GRST002946",
-         //GlobalClass.id,
-         "2024-11-20" //GlobalClass.getTodayDate(),
-     ).then((response) {
-       if (response.statuscode == 200) {
-         setState(() {
-           _borrowerItems = response.data;
-         });
-         EasyLoading.dismiss();
-         print("object++12");
-       } else {
-         setState(() {});
-         EasyLoading.dismiss();
-       }
-     });
-   }
+    await apiService.CollectionBorrowerList(
+        GlobalClass.token,
+        GlobalClass.dbName,
+        GlobalClass.imei,
+        "",
+        //widget.BranchData.branchCode,
+        "0001",
+        //widget.GroupData.groupCode,
+        "GRST002946",
+        //GlobalClass.id,
+        "2024-11-20" //GlobalClass.getTodayDate(),
+    ).then((response) {
+      if (response.statuscode == 200) {
+        setState(() {
+          _borrowerItems = response.data;
+        });
+        EasyLoading.dismiss();
+        print("object++12");
+      } else {
+        setState(() {});
+        EasyLoading.dismiss();
+      }
+    });
+  }
 
-   void _showPayeeDialog(BuildContext context,
-       CollectionBorrowerListDataModel item) {
-     showDialog(
-       context: context,
-       builder: (BuildContext context) {
-         return AlertDialog(
-           backgroundColor: Colors.white, // Red background
-           content: Column(
-             mainAxisSize: MainAxisSize.min,
-             children: [
-               _buildShinyButton(
-                 'EMI Paying',
-                     () {
-                   Navigator.pop(context);
-                   Navigator.push(
-                     context,
-                     MaterialPageRoute(
-                       builder: (context) => Collection(selectedData: item),
-                     ),
-                   );
-                 },
-               ),
-               SizedBox(height: 5),
-               Text(
-                 'OR',
-                 style: TextStyle(
-                     color: Color(0xFFD42D3F), fontWeight: FontWeight.bold),
-               ),
-               SizedBox(height: 5),
-               _buildShinyButton(
-                 'EMI Not Paying',
-                     () {
-                   _showNotPayeeDialog(context);
-                 },
-               ),
-             ],
-           ),
-         );
-       },
-     );
-   }
+  void _showPayeeDialog(BuildContext context,
+      CollectionBorrowerListDataModel item) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white, // Red background
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildShinyButton(
+                'EMI Paying',
+                    () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Collection(selectedData: item),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 5),
+              Text(
+                'OR',
+                style: TextStyle(
+                    color: Color(0xFFD42D3F), fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 5),
+              _buildShinyButton(
+                'EMI Not Paying',
+                    () {
+                  _showNotPayeeDialog(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
 // Custom function to build shiny, gradient-style buttons
-   Widget _buildShinyButton(String label, VoidCallback onPressed) {
-     return GestureDetector(
-       onTap: onPressed,
-       child: Container(
-         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
-         decoration: BoxDecoration(
-           gradient: LinearGradient(
-             colors: [Colors.redAccent, Color(0xFFD42D3F)],
-             begin: Alignment.topLeft,
-             end: Alignment.bottomRight,
-           ),
-           borderRadius: BorderRadius.circular(10),
-           boxShadow: [
-             BoxShadow(
-               color: Colors.black.withOpacity(0.4),
-               blurRadius: 10,
-               offset: Offset(5, 5),
-             ),
-           ],
-         ),
-         child: Center(
-           child: Text(
-             label,
-             style: TextStyle(
-               color: Colors.white,
-               fontSize: 18,
-               fontWeight: FontWeight.bold,
-               shadows: [
-                 Shadow(
-                   blurRadius: 10.0,
-                   color: Colors.black.withOpacity(0.5),
-                   offset: Offset(2.0, 2.0),
-                 ),
-               ],
-             ),
-           ),
-         ),
-       ),
-     );
-   }
+  Widget _buildShinyButton(String label, VoidCallback onPressed) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.redAccent, Color(0xFFD42D3F)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.4),
+              blurRadius: 10,
+              offset: Offset(5, 5),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  blurRadius: 10.0,
+                  color: Colors.black.withOpacity(0.5),
+                  offset: Offset(2.0, 2.0),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
 
-   void _showNotPayeeDialog(BuildContext context1) {
-     String? selectedDropdownValue;
-     DateTime? selectedDate;
-     TextEditingController dateController = TextEditingController();
+  void _showNotPayeeDialog(BuildContext context1) {
+    String? selectedDropdownValue;
+    DateTime? selectedDate;
+    TextEditingController dateController = TextEditingController();
 
-     // Initialize the dateController with the current date
-     //dateController.text = DateFormat('yyyy/MM/dd').format(selectedDate);
+    showDialog(
+      context: context1,
+      barrierDismissible: false, // Prevent closing by clicking outside
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false, // Prevent closing by back button
+          child: AlertDialog(
+            backgroundColor: Colors.white,
+            contentPadding: EdgeInsets.all(0),
+            titlePadding: EdgeInsets.all(0),
+            title: Container(
+              padding: EdgeInsets.only(left:15),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFD42D3F), Colors.redAccent],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Promise To Pay',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close, color: Colors.white),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(15),
+                      bottomRight: Radius.circular(15),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Reason Of Delay',
+                        style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          fontSize: 13,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: DropdownButton<String>(
+                          hint: Text("Select"), // Show hint
+                          value: selectedDropdownValue,
+                          isExpanded: true,
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.black,
+                            fontSize: 13,
+                          ),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.transparent,
+                          ),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedDropdownValue = newValue;
+                            });
+                          },
+                          items: reasonOfDelay.map<DropdownMenuItem<String>>(
+                                (RangeCategoryDataModel state) {
+                              return DropdownMenuItem<String>(
+                                value: state.code,
+                                child: Text(state.descriptionEn),
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'Date of Payment',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      InkWell(
+                        onTap: () async {
+                          final DateTime? picked = await showDatePicker(
+                            context: context,
+                            initialDate: selectedDate ?? DateTime.now(),
+                            firstDate: DateTime.now(), // Only future dates
+                            lastDate: DateTime(2101),
+                            builder: (BuildContext context, Widget? child) {
+                              return Theme(
+                                data: ThemeData.light().copyWith(
+                                  primaryColor: Color(0xFFD42D3F),
+                                  hintColor: Color(0xFFD42D3F),
+                                  colorScheme: ColorScheme.light(
+                                    primary: Color(0xFFD42D3F),
+                                    onPrimary: Colors.white,
+                                    surface: Colors.white,
+                                    onSurface: Colors.red,
+                                  ),
+                                  dialogBackgroundColor: Colors.white,
+                                ),
+                                child: child!,
+                              );
+                            },
+                          );
+                          if (picked != null && picked != selectedDate) {
+                            setState(() {
+                              selectedDate = picked;
+                              dateController.text =
+                                  DateFormat('dd/MM/yyyy').format(picked);
+                            });
+                          }
+                        },
+                        child: TextField(
+                          controller: dateController,
+                          enabled: false,
+                          decoration: InputDecoration(
+                            labelStyle: TextStyle(color: Colors.black87),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.calendar_today,
+                                  color: Color(0xFFD42D3F)),
+                              onPressed: () async {
+                                final DateTime? picked = await showDatePicker(
+                                  context: context,
+                                  initialDate: selectedDate ?? DateTime.now(),
+                                  firstDate: DateTime.now(), // Only future dates
+                                  lastDate: DateTime(2101),
+                                  builder: (BuildContext context, Widget? child) {
+                                    return Theme(
+                                      data: ThemeData.light().copyWith(
+                                        primaryColor: Color(0xFFD42D3F),
+                                        hintColor: Color(0xFFD42D3F),
+                                        colorScheme: ColorScheme.light(
+                                          primary: Color(0xFFD42D3F),
+                                          onPrimary: Colors.white,
+                                          surface: Colors.white,
+                                          onSurface: Colors.red,
+                                        ),
+                                        dialogBackgroundColor: Colors.white,
+                                      ),
+                                      child: child!,
+                                    );
+                                  },
+                                );
+                                if (picked != null && picked != selectedDate) {
+                                  setState(() {
+                                    selectedDate = picked;
+                                    dateController.text =
+                                        DateFormat('dd/MM/yyyy').format(picked);
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8, right: 8),
+                child: _buildShinyButton(
+                  'Submit',
+                      () {
+                    if (selectedDropdownValue == null) {
+                      showToast('Please select a reason');
+                      return;
+                    }
 
-     showDialog(
-       context: context1,
-       builder: (BuildContext context) {
-         return AlertDialog(
-           backgroundColor: Colors.white,
-           contentPadding: EdgeInsets.all(0),
-           titlePadding: EdgeInsets.all(0),
-           title: Container(
-             padding: EdgeInsets.all(15),
-             decoration: BoxDecoration(
-               gradient: LinearGradient(
-                 colors: [Color(0xFFD42D3F), Colors.redAccent],
-                 begin: Alignment.topLeft,
-                 end: Alignment.bottomRight,
-               ),
-               borderRadius: BorderRadius.only(
-                 topLeft: Radius.circular(15),
-                 topRight: Radius.circular(15),
-               ),
-             ),
-             child: Text(
-               'Promise To Pay',
-               style: TextStyle(
-                 color: Colors.white,
-                 fontSize: 18,
-                 fontWeight: FontWeight.bold,
-               ),
-             ),
-           ),
-           content: StatefulBuilder(
-             builder: (BuildContext context, StateSetter setState) {
-               return Container(
-                 padding: EdgeInsets.all(20),
-                 decoration: BoxDecoration(
-                   color: Colors.white,
-                   borderRadius: BorderRadius.only(
-                     bottomLeft: Radius.circular(15),
-                     bottomRight: Radius.circular(15),
-                   ),
-                 ),
-                 child: Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   mainAxisSize: MainAxisSize.min,
-                   children: [
-                     Text(
-                       'Reason Of Delay',
-                       style: TextStyle(
-                         fontFamily: "Poppins-Regular",
-                         fontSize: 13,
-                       ),
-                     ),
-                     SizedBox(height: 10),
-                     Container(
-                       padding: EdgeInsets.symmetric(horizontal: 12),
-                       decoration: BoxDecoration(
-                         border: Border.all(color: Colors.grey),
-                         borderRadius: BorderRadius.circular(5),
-                       ),
-                       child: DropdownButton<String>(
-                         value: selectedDropdownValue,
-                         isExpanded: true,
-                         iconSize: 24,
-                         elevation: 16,
-                         style: TextStyle(
-                           fontFamily: "Poppins-Regular",
-                           color: Colors.black,
-                           fontSize: 13,
-                         ),
-                         underline: Container(
-                           height: 2,
-                           color: Colors.transparent,
-                         ),
-                         onChanged: (String? newValue) {
-                           setState(() {
-                             selectedDropdownValue = newValue;
-                           });
-                         },
-                         items: reasonOfDelay.map<DropdownMenuItem<String>>(
-                               (RangeCategoryDataModel state) {
-                             return DropdownMenuItem<String>(
-                               value: state.code,
-                               child: Text(state.descriptionEn),
-                             );
-                           },
-                         ).toList(),
-                       ),
-                     ),
-                     SizedBox(height: 20),
-                     Text(
-                       'Date of Payment',
-                       style: TextStyle(
-                         color: Colors.black,
-                         fontSize: 13,
-                       ),
-                     ),
-                     SizedBox(height: 10),
-                     InkWell(
-                       onTap: () async {
-                         final DateTime? picked = await showDatePicker(
-                           context: context,
-                           initialDate: selectedDate,
-                           firstDate: DateTime(2000),
-                           lastDate: DateTime(2101),
-                         );
-                         if (picked != null && picked != selectedDate) {
-                           setState(() {
-                             selectedDate = picked;
-                             dateController.text =
-                                 DateFormat('yyyy/MM/dd').format(picked);
-                           });
-                         }
-                       },
-                       child: TextField(
-                         controller: dateController,
-                         enabled: false,
-                         decoration: InputDecoration(
-                           labelStyle: TextStyle(color: Colors.black87),
-                           filled: true,
-                           fillColor: Colors.grey[200],
-                           border: OutlineInputBorder(
-                             borderRadius: BorderRadius.circular(10),
-                             borderSide: BorderSide.none,
-                           ),
-                           suffixIcon: IconButton(
-                             icon: Icon(Icons.calendar_today,
-                                 color: Color(0xFFD42D3F)),
-                             onPressed: () async {
-                               final DateTime? picked = await showDatePicker(
-                                 context: context,
-                                 initialDate: selectedDate,
-                                 firstDate: DateTime(2000),
-                                 lastDate: DateTime(2101),
-                               );
-                               if (picked != null && picked != selectedDate) {
-                                 setState(() {
-                                   selectedDate = picked;
-                                   dateController.text =
-                                       DateFormat('yyyy/MM/dd').format(picked);
-                                 });
-                               }
-                             },
-                           ),
-                         ),
-                       ),
-                     ),
-                   ],
-                 ),
-               );
-             },
-           ),
-           actions: [
-             Padding(
-               padding: const EdgeInsets.only(bottom: 8, right: 8),
-               child: _buildShinyButton(
-                 'Submit',
-                     () {
-                   if (selectedDropdownValue == null) {
-                     showToast('Please select a reason');
-                     return;
-                   }
+                    if (selectedDate == null) {
+                      showToast('Please select a date');
+                      return;
+                    }
 
-                   if (selectedDate == null) {
-                     showToast('Please select a date');
-                     return;
-                   }
+                    SaveReason(context, selectedDropdownValue!, selectedDate!, context1);
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
-                   SaveReason(context, selectedDropdownValue!, selectedDate!,
-                       context1);
-                 },
-               ),
+  Future<void> SaveReason(BuildContext context, String reason, DateTime date,
+      BuildContext maincontext) async {
+    EasyLoading.show(status: 'Loading...');
 
-             ),
-           ],
-         );
-       },
-     );
-   }
+    final api = Provider.of<ApiService>(context, listen: false);
 
-   Future<void> SaveReason(BuildContext context, String reason, DateTime date,
-       BuildContext maincontext) async {
-     EasyLoading.show(status: 'Loading...');
-
-     final api = Provider.of<ApiService>(context, listen: false);
-
-     Map<String, dynamic> requestBody = {
-       "fi_Id": 1,
-       "reason": reason,
-       "dateToPay": date.toIso8601String(),
-     };
-     return await api.promiseToPay(
-         GlobalClass.token, GlobalClass.dbName, requestBody)
-         .then((value) async {
-       if (value.statuscode == 200) {
-         EasyLoading.dismiss();
-         GlobalClass.showSuccessAlert(maincontext, value.message, 3);
-       } else {
-         EasyLoading.dismiss();
-         GlobalClass.showUnsuccessfulAlert(maincontext, value.message, 1);
-       }
-     }).catchError((err) {
-       GlobalClass.showErrorAlert(maincontext, err.toString(), 1);
-       EasyLoading.dismiss();
-     });
-   }
+    Map<String, dynamic> requestBody = {
+      "fi_Id": 1,
+      "reason": reason,
+      "dateToPay": date.toIso8601String(),
+    };
+    return await api.promiseToPay(
+        GlobalClass.token, GlobalClass.dbName, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        GlobalClass.showSuccessAlert(maincontext, value.message, 3);
+      } else {
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(maincontext, value.message, 1);
+      }
+    }).catchError((err) {
+      GlobalClass.showErrorAlert(maincontext, err.toString(), 1);
+      EasyLoading.dismiss();
+    });
+  }
 
 
-   @override
-   Widget build(BuildContext context) {
-     return Scaffold(
-       backgroundColor: Color(0xFFD42D3F),
-       body: /*_isLoading
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFFD42D3F),
+      body: /*_isLoading
           ? Center(child: CircularProgressIndicator())*/
-       /*:*/ Column(
-         children: [
-           SizedBox(height: 50),
-           Padding(padding: EdgeInsets.all(8),
-             child: Row(
-               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: [
-                 InkWell(
-                   child: Container(
-                     decoration: BoxDecoration(
-                       color: Colors.white,
-                       border: Border.all(
-                           width: 1, color: Colors.grey.shade300),
-                       borderRadius: BorderRadius.all(Radius.circular(5)),
-                     ),
-                     height: 40,
-                     width: 40,
-                     alignment: Alignment.center,
-                     child: Center(
-                       child: Icon(Icons.arrow_back_ios_sharp, size: 16),
-                     ),
-                   ),
-                   onTap: () {
-                     Navigator.of(context).pop();
-                   },
-                 ),
-                 Center(
-                   child: Image.asset(
-                     'assets/Images/logo_white.png',
-                     // Replace with your logo asset path
-                     height: 40,
-                   ),
-                 ),
-                 Container(
-                   height: 40,
-                   width: 40,
-                   alignment: Alignment.center,
-                 ),
-               ],
-             ),
-           ),
-           Card(
-             margin: EdgeInsets.only(bottom: 0, top: 0, left: 10, right: 10),
-             elevation: 8,
-             shape: RoundedRectangleBorder(
-               borderRadius: BorderRadius.circular(8),
-             ),
-             child: TextField(
-               style: TextStyle(
-                   fontFamily: "Poppins-Regular"
-               ),
-               decoration: InputDecoration(
+      /*:*/ Column(
+        children: [
+          SizedBox(height: 50),
+          Padding(padding: EdgeInsets.all(8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                          width: 1, color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    child: Center(
+                      child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                Center(
+                  child: Image.asset(
+                    'assets/Images/logo_white.png',
+                    // Replace with your logo asset path
+                    height: 40,
+                  ),
+                ),
+                Container(
+                  height: 40,
+                  width: 40,
+                  alignment: Alignment.center,
+                ),
+              ],
+            ),
+          ),
+          Card(
+            margin: EdgeInsets.only(bottom: 0, top: 0, left: 10, right: 10),
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: TextField(
+              style: TextStyle(
+                  fontFamily: "Poppins-Regular"
+              ),
+              decoration: InputDecoration(
 
-                 hintText: 'Search...',
-                 contentPadding: EdgeInsets.all(10),
-                 border: InputBorder.none,
-               ),
-             ),
-           ),
-           Expanded(
-             child: ListView.builder(
-               itemCount: _borrowerItems.length,
-               itemBuilder: (context, index) {
-                 final item = _borrowerItems[index];
-                 return CollectionBorrowerListItem(
-                   name: item.custName,
-                   fiCode: item.caseCode.toString(),
-                   //mobile: item.pPhone,
-                   creator: item.creator,
-                   // address: item.currentAddress,
-                   // pic:item.profilePic,
-                   onTap: () {
-                     _showPayeeDialog(context, item);
-                     /*Navigator.push(
+                hintText: 'Search...',
+                contentPadding: EdgeInsets.all(10),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _borrowerItems.length,
+              itemBuilder: (context, index) {
+                final item = _borrowerItems[index];
+                return CollectionBorrowerListItem(
+                  name: item.custName,
+                  fiCode: item.caseCode.toString(),
+                  //mobile: item.pPhone,
+                  creator: item.creator,
+                  // address: item.currentAddress,
+                  // pic:item.profilePic,
+                  onTap: () {
+                    _showPayeeDialog(context, item);
+                    /*Navigator.push(
                        context,
                        MaterialPageRoute(
                          builder: (context) => Collection(
@@ -465,40 +508,40 @@ import 'global_class.dart';
                          ),
                        ),
                      );*/
-                   },
-                 );
-               },
-             ),
-           ),
-         ],
-       ),
-     );
-   }
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-   void showToast(String message) {
-     Fluttertoast.showToast(
-       msg: message,
-       toastLength: Toast.LENGTH_SHORT,
-       gravity: ToastGravity.CENTER,
-       timeInSecForIosWeb: 1,
-       backgroundColor: Colors.black,
-       textColor: Colors.white,
-       fontSize: 16.0,
-     );
-   }
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
 
- }
-   String transformFilePathToUrl(String filePath) {
-     const String urlPrefix = 'https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//';
-     const String localPrefix = 'D:\\LOSDOC\\FiDocs\\';
-     if (filePath.startsWith(localPrefix)) {
-       // Remove the local prefix and replace with the URL prefix
-       return filePath.replaceFirst(localPrefix, urlPrefix).replaceAll(
-           '\\', '//');
-     }
-     // Return the filePath as is if it doesn't match the local prefix
-     return filePath;
-   }
+}
+String transformFilePathToUrl(String filePath) {
+  const String urlPrefix = 'https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//';
+  const String localPrefix = 'D:\\LOSDOC\\FiDocs\\';
+  if (filePath.startsWith(localPrefix)) {
+    // Remove the local prefix and replace with the URL prefix
+    return filePath.replaceFirst(localPrefix, urlPrefix).replaceAll(
+        '\\', '//');
+  }
+  // Return the filePath as is if it doesn't match the local prefix
+  return filePath;
+}
 
 class ProfileAvatar extends StatelessWidget {
   final String? imagePath;
