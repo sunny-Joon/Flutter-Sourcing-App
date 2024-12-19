@@ -5828,7 +5828,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           }*/
           if (type == "pancard") {
             panVerified = true;
-            panCardHolderName = value.
+         //   panCardHolderName = value.
           }
           if (type == "drivinglicense") {
             dlVerified = true;

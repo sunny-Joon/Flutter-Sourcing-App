@@ -16,7 +16,7 @@ class DocsVerify {
   String messageCode;
   String message;
   int timestamp;
-  dynamic error;
+  String error;
   bool success;
   int count;
   String txnId;
