@@ -216,4 +216,15 @@ class GlobalClass {
     return false; // Does not start and end with < and >
   }
 
+
+  String transformFilePathToUrl(String filePath) {
+    const String urlPrefix = 'https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//';
+    const String localPrefix = 'D:\\LOSDOC\\FiDocs\\';
+    if (filePath.startsWith(localPrefix)) {
+      // Remove the local prefix and replace with the URL prefix
+      return filePath.replaceFirst(localPrefix, urlPrefix).replaceAll('\\', '//');
+    }
+    // Return the filePath as is if it doesn't match the local prefix
+    return filePath;
+  }
 }
