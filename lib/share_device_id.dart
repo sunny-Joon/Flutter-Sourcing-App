@@ -224,6 +224,8 @@ class _SharedeviceidState extends State<Sharedeviceid> {
         _branch_codes = value.data; // Assuming value.data is a list of BranchDataModel
         _isLoading = false;
       });
+    }else{
+      _branch_codes =[];
     }
   }
 
@@ -396,10 +398,10 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                           // Display error for Request Type
                           if (_requestTypeError != null)
                             Padding(
-                              padding: const EdgeInsets.only(top: 4),
+                              padding: const EdgeInsets.only(top: 1,left: 15),
                               child: Text(
                                 _requestTypeError!,
-                                style: TextStyle(color: Colors.red, fontSize: 12),
+                                style: TextStyle(color: Color(0xFFD42D3F), fontSize: 12),
                               ),
                             ),
 
@@ -448,10 +450,10 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                           // Display error for Creator
                           if (_creatorError != null)
                             Padding(
-                              padding: const EdgeInsets.only(top: 4),
+                              padding: const EdgeInsets.only(top: 1,left: 15),
                               child: Text(
                                 _creatorError!,
-                                style: TextStyle(color: Colors.red, fontSize: 12),
+                                style: TextStyle(color: Color(0xFFD42D3F), fontSize: 12),
                               ),
                             ),
 
@@ -720,9 +722,11 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
   void _showMultiSelect() async {
     final selectedValues = await showModalBottomSheet<List<String>>(
+      backgroundColor: Colors.white,
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
+
           builder: (BuildContext context, StateSetter setModalState) {
             return Column(
               children: [
@@ -738,6 +742,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                     itemCount: _branch_codes.length,
                     itemBuilder: (BuildContext context, int index) {
                       return CheckboxListTile(
+
                         title: Text(_branch_codes[index].branchName),
                         value: _selectedBranches.contains(_branch_codes[index].branchCode),
                         onChanged: (bool? value) {
@@ -753,12 +758,30 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                     },
                   ),
                 ),
+
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context, _selectedBranches);
                   },
-                  child: Text('Done'),
-                ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFD42D3F),
+                    minimumSize: Size(150,
+                        36), // Set the width to 150 and the height to 36 (or your preferred height)
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                      BorderRadius.circular(
+                          0), // Rectangular shape
+                    ),
+                    padding: EdgeInsets.symmetric(
+                        vertical:
+                        12), // Adjust vertical padding as needed
+                  ),
+                  child: Text(
+                    'Add Branches',
+                    style:
+                    TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
+                  ),
+                )
               ],
             );
           },
