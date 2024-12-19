@@ -26,6 +26,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   String? _selectedRequestType;
   String? _selectedCreator;
   String _locationMessage = "";
+  String? _errorText;
 
   List<String> _selectedBranches = [];
 
@@ -37,7 +38,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   List<CreatorListDataModel> _creators = [];
   List<BranchDataModel> _branch_codes = [];
   bool _isLoading = true;
-  String? _errorText;
+
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _imei1Controller = TextEditingController();
@@ -50,83 +51,141 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   String? _longitudeController;
   String? _latitudeController;
 
+  // Error State Variables
+  String? _nameError;
+  String? _imei1Error;
+  String? _imei2Error;
+  String? _userIdError;
+  String? _mobileNoError;
+  String? _deviceIdError;
+  String? _longitudeError;
+  String? _latitudeError;
+  String? _branchError;
+
+  String? _requestTypeError;
+  String? _creatorError;
+
   final FocusNode _nameFocus = FocusNode();
   final FocusNode _imei1Focus = FocusNode();
   final FocusNode _imei2Focus = FocusNode();
   final FocusNode _mobileNoFocus = FocusNode();
   final FocusNode _branchFocus = FocusNode();
 
+
+  void validateInputs() {
+    setState(() {
+      if (_selectedRequestType == null) {
+        _requestTypeError = 'Please select a Request Type';
+      } else {
+        _requestTypeError = null; // Clear error if valid
+      }
+
+      if (_selectedCreator == null) {
+        _creatorError = 'Please select a Creator';
+      } else {
+        _creatorError = null; // Clear error if valid
+      }
+    });
+  }
+
   bool validate() {
-    // Validate Name
+    bool isValid = true;
+
     if (_nameController.text.isEmpty) {
-      showToast_Error("Please enter Name");
+      _nameError = "Please enter Name";
       _nameFocus.requestFocus();
-      return false;
+      isValid = false;
+    } else {
+      _nameError = null;
     }
 
-    // Validate IMEI No. 1 (15 digits)
     if (_imei1Controller.text.isEmpty) {
-      showToast_Error("Please enter IMEI No. 1");
+      _imei1Error = "Please enter IMEI No. 1";
       _imei1Focus.requestFocus();
-      return false;
+      isValid = false;
     } else if (!RegExp(r'^\d{15}$').hasMatch(_imei1Controller.text)) {
-      showToast_Error("IMEI No. 1 must be 15 digits");
+      _imei1Error = "IMEI No. 1 must be 15 digits";
       _imei1Focus.requestFocus();
-      return false;
+      isValid = false;
+    } else {
+      _imei1Error = null;
     }
 
     // Validate IMEI No. 2 (15 digits)
     if (_imei2Controller.text.isEmpty) {
-      showToast_Error("Please enter IMEI No. 2");
+      _imei2Error = "Please enter IMEI No. 2";
       _imei2Focus.requestFocus();
-      return false;
+      isValid = false;
     } else if (!RegExp(r'^\d{15}$').hasMatch(_imei2Controller.text)) {
-      showToast_Error("IMEI No. 2 must be 15 digits");
+      _imei2Error = "IMEI No. 2 must be 15 digits";
       _imei2Focus.requestFocus();
-      return false;
+      isValid = false;
+    } else {
+      _imei2Error = null;
     }
 
-    // Validate User ID (null check)
-    if (_userIdController == null) {
-      showToast_Error("User ID Not Found");
-      return false;
+    // Validate User ID
+    if (_userIdController==null) {
+      _userIdError = "User ID Not Found";
+      isValid = false;
+    } else {
+      _userIdError = null;
     }
 
     // Validate Mobile No. (10 digits)
     if (_mobileNoController.text.isEmpty) {
-      showToast_Error("Please enter Mobile No.");
+      _mobileNoError = "Please enter Mobile No.";
       _mobileNoFocus.requestFocus();
-      return false;
+      isValid = false;
     } else if (!RegExp(r'^\d{10}$').hasMatch(_mobileNoController.text)) {
-      showToast_Error("Mobile No. must be 10 digits");
+      _mobileNoError = "Mobile No. must be 10 digits";
       _mobileNoFocus.requestFocus();
-      return false;
+      isValid = false;
+    } else {
+      _mobileNoError = null;
     }
 
     // Validate Device ID (16 digits)
     if (_deviceIdController == null) {
-      showToast_Error("Device ID Not Found");
-      return false;
+      _deviceIdError = "Device ID Not Found";
+      isValid = false;
     } else if (!RegExp(r'^\d{16}$').hasMatch(_deviceIdController!)) {
-      showToast_Error("Device ID must be 16 digits");
-      return false;
+      _deviceIdError = "Device ID must be 16 digits";
+      isValid = false;
+    } else {
+      _deviceIdError = null;
     }
 
     // Validate Longitude
     if (_longitudeController == null) {
-      showToast_Error("Longitude Not Found");
-      return false;
+      _longitudeError = "Longitude Not Found";
+      isValid = false;
+    } else {
+      _longitudeError = null;
     }
 
     // Validate Latitude
     if (_latitudeController == null) {
-      showToast_Error("Latitude Not Found");
-      return false;
+      _latitudeError = "Latitude Not Found";
+      isValid = false;
+    } else {
+      _latitudeError = null;
     }
 
-    return true;
-  }
+    if (_branchController == null || _branchController.text.isEmpty) {
+      _branchError = "Branch Not Found";
+      isValid = false;
+    } else {
+      _branchError = null;
+    }
 
+    // Validate Request Type and Creator (Make sure to call validateInputs())
+    validateInputs();
+
+    // Refresh UI
+    setState(() {});
+    return isValid;
+  }
 
 
   @override
@@ -300,40 +359,33 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                             'Request Type',
                             style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                           ),
-
                           Container(
                             alignment: Alignment.center,
-                            margin:
-                            EdgeInsets.symmetric(vertical: 4),
+                            margin: EdgeInsets.symmetric(vertical: 4),
                             padding: EdgeInsets.all(4),
-                            // height: 55,
-                            // Fixed height
                             decoration: BoxDecoration(
-                              border:
-                              Border.all(color: Colors.grey),
-                              borderRadius:
-                              BorderRadius.circular(5),
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(5),
                             ),
                             child: DropdownButton<String>(
                               value: _selectedRequestType,
                               isExpanded: true,
                               iconSize: 24,
                               elevation: 16,
-                              style: TextStyle(fontFamily: "Poppins-Regular",
-                                  color: Colors.black,
-                                  fontSize: 13),
+                              style: TextStyle(
+                                  fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 13),
                               underline: Container(
                                 height: 2,
-                                color: Colors
-                                    .transparent, // Set to transparent to remove default underline
+                                color: Colors.transparent, // Set to transparent to remove default underline
                               ),
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  _selectedRequestType = newValue!;
+                                  _selectedRequestType = newValue;
+                                  validateInputs();
+                                  _requestTypeError = null; // Clear error when user selects a value
                                 });
                               },
-                              items:
-                              _requestTypes.map((String value) {
+                              items: _requestTypes.map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(value),
@@ -341,66 +393,81 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                               }).toList(),
                             ),
                           ),
+                          // Display error for Request Type
+                          if (_requestTypeError != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text(
+                                _requestTypeError!,
+                                style: TextStyle(color: Colors.red, fontSize: 12),
+                              ),
+                            ),
+
+                          SizedBox(height: 4),
 
                           SizedBox(height: 4),
                           Text(
                             'Creator',
                             style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                           ),
-
                           Container(
                             alignment: Alignment.center,
-                            //height: 55,
-                            // Fixed height
-                            margin:
-                            EdgeInsets.symmetric(vertical: 4),
+                            margin: EdgeInsets.symmetric(vertical: 4),
                             padding: EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              border:
-                              Border.all(color: Colors.grey),
-                              borderRadius:
-                              BorderRadius.circular(5),
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(5),
                             ),
                             child: DropdownButton<String>(
                               value: _selectedCreator,
                               isExpanded: true,
                               iconSize: 24,
                               elevation: 16,
-                              style: TextStyle(fontFamily: "Poppins-Regular",
-                                  color: Colors.black,
-                                  fontSize: 16),
+                              style: TextStyle(
+                                  fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 16),
                               underline: Container(
                                 height: 2,
-                                color: Colors
-                                    .transparent, // Set to transparent to remove default underline
+                                color: Colors.transparent, // Set to transparent to remove default underline
                               ),
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  _selectedCreator = newValue!;
+                                  _selectedCreator = newValue;
+                                  _creatorError = null;
+                                  validateInputs(); // Clear error when user selects a value
                                   _fetchBranchList(context, _selectedCreator!);
                                 });
                               },
-                              items: _creators.map(
-                                      (CreatorListDataModel value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value.creator,
-                                      child: Text(value.creator),
-                                    );
-                                  }).toList(),
+                              items: _creators.map((CreatorListDataModel value) {
+                                return DropdownMenuItem<String>(
+                                  value: value.creator,
+                                  child: Text(value.creator),
+                                );
+                              }).toList(),
                             ),
                           ),
+                          // Display error for Creator
+                          if (_creatorError != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text(
+                                _creatorError!,
+                                style: TextStyle(color: Colors.red, fontSize: 12),
+                              ),
+                            ),
 
                           Row(
                             children: [
                               // Expanded widget makes the TextField take up the available space
                               Expanded(
-                                child: _buildTextField(
-                                    'Branch Codes',
-                                    _branchController,
-                                    TextInputType.name,
-                                    false,
-                                    _branchFocus,100
-                                ),
+                                // child: _buildTextField(
+                                //     'Branch Codes',
+                                //     _branchController,
+                                //     TextInputType.name,
+                                //     false,
+                                //     _branchFocus,100
+                                // ),
+                                child: _buildTextField('Branch Codes', _branchController, TextInputType.number, true, _branchFocus, 3, errorText: _branchError),
+
                               ),
                               // IconButton will be placed on the right of the TextField
                               IconButton(
@@ -438,34 +505,10 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                 },
                                 BranchDataModel),*/
                           //SizedBox(height:2 ),
-                          _buildTextField('Name', _nameController,
-                              TextInputType.name, true, _nameFocus,40),
-                          //SizedBox(height:2 ),
-                          _buildTextField(
-                              'Mobile',
-                              _mobileNoController,
-                              TextInputType.number,
-                              true,
-                              _mobileNoFocus,
-                            10
-
-                          ),
-                          //SizedBox(height:2 ),
-                          _buildTextField(
-                              'IMEI No. 1',
-                              _imei1Controller,
-                              TextInputType.number,
-                              true,
-                              _imei1Focus,
-                            15
-                          ),
-                          //SizedBox(height:2 ),
-                          _buildTextField(
-                              'IMEI No. 2',
-                              _imei2Controller,
-                              TextInputType.number,
-                              true,
-                              _imei2Focus,15),
+                          _buildTextField('Name', _nameController, TextInputType.name, true, _nameFocus, 40, errorText: _nameError),
+                          _buildTextField('Mobile No.', _mobileNoController, TextInputType.number, true, _mobileNoFocus, 10, errorText: _mobileNoError),
+                          _buildTextField('IMEI No. 1', _imei1Controller, TextInputType.number, true, _imei1Focus, 15, errorText: _imei1Error),
+                          _buildTextField('IMEI No. 2', _imei2Controller, TextInputType.number, true, _imei2Focus, 15, errorText: _imei2Error),
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -539,8 +582,14 @@ class _SharedeviceidState extends State<Sharedeviceid> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller,
-      TextInputType inputType, bool YN, FocusNode FN,int maxLength) {
+  Widget _buildTextField(
+      String label,
+      TextEditingController controller,
+      TextInputType inputType,
+      bool YN,
+      FocusNode FN,
+      int maxLength,
+      {String? errorText}) {  // Add errorText as an optional named parameter
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -550,23 +599,24 @@ class _SharedeviceidState extends State<Sharedeviceid> {
         children: [
           Text(
             label,
-            style: TextStyle(fontFamily: "Poppins-Regular",
+            style: TextStyle(
+              fontFamily: "Poppins-Regular",
               fontSize: 13,
             ),
           ),
           SizedBox(height: 1),
           Container(
-            width: double.infinity, // Set the desired width
+            width: double.infinity,
             child: Center(
               child: TextFormField(
                 maxLength: maxLength,
                 controller: controller,
                 focusNode: FN,
                 keyboardType: inputType,
-                // Set the input type
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  counterText: ""
+                  counterText: "",
+                  errorText: errorText, // Use the errorText parameter here
                 ),
                 enabled: YN,
               ),
@@ -576,6 +626,8 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       ),
     );
   }
+
+
 
   Future<void> geolocator() async {
     try {
@@ -721,6 +773,8 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       });
     }
   }
+
+
 
 
 
