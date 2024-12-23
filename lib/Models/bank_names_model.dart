@@ -35,23 +35,27 @@ class BankNamesModel {
 class BankNamesDataModel {
   int id;
   String bankName;
+  String fullNameBank;
   bool isActive;
 
   BankNamesDataModel({
     required this.id,
     required this.bankName,
     required this.isActive,
+    required this.fullNameBank,
   });
 
   factory BankNamesDataModel.fromJson(Map<String, dynamic> json) => BankNamesDataModel(
     id: json["id"],
     bankName: json["bankName"],
     isActive: json["isActive"],
+    fullNameBank: json["fullNameBank"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "bankName": bankName,
     "isActive": isActive,
+    "fullNameBank": fullNameBank,
   };
 }

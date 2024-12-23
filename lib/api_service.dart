@@ -185,7 +185,7 @@ abstract class ApiService {
       @Part( name:"GroupCode") String groupCode,
       @Part( name:"BranchCode") String branchCode,
       @Part( name:"Relation_with_Borrower") String relation_with_Borrower,
-      @Part( name:"Bank_name") String bank_name,
+      @Part( name:"BankSanctionId") String bank_name,
       @Part( name:"Loan_Duration") String loan_Duration,
       @Part( name:"Loan_amount") String loan_amount,
       @Part( name:"Loan_Reason") String loan_Reason,
