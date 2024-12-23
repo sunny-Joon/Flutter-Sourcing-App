@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/collection_report.dart';
 import 'package:flutter_sourcing_app/qr_payment_reports.dart';
+import 'package:flutter_sourcing_app/referandearnactivity.dart';
 import 'package:flutter_sourcing_app/utils/current_location.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -159,8 +160,10 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       backgroundColor: const Color(0xFFD42D3F),
       endDrawer: Container(
-        width:110,
-        height: MediaQuery.of(context).size.height/3, // Set the width of the drawer
+
+        width: 110,
+        height: MediaQuery.of(context).size.height / 3, // Set the height of the drawer
+
         child: Drawer(
           backgroundColor: Colors.white,
           child: ListView(
@@ -168,8 +171,7 @@ class _ProfileState extends State<Profile> {
             children: [
               ListTile(
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer
-                  // Navigate to QR Payment Reports
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => QrPaymentReports()),
@@ -183,11 +185,9 @@ class _ProfileState extends State<Profile> {
                   ],
                 ),
               ),
-              // Settings ListTile with Collection Report
               ListTile(
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer
-                  // Navigate to QR Payment Reports
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => CollectionStatus()),
@@ -201,10 +201,10 @@ class _ProfileState extends State<Profile> {
                   ],
                 ),
               ),
-              // About ListTile with Morpho Recharge
               ListTile(
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer
+
+                  Navigator.pop(context);
                   MorphoRechargeDialog.show(context);
 
                 },
@@ -229,7 +229,6 @@ class _ProfileState extends State<Profile> {
           ),
           child: Stack(
             children: [
-              // Background sphere
               Positioned(
                 top: -MediaQuery.of(context).size.width - 50,
                 left: -50,
@@ -244,7 +243,6 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
-              // Header with logo and logout buttons
               Positioned(
                 top: 50,
                 left: 10,
@@ -261,29 +259,54 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
-              // Main content
               Positioned.fill(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.width / 5),
-                    _buildProfilePicture(),
-                    SizedBox(height: 30),
-                    _buildUserDetailsCard(),
-                    // Action cards
-                    Container(
-                      height: MediaQuery.of(context).size.height / 6,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: GridView.builder(
-                          padding: EdgeInsets.all(0),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 1,
-                            mainAxisSpacing: 1,
+                child: SingleChildScrollView( // Added SingleChildScrollView here
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.width / 3),
+                      _buildProfilePicture(),
+                      SizedBox(height: 30),
+                      _buildUserDetailsCard(),
+                      Container(
+                        height: MediaQuery.of(context).size.height / 6,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: GridView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 1,
+                              mainAxisSpacing: 1,
+                            ),
+                            itemCount: 3,
+                            itemBuilder: (context, index) {
+                              if (index == 0) {
+                                return _buildGridItem('QR Payment Report', Icons.qr_code, () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => QrPaymentReports()),
+                                  );
+                                });
+                              } else if (index == 1) {
+                                return _buildGridItem('Morpho Recharge', Icons.find_in_page_sharp, () {
+                                  MorphoRechargeDialog.show(context);
+                                });
+                              } else if (index == 2) {
+                                return _buildGridItem('Collection Reports', Icons.currency_rupee, () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => CollectionStatus()),
+                                  );
+                                });
+                              }
+                              return const SizedBox();
+                            },
                           ),
+
+
                           itemCount: 3,
                           itemBuilder: (context, index) {
                             if (index == 0) {
@@ -311,39 +334,73 @@ class _ProfileState extends State<Profile> {
                             }
                             return const SizedBox();
                           },
+
                         ),
                       ),
-                    ),
-                    // Punch In/Out button
-                    Card(
-                      elevation: 10,
-                      clipBehavior: Clip.antiAlias,
-                      child: Container(
-                        color: punchCard ? Colors.green : Colors.grey,
-                        width: MediaQuery.of(context).size.width - 50,
-                        child: InkWell(
-                          onTap: punchCard ? () {
-                            punchInOut(context);
-                          } : null,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 11.0),
-                            alignment: Alignment.center,
-                            child: Text(
-                              tabName,
-                              style: const TextStyle(
-                                fontFamily: "Poppins-Regular",
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                      Card(
+                        elevation: 10,
+                        clipBehavior: Clip.antiAlias,
+                        child: Container(
+                          color: punchCard ? Colors.green : Colors.grey,
+                          width: MediaQuery.of(context).size.width - 50,
+                          child: InkWell(
+                            onTap: punchCard ? () {
+                              punchInOut(context);
+                            } : null,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 11.0),
+                              alignment: Alignment.center,
+                              child: Text(
+                                tabName,
+                                style: const TextStyle(
+                                  fontFamily: "Poppins-Regular",
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 20),
+                      Stack(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            child: Image.asset(
+                              'assets/Images/earn5.png',
+                              width: MediaQuery.of(context).size.width - 20,
+                              height: 250,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 15,
+                            left: 15,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => referandearnactivity()),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                                textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                              ),
+                              child: Text("Refer Now"),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
+
             ],
           ),
         ),

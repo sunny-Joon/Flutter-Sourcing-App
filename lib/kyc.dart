@@ -2979,7 +2979,7 @@ bool checkIdMendate(){
       showToast_Error("Please select borrower's relation with guardian");
       return false;
     } else if (_mobileNoController.text.isEmpty ||
-        _mobileNoController.text.length != 10) {
+        _mobileNoController.text.length != 10||  !_mobileNoController.text.contains(RegExp(r'^[0-9]{10}$'))) {
       showToast_Error("Please enter correct mobile number");
       return false;
     } else if (_dobController.text.isEmpty) {

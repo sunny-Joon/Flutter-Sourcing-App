@@ -5042,8 +5042,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please enter Reservation Category");
       _resCatFocus.requestFocus();
       return false;
-    } else if (mobileController.text.isEmpty) {
-      showToast_Error("Please enter Mobile Number");
+    } else if (mobileController.text.isEmpty || mobileController.text.length != 10 ||
+        !mobileController.text.contains(RegExp(r'^[0-9]{10}$'))) {
+      showToast_Error("Please enter correct Mobile Number");
       _mobileFocus.requestFocus();
       return false;
     } else if (selectedIsHandicap == null ||
@@ -5367,7 +5368,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _lnameFocus.requestFocus();
       return false;
     }*/
-    else if (_phoneController.text.isEmpty) {
+    else if (_phoneController.text.isEmpty || _phoneController.text.length != 10 ||
+        !_phoneController.text.contains(RegExp(r'^[0-9]{10}$'))) {
       showToast_Error("Please Enter Phone Number");
       _phoneFocus.requestFocus();
       return false;

@@ -659,7 +659,7 @@ class _LoginPageState extends State<LoginPage> {
             );
           },
         ),
-        SpeedDialChild(
+       /* SpeedDialChild(
           child: Icon(FontAwesomeIcons.whatsapp),
           label: 'WhatsApp Support',
           onTap: () async {
@@ -682,17 +682,17 @@ class _LoginPageState extends State<LoginPage> {
               );
             }
           },
-        ),
+        ),*/
         SpeedDialChild(
           child: Icon(Icons.call),
           label: 'Call Support',
           onTap: () => _makePhoneCall('918595847059'),
         ),
-        SpeedDialChild(
+       /* SpeedDialChild(
           child: Icon(Icons.message),
           label: 'Text Support',
           onTap: () => _sendTextMessage('918595847059'),
-        ),
+        ),*/
         SpeedDialChild(
           child: Icon(Icons.email),
           label: 'Email Support',

@@ -750,6 +750,14 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     }else if(_image ==null){
       showToast_Error("Please Click House Picture");
       return false;
+    }else if (_Mobilereferenceperson1Controller.text.length != 10 ||
+        !_Mobilereferenceperson1Controller.text.contains(RegExp(r'^[0-9]{10}$'))) {
+      showToast_Error("Please enter a valid 10-digit mobile number");
+      return false;
+    } else if (_Mobilereferenceperson2Controller.text.length != 10 ||
+        !_Mobilereferenceperson2Controller.text.contains(RegExp(r'^[0-9]{10}$'))) {
+      showToast_Error("Please enter a valid 10-digit mobile number");
+      return false;
     }
     return true;
   }
