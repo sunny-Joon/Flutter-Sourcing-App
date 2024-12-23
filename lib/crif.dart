@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
 import 'dart:math';
+
+import 'DATABASE/database_helper.dart';
+import 'Models/bank_names_model.dart';
+import 'Models/range_category_model.dart';
+import 'api_service.dart';
+import 'global_class.dart';
 
 class LoanEligibilityPage extends StatefulWidget {
   final int crifScore;
@@ -13,6 +21,9 @@ class LoanEligibilityPage extends StatefulWidget {
 class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  late List<BankNamesDataModel> bankNamesList = [];
+  String? selectedBank;
+
 
   @override
   void initState() {
@@ -21,6 +32,7 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
       duration: const Duration(seconds: 2),
       vsync: this,
     );
+    _BabnkNamesAPI(context);
 
     _animation = Tween<double>(begin: 0, end: widget.crifScore.toDouble()).animate(_controller)
       ..addListener(() {
@@ -29,6 +41,7 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
 
     _controller.forward();
   }
+
 
   @override
   void dispose() {
@@ -69,31 +82,44 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
                 ],
               ),
             ),
-            // Select Bank Dropdown
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Select Bank*'),
-                SizedBox(width: 16.0),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.red),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: DropdownButton<String>(
-                    value: 'SBI',
-                    onChanged: (String? newValue) {},
-                    items: <String>['SBI', 'HDFC', 'ICICI']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
+            Text(
+              'BANK NAME',
+              style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+              textAlign: TextAlign.left,
+            ),
+            Container(
+              //  //height: 45,
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: DropdownButton<String>(
+                value: selectedBank,
+                isExpanded: true,
+                iconSize: 24,
+                elevation: 16,
+                style: TextStyle(
+                    fontFamily: "Poppins-Regular",
+                    color: Colors.black,
+                    fontSize: 13),
+                underline: Container(
+                  height: 2,
+                  color: Colors.transparent,
                 ),
-              ],
+                onChanged:(String? newValue) {
+                  setState(() {
+                    selectedBank = newValue!;
+                  });
+                },
+
+                items: bankNamesList.map((BankNamesDataModel value) {
+                  return DropdownMenuItem<String>(
+                    value: value.bankName,
+                    child: Text(value.bankName),
+                  );
+                }).toList(),
+              ),
             ),
             SizedBox(height: 8.0),
             Text(
@@ -125,19 +151,74 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
             ),
             SizedBox(height: 16.0),
             // Try Again Button
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFD42D3F),
-                padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
+            GestureDetector(
+              onTap: (){},
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.redAccent, Color(0xFFD42D3F)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.4),
+                      blurRadius: 10,
+                      offset: Offset(5, 5),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Text(
+                    'Try Again',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 10.0,
+                          color: Colors.black.withOpacity(0.5),
+                          offset: Offset(2.0, 2.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              child: Text('TRY AGAIN'),
-            ),
+            )
           ],
         ),
       ),
     );
   }
+
+  Future<void> _BabnkNamesAPI(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
+
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .bankNames(GlobalClass.token, GlobalClass.dbName)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        if (!value.data.isEmpty) {
+          setState(() {
+            bankNamesList = value.data;
+          });
+        }
+      } else {
+        EasyLoading.dismiss();
+GlobalClass.showErrorAlert(context, "Bank Name List Not Fetched", 1);      }
+    }).catchError((error) {
+      EasyLoading.dismiss();
+      GlobalClass.showUnsuccessfulAlert(context, "Bank Name Data not Fetched", 1);
+    });
+  }
+
 }
 
 class SemicircleProgressPainter extends CustomPainter {
@@ -163,8 +244,8 @@ class SemicircleProgressPainter extends CustomPainter {
 
     // Draw light color shades for score ranges
     drawScoreRange(canvas, size, Colors.green.withOpacity(0.3), 0.0, 0.02); // 0-18
-    drawScoreRange(canvas, size, Colors.red.withOpacity(0.3), 0.02, 0.26);   // 19-234
-    drawScoreRange(canvas, size, Colors.orange.withOpacity(0.3), 0.26, 0.5); // 235-450
+    drawScoreRange(canvas, size, Colors.red.withOpacity(0.3), 0.02, 0.34);   // 19-234
+    drawScoreRange(canvas, size, Colors.orange.withOpacity(0.3), 0.34, 0.5); // 235-450
     drawScoreRange(canvas, size, Colors.yellow.withOpacity(0.3), 0.5, 0.72); // 451-650
     drawScoreRange(canvas, size, Colors.lightGreen.withOpacity(0.3), 0.72, 0.83); // 651-750
     drawScoreRange(canvas, size, Colors.green.withOpacity(0.3), 0.83, 1.0);  // 751-900
@@ -176,8 +257,8 @@ class SemicircleProgressPainter extends CustomPainter {
 
     if (crifScore > 0) {
       final Gradient gradient = LinearGradient(
-        colors: [Colors.red, Colors.orange, Colors.yellow, Colors.green],
-        stops: [0.0, 0.33, 0.66, 1.0],
+        colors: [Colors.green,Colors.red, Colors.orange, Colors.yellow, Colors.lightGreen,Colors.green],
+        stops: [0.0, 0.03,0.26, 0.6, 0.9,1],
       );
 
       final Rect arcRect = Rect.fromLTWH(0, 0, size.width, size.height * 2);
@@ -197,23 +278,8 @@ class SemicircleProgressPainter extends CustomPainter {
       );
     }
 
-    // Draw the needle
-    final double angle = pi + sweepAngle; // Adjust for needle position
-    final double needleLength = size.width / 2;
-    final double needleWidth = 5;
+      drawNeedle(canvas, size, sweepAngle); // Adjust sweepAngle as needed
 
-    final Paint needlePaint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = needleWidth
-      ..strokeCap = StrokeCap.round;
-
-    final Offset center = Offset(size.width / 2, size.height);
-    final Offset needleEnd = Offset(
-      center.dx + needleLength * cos(angle),
-      center.dy + needleLength * sin(angle),
-    );
-
-    canvas.drawLine(center, needleEnd, needlePaint);
 
     // Draw the labels
     final textPainter = (String text, Offset offset, TextStyle style) {
@@ -224,18 +290,18 @@ class SemicircleProgressPainter extends CustomPainter {
     };
 
 
-    textPainter('150', Offset(size.width * -0.04, size.height * .4),TextStyle(color: Colors.black));
-    textPainter('300', Offset(size.width * 0.17, size.height * .0),TextStyle(color: Colors.black));
+    textPainter('18', Offset(size.width * -0.08, size.height * .87),TextStyle(color: Colors.black));
+    textPainter('300', Offset(size.width * 0.18, size.height * -0.02),TextStyle(color: Colors.black));
     textPainter('450', Offset(size.width * 0.45, size.height * -0.15),TextStyle(color: Colors.black));
-    textPainter('600', Offset(size.width * 0.77, size.height * .0),TextStyle(color: Colors.black));
+    textPainter('650', Offset(size.width * 0.82, size.height * .1),TextStyle(color: Colors.black));
     textPainter('750', Offset(size.width * 0.96, size.height * .4),TextStyle(color: Colors.black));
-    textPainter('900', Offset(size.width * 0.95, size.height * 1),TextStyle(color: Colors.black));
-    textPainter('000', Offset(size.width * -0.04, size.height * 1.05),TextStyle(color: Colors.black));
+    textPainter('900', Offset(size.width * 0.95, size.height * 1.05),TextStyle(color: Colors.black));
+    textPainter(' 0 ', Offset(size.width * -0.04, size.height * 1.05),TextStyle(color: Colors.black));
 
     textPainter('Very High', Offset(size.width * 0.75, size.height * 0.8), TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
     textPainter('High', Offset(size.width * 0.78, size.height * 0.39), TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
     textPainter('Medium', Offset(size.width * 0.55, size.height * 0.25), TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
-    textPainter('Low', Offset(size.width * 0.30, size.height * 0.2), TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
+    textPainter('Low', Offset(size.width * 0.35, size.height * 0.2), TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
     textPainter('Very Low', Offset(size.width * 0.05, size.height * 0.7), TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
 
   }
@@ -261,4 +327,57 @@ class SemicircleProgressPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
+
+  void drawNeedle(Canvas canvas, Size size, double sweepAngle) {
+    final double angle = pi + sweepAngle; // Adjust for needle position
+    final double needleLength = size.width / 2;
+    final double baseWidth = 10;
+    final double baseRadius = 10;
+
+    final Paint needlePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.fill;
+
+    final Offset center = Offset(size.width / 2, size.height); // Center of the circle
+    final Offset needleTip = Offset(
+      center.dx + needleLength * cos(angle),
+      center.dy + needleLength * sin(angle),
+    );
+
+    // Base center of the needle (keeping the base at the center of the circle)
+    final Offset baseCenter = Offset(
+      center.dx,
+      center.dy,
+    );
+
+    final Paint basePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.fill;
+
+    // Draw the base circle at the center of the circle
+    canvas.drawCircle(baseCenter, baseRadius, basePaint);
+
+    // Needle base (ensuring it is centered and perpendicular to the needle)
+    final Offset needleBaseLeft = Offset(
+      center.dx - (baseWidth / 2) * cos(angle - pi / 2),
+      center.dy - (baseWidth / 2) * sin(angle - pi / 2),
+    );
+
+    final Offset needleBaseRight = Offset(
+      center.dx + (baseWidth / 2) * cos(angle - pi / 2),
+      center.dy + (baseWidth / 2) * sin(angle - pi / 2),
+    );
+
+    // Draw the needle path
+    final Path needlePath = Path()
+      ..moveTo(needleBaseLeft.dx, needleBaseLeft.dy)
+      ..lineTo(needleBaseRight.dx, needleBaseRight.dy)
+      ..lineTo(needleTip.dx, needleTip.dy)
+      ..close();
+
+    canvas.drawPath(needlePath, needlePaint);
+  }
+
+
+
 }

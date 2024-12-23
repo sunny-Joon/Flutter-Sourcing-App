@@ -383,9 +383,16 @@ class ApplicationgetAllDataModel {
     loanReason: json["loan_Reason"]??"",
     expenses: json["expenses"]??0,
     income: json["income"]??0,
-    fiIncomeExpenses: List<FiIncomeExpense>.from(json["fiIncomeExpenses"].map((x) => FiIncomeExpense.fromJson(x))),
-    familyMembers: List<FamilyMember>.from(json["familyMembers"].map((x) => FamilyMember.fromJson(x))),
-    guarantors: List<Guarantor>.from(json["guarantors"].map((x) => Guarantor.fromJson(x))),
+    fiIncomeExpenses: json["fiIncomeExpenses"] != null
+        ? List<FiIncomeExpense>.from(json["fiIncomeExpenses"].map((x) => FiIncomeExpense.fromJson(x)))
+        : [],
+    familyMembers: json["familyMembers"] != null
+        ? List<FamilyMember>.from(json["familyMembers"].map((x) => FamilyMember.fromJson(x)))
+        : [],
+    guarantors: json["guarantors"] != null
+        ? List<Guarantor>.from(json["guarantors"].map((x) => Guarantor.fromJson(x)))
+        : [],
+
   );
 
   Map<String, dynamic> toJson() => {
