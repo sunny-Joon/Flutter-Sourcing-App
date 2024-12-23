@@ -1073,7 +1073,7 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  Future<void>        getDataFromOCR(String type, BuildContext context) async {
+  Future<void>getDataFromOCR(String type, BuildContext context) async {
     EasyLoading.show();
     File? pickedImage = await GlobalClass().pickImage();
 
@@ -1113,15 +1113,32 @@ class _KYCPageState extends State<KYCPage> {
             });
             Navigator.of(context).pop();
           } else if (type == "adharBack") {
-            _pincodeController.text = response.data.pincode;
-            if (response.data.relation.toLowerCase() == "father") {
-              _gurNameController.text = response.data.guardianName;
-              setState(() {
-                relationwithBorrowerselected = "Father";
-              });
+            setState(() {
+              _pincodeController.text = response.data.pincode;
               _cityController.text = response.data.cityName;
+              String cleanAddress(String name) {
+                // Remove unwanted characters
+                String cleanedAddrName = name.replaceAll(RegExp(r'[^a-zA-Z0-9\s\-\(\)\./\\]'), '');
+
+                // Replace multiple consecutive special characters with a single instance
+                cleanedAddrName = cleanedAddrName.replaceAllMapped(RegExp(r'(\s\s+|\-\-+|\(\(+|\)\)+|\.{2,}|/{2,}|\\{2,})'), (match) {
+                  // Get the matched string and determine the appropriate replacement
+                  String matchedString = match.group(0)!;
+                  if (matchedString.contains('-')) return '-';
+                  if (matchedString.contains('(')) return '(';
+                  if (matchedString.contains(')')) return ')';
+                  if (matchedString.contains('.')) return '.';
+                  if (matchedString.contains('/')) return '/';
+                  if (matchedString.contains('\\')) return '\\';
+                  return ' ';
+                });
+                return cleanedAddrName;
+              }
+
+              String cleanedAddName = cleanAddress(response.data.address1);
+
               List<String> addressParts =
-                  response.data.address1.trim().split(" ");
+              cleanedAddName.trim().split(" ");
               if (addressParts.length == 1) {
                 _address1Controller.text = addressParts[0];
               } else if (addressParts.length == 2) {
@@ -1133,57 +1150,61 @@ class _KYCPageState extends State<KYCPage> {
                 _address3Controller.text =
                     addressParts.sublist(1, addressParts.length - 1).join(' ');
               }
-              List<String> guarNameParts =
-                  response.data.guardianName.trim().split(" ");
-              if (guarNameParts.length == 1) {
-                _fatherFirstNameController.text = guarNameParts[0];
-              } else if (guarNameParts.length == 2) {
-                _fatherFirstNameController.text = guarNameParts[0];
-                _fatherLastNameController.text = guarNameParts[1];
-              } else {
-                _fatherFirstNameController.text = guarNameParts.first;
-                _fatherLastNameController.text = guarNameParts.last;
-                _fatherMiddleNameController.text = guarNameParts
-                    .sublist(1, guarNameParts.length - 1)
-                    .join(' ');
+
+              if (response.data.relation.toLowerCase() == "father") {
+
+                String cleanGuardianName(String name) {
+                  return name.replaceAll(RegExp(r'[^a-zA-Z0-9.\s]'), '');
+                }
+                String cleanedGuardianName = cleanGuardianName(response.data.guardianName);
+                  _gurNameController.text = cleanedGuardianName;
+                  relationwithBorrowerselected = "Father";
+
+                List<String> guarNameParts =
+                _gurNameController.text.trim().split(" ");
+                if (guarNameParts.length == 1) {
+                  _fatherFirstNameController.text = guarNameParts[0];
+                } else if (guarNameParts.length == 2) {
+                  _fatherFirstNameController.text = guarNameParts[0];
+                  _fatherLastNameController.text = guarNameParts[1];
+                } else {
+                  _fatherFirstNameController.text = guarNameParts.first;
+                  _fatherLastNameController.text = guarNameParts.last;
+                  _fatherMiddleNameController.text = guarNameParts
+                      .sublist(1, guarNameParts.length - 1)
+                      .join(' ');
+                }
+              } else if (response.data.relation.toLowerCase() == "husband") {
+
+                  relationwithBorrowerselected = "Husband";
+                  selectedMarritalStatus = "Married";
+
+                String cleanGuardianName(String name) {
+                  return name.replaceAll(RegExp(r'[^a-zA-Z0-9.\s]'), '');
+                }
+                String cleanedGuardianName = cleanGuardianName(response.data.guardianName);
+
+                _gurNameController.text = cleanedGuardianName;
+
+                List<String> guarNameParts = cleanedGuardianName.trim().split(" ");
+
+                if (guarNameParts.length == 1) {
+                  _spouseFirstNameController.text = guarNameParts[0];
+                } else if (guarNameParts.length == 2) {
+                  _spouseFirstNameController.text = guarNameParts[0];
+                  _spouseLastNameController.text = guarNameParts[1];
+                } else {
+                  _spouseFirstNameController.text = guarNameParts.first;
+                  _spouseLastNameController.text = guarNameParts.last;
+                  _spouseMiddleNameController.text = guarNameParts
+                      .sublist(1, guarNameParts.length - 1)
+                      .join(' ');
+                }
+
               }
-            } else if (response.data.relation.toLowerCase() == "husband") {
-              _gurNameController.text = response.data.guardianName;
-              setState(() {
-                relationwithBorrowerselected = "Husband";
-                selectedMarritalStatus = "Married";
-              });
-              _cityController.text = response.data.cityName;
-              List<String> addressParts =
-                  response.data.address1.trim().split(" ");
-              if (addressParts.length == 1) {
-                _address1Controller.text = addressParts[0];
-              } else if (addressParts.length == 2) {
-                _address1Controller.text = addressParts[0];
-                _address2Controller.text = addressParts[1];
-              } else {
-                _address1Controller.text = addressParts.first;
-                _address2Controller.text = addressParts.last;
-                _address3Controller.text =
-                    addressParts.sublist(1, addressParts.length - 1).join(' ');
-              }
-              List<String> guarNameParts =
-                  response.data.guardianName.trim().split(" ");
-              if (guarNameParts.length == 1) {
-                _spouseFirstNameController.text = guarNameParts[0];
-              } else if (guarNameParts.length == 2) {
-                _spouseFirstNameController.text = guarNameParts[0];
-                _spouseLastNameController.text = guarNameParts[1];
-              } else {
-                _spouseFirstNameController.text = guarNameParts.first;
-                _spouseLastNameController.text = guarNameParts.last;
-                _spouseMiddleNameController.text = guarNameParts
-                    .sublist(1, guarNameParts.length - 1)
-                    .join(' ');
-              }
-            }
+            });
+            EasyLoading.dismiss();
           }
-          EasyLoading.dismiss();
         } else {
           showToast_Error(
               "Data not fetched from this Aadhaar card please check the image");

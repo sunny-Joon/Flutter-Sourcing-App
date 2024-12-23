@@ -57,7 +57,7 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
       });
     } catch (e) {
       print('Error: $e');
-      GlobalClass.showErrorAlert(context, "Server Side Error", 2);
+      GlobalClass.showErrorAlert(context, "Server Side Error", 1);
       setState(() {
         EasyLoading.dismiss();
       });

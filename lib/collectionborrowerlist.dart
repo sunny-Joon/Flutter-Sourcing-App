@@ -95,7 +95,8 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Collection(selectedData: item),
+                     // builder: (context) => Collection(selectedData: item),
+                      builder: (context) => Collection(),
                     ),
                   );
                 },
