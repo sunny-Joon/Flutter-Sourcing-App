@@ -50,6 +50,8 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+
     // Add your dependencies block here
     dependencies {
         // AndroidX Activity library for handling activity results
