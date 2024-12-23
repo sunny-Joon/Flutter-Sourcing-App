@@ -50,7 +50,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final picker = ImagePicker();
   late ApiService apiService_protean;
   bool _isPageLoading = false;
-  int _currentStep = 5;
+  int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
   bool _isEditing = false;
   bool personalInfoEditable = true;
@@ -73,7 +73,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? _pinErrorC;
   bool _isAddressChecked = false;
 
-  late List<BankNamesDataModel> bankNamesList = [];
   List<RangeCategoryDataModel> religion = [];
   List<RangeCategoryDataModel> cast = [];
   List<RangeCategoryDataModel> states = [];
@@ -186,7 +185,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final _IncomeController = TextEditingController();
 
   //Financial INFO
-  String? selectedAccountType, selectedBankName;
+  String? selectedAccountType /*selectedBankName*/;
   final _bank_IFCSController = TextEditingController();
   final _bank_AcController = TextEditingController();
   String? bankAccHolder, bankAddress;
@@ -317,7 +316,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool isSpecialSocialCategoryVisible = false;
 
   DateTime? _selectedDate;
-  String? selectedBank;
   String? Fi_Id;
   String qrResult = "";
   File? _imageFile;
@@ -382,7 +380,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     GetDocs(context);
     initializeData(); // Fetch initial data
-    _BabnkNamesAPI(context);
     _emailIdFocus.addListener(_validateEmail);
     _mobileFocusNode.addListener(_validateMobile);
     _pinFocusNodeP.addListener(() {
@@ -2587,46 +2584,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-          Text(
-            'BANK NAME',
-            style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-            textAlign: TextAlign.left,
-          ),
-          Container(
-            //  //height: 45,
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: DropdownButton<String>(
-              value: selectedBankName,
-              isExpanded: true,
-              iconSize: 24,
-              elevation: 16,
-              style: TextStyle(
-                  fontFamily: "Poppins-Regular",
-                  color: Colors.black,
-                  fontSize: 13),
-              underline: Container(
-                height: 2,
-                color: Colors.transparent,
-              ),
-              onChanged: FinancialInfoEditable
-                  ? (String? newValue) {
-                      setState(() {
-                        selectedBankName = newValue!;
-                      });
-                    }
-                  : null,
-              items: bankNamesList.map((BankNamesDataModel value) {
-                return DropdownMenuItem<String>(
-                  value: value.bankName,
-                  child: Text(value.bankName),
                 );
               }).toList(),
             ),
@@ -5249,12 +5206,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please Enter Bank Account Number");
       _bank_AcFocus.requestFocus();
       return false;
-    } else if (selectedBankName == null ||
+    } /*else if (selectedBankName == null ||
         selectedBankName!.isEmpty ||
         selectedBankName!.toLowerCase() == 'select') {
       showToast_Error("Please Enter Bank Name");
       return false;
-    } else if (_bank_IFCSController.text.isEmpty) {
+    }*/ else if (_bank_IFCSController.text.isEmpty) {
       showToast_Error("Please Enter Bank IFSC Code");
       _bank_IFCSFocus.requestFocus();
       return false;
@@ -5556,7 +5513,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     String Fi_ID = FIID.toString();
     String bankType = selectedAccountType.toString();
-    String bank_name = selectedBankName.toString();
+  //  String bank_name = selectedBankName.toString();
     String bank_Ac = _bank_AcController.text.toString();
     String bank_IFCS = _bank_IFCSController.text.toString();
     String bank_address = bankAddress!;
@@ -5568,7 +5525,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "Fi_ID": Fi_ID,
       "bankType": bankType,
       "bank_Ac": bank_Ac,
-      "bank_name": bank_name,
+  //    "bank_name": bank_name,
       "bank_IFCS": bank_IFCS,
       "bank_address": bank_address,
       "bankOpeningDate": bankOpeningDate,
@@ -6157,28 +6114,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
       }
     }).catchError((error) {
       print('Error occurred: $error');
-    });
-  }
-
-  Future<void> _BabnkNamesAPI(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...');
-
-    final api = Provider.of<ApiService>(context, listen: false);
-
-    return await api
-        .bankNames(GlobalClass.token, GlobalClass.dbName)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        EasyLoading.dismiss();
-        if (!value.data.isEmpty) {
-          setState(() {
-            bankNamesList = value.data;
-          });
-        }
-      } else {
-        EasyLoading.dismiss();
-        showToast_Error("Bank Name List Not Fetched");
-      }
     });
   }
 
@@ -6802,8 +6737,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void financialInfo(ApplicationgetAllDataModel data) {
     setState(() {
       FinancialInfoEditable = false;
-      //selectedAccountType = data.bankAc;
-      selectedBankName = data.bankName;
+      selectedAccountType = data.bankAc;
+   //   selectedBankName = data.bankName;
       _bank_AcController.text = data.bankName;
       _bank_IFCSController.text = data.bankIfcs;
       bankAddress = data.bankAddress;
