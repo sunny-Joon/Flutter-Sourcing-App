@@ -338,7 +338,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
   File? passbook;
 
   late String name, ficode, creator;
-
+  String initialPanValue = '';
+  String initialDlValue = '';
+  String initialVoterValue = '';
   @override
   void initState() {
     super.initState();
@@ -348,6 +350,32 @@ class _ApplicationPageState extends State<ApplicationPage> {
     creator = widget.selectedData.creator;
     ficode = widget.selectedData.fiCode.toString();
     name = widget.selectedData.fullName;
+
+    initialPanValue = _panController.text;
+    initialDlValue = _dlController.text;
+    initialVoterValue = _voterController.text;
+    _panController.addListener(() {
+      if (panVerified && _panController.text != initialPanValue) {
+        setState(() {
+          panVerified = false;
+        });
+      }
+    });
+    _dlController.addListener(() {
+      if (dlVerified && _dlController.text != initialDlValue) {
+        setState(() {
+          dlVerified = false;
+        });
+      }
+    });
+    _voterController.addListener(() {
+      if (voterVerified && _voterController.text != initialVoterValue) {
+        setState(() {
+          voterVerified = false;
+        });
+      }
+    });
+
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     getAllDataApi(context);
@@ -512,7 +540,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   height: 20,
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.only(top: 8,bottom: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -3569,8 +3597,41 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   Row(
                     children: [
                       Flexible(
-                        child: _buildTextField('PAN No', _panController,
-                            GuarantorEditable, _panFocus),
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'PAN No',
+                                style: TextStyle(
+                                  fontFamily: "Poppins-Regular",
+                                  fontSize: 13,
+                                ),
+                              ),
+                              SizedBox(height: 1),
+                              Container(
+                                  width: double.infinity,
+                                  color: Colors.white, // Set the desired width
+                                  //  //height: 45, // Set the desired height
+                                  child: Center(
+                                    child: TextFormField(
+                                      enabled: GuarantorEditable,
+                                      controller: _panController,
+                                      focusNode: _panFocus,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter PAN No';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        ),
                       ),
                       SizedBox(width: 10),
                       Padding(
@@ -3618,8 +3679,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           child: GestureDetector(
                             onTap: () {
                               if (_dlController.text.isEmpty ||
-                                  _dlController.text.length != 10) {
-                                showToast_Error("Please Enter Correct PAN No.");
+                                  _dlController.text.length > 16||_dobController.text.isEmpty) {
+                                showToast_Error("DL No. or DOB is Incorrect");
                               } else {
                                 verifyDocs(context, _dlController.text,
                                     "drivinglicense", "", "");
@@ -3688,7 +3749,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               padding: EdgeInsets.all(3),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: dlVerified
+                                color: voterVerified
                                     ? Colors.green
                                     : Colors
                                         .grey, // Use the state variable for color
@@ -5680,7 +5741,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> GetDocs(BuildContext context) async {
-    print("111object");
     EasyLoading.show(
       status: 'Loading...',
     );
@@ -5803,46 +5863,96 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
    // EasyLoading.dismiss();
   }*/
-
-  Future<void> verifyDocs(BuildContext context, String idNoController,
-      String type, String ifsc, String dob) async {
+  Future<void> verifyDocs(BuildContext context,String txnNumber,String type,  String ifsc, String dob) async {
     EasyLoading.show(
       status: 'Loading...',
     );
+    try {
+      Map<String, dynamic> requestBody = {
+        "type": type,
+        "txtnumber": txnNumber,
+        "ifsc": ifsc,
+        //"userdob": dob,
+        "userdob": "2000-10-02",
+        "key": "1",
+      };
 
-    final api = ApiService.create(baseUrl: ApiConfig.baseUrl2);
-    Map<String, dynamic> requestBody = {
-      "type": type,
-      "txtnumber": idNoController,
-      "ifsc": ifsc,
-      "userdob": dob,
-      "key": "1"
-    };
+      // Hit the API
+      final response = await apiService_idc.verifyIdentity(requestBody);
 
-    return await api.verifyDocs(requestBody).then((value) {
-      if (value.statusCode == 200) {
-        setState(() {
-          bankAccHolder = value.data.fullName.toString();
-          /*if (type == "passport") {
-            panVerified = true;
-          }*/
-          if (type == "pancard") {
-            panVerified = true;
-         //   panCardHolderName = value.
-          }
-          if (type == "drivinglicense") {
+      // Handle response
+      if (response is Map<String, dynamic>) {
+        Map<String, dynamic> responseData = response["data"];
+        // Parse JSON object if it’s a map
+        if (type == "pancard") {
+          setState(() {
+            if (response["error"] == null) {
+              panCardHolderName =
+              "${responseData['first_name']} ${responseData['last_name']}";
+              panVerified = true;
+            }else{
+              panCardHolderName = "PAN no. is wrong please check";
+              panVerified = false;
+            }
+          });
+
+        } else if (type == "drivinglicense") {
+          setState(() {
+            dlCardHolderName = "${responseData['name']}";
             dlVerified = true;
-          }
-          if (type == "voterid") {
+          });
+        } else if (type == "voterid") {
+          setState(() {
+            voterCardHolderName = "${responseData['name']}";
             voterVerified = true;
-          }
-        });
-        EasyLoading.dismiss();
+
+          });
+        }
       } else {
+        if (type == "pancard") {
+          setState(() {
+            panCardHolderName = "PAN no is not verified";
+            panVerified = false;
+          });
+        } else if (type == "drivinglicense") {
+          setState(() {
+            dlCardHolderName = "Driving License is not verified";
+            dlVerified = false;
+          });
+        } else if (type == "voterid") {
+          setState(() {
+            voterCardHolderName = "Voter no. is not verified";
+            voterVerified = false;
+          });
+        }
+        showToast_Error("Unexpected Response: $response");
+        print("Unexpected Response: $response");
         EasyLoading.dismiss();
       }
-    });
+      EasyLoading.dismiss();
+    } catch (e) {
+      showToast_Error("An error occurred: $e");
+
+      if (type == "pancard") {
+        setState(() {
+          panCardHolderName = "PAN no is not verified";
+          panVerified = false;
+        });
+      } else if (type == "drivinglicense") {
+        setState(() {
+          dlCardHolderName = "Driving License is not verified";
+          dlVerified = false;
+        });
+      } else if (type == "voterid") {
+        setState(() {
+          voterCardHolderName = "Voter no. is not verified";
+          voterVerified = false;
+        });
+      }
+      EasyLoading.dismiss();
+    }
   }
+
 
   void docVerifyIDC(
       String type, String txnNumber, String ifsc, String dob) async {
@@ -5856,6 +5966,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "type": type,
       "txtnumber": txnNumber,
       "ifsc": ifsc,
+      //"userdob": dob,
       "userdob": dob,
       "key": "1",
     };

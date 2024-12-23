@@ -5,13 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/global_model2.dart';
+import 'package:flutter_sourcing_app/collection.dart';
 import 'package:flutter_sourcing_app/stepper_ss.dart';
+import 'package:flutter_sourcing_app/submit_ss_qrtransaction.dart';
  import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'api_service.dart';
 import 'crif.dart';
 import 'global_class.dart';
+import 'house_visit_form.dart';
 import 'login_page.dart';
 import 'Models/global_model.dart';
 import 'stepper_sd.dart';
@@ -85,10 +88,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
          home: SplashScreen(),
-       //  home: LoanEligibilityPage(),
-       //  home: DealerHomePage(),
+        // home: LoanEligibilityPage(),
          builder: EasyLoading.init(),
-         // home:MultiStepForm(),
       ),
     );
   }
@@ -119,10 +120,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child:Image.asset('assets/Images/logo.gif'),
-
           ),
-
-
         ],
       ),
     );
