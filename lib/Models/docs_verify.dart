@@ -16,7 +16,7 @@ class DocsVerify {
   String messageCode;
   String message;
   int timestamp;
-  dynamic error;
+  String error;
   bool success;
   int count;
   String txnId;
@@ -37,16 +37,16 @@ class DocsVerify {
 
   factory DocsVerify.fromJson(Map<String, dynamic> json) => DocsVerify(
     data: DocsVerifyData.fromJson(json["data"]),
-    status: json["status"],
-    statusCode: json["status_code"],
-    responseCode: json["response_code"],
-    messageCode: json["message_code"],
-    message: json["message"],
-    timestamp: json["timestamp"],
-    error: json["error"],
-    success: json["success"],
+    status: json["status"]??"",
+    statusCode: json["status_code"]??"",
+    responseCode: json["response_code"]??"",
+    messageCode: json["message_code"]??"",
+    message: json["message"]??"",
+    timestamp: json["timestamp"]??"",
+    error: json["error"]??"",
+    success: json["success"]??"",
     count: json["count"]??0,
-    txnId: json["txn_id"],
+    txnId: json["txn_id"]??"",
   );
 
   Map<String, dynamic> toJson() => {

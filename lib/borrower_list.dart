@@ -30,16 +30,16 @@ class BorrowerList extends StatefulWidget {
 
 class _BorrowerListState extends State<BorrowerList> {
   List<BorrowerListDataModel> _borrowerItems = [];
-
+  String noDataFoundMsg="";
 
   @override
   void initState() {
     super.initState();
-   // if(widget.page =="E SIGN"){
+   if(widget.page =="E SIGN"){
       _fetchBorrowerList(1);
-   // }else{
-   //   _fetchBorrowerList(0);
- //   }
+   }else{
+     _fetchBorrowerList(0);
+   }
   }
 
   Future<void> _fetchBorrowerList(int type) async {
@@ -57,19 +57,27 @@ class _BorrowerListState extends State<BorrowerList> {
       type
 
     ).then((response) {
-      if (response.statuscode == 200) {
+      if (response.statuscode == 200 && response.data[0].errormsg.isEmpty) {
         setState(() {
           if(widget.page=="APPLICATION FORM"){
 
           }
-          _borrowerItems = response.data;
+          if(widget.page=="HouseVisit"){
+            _borrowerItems =response.data.where((item) => item.homeVisit == "No").toList();
+            if(_borrowerItems.length<1){
+              noDataFoundMsg="No record found for House Visit!";
+            }
+          }else{
+            _borrowerItems = response.data;
+          }
+
 
         });
         EasyLoading.dismiss();
 print("object++12");
       } else {
         setState(() {
-
+          noDataFoundMsg=response.data[0].errormsg;
         });
         EasyLoading.dismiss();
 
@@ -141,6 +149,7 @@ print("object++12");
               ),
             ),
           ),
+          noDataFoundMsg.isEmpty?
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.all(0),
@@ -157,16 +166,22 @@ print("object++12");
                   onTap: () {
                     switch (widget.page) {
                       case 'APPLICATION FORM':
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ApplicationPage(
-                              BranchData: widget.BranchData,
-                              GroupData: widget.GroupData,
-                              selectedData: item,
+                        if(item.homeVisit=="No"){
+                          GlobalClass.showUnsuccessfulAlert(context, "Please fill House Visit form for this case", 1);
+
+                        }else{
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ApplicationPage(
+                                BranchData: widget.BranchData,
+                                GroupData: widget.GroupData,
+                                selectedData: item,
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        }
+
                         break;
                       case 'E SIGN':
                         _showPopup(context,item);
@@ -189,7 +204,18 @@ print("object++12");
                 );
               },
             ),
-          ),
+          ):Container(height: MediaQuery.of(context).size.height/2,child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Image.asset(
+                  'assets/Images/no_data.png', // Replace with your logo asset path
+                  height: 70,
+                ),
+              ),
+              Center(child: Text(noDataFoundMsg ,style: TextStyle(color: Colors.white,fontWeight: FontWeight.w400,fontSize: 16),),)
+            ],
+          ),),
         ],
       ),
     );

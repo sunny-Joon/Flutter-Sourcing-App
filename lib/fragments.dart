@@ -1,5 +1,6 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/CollectionBorrowerList.dart';
 import 'package:flutter_sourcing_app/collectionbranchlist.dart';
@@ -53,150 +54,150 @@ class _FragmentsState extends State<Fragments> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       RangeCategory(context);
     });
-  }
+   }
+
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(child: Scaffold(
-      backgroundColor: Color(0xFFD42D3F), // Set background color
-      body: _widgetOptions[_page], // Display the selected page
-      bottomNavigationBar: CurvedNavigationBar(
-        height: 60,
-        items: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(8),
-            child: ImageIcon(
-              AssetImage(
-                  'assets/Images/home_ic.png'), // Replace 'assets/image.png' with your image path
-              size: 20, // Adjust the size as needed
-              color: _page == 0 ? appColors.mainAppColor : Colors.grey,
-              // Adjust the color as needed
+    return   WillPopScope(onWillPop: _onWillPop, child: Scaffold(
+        backgroundColor: Color(0xFFD42D3F), // Set background color
+        body: _widgetOptions[_page], // Display the selected page
+        bottomNavigationBar: CurvedNavigationBar(
+          height: 60,
+          items: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: ImageIcon(
+                AssetImage(
+                    'assets/Images/home_ic.png'), // Replace 'assets/image.png' with your image path
+                size: 20, // Adjust the size as needed
+                color: _page == 0 ? appColors.mainAppColor : Colors.grey,
+                // Adjust the color as needed
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8),
-            child: ImageIcon(
-              AssetImage(
-                  'assets/Images/leader_ic.png'), // Replace 'assets/image.png' with your image path
-              size: 20, // Adjust the size as needed
-              color: _page == 1 ? appColors.mainAppColor : Colors.grey,
-              // Adjust the color as needed
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: ImageIcon(
+                AssetImage(
+                    'assets/Images/leader_ic.png'), // Replace 'assets/image.png' with your image path
+                size: 20, // Adjust the size as needed
+                color: _page == 1 ? appColors.mainAppColor : Colors.grey,
+                // Adjust the color as needed
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8),
-            child: ImageIcon(
-              AssetImage(
-                  'assets/Images/service_ic.png'), // Replace 'assets/image.png' with your image path
-              size: 20, // Adjust the size as needed
-              color: _page == 2 ? appColors.mainAppColor : Colors.grey,
-              // Adjust the color as needed
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: ImageIcon(
+                AssetImage(
+                    'assets/Images/service_ic.png'), // Replace 'assets/image.png' with your image path
+                size: 20, // Adjust the size as needed
+                color: _page == 2 ? appColors.mainAppColor : Colors.grey,
+                // Adjust the color as needed
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8),
-            child: ImageIcon(
-              AssetImage(
-                  'assets/Images/earn_ic.png'), // Replace 'assets/image.png' with your image path
-              size: 20, // Adjust the size as needed
-              color: _page == 3 ? appColors.mainAppColor : Colors.grey,
-              // Adjust the color as needed
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: ImageIcon(
+                AssetImage(
+                    'assets/Images/earn_ic.png'), // Replace 'assets/image.png' with your image path
+                size: 20, // Adjust the size as needed
+                color: _page == 3 ? appColors.mainAppColor : Colors.grey,
+                // Adjust the color as needed
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8),
-            child: ImageIcon(
-              AssetImage(
-                  'assets/Images/prof_ic.png'), // Replace 'assets/image.png' with your image path
-              size: 20, // Adjust the size as needed
-              color: _page == 4 ? appColors.mainAppColor : Colors.grey,
-              // Adjust the color as needed
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: ImageIcon(
+                AssetImage(
+                    'assets/Images/prof_ic.png'), // Replace 'assets/image.png' with your image path
+                size: 20, // Adjust the size as needed
+                color: _page == 4 ? appColors.mainAppColor : Colors.grey,
+                // Adjust the color as needed
+              ),
             ),
-          ),
-        ],
-        color: Colors.white,
-        buttonBackgroundColor: Colors.white,
-        backgroundColor: Colors.transparent,
-        animationCurve: Curves.easeInOut,
-        animationDuration: const Duration(milliseconds: 400),
-        onTap: (index) {
-          setState(() {
+          ],
+          color: Colors.white,
+          buttonBackgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
+          animationCurve: Curves.easeInOut,
+          animationDuration: const Duration(milliseconds: 400),
+          onTap: (index) {
             setState(() {
-              _page = index;
-              // if(_page==0){
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => HomePage(), // Pass the response object
-              //     ),
-              //   );
-              // }
-              // if(_page==1){
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => LeaderBoard(), // Pass the response object
-              //     ),
-              //   );
-              // }
-              // if(_page==2){
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => OnBoarding(), // Pass the response object
-              //     ),
-              //   );
-              // }
-              // if(_page==3){
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => Collection(), // Pass the response object
-              //     ),
-              //   );
-              // }
-              // if(_page==4){
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => Profile(), // Pass the response object
-              //     ),
-              //   );
-              // }
+              setState(() {
+                _page = index;
+                // if(_page==0){
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => HomePage(), // Pass the response object
+                //     ),
+                //   );
+                // }
+                // if(_page==1){
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => LeaderBoard(), // Pass the response object
+                //     ),
+                //   );
+                // }
+                // if(_page==2){
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => OnBoarding(), // Pass the response object
+                //     ),
+                //   );
+                // }
+                // if(_page==3){
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => Collection(), // Pass the response object
+                //     ),
+                //   );
+                // }
+                // if(_page==4){
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => Profile(), // Pass the response object
+                //     ),
+                //   );
+                // }
+              });
             });
-          });
-        },
-        letIndexChange: (index) => true,
-      ),
+          },
+          letIndexChange: (index) => true,
+        ),
 
-    ), onWillPop: _onWillPop);
+      ));
+
   }
   Future<bool> _onWillPop() async {
-    // Show a confirmation dialog
-    return await showDialog(
+    bool? shouldClose = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Are you sure?'),
-
         content: Text('Do you want to close App?'),
         actions: [
           TextButton(
-            onPressed: () =>
-                Navigator.of(context).pop(false), // Stay in the app
+            onPressed: () => Navigator.of(context).pop(false), // Return false
             child: Text('No'),
           ),
           TextButton(
             onPressed: () {
               EasyLoading.dismiss();
-              Navigator.of(context).pop(true);
-            }, // Exit the app
+              Navigator.of(context).pop(true); // Return true
+            },
             child: Text('Yes'),
           ),
         ],
       ),
-    ) ??
-        false; // Default to false if dialog is dismissed
+    );
+    return shouldClose ?? false; // Default to false if dismissed
   }
+
   Future<void> RangeCategory(BuildContext context) async {
     EasyLoading.show(status: 'Loading...',);
 

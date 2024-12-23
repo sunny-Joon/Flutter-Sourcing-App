@@ -2,15 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/global_model2.dart';
+import 'package:flutter_sourcing_app/collection.dart';
 import 'package:flutter_sourcing_app/stepper_ss.dart';
+import 'package:flutter_sourcing_app/submit_ss_qrtransaction.dart';
  import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'api_service.dart';
 import 'crif.dart';
 import 'global_class.dart';
+import 'house_visit_form.dart';
 import 'login_page.dart';
 import 'Models/global_model.dart';
 import 'stepper_sd.dart';
@@ -24,7 +28,14 @@ void main() {
 
   WidgetsFlutterBinding.ensureInitialized();
   requestPermissions(); // Request permissions when the app starts+
-  runApp(const MyApp());
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // Allow only portrait up orientation
+    // DeviceOrientation.portraitDown, // Uncomment to allow upside-down portrait
+    // DeviceOrientation.landscapeLeft, // Uncomment to allow landscape left
+    // DeviceOrientation.landscapeRight, // Uncomment to allow landscape right
+  ]).then((_) {
+    runApp(MyApp());
+  });
   configLoading();
 }
 void configLoading() {
@@ -40,6 +51,7 @@ void requestPermissions() async {
   // Request permissions
   Map<Permission, PermissionStatus> statuses = await [
     Permission.camera,
+    Permission.microphone,
     Permission.phone,
     Permission.location,
     Permission.notification, // Note: Permission.internet is not needed, as it's automatically granted.
@@ -76,10 +88,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
          home: SplashScreen(),
-       //  home: LoanEligibilityPage(),
-       //  home: DealerHomePage(),
+        // home: LoanEligibilityPage(),
          builder: EasyLoading.init(),
-         // home:MultiStepForm(),
       ),
     );
   }
@@ -110,10 +120,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child:Image.asset('assets/Images/logo.gif'),
-
           ),
-
-
         ],
       ),
     );

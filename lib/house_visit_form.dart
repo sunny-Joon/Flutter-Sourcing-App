@@ -526,7 +526,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         Image!).then((response) {
       if (response.statuscode == 200) {
         EasyLoading.dismiss();
-        GlobalClass.showSuccessAlert(context,response.message,2);
+        GlobalClass.showSuccessAlert(context,response.message,3);
         LiveTrackRepository().saveLivetrackData( "",   "House Visit",widget.selectedData.id);
       } else {
         EasyLoading.dismiss();

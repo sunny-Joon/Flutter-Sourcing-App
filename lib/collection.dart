@@ -10,12 +10,12 @@ import 'global_class.dart';
 
 class Collection extends StatefulWidget {
 
-  final CollectionBorrowerListDataModel selectedData;
+  /*final CollectionBorrowerListDataModel selectedData;
 
   const Collection({
     super.key,
     required this.selectedData,
-  });
+  });*/
 
   @override
   _CollectionState createState() => _CollectionState();
@@ -24,22 +24,38 @@ class Collection extends StatefulWidget {
 class _CollectionState extends State<Collection> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<bool> checkboxValues = []; // Initialize with false values
-  late List<int> emiAmounts; // Sample EMI amounts
+ // late List<int> emiAmounts; // Sample EMI amounts
   double interestAmount = 0;
   double lateFee = 0;
   double totalAmount = 0;
   late String casecode="",borrower = "";
   late String qrCodeUrl="";
   late GetCollectionDataModel collectionDataModel;
+  String buttonName = "Submit";
 
   @override
   void initState() {
     super.initState();
-      setValues();
-      getQr(context);
-    emiAmounts = widget.selectedData.instData.map((inst) => int.parse(inst.amount)).toList();
-    checkboxValues = List<bool>.filled(emiAmounts.length, false);
+    print("QR tab opened");
+
+      //setValues();
+     // getQr(context);
+   // emiAmounts = widget.selectedData.instData.map((inst) => int.parse(inst.amount)).toList();
+   // checkboxValues = List<bool>.filled(emiAmounts.length, false);
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+
+        if (_tabController.index == 1) {
+          print("QR tab opened");
+          setState(() {
+            buttonName = "Check Payment Status";
+          });
+        }else{
+          setState(() {
+            buttonName = "Submit";
+          });
+        }
+    });
   }
 
   @override
@@ -48,17 +64,17 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
     super.dispose();
   }
 
-  void updateTotalAmount() {
-    totalAmount = checkboxValues.asMap().entries
-        .where((entry) => entry.value)
-        .map((entry) => emiAmounts[entry.key])
-        .fold(0, (prev, amount) => prev + amount);
-    totalAmount += interestAmount + lateFee;
-  }
+  // void updateTotalAmount() {
+  //   totalAmount = checkboxValues.asMap().entries
+  //       .where((entry) => entry.value)
+  //   //   .map((entry) => emiAmounts[entry.key])
+  //  //     .fold(0, (prev, amount) => prev + amount);
+  //   totalAmount += interestAmount + lateFee;
+  // }
 
   @override
   Widget build(BuildContext context) {
-    updateTotalAmount(); // Update total amount on each build
+   // updateTotalAmount(); // Update total amount on each build
 
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
@@ -68,7 +84,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.only(top: 25,bottom: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,7 +229,11 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                           ),
                           ElevatedButton(
                             onPressed: () {
+                              if(buttonName == "Submit"){
                                 saveReceipt(context);
+                              }else if(buttonName == "Check Payment Status"){
+
+                              }
                                 },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.transparent, // Make the button background transparent
@@ -241,7 +261,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                                 ),
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'Submit',
+                                  buttonName,
                                   style: TextStyle(
                                     fontFamily: "Poppins-Regular",
                                     fontSize: 16,
@@ -292,12 +312,12 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                 onChanged: (value) {
                   setState(() {
                     checkboxValues[index] = value!;
-                    updateTotalAmount(); // Update total amount when checkbox is changed
+               //     updateTotalAmount(); // Update total amount when checkbox is changed
                   });
                 },
               ),
-              title: Text('EMI Amount: ₹${emiAmounts[index]}'),
-              subtitle: Text('Due Date: ${widget.selectedData.instData[index].dueDate}'),
+        //      title: Text('EMI Amount: ₹${emiAmounts[index]}'),
+            //  subtitle: Text('Due Date: ${widget.selectedData.instData[index].dueDate}'),
             ),
           ),
         );
@@ -442,14 +462,14 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
     );
   }
 
-  void setValues() {
+  /*void setValues() {
     setState(() {
       interestAmount=widget.selectedData.interestAmt;
       borrower=widget.selectedData.custName;
       casecode=widget.selectedData.caseCode;
       totalAmount=widget.selectedData.totalDueAmt;
     });
-  }
+  }*/
 
 
 
@@ -516,7 +536,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
       }
     }).catchError((err) {
       EasyLoading.dismiss();
-      GlobalClass.showErrorAlert(context, err, 1);
+      GlobalClass.showErrorAlert(context, "Server side Error", 1);
     });
   }
 }

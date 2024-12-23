@@ -48,7 +48,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   late ApiService apiService;
   List<ApplicationgetAllDataModel> BorrowerInfo = [];
   final picker = ImagePicker();
-
+  late ApiService apiService_protean;
   bool _isPageLoading = false;
   int _currentStep = 5;
   final _formKey = GlobalKey<FormState>();
@@ -95,7 +95,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   List<String> titleList = ["Select", "Mr.", "Mrs.", "Miss"];
   List<String> accType = ["Select", "Current", "Savings", "Salary"];
-   String expense = "";
+  String expense = "";
   String income = "";
   String lati = "";
   String longi = "";
@@ -107,6 +107,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
   List<PlaceData> listDistrictCodes = [];
   List<PlaceData> listSubDistrictCodes = [];
   List<PlaceData> listVillagesCodes = [];
+
+  bool isPanVerified = false,
+      isDrivingLicenseVerified = false,
+      isVoterIdVerified = false,
+      isPassportVerified = false;
+  bool panVerified = false;
+  bool dlVerified = false;
+  bool voterVerified = false;
+  String panCardHolderName =
+      "Please search PAN card holder name for verification";
+  String? dlCardHolderName;
+  String? voterCardHolderName;
 
   //fiextra
   List<String> onetonine = [
@@ -125,11 +137,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   List<String> trueFalse = ['Select', 'Yes', 'No'];
 
   Color iconPan = Color(0xFFD42D3F);
+  Color iconPassport = Color(0xFFD42D3F);
   Color iconDl = Color(0xFFD42D3F);
   Color iconVoter = Color(0xFFD42D3F);
 
 //FIEXTRA
-  String? selectedDependent;
   String? selectedReligionextra;
   String? selectedCast;
   String? selectedIsHandicap;
@@ -237,6 +249,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? genderselected;
   String? religionselected;
   String? selectedTitle;
+  String? selectedDependent;
 
 //Guarrantor Page
   final FocusNode _fnameFocus = FocusNode();
@@ -324,16 +337,45 @@ class _ApplicationPageState extends State<ApplicationPage> {
   File? passport;
   File? passbook;
 
-  late String name,ficode,creator;
-
+  late String name, ficode, creator;
+  String initialPanValue = '';
+  String initialDlValue = '';
+  String initialVoterValue = '';
   @override
   void initState() {
     super.initState();
-    _imageFile2 = GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
+    _imageFile2 =
+        GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
     FIID = widget.selectedData.id;
     creator = widget.selectedData.creator;
     ficode = widget.selectedData.fiCode.toString();
     name = widget.selectedData.fullName;
+
+    initialPanValue = _panController.text;
+    initialDlValue = _dlController.text;
+    initialVoterValue = _voterController.text;
+    _panController.addListener(() {
+      if (panVerified && _panController.text != initialPanValue) {
+        setState(() {
+          panVerified = false;
+        });
+      }
+    });
+    _dlController.addListener(() {
+      if (dlVerified && _dlController.text != initialDlValue) {
+        setState(() {
+          dlVerified = false;
+        });
+      }
+    });
+    _voterController.addListener(() {
+      if (voterVerified && _voterController.text != initialVoterValue) {
+        setState(() {
+          voterVerified = false;
+        });
+      }
+    });
+
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     getAllDataApi(context);
@@ -498,7 +540,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   height: 20,
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.only(top: 8,bottom: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -569,61 +611,47 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         top: -50, // Adjust the position as needed
                         left: 0,
                         right: 0,
-                        child: Text(name,
+                        child: Text(
+                          name,
                           style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                        )
-                    ),
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        )),
                     Positioned(
                         top: -35, // Adjust the position as needed
                         left: 0,
                         right: 0,
-                        child: Text(ficode,
+                        child: Text(
+                          ficode,
                           style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                        )
-                    ),
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        )),
                     Positioned(
                         top: -20, // Adjust the position as needed
                         left: 0,
                         right: 0,
-                        child: Text(creator,
+                        child: Text(
+                          creator,
                           style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                        )
-                    ),
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        )),
                     Positioned(
                         top: -35, // Adjust the position as needed
                         left: 0,
                         right: 0,
                         child: Center(
-                          child: InkWell(
-                                  child: CircleAvatar(
-                                    radius: 35,
-                                    backgroundImage: NetworkImage(_imageFile2),
-                                  ),
-                                  onTap: _pickImage,
-                                )
-                             /* : InkWell(
-                                  child: ClipOval(
-                                    child: Image.file(
-                                      File(_imageFile!.path),
-                                      width: 70,
-                                      height: 70,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  onTap: _pickImage,
-                                ),*/
+                          child: CircleAvatar(
+                            radius: 35,
+                            backgroundImage: NetworkImage(_imageFile2),
+                          ),
                         )),
                   ]),
                 ),
@@ -1002,6 +1030,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   errorText: _mobileError,
                 ),
                 keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  // Only digits allowed
+                  LengthLimitingTextInputFormatter(10),
+                  // Maximum length of 10
+                ],
               ),
             )),
         SizedBox(height: 10),
@@ -1308,6 +1342,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         errorText: _pinErrorP,
                       ),
                       keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        // Only digits allowed
+                        LengthLimitingTextInputFormatter(6),
+                        // Maximum length of 10
+                      ],
                     ),
                   ),
                 ],
@@ -3557,34 +3597,76 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   Row(
                     children: [
                       Flexible(
-                        child: _buildTextField('PAN No', _panController,
-                            GuarantorEditable, _panFocus),
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'PAN No',
+                                style: TextStyle(
+                                  fontFamily: "Poppins-Regular",
+                                  fontSize: 13,
+                                ),
+                              ),
+                              SizedBox(height: 1),
+                              Container(
+                                  width: double.infinity,
+                                  color: Colors.white, // Set the desired width
+                                  //  //height: 45, // Set the desired height
+                                  child: Center(
+                                    child: TextFormField(
+                                      enabled: GuarantorEditable,
+                                      controller: _panController,
+                                      focusNode: _panFocus,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter PAN No';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        ),
                       ),
                       SizedBox(width: 10),
                       Padding(
                           padding: EdgeInsets.only(top: 20),
                           child: GestureDetector(
                             onTap: () {
-                              verifyDocs(context, _panController.text,
-                                  "pancard", "", "");
+                              if (_panController.text.isEmpty ||
+                                  _panController.text.length != 10) {
+                                showToast_Error("Please Enter Correct PAN No.");
+                              } else {
+                                verifyDocs(context, _panController.text,
+                                    "pancard", "", "");
+                              }
                             },
                             child: Container(
-                              padding: EdgeInsets.all(10),
+                              padding: EdgeInsets.all(3),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color:
-                                    iconPan, // Use the state variable for color
+                                color: panVerified ? Colors.white : Colors.grey,
                               ),
                               child: Icon(
-                                iconPan == Colors.green
-                                    ? Icons.check_circle
-                                    : Icons.check_circle_outline,
-                                color: Colors.white,
+                                Icons.check_circle,
+                                color: panVerified ? Colors.green : Colors.white,
                               ),
                             ),
                           )),
                     ],
                   ),
+                  Text(panCardHolderName,
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: !panVerified
+                              ? Colors.grey.shade400
+                              : Colors.green,
+                          fontSize: !panVerified ? 11 : 14)),
                   Row(
                     children: [
                       Flexible(
@@ -3596,26 +3678,44 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           padding: EdgeInsets.only(top: 20),
                           child: GestureDetector(
                             onTap: () {
-                              verifyDocs(context, _dlController.text,
-                                  "drivinglicense", "", "");
+                              if (_dlController.text.isEmpty ||
+                                  _dlController.text.length > 16||_dobController.text.isEmpty) {
+                                showToast_Error("DL No. or DOB is Incorrect");
+                              } else {
+                                verifyDocs(context, _dlController.text,
+                                    "drivinglicense", "", "");
+                              }
                             },
                             child: Container(
-                              padding: EdgeInsets.all(10),
+                              padding: EdgeInsets.all(3),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color:
-                                    iconDl, // Use the state variable for color
+                                color: dlVerified
+                                    ? Colors.green
+                                    : Colors
+                                        .grey, // Use the state variable for color
                               ),
                               child: Icon(
-                                iconDl == Colors.green
-                                    ? Icons.check_circle
-                                    : Icons.check_circle_outline,
+                                Icons.check_circle,
                                 color: Colors.white,
                               ),
                             ),
                           )),
                     ],
                   ),
+                  dlCardHolderName == null
+                      ? Text(
+                          "Please search driving license holder name for verification",
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular",
+                              color: Colors.grey.shade400,
+                              fontSize: 11),
+                        )
+                      : Text(dlCardHolderName!,
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular",
+                              color: Colors.green,
+                              fontSize: 14)),
                   SizedBox(height: 4),
                   Text(
                     'OR',
@@ -3637,26 +3737,44 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           padding: EdgeInsets.only(top: 20),
                           child: GestureDetector(
                             onTap: () {
-                              verifyDocs(context, _voterController.text,
-                                  "voterid", "", _dobController.text);
+                              if (_voterController.text.isEmpty ||
+                                  _voterController.text.length != 10) {
+                                showToast_Error("Please Enter Correct PAN No.");
+                              } else {
+                                verifyDocs(context, _voterController.text,
+                                    "voterid", "", _dobController.text);
+                              }
                             },
                             child: Container(
-                              padding: EdgeInsets.all(10),
+                              padding: EdgeInsets.all(3),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color:
-                                    iconVoter, // Use the state variable for color
+                                color: voterVerified
+                                    ? Colors.green
+                                    : Colors
+                                        .grey, // Use the state variable for color
                               ),
                               child: Icon(
-                                iconVoter == Colors.green
-                                    ? Icons.check_circle
-                                    : Icons.check_circle_outline,
+                                Icons.check_circle,
                                 color: Colors.white,
                               ),
                             ),
                           )),
                     ],
-                  )
+                  ),
+                  voterCardHolderName == null
+                      ? Text(
+                          "Please search voter card holder name for verification",
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular",
+                              color: Colors.grey.shade400,
+                              fontSize: 11),
+                        )
+                      : Text(voterCardHolderName!,
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular",
+                              color: Colors.green,
+                              fontSize: 14)),
                 ],
               ),
             )),
@@ -3751,7 +3869,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Icon(Icons.camera_alt),
-                SizedBox(width: 8), // Optional: Adds space between the icon and text
+                SizedBox(width: 8),
+                // Optional: Adds space between the icon and text
                 Text('Click Guarantor Pic'),
               ],
             ),
@@ -3850,7 +3969,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               pageTitle = "Guarantor Form";
               _currentStep -= 1;
             });
-          }else if (_currentStep == 7) {
+          } else if (_currentStep == 7) {
             setState(() {
               pageTitle = "Upload Docs";
               _currentStep -= 1;
@@ -3904,7 +4023,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               UploadFiDocsEditable = true;
             });
-          }else if (_currentStep == 7) {
+          } else if (_currentStep == 7) {
             setState(() {
               UploadFiDocsEditable = true;
             });
@@ -3931,92 +4050,84 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
         onPressed: () {
           if (_currentStep == 0) {
-              if (personalInfoEditable) {
-                if (_stepOneValidations()) {
-                  AddFiExtraDetail(context);
-                }
-              } else {
-                setState(() {
-                  _currentStep++;
-                  pageTitle = "Family Details";
-                });
+            if (personalInfoEditable) {
+              if (_stepOneValidations()) {
+                AddFiExtraDetail(context);
               }
-            } else if (_currentStep == 1) {
-              if (FiFamilyEditable) {
-                if (_stepTwoValidations()) {
-                  AddFiFamilyDetail(context);
-                }
-              } else {
-                setState(() {
-                  _currentStep++;
-                  pageTitle = "Income & Expense";
-
-                });
+            } else {
+              setState(() {
+                _currentStep++;
+                pageTitle = "Family Details";
+              });
+            }
+          } else if (_currentStep == 1) {
+            if (FiFamilyEditable) {
+              if (_stepTwoValidations()) {
+                AddFiFamilyDetail(context);
               }
-            } else if (_currentStep == 2) {
-              if (FiIncomeEditable) {
-                if (_stepThreeValidations()) {
-                  AddFiIncomeAndExpense(context);
-                }
-              } else {
-                setState(() {
-                  _currentStep++;
-                  pageTitle = "Financial Info.";
-
-                });
+            } else {
+              setState(() {
+                _currentStep++;
+                pageTitle = "Income & Expense";
+              });
+            }
+          } else if (_currentStep == 2) {
+            if (FiIncomeEditable) {
+              if (_stepThreeValidations()) {
+                AddFiIncomeAndExpense(context);
               }
-            } else if (_currentStep == 3) {
-              if (FinancialInfoEditable) {
-                if (_stepFourValidations()) {
-                  AddFinancialInfo(context);
-                }
-              } else {
-                setState(() {
-                  _currentStep++;
-                  pageTitle = "Family Income";
-
-                });
+            } else {
+              setState(() {
+                _currentStep++;
+                pageTitle = "Financial Info.";
+              });
+            }
+          } else if (_currentStep == 3) {
+            if (FinancialInfoEditable) {
+              if (_stepFourValidations()) {
+                AddFinancialInfo(context);
               }
-            } else if (_currentStep == 4) {
-              if (femMemIncomeEditable) {
-                if (_stepFiveValidations()) {
-                  FiFemMemIncome(context);
-                }
-              } else {
-                setState(() {
-                  _currentStep++;
-                  pageTitle = "Guarantor Form";
-
-                });
+            } else {
+              setState(() {
+                _currentStep++;
+                pageTitle = "Family Income";
+              });
+            }
+          } else if (_currentStep == 4) {
+            if (femMemIncomeEditable) {
+              if (_stepFiveValidations()) {
+                FiFemMemIncome(context);
               }
-            } else if (_currentStep == 5) {
-              if (GuarantorEditable) {
-                if (_stepSixValidations()) {
-                  saveGuarantorMethod(context);
-                }
-              } else {
-                setState(() {
-                  _currentStep++;
-                  pageTitle = "Upload Docs";
-
-                });
+            } else {
+              setState(() {
+                _currentStep++;
+                pageTitle = "Guarantor Form";
+              });
+            }
+          } else if (_currentStep == 5) {
+            if (GuarantorEditable) {
+              if (_stepSixValidations()) {
+                saveGuarantorMethod(context);
               }
-            } else if (_currentStep == 6) {
-            if(!borrowerDocsUploded){
+            } else {
+              setState(() {
+                _currentStep++;
+                pageTitle = "Upload Docs";
+              });
+            }
+          } else if (_currentStep == 6) {
+            if (!borrowerDocsUploded) {
               FiDocsUploadsApi(context, "0");
-
-            }else{
+            } else {
               setState(() {
                 _currentStep++;
                 pageTitle = "Upload Gr Docs";
-
               });
             }
-
-            } else if (_currentStep == 7) {
-              FiDocsUploadsApi(context, "1");
-            }
-          },
+          } else if (_currentStep == 7) {
+            FiDocsUploadsApi(context, "1");
+          }
+        },
         child: Text(
           _currentStep == 7 ? "SUBMIT" : "NEXT",
           style: TextStyle(
@@ -4119,8 +4230,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     int? id,
     String? GrNo,
     required Function(File) onImagePicked,
-  })
-  {
+  }) {
     String baseUrl = 'https://predeptest.paisalo.in:8084';
 
     // Replace the front part of the file path and ensure the path uses forward slashes
@@ -4128,7 +4238,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     // Join the base URL with the modified path
     String finalUrl = '$baseUrl/$modifiedPath';
-
 
     File? _selectedImage;
 
@@ -4141,52 +4250,51 @@ class _ApplicationPageState extends State<ApplicationPage> {
               print("vmsdfjk");
               setState(() {
                 _selectedImage = pickedImage;
-               switch(id){
-                 case 1:
-                   adhaarFront=pickedImage;
-                   break;
-                   case 27:
-                   adhaarBack=pickedImage;
-                   break;
-                   case 3:
-                   voterFront=pickedImage;
-                   break;
-                   case 26:
-                   voterback=pickedImage;
-                   break;
-                   case 4:
-                   panFront=pickedImage;
-                   break;
-                   case 15:
-                   dlFront=pickedImage;
-                   break;
-                   case 2:
-                   passbook=pickedImage;
-                   break;
-                   case 7:
-                   adhaarFront_coborrower=pickedImage;
-                   break;
-                   case 29:
-                   adhaarBack_coborrower=pickedImage;
-                   break;
-                   case 5:
-                   voterFront_coborrower=pickedImage;
-                   break;
-                   case 28:
-                   voterback_coborrower=pickedImage;
-                   break;
-                   case 8:
-                   panFront_coborrower=pickedImage;
-                   break;
-                   case 16:
-                   dlFront_coborrower=pickedImage;
-                   break;
-               }
+                switch (id) {
+                  case 1:
+                    adhaarFront = pickedImage;
+                    break;
+                  case 27:
+                    adhaarBack = pickedImage;
+                    break;
+                  case 3:
+                    voterFront = pickedImage;
+                    break;
+                  case 26:
+                    voterback = pickedImage;
+                    break;
+                  case 4:
+                    panFront = pickedImage;
+                    break;
+                  case 15:
+                    dlFront = pickedImage;
+                    break;
+                  case 2:
+                    passbook = pickedImage;
+                    break;
+                  case 7:
+                    adhaarFront_coborrower = pickedImage;
+                    break;
+                  case 29:
+                    adhaarBack_coborrower = pickedImage;
+                    break;
+                  case 5:
+                    voterFront_coborrower = pickedImage;
+                    break;
+                  case 28:
+                    voterback_coborrower = pickedImage;
+                    break;
+                  case 8:
+                    panFront_coborrower = pickedImage;
+                    break;
+                  case 16:
+                    dlFront_coborrower = pickedImage;
+                    break;
+                }
               });
             }
           },
           child: Card(
-
             color:
                 path!.isNotEmpty ? Colors.green : Colors.yellowAccent.shade700,
             // Set color based on path
@@ -4198,7 +4306,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-
                     Text(
                       title,
                       style: TextStyle(
@@ -4209,28 +4316,27 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     ),
                     _selectedImage != null
                         ? Image.file(
-                      _selectedImage!,
-                      width: 50,
-                      height: 50,
-                    )
+                            _selectedImage!,
+                            width: 50,
+                            height: 50,
+                          )
                         : path != null
-                        ? Image.network(
-                      finalUrl,
-                      width: 50,
-                      height: 50,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.hide_image_outlined,
-                          size: 30,
-                        );
-                      },
-                    )
-                        : Image.asset(
-                      'assets/Images/rupees.png',
-                      width: 50,
-                      height: 50,
-                    )
-
+                            ? Image.network(
+                                finalUrl,
+                                width: 50,
+                                height: 50,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(
+                                    Icons.hide_image_outlined,
+                                    size: 30,
+                                  );
+                                },
+                              )
+                            : Image.asset(
+                                'assets/Images/rupees.png',
+                                width: 50,
+                                height: 50,
+                              )
                   ],
                 ),
               ),
@@ -4349,19 +4455,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ));
         }
 
-
-          listItems.add(_buildListItem(
-            title: "Passbook Front",
-            path: doc.passBookPath,
-            id: 2,
-            GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                passbook = file;
-              });
-            },
-          ));
-
+        listItems.add(_buildListItem(
+          title: "Passbook Front",
+          path: doc.passBookPath,
+          id: 2,
+          GrNo: '0',
+          onImagePicked: (File file) {
+            setState(() {
+              passbook = file;
+            });
+          },
+        ));
       }
     }
     return listItems;
@@ -4391,7 +4495,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-               adhaarFront_coborrower = file;
+                adhaarFront_coborrower = file;
               });
             },
           ));
@@ -4402,7 +4506,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-              adhaarBack_coborrower = file;
+                adhaarBack_coborrower = file;
               });
             },
           ));
@@ -4416,7 +4520,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-              voterFront_coborrower = file;
+                voterFront_coborrower = file;
               });
             },
           ));
@@ -4427,7 +4531,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-             voterFront_coborrower = file;
+                voterFront_coborrower = file;
               });
             },
           ));
@@ -4455,7 +4559,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GrNo: '1',
             onImagePicked: (File file) {
               setState(() {
-               dlFront_coborrower = file;
+                dlFront_coborrower = file;
               });
             },
           ));
@@ -4473,208 +4577,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     return listItems1;
   }
-
-  /* List<Widget> _buildKycDocumentList() {
-    List<Widget> listItems = [];
-
-    if (_isPageLoading) {
-      KycScanningDataModel doc = getData.data;
-
-      listItems.add(
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            "Borrower Docs",
-            style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-          ),
-        ),
-      );
-
-      if (doc.addharExists == true) {
-        listItems.add(_buildListItem(
-            title: "Aadhar Front",
-            path: doc.aadharPath,
-            id: 1,
-            GrNo: "0",
-            onImagePicked: (File file) {
-              // setState(() {
-              adhaarFront = file;
-              //});
-            }));
-        listItems.add(_buildListItem(
-            title: "Aadhar Back",
-            path: doc.aadharBPath,
-            id: 27,
-            GrNo: '0',
-            onImagePicked: (File file) {
-              // setState(() {
-              adhaarBack = file;
-              // });
-            }));
-      }
-
-      if (doc.voterExists == true) {
-        listItems.add(_buildListItem(
-            title: "Voter Front",
-            path: doc.voterPath,
-            id: 3,
-            GrNo: '0',
-            onImagePicked: (File file) {
-              // setState(() {
-              voterFront = file;
-              // });
-            }));
-        listItems.add(_buildListItem(
-            title: "Voter Back",
-            path: doc.voterBPath,
-            id: 26,
-            GrNo: '0',
-            onImagePicked: (File file) {
-              //  setState(() {
-              voterback = file;
-              //   });
-            }));
-      }
-
-      if (doc.panExists == true) {
-        listItems.add(_buildListItem(
-            title: "Pan Front",
-            path: doc.panPath,
-            id: 4,
-            GrNo: '0',
-            onImagePicked: (File file) {
-              //  setState(() {
-              panFront = file;
-              //   });
-            }));
-      }
-
-      if (doc.drivingExists == true) {
-        listItems.add(_buildListItem(
-            title: "DL Front",
-            path: doc.drivingPath,
-            id: 15,
-            GrNo: '0',
-            onImagePicked: (File file) {
-              //    setState(() {
-              dlFront = file;
-              //     });
-            }));
-      }
-      if (doc.passportExists == true) {
-        listItems.add(_buildListItem(
-            title: "Passport",
-            path: doc.passportPath,
-            id: doc.passportCheckListId,
-            GrNo: '0',
-            onImagePicked: (File file) {
-              //       setState(() {
-              passport = file;
-              //      });
-            }));
-      }
-
-      if (doc.passBookExists == true) {
-        listItems.add(_buildListItem(
-            title: "Passbook Front",
-            path: doc.passBookPath,
-            id: 2,
-            GrNo: '0',
-            onImagePicked: (File file) {
-              setState(() {
-                passbook = file;
-              });
-            }));
-      }
-    }
-
-    List<Widget> _buildKycDocumentListGur() {
-      List<Widget> listItems = [];
-
-      for (var grDoc in doc.grDocs) {
-        // Add Guarantor Docs title
-        listItems.add(
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Guarantor " + grDoc.grSno + " Docs",
-              style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-            ),
-          ),
-        );
-
-
-        if (grDoc.addharExists == true) {
-          listItems.add(_buildListItem(
-              title: "Aadhar Front",
-              path: grDoc.aadharPath,
-              id: 7,
-              GrNo: grDoc.grSno,
-              onImagePicked: (File file) {
-                passbook = file;
-              }));
-          listItems.add(_buildListItem(
-              title: "Aadhar Back",
-              path: grDoc.aadharBPath,
-              id: 7,
-              GrNo: grDoc.grSno,
-              onImagePicked: (File file) {
-                passbook = file;
-              }));
-        }
-
-        if (grDoc.voterExists == true) {
-          listItems.add(_buildListItem(
-              title: "Voter Front",
-              path: grDoc.voterPath,
-              id: 5,
-              GrNo: grDoc.grSno,
-              onImagePicked: (File file) {
-                passbook = file;
-              }));
-          listItems.add(_buildListItem(
-              title: "Voter Back",
-              path: grDoc.voterBPath,
-              id: 5,
-              GrNo: grDoc.grSno,
-              onImagePicked: (File file) {
-                passbook = file;
-              }));
-        }
-
-        if (grDoc.panExists == true) {
-          listItems.add(_buildListItem(
-              title: "Pan Front",
-              path: grDoc.panPath,
-              id: 8,
-              GrNo: grDoc.grSno,
-              onImagePicked: (File file) {
-                passbook = file;
-              }));
-        }
-
-        if (grDoc.drivingExists == true) {
-          listItems.add(_buildListItem(
-              title: "DL Front",
-              path: grDoc.drivingPath,
-              id: 16,
-              GrNo: grDoc.grSno,
-              onImagePicked: (File file) {
-                passbook = file;
-              }));
-        }
-      }
-    } else {
-      listItems.add(
-        Center(
-          child: CircularProgressIndicator(
-            color: Color(0xFFD42D3F),
-          ),
-        ),
-      );
-    }
-    return listItems;
-  }*/
 
   Widget _buildLabeledDropdownField<T>(
       String labelText,
@@ -4761,15 +4663,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
       ),
     );
-  }
-
-  void _pickImage() async {
-    File? pickedImage = await GlobalClass().pickImage();
-    if (pickedImage != null) {
-      setState(() {
-        _imageFile = pickedImage;
-      });
-    }
   }
 
   Future<void> _selectDate(BuildContext context, String type) async {
@@ -4860,8 +4753,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   List<List<int>> separateData(
-      List<int> source, int separatorByte, int vtcIndex)
-  {
+      List<int> source, int separatorByte, int vtcIndex) {
     int imageStartIndex = 0;
 
     List<List<int>> separatedParts = [];
@@ -5466,12 +5358,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please Enter First Name");
       _fnameFocus.requestFocus();
       return false;
-    }
-    /*else if (_mnameController.text.isEmpty) {
-      showToast_Error("Please Enter Middle Name");
-      _mnameFocus.requestFocus();
+    } else if (_guardianController.text.isEmpty) {
+      showToast_Error("Please Enter Guardian Name");
+      _guardianFocus.requestFocus();
       return false;
-    } else if (_lnameController.text.isEmpty) {
+    }
+    /* else if (_lnameController.text.isEmpty) {
       showToast_Error("Please Enter Last Name");
       _lnameFocus.requestFocus();
       return false;
@@ -5851,7 +5743,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> GetDocs(BuildContext context) async {
-    print("111object");
     EasyLoading.show(
       status: 'Loading...',
     );
@@ -5868,10 +5759,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
           EasyLoading.dismiss();
         });
         EasyLoading.dismiss();
-        if(value.data.aadharPath.isNotEmpty){
+        if (value.data.aadharPath.isNotEmpty) {
           setState(() {
-            borrowerDocsUploded=true;
-
+            borrowerDocsUploded = true;
           });
         }
       } else {
@@ -5880,7 +5770,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-  Future<void> FiDocsUploadsApi(BuildContext context,String GurNum) async {
+  Future<void> FiDocsUploadsApi(BuildContext context, String GurNum) async {
     try {
       EasyLoading.show(status: 'Loading...');
 
@@ -5896,31 +5786,32 @@ class _ApplicationPageState extends State<ApplicationPage> {
         GlobalClass.dbName,
         widget.selectedData.id.toString(),
         GurNum,
-       GurNum=="0"? adhaarFront:adhaarFront_coborrower,
-        GurNum=="0"? adhaarBack:adhaarBack_coborrower,
-        GurNum=="0"? voterFront:voterFront_coborrower,
-        GurNum=="0"? voterback:voterback_coborrower,
-        GurNum=="0"? dlFront:dlFront_coborrower,
-        GurNum=="0"? panFront:panFront_coborrower,
-        GurNum=="0"? passport:null,
-        GurNum=="0"? passbook:null,
+        GurNum == "0" ? adhaarFront : adhaarFront_coborrower,
+        GurNum == "0" ? adhaarBack : adhaarBack_coborrower,
+        GurNum == "0" ? voterFront : voterFront_coborrower,
+        GurNum == "0" ? voterback : voterback_coborrower,
+        GurNum == "0" ? dlFront : dlFront_coborrower,
+        GurNum == "0" ? panFront : panFront_coborrower,
+        GurNum == "0" ? passport : null,
+        GurNum == "0" ? passbook : null,
       ).then((value) async {
         if (value.statuscode == 200) {
           EasyLoading.dismiss();
-          GlobalClass.showSuccessAlert(context, "${value.message} \n${value.data[0].errormsg}", 1);
+          GlobalClass.showSuccessAlert(
+              context, "${value.message} \n${value.data[0].errormsg}", 1);
           setState(() {
             _currentStep++;
           });
         } else if (value.statuscode == 400) {
           EasyLoading.dismiss();
 
-          GlobalClass.showUnsuccessfulAlert(context, "${value.message} \n${value.data[0].errormsg}", 1);
-
-
-        }else{
+          GlobalClass.showUnsuccessfulAlert(
+              context, "${value.message} \n${value.data[0].errormsg}", 1);
+        } else {
           EasyLoading.dismiss();
 
-          GlobalClass.showUnsuccessfulAlert(context, "${value.message} \n${value.data[0].errormsg}", 1);
+          GlobalClass.showUnsuccessfulAlert(
+              context, "${value.message} \n${value.data[0].errormsg}", 1);
         }
       }).catchError((error) {
         GlobalClass.showSnackBar(context, "Error: ${error.toString()}");
@@ -5933,83 +5824,48 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  /*Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file,
+/*Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file,
       String? grNo, int? checklistid) async {
     EasyLoading.show(
       status: 'Loading...',
     );
-  */
-  /*  if (file == null) {
+
+    if (file == null) {
       GlobalClass.showUnsuccessfulAlert(context, "Please upload $tittle", 1);
     } else {
       final api = Provider.of<ApiService>(context, listen: false);
 //https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//38//FiDocuments//VoterIDBorrower0711_2024_43_01.png
 
-      */ /**/
-  /* String baseUrl = 'https://predeptest.paisalo.in:8084';
+
+   String baseUrl = 'https://predeptest.paisalo.in:8084';
 
     // Replace the front part of the file path and ensure the path uses forward slashes
     String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
 
     // Join the base URL with the modified path
     String finalUrl = '$baseUrl/$modifiedPath';
-    File file = File(finalUrl);*/ /**/
-  /*
+    File file = File(finalUrl);
+
       return await api
           .uploadFiDocs(GlobalClass.token, GlobalClass.dbName, FIID.toString(),
               int.parse(grNo!), checklistid!, tittle.toString(), file!)
           .then((value) async {
         if (value.statuscode == 200) {
           GetDocs(context);
-          */ /**/
-  /*setState(() {
+
+  setState(() {
           _currentStep += 1;
           Fi_Id = value.data[0].fiId.toString();
-        });*/ /**/
-  /*
+        });
           EasyLoading.dismiss();
         } else {
           EasyLoading.dismiss();
         }
       });
-    }*/
-  /*
+    }
    // EasyLoading.dismiss();
-
-
   }*/
-
-  Future<void> verifyDocs(BuildContext context, String idNoController,
-      String type, String ifsc, String dob) async {
-    EasyLoading.show(
-      status: 'Loading...',
-    );
-
-    final api = ApiService.create(baseUrl: ApiConfig.baseUrl2);
-    Map<String, dynamic> requestBody = {
-      "type": type,
-      "txtnumber": idNoController,
-      "ifsc": ifsc,
-      "userdob": dob,
-      "key": "1"
-    };
-
-    return await api.verifyDocs(requestBody).then((value) {
-      if (value.statusCode == 200) {
-        setState(() {
-          bankAccHolder = value.data.fullName.toString();
-        });
-        EasyLoading.dismiss();
-      } else {
-        EasyLoading.dismiss();
-      }
-    });
-  }
-
-  void docVerifyIDC(
-      String type, String txnNumber, String ifsc, String dob) async {
-    apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
-
+  Future<void> verifyDocs(BuildContext context,String txnNumber,String type,  String ifsc, String dob) async {
     EasyLoading.show(
       status: 'Loading...',
     );
@@ -6018,10 +5874,105 @@ class _ApplicationPageState extends State<ApplicationPage> {
         "type": type,
         "txtnumber": txnNumber,
         "ifsc": ifsc,
-        "userdob": dob,
+        //"userdob": dob,
+        "userdob": "2000-10-02",
         "key": "1",
       };
 
+      // Hit the API
+      final response = await apiService_idc.verifyIdentity(requestBody);
+
+      // Handle response
+      if (response is Map<String, dynamic>) {
+        Map<String, dynamic> responseData = response["data"];
+        // Parse JSON object if it’s a map
+        if (type == "pancard") {
+          setState(() {
+            if (response["error"] == null) {
+              panCardHolderName =
+              "${responseData['first_name']} ${responseData['last_name']}";
+              panVerified = true;
+            }else{
+              panCardHolderName = "PAN no. is wrong please check";
+              panVerified = false;
+            }
+          });
+
+        } else if (type == "drivinglicense") {
+          setState(() {
+            dlCardHolderName = "${responseData['name']}";
+            dlVerified = true;
+          });
+        } else if (type == "voterid") {
+          setState(() {
+            voterCardHolderName = "${responseData['name']}";
+            voterVerified = true;
+
+          });
+        }
+      } else {
+        if (type == "pancard") {
+          setState(() {
+            panCardHolderName = "PAN no is not verified";
+            panVerified = false;
+          });
+        } else if (type == "drivinglicense") {
+          setState(() {
+            dlCardHolderName = "Driving License is not verified";
+            dlVerified = false;
+          });
+        } else if (type == "voterid") {
+          setState(() {
+            voterCardHolderName = "Voter no. is not verified";
+            voterVerified = false;
+          });
+        }
+        showToast_Error("Unexpected Response: $response");
+        print("Unexpected Response: $response");
+        EasyLoading.dismiss();
+      }
+      EasyLoading.dismiss();
+    } catch (e) {
+      showToast_Error("An error occurred: $e");
+
+      if (type == "pancard") {
+        setState(() {
+          panCardHolderName = "PAN no is not verified";
+          panVerified = false;
+        });
+      } else if (type == "drivinglicense") {
+        setState(() {
+          dlCardHolderName = "Driving License is not verified";
+          dlVerified = false;
+        });
+      } else if (type == "voterid") {
+        setState(() {
+          voterCardHolderName = "Voter no. is not verified";
+          voterVerified = false;
+        });
+      }
+      EasyLoading.dismiss();
+    }
+  }
+
+
+  void docVerifyIDC(
+      String type, String txnNumber, String ifsc, String dob) async {
+    apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
+
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
+    Map<String, dynamic> requestBody = {
+      "type": type,
+      "txtnumber": txnNumber,
+      "ifsc": ifsc,
+      //"userdob": dob,
+      "userdob": dob,
+      "key": "1",
+    };
+    try {
       // Hit the API
       final response = await apiService_idc.verifyIdentity(requestBody);
 
@@ -6037,17 +5988,156 @@ class _ApplicationPageState extends State<ApplicationPage> {
               bankAccHolder = "Account no. is Not Verified!!";
             }
           });
-        } else {}
+        } else if (type == "pancard") {
+          setState(() {
+            if (response["error"] == null) {
+              panCardHolderName =
+                  "${responseData['first_name']} ${responseData['last_name']}";
+              panVerified = true;
+            } else {
+              panCardHolderName = "PAN no. is wrong please check";
+              panVerified = false;
+            }
+          });
+        } else if (type == "drivinglicense") {
+          setState(() {
+            dlCardHolderName = "${responseData['name']}";
+            dlVerified = true;
+          });
+        } else if (type == "voterid") {
+          setState(() {
+            voterCardHolderName = "${responseData['name']}";
+            voterVerified = true;
+          });
+        }
+      } else {
+        if (type == "pancard") {
+          setState(() {
+            panCardHolderName = "PAN no is not verified";
+            panVerified = false;
+          });
+        } else if (type == "drivinglicense") {
+          setState(() {
+            dlCardHolderName = "Driving License is not verified";
+            dlVerified = false;
+          });
+        } else if (type == "voterid") {
+          setState(() {
+            voterCardHolderName = "Voter no. is not verified";
+            voterVerified = false;
+          });
+        }
         showToast_Error("Unexpected Response: $response");
         print("Unexpected Response: $response");
         EasyLoading.dismiss();
       }
+      showToast_Error("Unexpected Response: $response");
+      print("Unexpected Response: $response");
       EasyLoading.dismiss();
     } catch (e) {
       showToast_Error("An error occurred: $e");
-
+      if (type == "pancard") {
+        setState(() {
+          panCardHolderName = "PAN no is not verified";
+          panVerified = false;
+        });
+      } else if (type == "drivinglicense") {
+        setState(() {
+          dlCardHolderName = "Driving License is not verified";
+          dlVerified = false;
+        });
+      } else if (type == "voterid") {
+        setState(() {
+          voterCardHolderName = "Voter no. is not verified";
+          voterVerified = false;
+        });
+      }
       EasyLoading.dismiss();
     }
+  }
+
+  void dlVerifyByProtean(String userid, String dlNo, String dob) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+    try {
+      // Initialize Dio
+      // Create ApiService instance
+      // API body
+      Map<String, dynamic> requestBody = {
+        "userID": userid,
+        "dlno": dlNo,
+        "dob": dob
+      };
+      // Hit the API
+      final response =
+          await apiService_protean.getDLDetailsProtean(requestBody);
+      EasyLoading.show(
+        status: 'Loading...',
+      );
+      // Handle response
+      if (response is Map<String, dynamic>) {
+        Map<String, dynamic> responseData = response["data"];
+        // Parse JSON object if it’s a map
+        setState(() {
+          if (responseData['result']['name'] != null) {
+            dlCardHolderName = "${responseData['result']['name']}";
+            dlVerified = true;
+          } else {
+            docVerifyIDC(
+                "drivinglicense", _dlController.text, "", _dobController.text);
+          }
+        });
+      } else {
+        docVerifyIDC(
+            "drivinglicense", _dlController.text, "", _dobController.text);
+      }
+    } catch (e) {
+      // Handle errors
+      docVerifyIDC(
+          "drivinglicense", _dlController.text, "", _dobController.text);
+    }
+    EasyLoading.dismiss();
+  }
+
+  void voterVerifyByProtean(String userid, String voterNo) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+    try {
+      // Initialize Dio
+      // Create ApiService instance
+      // API body
+      Map<String, dynamic> requestBody = {
+        "userID": userid,
+        "voterno": voterNo,
+      };
+      // Hit the API
+      final response =
+          await apiService_protean.getVoteretailsProtean(requestBody);
+      // Handle response
+      if (response is Map<String, dynamic>) {
+        Map<String, dynamic> responseData = response["data"];
+        // Parse JSON object if it’s a map
+        setState(() {
+          if (responseData['result'].responseData['name'] != null) {
+            voterCardHolderName =
+                "${responseData['result'].responseData['name']}";
+            voterVerified = true;
+          } else {
+            docVerifyIDC("voterid", _voterController.text, "", "");
+          }
+        });
+      } else {
+        docVerifyIDC("voterid", _voterController.text, "", "");
+      }
+    } catch (e) {
+      // Handle errors
+      docVerifyIDC("voterid", _voterController.text, "", "");
+    }
+    EasyLoading.show(
+      status: 'Loading...',
+    );
   }
 
   Future<void> ifscVerify(BuildContext context, String ifsc) async {
@@ -6574,7 +6664,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
         BorrowerInfo = value.data;
-        Future.delayed(Duration.zero, () => showIDCardDialog(context,BorrowerInfo[0]));
+        Future.delayed(
+            Duration.zero, () => showIDCardDialog(context, BorrowerInfo[0]));
 
         if (!value.data[0].placeOfBirth.isEmpty) {
           personalInfo(value.data[0]);
@@ -6604,7 +6695,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
       print("ERRORRRR$err");
       EasyLoading.dismiss();
       GlobalClass.showErrorAlert(context, "Corrupt Case", 2);
-
     });
   }
 
@@ -6745,12 +6835,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void guarrantors(ApplicationgetAllDataModel data) {
     setState(() {
       GuarantorEditable = false;
-    //  selectedTitle = data.guarantors[0].grTitle;
+      selectedTitle = data.guarantors[0].grTitle;
       _fnameController.text = data.guarantors[0].grFname;
       _mnameController.text = data.guarantors[0].grMname;
       _lnameController.text = data.guarantors[0].grLname;
       _guardianController.text = data.guarantors[0].grGuardianName;
-     // relationselected = data.guarantors[0].grRelationWithBorrower;
+      selectedTitle = data.guarantors[0].grTitle;
       _p_Address1Controller.text = data.guarantors[0].grPAddress1;
       _p_Address2Controller.text = data.guarantors[0].grPAddress2;
       _p_Address3Controller.text = data.guarantors[0].grPAddress3;
@@ -6759,7 +6849,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           item.descriptionEn.toLowerCase() ==
           data.guarantors[0].grPState.toLowerCase());
       genderselected = data.guarantors[0].grGender;
-    //  religionselected = data.guarantors[0].grReligion;
+      //  religionselected = data.guarantors[0].grReligion;
 
       _pincodeController.text = data.guarantors[0].grPincode.toString();
       _dobController.text = data.guarantors[0].grDob.toString();
@@ -6785,7 +6875,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         .then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
-        GlobalClass.showSuccessAlert(context, "${value.message} Save Guarantor again", 1);
+        GlobalClass.showSuccessAlert(
+            context, "${value.message} Save Guarantor again", 1);
         setState(() {
           GuarantorEditable = true;
         });
@@ -6800,7 +6891,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-  void showIDCardDialog(BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
+  void showIDCardDialog(
+      BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
     final String name = [
       borrowerInfo.fName,
       borrowerInfo.mName,
@@ -6812,111 +6904,124 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final String voterId = borrowerInfo.voterId;
     final String dob = borrowerInfo.dob;
     final String loanAmt = borrowerInfo.loanAmount.toString();
-    final String imageUrl = GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
-     // Replace with your image URL
+    final String imageUrl =
+        GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
+    // Replace with your image URL
 
     showDialog(
       context: context,
       barrierDismissible: false, // Prevent closing dialog when tapping outside
       builder: (BuildContext context) {
         return WillPopScope(
-            onWillPop: () async => false, // Prevent closing dialog with back button
-        child: AlertDialog(
-        shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        ),
-          title: Center(child: Text('Borrower Details',style: TextStyle(
-        fontSize: 16,))),
-          content: SingleChildScrollView(
-            child: Container(
-              width: 300,
-              padding: EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey, width: 2), // Border around image
-                      borderRadius: BorderRadius.circular(50), // Circle border
-                    ),
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(imageUrl),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  // Name
-                  Text(
-                    name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 5),
-                  // Adhaar No.
-                  Text(
-                    'UID: $aadhaarNo',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 5),
-                  // PAN, DL, Voter No. (showing all if they exist)
-                  Column(
-                    children: [
-                      if (voterId.isNotEmpty)
-                        Text('Voter: $voterId', style: TextStyle(fontSize: 16)),
-                      if (panNo.isNotEmpty)
-                        Text('Pan: $panNo', style: TextStyle(fontSize: 16)),
-                      if (dl.isNotEmpty)
-                        Text('DL: $dl', style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  // DOB
-                  Text('DOB: ${dob.split('T')[0]}', style: TextStyle(fontSize: 16)),
-                  SizedBox(height: 5),
-                  // Loan Amount
-                  if (loanAmt.isNotEmpty)
-                  Text('Loan Amt: $loanAmt', style: TextStyle(fontSize: 16)),
-                  SizedBox(height: 20),
-                  // Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          print('Verification Confirmed');
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('Verify',style: TextStyle(
-                            color: Colors.white)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          print('Verification Rejected');
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('Reject',style: TextStyle(
-                          color: Colors.white)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+            onWillPop: () async =>
+                false, // Prevent closing dialog with back button
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-            ),
-          ),
-        )
-        );
+              title: Center(
+                  child: Text('Borrower Details',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ))),
+              content: SingleChildScrollView(
+                child: Container(
+                  width: 300,
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.grey,
+                              width: 2), // Border around image
+                          borderRadius:
+                              BorderRadius.circular(50), // Circle border
+                        ),
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(imageUrl),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      // Name
+                      Text(
+                        name,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 5),
+                      // Adhaar No.
+                      Text(
+                        'UID: $aadhaarNo',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 5),
+                      // PAN, DL, Voter No. (showing all if they exist)
+                      Column(
+                        children: [
+                          if (voterId.isNotEmpty)
+                            Text('Voter: $voterId',
+                                style: TextStyle(fontSize: 16)),
+                          if (panNo.isNotEmpty)
+                            Text('Pan: $panNo', style: TextStyle(fontSize: 16)),
+                          if (dl.isNotEmpty)
+                            Text('DL: $dl', style: TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      // DOB
+                      Text('DOB: ${dob.split('T')[0]}',
+                          style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 5),
+                      // Loan Amount
+                      if (loanAmt.isNotEmpty)
+                        Text('Loan Amt: $loanAmt',
+                            style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 20),
+                      // Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              print('Verification Confirmed');
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Verify',
+                                style: TextStyle(color: Colors.white)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              print('Verification Rejected');
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Reject',
+                                style: TextStyle(color: Colors.white)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ));
       },
     );
   }

@@ -160,8 +160,10 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       backgroundColor: const Color(0xFFD42D3F),
       endDrawer: Container(
+
         width: 110,
         height: MediaQuery.of(context).size.height / 3, // Set the height of the drawer
+
         child: Drawer(
           backgroundColor: Colors.white,
           child: ListView(
@@ -201,8 +203,10 @@ class _ProfileState extends State<Profile> {
               ),
               ListTile(
                 onTap: () {
+
                   Navigator.pop(context);
                   MorphoRechargeDialog.show(context);
+
                 },
                 title: Column(
                   children: const [
@@ -301,6 +305,36 @@ class _ProfileState extends State<Profile> {
                               return const SizedBox();
                             },
                           ),
+
+
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return _buildGridItem('QR Payment Report', Icons.qr_code, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => QrPaymentReports()),
+                                );
+                              });
+                            } else if (index == 1) {
+
+
+                              return _buildGridItem('Morpho Recharge', Icons.find_in_page_sharp, () {
+                          MorphoRechargeDialog.show(context);;
+                              });
+                            } else if (index == 2) {
+                              return _buildGridItem('Collection Reports', Icons.currency_rupee, () {
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => CollectionStatus()),
+                                );
+
+                              });
+                            }
+                            return const SizedBox();
+                          },
+
                         ),
                       ),
                       Card(
