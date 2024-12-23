@@ -97,10 +97,10 @@ class _QRViewExampleState extends State<QRViewExample> {
       } catch (e) {
         _handleError(e);
       } finally {
-        setState(() {
+
           isProcessing = false;
           isLoading = false;
-        });
+
       }
     });
   }

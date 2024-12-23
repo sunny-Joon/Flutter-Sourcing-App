@@ -629,7 +629,7 @@ class _ApiService implements ApiService {
       relation_with_Borrower,
     ));
     _data.fields.add(MapEntry(
-      'Bank_name',
+      'BankSanctionId',
       bank_name,
     ));
     _data.fields.add(MapEntry(

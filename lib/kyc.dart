@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 
 import 'DATABASE/database_helper.dart';
 import 'MasterAPIs/ckyc_repository.dart';
+import 'Models/bank_names_model.dart';
 import 'Models/group_model.dart';
 import 'Models/place_codes_model.dart';
 import 'Models/range_category_model.dart';
@@ -89,7 +90,7 @@ class _KYCPageState extends State<KYCPage> {
   RangeCategoryDataModel? stateselected;
   String genderselected = 'select';
   String relationwithBorrowerselected = 'select';
-  String bankselected = 'SBI';
+  String? bankselected;
 
   String? selectedloanDuration;
   String? _locationMessage;
@@ -106,7 +107,7 @@ class _KYCPageState extends State<KYCPage> {
  //    _mobileNoController.text="9910238307";
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
-
+    _BabnkNamesAPI(context);
     // selectedTitle = titleList.isNotEmpty ? titleList[0] : null;
 
     geolocator(context);
@@ -241,6 +242,7 @@ class _KYCPageState extends State<KYCPage> {
   final _dlExpiryController = TextEditingController();
   final _passportExpiryController = TextEditingController();
 
+  late List<BankNamesDataModel> bankNamesList = [];
   bool panVerified = false;
   bool dlVerified = false;
   bool voterVerified = false;
@@ -424,14 +426,12 @@ class _KYCPageState extends State<KYCPage> {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 24.0),
-                child: Column(
+                    horizontal: 16.0),
+                child:Column(
                   children: [
-                    SizedBox(
-                      height: 20,
-                    ),
+                    SizedBox(height: 50,),
                     Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -443,14 +443,14 @@ class _KYCPageState extends State<KYCPage> {
                                 border: Border.all(
                                     width: 1, color: Colors.grey.shade300),
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
+                                BorderRadius.all(Radius.circular(5)),
                               ),
                               height: 40,
                               width: 40,
                               alignment: Alignment.center,
                               child: Center(
                                 child:
-                                    Icon(Icons.arrow_back_ios_sharp, size: 16),
+                                Icon(Icons.arrow_back_ios_sharp, size: 16),
                               ),
                             ),
                             onTap: () {
@@ -480,120 +480,125 @@ class _KYCPageState extends State<KYCPage> {
                         ],
                       ),
                     ),
-                    //  _buildProgressIndicator(),
-                    SizedBox(height: 30),
-                    _pageloading?CircularProgressIndicator(color: Colors.white,):Column(children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height - 244,
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 7,
+                    Column(
+                      children: [
+
+                        //  _buildProgressIndicator(),
+                        SizedBox(height: 30),
+                        _pageloading?CircularProgressIndicator(color: Colors.white,):Column(children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height - 244,
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black,
+                                        blurRadius: 7,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Form(
+                                    key: _formKey,
+                                    child: _getStepContent(context),
+                                  ),
+                                ),
+                                Positioned(
+                                    top: -35, // Adjust the position as needed
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: _imageFile == null
+                                          ? InkWell(
+                                        onTap:() async {
+                                          File? pickedFile=await GlobalClass().pickImage();
+                                          setState(()  {
+                                            _imageFile = pickedFile;
+                                          });
+                                        } ,
+                                        child: ClipOval(
+                                          child: Container(
+                                            width: 70,
+                                            height: 70,
+                                            color: Colors.grey,
+                                            child: Icon(
+                                              Icons.person,
+                                              size: 50.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                          : InkWell(
+                                        child: ClipOval(
+                                          child: Image.file(
+                                            File(_imageFile!.path),
+                                            width: 70,
+                                            height: 70,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        onTap:()async {
+                                          File? pickedFile=await GlobalClass().pickImage();
+                                          setState(()  {
+                                            _imageFile = pickedFile;
+                                          });
+                                        } ,
+                                      ),
+                                    )),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_on_outlined,
+                                    color: Colors.white,
+                                  ),
+                                  Text(
+                                    "${_locationMessage}",
+                                    style: TextStyle(fontFamily: "Poppins-Regular",
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
-                              child: Form(
-                                key: _formKey,
-                                child: _getStepContent(context),
-                              ),
-                            ),
-                            Positioned(
-                                top: -35, // Adjust the position as needed
-                                left: 0,
-                                right: 0,
-                                child: Center(
-                                  child: _imageFile == null
-                                      ? InkWell(
-                                    onTap:() async {
-                                      File? pickedFile=await GlobalClass().pickImage();
-                                      setState(()  {
-                                        _imageFile = pickedFile;
-                                      });
-                                    } ,
-                                    child: ClipOval(
-                                      child: Container(
-                                        width: 70,
-                                        height: 70,
-                                        color: Colors.grey,
-                                        child: Icon(
-                                          Icons.person,
-                                          size: 50.0,
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                              InkWell(
+                                onTap: () {
+                                  geolocator(context);
+                                },
+                                child: Card(
+                                  elevation: 5,
+                                  shape: CircleBorder(),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(3),
+                                    child: Icon(
+                                      Icons.refresh,
+                                      size: 30,
+                                      color: Color(0xffb41d2d),
                                     ),
-                                  )
-                                      : InkWell(
-                                    child: ClipOval(
-                                      child: Image.file(
-                                        File(_imageFile!.path),
-                                        width: 70,
-                                        height: 70,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                      onTap:()async {
-                                      File? pickedFile=await GlobalClass().pickImage();
-                                      setState(()  {
-                                        _imageFile = pickedFile;
-                                      });
-                                      } ,
                                   ),
-                                )),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.location_on_outlined,
-                                color: Colors.white,
-                              ),
-                              Text(
-                                "${_locationMessage}",
-                                style: TextStyle(fontFamily: "Poppins-Regular",
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
+                                ),
+                              )
                             ],
                           ),
-                          InkWell(
-                            onTap: () {
-                              geolocator(context);
-                            },
-                            child: Card(
-                              elevation: 5,
-                              shape: CircleBorder(),
-                              child: Padding(
-                                padding: EdgeInsets.all(3),
-                                child: Icon(
-                                  Icons.refresh,
-                                  size: 30,
-                                  color: Color(0xffb41d2d),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      _buildNextButton(context),
-                    ],)
+                          SizedBox(height: 10),
+                          _buildNextButton(context),
+                        ],)
 
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -658,14 +663,14 @@ class _KYCPageState extends State<KYCPage> {
   Widget _buildTextField(String label, TextEditingController controller) {
     return Container(
       color: Colors.white,
-      margin: EdgeInsets.symmetric(vertical: 0),
-      padding: EdgeInsets.all(0),
+      margin: EdgeInsets.symmetric(vertical: 3),
+      padding: EdgeInsets.all(1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
-            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16, height: 2),
+            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, height: 2),
           ),
           SizedBox(height: 1),
           Container(
@@ -673,6 +678,7 @@ class _KYCPageState extends State<KYCPage> {
               width: double.infinity, // Set the desired width
               child: Center(
                 child: TextFormField(
+                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                   controller: controller,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -732,7 +738,7 @@ class _KYCPageState extends State<KYCPage> {
       String bCode = widget.data.branchCode.toString();
 
       String relation_with_Borrower = relationwithBorrowerselected;
-      String bank_name = bankselected;
+      String bank_name = bankselected!;
       String loan_Duration = selectedloanDuration!;
       String loan_amount = _loan_amountController.text.toString();
       String? Image;
@@ -908,22 +914,21 @@ class _KYCPageState extends State<KYCPage> {
       TextInputType inputType, int maxlength) {
     return Container(
       color: Colors.white,
-      margin: EdgeInsets.symmetric(vertical: 4),
-      padding: EdgeInsets.all(4),
+      margin: EdgeInsets.symmetric(vertical: 3),
+      padding: EdgeInsets.all(1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
-            style: TextStyle(fontFamily: "Poppins-Regular",
-              fontSize: 16,
-            ),
+              style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, height: 2),
           ),
-          SizedBox(height: 1),
           Container(
             width: double.infinity, // Set the desired width
             child: Center(
               child: TextFormField(
+                style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+
                 maxLength: maxlength,
                 controller: controller,
                 keyboardType: inputType, // Set the input type
@@ -1445,7 +1450,7 @@ class _KYCPageState extends State<KYCPage> {
                 children: [
                   Text(
                     "Aadhaar ID",
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16, height: 2),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, height: 2),
                   ),
                   SizedBox(height: 1),
                   Container(
@@ -1455,6 +1460,7 @@ class _KYCPageState extends State<KYCPage> {
                         child: TextFormField(
                           keyboardType: TextInputType.number,
                           maxLength: 12,
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                           focusNode: _focusNodeAdhaarId,
                           controller: _aadharIdController,
                           decoration: InputDecoration(
@@ -1493,6 +1499,7 @@ class _KYCPageState extends State<KYCPage> {
             )
           ],
         ),
+
         Row(
           children: [
             SizedBox(
@@ -1505,7 +1512,10 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                   Text(
                     'Title',
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                  ),
+                  SizedBox(
+                    height: 2,
                   ),
                   Container(
                     alignment: Alignment.center,
@@ -1522,7 +1532,7 @@ class _KYCPageState extends State<KYCPage> {
                       isExpanded: true,
                       iconSize: 24,
                       elevation: 16,
-                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                       underline: Container(
                         height: 2,
                         color: Colors
@@ -1552,6 +1562,8 @@ class _KYCPageState extends State<KYCPage> {
             ),
           ],
         ),
+
+
         Row(
           children: [
             Expanded(
@@ -1564,16 +1576,17 @@ class _KYCPageState extends State<KYCPage> {
                     'Last Name', _nameLController, TextInputType.name, 30)),
           ],
         ),
+
         Container(
           color: Colors.white,
-          margin: EdgeInsets.symmetric(vertical: 0),
-          padding: EdgeInsets.all(0),
+          margin: EdgeInsets.symmetric(vertical: 3),
+          padding: EdgeInsets.all(1),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "Guardian Name",
-                style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16, height: 2),
+                style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
               ),
               SizedBox(height: 1),
               Container(
@@ -1581,7 +1594,9 @@ class _KYCPageState extends State<KYCPage> {
                   width: double.infinity, // Set the desired width
                   child: Center(
                     child: TextFormField(
-                      maxLength: 50,
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+
+                        maxLength: 50,
                       controller: _gurNameController,
                       decoration: InputDecoration(
                         counterText: "",
@@ -1608,18 +1623,20 @@ class _KYCPageState extends State<KYCPage> {
             ],
           ),
         ),
+
         Row(
+
           children: [
             Expanded(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 4,
+                  height: 6,
                 ),
                 Text(
                   'Gender',
-                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
+                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                 ),
                 SizedBox(
                   height: 4,
@@ -1641,7 +1658,7 @@ class _KYCPageState extends State<KYCPage> {
                     isExpanded: true,
                     iconSize: 24,
                     elevation: 16,
-                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                     underline: Container(
                       height: 2,
                       color: Colors
@@ -1673,11 +1690,11 @@ class _KYCPageState extends State<KYCPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 4,
+                  height: 6,
                 ),
                 Text(
                   'Relationship',
-                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
+                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                 ),
                 SizedBox(
                   height: 4,
@@ -1699,7 +1716,7 @@ class _KYCPageState extends State<KYCPage> {
                     isExpanded: true,
                     iconSize: 24,
                     elevation: 16,
-                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                     underline: Container(
                       height: 2,
                       color: Colors
@@ -1765,6 +1782,7 @@ class _KYCPageState extends State<KYCPage> {
                 )),
           ],
         ),
+
         Row(
           children: [
             // Age Box
@@ -1774,16 +1792,18 @@ class _KYCPageState extends State<KYCPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 4,
+                    height: 6,
                   ),
                   Text(
                     'Age',
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 3),
                   Container(
                     color: Colors.white,
                     child: TextField(
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+
                       controller: _ageController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
@@ -1801,13 +1821,13 @@ class _KYCPageState extends State<KYCPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 4,
+                    height: 6,
                   ),
                   Text(
                     'Date of Birth',
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 3),
                   Container(
                     color: Colors.white,
                     child: TextField(
@@ -1828,8 +1848,10 @@ class _KYCPageState extends State<KYCPage> {
             ),
           ],
         ),
+
         _buildTextField2('Father First Name', _fatherFirstNameController,
             TextInputType.text, 30),
+
         Row(
           children: [
             Expanded(
@@ -1843,13 +1865,16 @@ class _KYCPageState extends State<KYCPage> {
                     TextInputType.text, 30)),
           ],
         ),
+
         SizedBox(
           height: 4,
         ),
+
         Text(
           'Marital Status',
-          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
+          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
         ),
+
         SizedBox(
           height: 4,
         ),
@@ -1871,7 +1896,7 @@ class _KYCPageState extends State<KYCPage> {
             isExpanded: true,
             iconSize: 24,
             elevation: 16,
-            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
+            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
             underline: Container(
               height: 2,
               color: Colors
@@ -1960,11 +1985,11 @@ class _KYCPageState extends State<KYCPage> {
             'Loan Amount', _loan_amountController, TextInputType.number, 7),
 
         SizedBox(
-          height: 4,
+          height: 6,
         ),
         Text(
           'Loan Reason',
-          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
+          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
         ),
         SizedBox(
           height: 4,
@@ -1987,7 +2012,7 @@ class _KYCPageState extends State<KYCPage> {
             isExpanded: true,
             iconSize: 24,
             elevation: 16,
-            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
+            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
             underline: Container(
               height: 2,
               color: Colors
@@ -2010,7 +2035,7 @@ class _KYCPageState extends State<KYCPage> {
           ),
         ),
         SizedBox(
-          height: 4,
+          height: 8,
         ),
 
         Row(
@@ -2022,9 +2047,9 @@ class _KYCPageState extends State<KYCPage> {
                 children: [
                   Text(
                     'Loan Duraction',
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: 3),
                   Container(
                     alignment: Alignment.center,
                     width: 150,
@@ -2041,7 +2066,7 @@ class _KYCPageState extends State<KYCPage> {
                       isExpanded: true,
                       iconSize: 24,
                       elevation: 16,
-                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                       underline: Container(
                         height: 2,
                         color: Colors
@@ -2071,9 +2096,9 @@ class _KYCPageState extends State<KYCPage> {
                 children: [
                   Text(
                     'Bank Name',
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 16),
+                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: 3),
                   Container(
                     alignment: Alignment.center,
                     height: 55,
@@ -2087,7 +2112,7 @@ class _KYCPageState extends State<KYCPage> {
                       isExpanded: true,
                       iconSize: 24,
                       elevation: 16,
-                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 16),
+                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                       underline: Container(
                         height: 2,
                         color: Colors.transparent,
@@ -2099,11 +2124,11 @@ class _KYCPageState extends State<KYCPage> {
                           });
                         }
                       },
-                      items: bank.map<DropdownMenuItem<String>>(
-                          (RangeCategoryDataModel state) {
+                      items: bankNamesList.map<DropdownMenuItem<String>>(
+                          (BankNamesDataModel state) {
                         return DropdownMenuItem<String>(
-                          value: state.descriptionEn,
-                          child: Text(state.descriptionEn),
+                          value: state.id.toString(),
+                          child: Text(state.bankName),
                         );
                       }).toList(),
                     ),
@@ -2163,7 +2188,7 @@ class _KYCPageState extends State<KYCPage> {
 
   void _showOTPDialog(BuildContext context) {
     Timer? countdownTimer;
-    int remainingTime = 10;
+    int remainingTime = 60;
     bool cancelButtonVisible = false;
     String pinCode = "";
     void startCountdown(StateSetter setState) {
@@ -2198,7 +2223,7 @@ class _KYCPageState extends State<KYCPage> {
                     'Please Enter OTP Here',
                     style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.black,
-                      fontSize: 16,
+                      fontSize: 13,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -2300,7 +2325,7 @@ class _KYCPageState extends State<KYCPage> {
                       Text(
                         "PAN No.",
                         style: TextStyle(fontFamily: "Poppins-Regular",
-                          fontSize: 16,
+                          fontSize: 13,
                         ),
                       ),
                       SizedBox(height: 1),
@@ -2528,7 +2553,7 @@ class _KYCPageState extends State<KYCPage> {
             Text(
               labelText,
               style: TextStyle(fontFamily: "Poppins-Regular",
-                fontSize: 16,
+                fontSize: 13,
               ),
             ),
             SizedBox(height: 8),
@@ -2580,7 +2605,7 @@ class _KYCPageState extends State<KYCPage> {
                     value: value,
                     child: Text(
                       setdata,
-                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 14, fontWeight: FontWeight.normal),
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, fontWeight: FontWeight.normal),
                     ), // Convert the value to string for display
                   );
                 }).toList(),
@@ -3039,7 +3064,7 @@ bool checkIdMendate(){
     } else if (selectedloanDuration == null) {
       showToast_Error("Please select loan duration");
       return false;
-    } else if (bankselected.toLowerCase() == "select") {
+    } else if (bankselected!.toLowerCase() == "select") {
       showToast_Error("Please select bank");
       return false;
     } else if (_latitudeController.text.isEmpty ||
@@ -3342,7 +3367,27 @@ bool checkIdMendate(){
 
     }
   }
+  Future<void> _BabnkNamesAPI(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
 
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .bankNames(GlobalClass.token, GlobalClass.dbName)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        if (!value.data.isEmpty) {
+          setState(() {
+            bankNamesList = value.data;
+          });
+        }
+      } else {
+        EasyLoading.dismiss();
+        showToast_Error("Bank Name List Not Fetched");
+      }
+    });
+  }
   String replaceCharFromName(String gurName) {
     return gurName
         .replaceAll("S/O ", "")
@@ -3506,4 +3551,5 @@ bool checkIdMendate(){
       EasyLoading.dismiss();
     });
   }
+
 }
