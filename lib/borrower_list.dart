@@ -62,7 +62,15 @@ class _BorrowerListState extends State<BorrowerList> {
           if(widget.page=="APPLICATION FORM"){
 
           }
-          _borrowerItems = response.data;
+          if(widget.page=="HouseVisit"){
+            _borrowerItems =response.data.where((item) => item.homeVisit == "No").toList();
+            if(_borrowerItems.length<1){
+              noDataFoundMsg="No record found for House Visit!";
+            }
+          }else{
+            _borrowerItems = response.data;
+          }
+
 
         });
         EasyLoading.dismiss();
@@ -205,7 +213,7 @@ print("object++12");
                   height: 70,
                 ),
               ),
-              Center(child: Text("No Data Found!!",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w400,fontSize: 16),),)
+              Center(child: Text(noDataFoundMsg ,style: TextStyle(color: Colors.white,fontWeight: FontWeight.w400,fontSize: 16),),)
             ],
           ),),
         ],

@@ -14,7 +14,7 @@ class QrPaymentReports extends StatefulWidget {
 }
 
 class _QrPaymentReportsState extends State<QrPaymentReports> {
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController(text: "UCDL000471");
   List<QrPaymentsDataModel> _qrPaymentsList = [];
 
   Future<void> _qrPayments(String smcode) async {
@@ -149,11 +149,11 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                   ? Center(child: Text('No data available'))
                   : SingleChildScrollView(
                 child: Table(
-                  border: TableBorder.all(color: Colors.black, width: 1),
+                  border: TableBorder.all(color: Colors.black, width: .6),
                   columnWidths: {
                     0: FlexColumnWidth(1),
-                    1: FlexColumnWidth(3),
-                    2: FlexColumnWidth(2),
+                    1: FlexColumnWidth(2.5),
+                    2: FlexColumnWidth(1.5),
                     3: FlexColumnWidth(3),
                   },
                   children: [
@@ -164,40 +164,43 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                       children: [
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('S.No', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold)),
+                          child: Text('S.No', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
                         )),
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Transaction ID', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold)),
+                          child: Text('Transaction ID', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
                         )),
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Amount', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold)),
+                          child: Text('Amount', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
                         )),
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Date', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold)),
+                          child: Text('Date', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
                         )),
                       ],
                     ),
                     for (int i = 0; i < _qrPaymentsList.length; i++)
                       TableRow(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                        ),
                         children: [
                           TableCell(child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text('${i + 1}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,)),
+                            child: Text('${i + 1}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black,fontSize: 10)),
                           )),
                           TableCell(child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text('${_qrPaymentsList[i].txnId}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,)),
+                            child: Text('${_qrPaymentsList[i].txnId}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black,fontSize: 10)),
                           )),
                           TableCell(child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text('${_qrPaymentsList[i].amount}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,)),
+                            child: Text('${_qrPaymentsList[i].amount}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black,fontSize: 10)),
                           )),
                           TableCell(child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text('${_qrPaymentsList[i].creationDate}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,)),
+                            child: Text('${_qrPaymentsList[i].creationDate.replaceAll("T", " ")}',style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black,fontSize: 10)),
                           )),
                         ],
                       ),
