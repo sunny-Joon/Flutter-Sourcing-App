@@ -305,36 +305,6 @@ class _ProfileState extends State<Profile> {
                               return const SizedBox();
                             },
                           ),
-
-
-                          itemCount: 3,
-                          itemBuilder: (context, index) {
-                            if (index == 0) {
-                              return _buildGridItem('QR Payment Report', Icons.qr_code, () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => QrPaymentReports()),
-                                );
-                              });
-                            } else if (index == 1) {
-
-
-                              return _buildGridItem('Morpho Recharge', Icons.find_in_page_sharp, () {
-                          MorphoRechargeDialog.show(context);;
-                              });
-                            } else if (index == 2) {
-                              return _buildGridItem('Collection Reports', Icons.currency_rupee, () {
-
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => CollectionStatus()),
-                                );
-
-                              });
-                            }
-                            return const SizedBox();
-                          },
-
                         ),
                       ),
                       Card(
