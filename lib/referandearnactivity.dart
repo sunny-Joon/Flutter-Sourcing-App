@@ -43,10 +43,13 @@ class _referandearnactivitystate extends State<referandearnactivity> {
             GestureDetector(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => howtoreferactivity()),
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => howtoreferactivity(
+                      referralCode: referralCodeController.text,
+                    ),
+                  ),
                 );
-
               },
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.9,
@@ -120,7 +123,12 @@ class _referandearnactivitystate extends State<referandearnactivity> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => getRewardActivity()),
+                  MaterialPageRoute(
+                    builder: (context) => getrewardactivity(
+                      referralCode:
+                          referralCodeController.text,
+                    ),
+                  ),
                 );
               },
               child: Container(
