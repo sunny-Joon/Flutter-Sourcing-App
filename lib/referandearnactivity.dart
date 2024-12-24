@@ -32,10 +32,9 @@ class _referandearnactivitystate extends State<referandearnactivity> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Refer and Earn"),
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFFD42D3F),
       ),
-      backgroundColor: Colors.red,
+      backgroundColor: const Color(0xFFD42D3F),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: Column(
