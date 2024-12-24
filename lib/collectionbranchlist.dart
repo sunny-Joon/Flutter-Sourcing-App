@@ -27,15 +27,15 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
   }
 
   Future<void> _fetchBranchList() async {
-    EasyLoading.show(status: 'Loading...');
+  //  EasyLoading.show(status: 'Loading...');
 
     final apiService = Provider.of<ApiService>(context, listen: false);
     try {
       await apiService.CollectionBranchList(
           GlobalClass.token,
           GlobalClass.dbName,
-          "861950058549712",
-          "GRST002946" /*GlobalClass.imei, GlobalClass.id*/
+          GlobalClass.imei,
+          GlobalClass.id /*GlobalClass.imei, GlobalClass.id*/
       ).then((response) {
         if (response.statuscode == 200) {
           _allitems = response.data;
