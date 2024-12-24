@@ -10,10 +10,11 @@ class howtoreferactivity extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Refer and Earn Activity"),
+        backgroundColor: const Color(0xFFD42D3F),
       ),
+      backgroundColor: const Color(0xFFD42D3F),
       body: Container(
-        color: Colors.red,
+
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

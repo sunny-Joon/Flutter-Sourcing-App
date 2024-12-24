@@ -11,10 +11,9 @@ class getrewardactivity extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Refer and Earn Activity"),
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFFD42D3F),
       ),
-      backgroundColor: Colors.red,
+      backgroundColor: const Color(0xFFD42D3F),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
