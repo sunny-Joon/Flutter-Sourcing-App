@@ -5932,63 +5932,68 @@ class _ApplicationPageState extends State<ApplicationPage> {
     try {
       // Hit the API
       final response = await apiService_idc.verifyIdentity(requestBody);
-
       // Handle response
-      if (response is Map<String, dynamic>) {
-        Map<String, dynamic> responseData = response["data"];
-        // Parse JSON object if it’s a map
-        if (type == "bankaccount") {
-          setState(() {
-            if (response["error"] == null) {
-              bankAccHolder = "${responseData['full_name']}";
-            } else {
-              bankAccHolder = "Account no. is Not Verified!!";
-            }
-          });
-        } else if (type == "pancard") {
-          setState(() {
-            if (response["error"] == null) {
-              panCardHolderName =
-                  "${responseData['first_name']} ${responseData['last_name']}";
-              panVerified = true;
-            } else {
-              panCardHolderName = "PAN no. is wrong please check";
-              panVerified = false;
-            }
-          });
-        } else if (type == "drivinglicense") {
-          setState(() {
-            dlCardHolderName = "${responseData['name']}";
-            dlVerified = true;
-          });
-        } else if (type == "voterid") {
-          setState(() {
-            voterCardHolderName = "${responseData['name']}";
-            voterVerified = true;
-          });
-        }
-      } else {
-        if (type == "pancard") {
-          setState(() {
-            panCardHolderName = "PAN no is not verified";
-            panVerified = false;
-          });
-        } else if (type == "drivinglicense") {
-          setState(() {
-            dlCardHolderName = "Driving License is not verified";
-            dlVerified = false;
-          });
-        } else if (type == "voterid") {
-          setState(() {
-            voterCardHolderName = "Voter no. is not verified";
-            voterVerified = false;
-          });
-        }
-        showToast_Error("Unexpected Response: $response");
-        print("Unexpected Response: $response");
-        EasyLoading.dismiss();
-      }
-      showToast_Error("Unexpected Response: $response");
+
+     if (response["data"]!=null) {
+       if (response["data"] is Map<String, dynamic>) {
+         Map<String, dynamic> responseData = response["data"];
+         // Parse JSON object if it’s a map
+         if (type == "bankaccount") {
+           setState(() {
+             if (response["error"] == null) {
+               bankAccHolder = "${responseData['full_name']}";
+             } else {
+               bankAccHolder = "Account no. is Not Verified!!";
+             }
+           });
+         } else if (type == "pancard") {
+           setState(() {
+             if (response["error"] == null) {
+               panCardHolderName =
+               "${responseData['first_name']} ${responseData['last_name']}";
+               panVerified = true;
+             } else {
+               panCardHolderName = "PAN no. is wrong please check";
+               panVerified = false;
+             }
+           });
+         } else if (type == "drivinglicense") {
+           setState(() {
+             dlCardHolderName = "${responseData['name']}";
+             dlVerified = true;
+           });
+         } else if (type == "voterid") {
+           setState(() {
+             voterCardHolderName = "${responseData['name']}";
+             voterVerified = true;
+           });
+         }
+       }
+       else {
+         if (type == "pancard") {
+           setState(() {
+             panCardHolderName = "PAN no is not verified";
+             panVerified = false;
+           });
+         } else if (type == "drivinglicense") {
+           setState(() {
+             dlCardHolderName = "Driving License is not verified";
+             dlVerified = false;
+           });
+         } else if (type == "voterid") {
+           setState(() {
+             voterCardHolderName = "Voter no. is not verified";
+             voterVerified = false;
+           });
+         }
+         showToast_Error("Unexpected Response: $response");
+         print("Unexpected Response: $response");
+         EasyLoading.dismiss();
+       }
+     }else{
+       showToast_Error("Unexpected Response: ${response["error"]}\n${response["message"]}");
+     }
+ //     showToast_Error("Unexpected Response: $response");
       print("Unexpected Response: $response");
       EasyLoading.dismiss();
     } catch (e) {
@@ -6609,7 +6614,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           familyDetails(value.data[0]);
         }
 
-        if (value.data[0].fiIncomeExpenses.length != 0) {
+        if (value.data[0].fiIncomeExpenses.length != 0 && value.data[0].fiIncomeExpenses[0].inExHomeType.isNotEmpty) {
           fiIncomeExpenses(value.data[0]);
         }
 
@@ -6739,9 +6744,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void financialInfo(ApplicationgetAllDataModel data) {
     setState(() {
       FinancialInfoEditable = false;
-      selectedAccountType = data.bankAc;
+     // selectedAccountType = data.bankAc;
    //   selectedBankName = data.bankName;
-      _bank_AcController.text = data.bankName;
+      _bank_AcController.text = data.bankAc;
       _bank_IFCSController.text = data.bankIfcs;
       bankAddress = data.bankAddress;
       _bankOpeningDateController.text = data.bankAcOpenDate.split("T")[0];
@@ -6784,7 +6789,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           item.descriptionEn.toLowerCase() ==
           data.guarantors[0].grPState.toLowerCase());
       genderselected = data.guarantors[0].grGender;
-      //  religionselected = data.guarantors[0].grReligion;
+        religionselected = data.guarantors[0].grReligion;
+      relationselected=data.guarantors[0].grRelationWithBorrower;
 
       _pincodeController.text = data.guarantors[0].grPincode.toString();
       _dobController.text = data.guarantors[0].grDob.toString();

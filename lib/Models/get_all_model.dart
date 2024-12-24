@@ -389,8 +389,8 @@ class ApplicationgetAllDataModel {
     familyMembers: json["familyMembers"] != null
         ? List<FamilyMember>.from(json["familyMembers"].map((x) => FamilyMember.fromJson(x)))
         : [],
-    guarantors: json["guarantors"] != null
-        ? List<Guarantor>.from(json["guarantors"].map((x) => Guarantor.fromJson(x)))
+    guarantors: json["gaurantor"] != null
+        ? List<Guarantor>.from(json["gaurantor"].map((x) => Guarantor.fromJson(x)))
         : [],
 
   );
