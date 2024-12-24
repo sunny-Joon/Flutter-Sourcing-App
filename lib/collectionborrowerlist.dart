@@ -30,6 +30,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
   List<CollectionBorrowerListDataModel> _borrowerItems = [];
   List<RangeCategoryDataModel> reasonOfDelay = [];
   String? selectedReason;
+  bool _isLoading = true;
 
 
   @override
@@ -69,12 +70,15 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
         setState(() {
           _borrowerItems = response.data;
         });
-        EasyLoading.dismiss();
+        _isLoading = false;
         print("object++12");
       } else {
         setState(() {});
-        EasyLoading.dismiss();
+        _isLoading = false;
       }
+    }).catchError((error) {
+      _isLoading = false;
+   //   GlobalClass.showErrorAlert(context, error.toString(),1);
     });
   }
 
@@ -488,7 +492,13 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: _isLoading
+                ? ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: 10,
+              itemBuilder: (context, index) => GlobalClass().ListShimmerItem(),
+            )
+                : ListView.builder(
               itemCount: _borrowerItems.length,
               itemBuilder: (context, index) {
                 final item = _borrowerItems[index];

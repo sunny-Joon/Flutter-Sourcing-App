@@ -5457,11 +5457,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
         EasyLoading.dismiss();
 
         // Handle failure
-        showAlertDialog(context, "Failed to update details. Please try again.");
+        GlobalClass.showUnsuccessfulAlert(context, "Failed to update details. Please try again.",1);
       }
     }).catchError((error) {
       EasyLoading.dismiss();
-      showAlertDialog(context, error);
+      GlobalClass.showErrorAlert(context, error.toString(),1);
     });
   }
 
@@ -5474,7 +5474,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String motheR_FIRST_NAME = _motherFController.text.toString();
     String motheR_MIDDLE_NAME = _motherMController.text.toString();
     String motheR_LAST_NAME = _motherLController.text.toString();
-    String motheR_MAIDEN_NAME = "ghjfg";
+    String motheR_MAIDEN_NAME = "";
     String noOfChildren = selectednumOfChildren!;
     String schoolingChildren = selectedschoolingChildren!;
     String otherDependents = selectedotherDependents!;

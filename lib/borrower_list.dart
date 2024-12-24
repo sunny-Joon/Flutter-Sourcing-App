@@ -31,6 +31,7 @@ class BorrowerList extends StatefulWidget {
 class _BorrowerListState extends State<BorrowerList> {
   List<BorrowerListDataModel> _borrowerItems = [];
   String noDataFoundMsg="";
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -43,45 +44,46 @@ class _BorrowerListState extends State<BorrowerList> {
   }
 
   Future<void> _fetchBorrowerList(int type) async {
-    EasyLoading.show(status: 'Loading...',);
+    //EasyLoading.show(status: 'Loading...',);
 
     final apiService = Provider.of<ApiService>(context, listen: false);
 
     await apiService.BorrowerList(
-      GlobalClass.token,
-      GlobalClass.dbName,
+        GlobalClass.token,
+        GlobalClass.dbName,
 
-      widget.GroupData.groupCode,
-     widget.BranchData.branchCode,
-      GlobalClass.creator.toString(),
-      type
+        widget.GroupData.groupCode,
+        widget.BranchData.branchCode,
+        GlobalClass.creator.toString(),
+        type
 
     ).then((response) {
       if (response.statuscode == 200 && response.data[0].errormsg.isEmpty) {
         setState(() {
-          if(widget.page=="APPLICATION FORM"){
+          if (widget.page == "APPLICATION FORM") {
 
           }
-          if(widget.page=="HouseVisit"){
-            _borrowerItems =response.data.where((item) => item.homeVisit == "No").toList();
-            if(_borrowerItems.length<1){
-              noDataFoundMsg="No record found for House Visit!";
+          if (widget.page == "HouseVisit") {
+            _borrowerItems =
+                response.data.where((item) => item.homeVisit == "No").toList();
+            if (_borrowerItems.length < 1) {
+              noDataFoundMsg = "No record found for House Visit!";
             }
-          }else{
+          } else {
             _borrowerItems = response.data;
           }
-
-
         });
-        EasyLoading.dismiss();
-print("object++12");
+        _isLoading = false;
+        print("object++12");
       } else {
         setState(() {
-          noDataFoundMsg=response.data[0].errormsg;
+          noDataFoundMsg = response.data[0].errormsg;
         });
-        EasyLoading.dismiss();
-
+        _isLoading = false;
       }
+    }).catchError((error) {
+      _isLoading = false;
+      GlobalClass.showErrorAlert(context, error.toString(),1);
     });
   }
 
@@ -151,7 +153,13 @@ print("object++12");
           ),
           noDataFoundMsg.isEmpty?
           Expanded(
-            child: ListView.builder(
+            child: _isLoading
+                ? ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: 10,
+              itemBuilder: (context, index) => GlobalClass().ListShimmerItem(),
+            )
+                :ListView.builder(
               padding: EdgeInsets.all(0),
               itemCount: _borrowerItems.length,
               itemBuilder: (context, index) {

@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_sourcing_app/Models/collectionbranchlistmodel.dart';
 import 'package:flutter_sourcing_app/collectionborrowerlist.dart';
 
+import 'global_class.dart';
+
 class CollectionGroupListPage extends StatefulWidget {
   final CollectionBranchListDataModel SelectedData;
   final List<CollectionBranchListDataModel> Branchdata;
@@ -20,6 +22,7 @@ class CollectionGroupListPage extends StatefulWidget {
 class _CollectionGroupListPageState extends State<CollectionGroupListPage> {
   List<CollectionBranchListDataModel> _items = [];
   String _searchText = '';
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -27,9 +30,7 @@ class _CollectionGroupListPageState extends State<CollectionGroupListPage> {
     _items = widget.Branchdata.where((item) {
       return item.focode == widget.SelectedData.focode;
     }).toList();
-
-    print("Filtered items in initState: ${widget.Branchdata.length}"); // Debug statement
-    print("Filtered items in initState: ${_items.length}"); // Debug statement
+    _isLoading = false;
   }
 
   @override
@@ -103,7 +104,13 @@ class _CollectionGroupListPageState extends State<CollectionGroupListPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: _isLoading
+                ? ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: 10,
+              itemBuilder: (context, index) => GlobalClass().ListShimmerItem(),
+            )
+                : ListView.builder(
               padding: EdgeInsets.zero,
               itemCount: filteredItems.length,
               itemBuilder: (context, index) {

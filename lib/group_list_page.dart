@@ -37,7 +37,7 @@ class _GroupListPageState extends State<GroupListPage> {
   }
 
   Future<void> _fetchGroupList() async {
-    EasyLoading.show(status: 'Loading...',);
+    //EasyLoading.show(status: 'Loading...',);
 
     final apiService = Provider.of<ApiService>(context, listen: false);
 
@@ -83,9 +83,7 @@ class _GroupListPageState extends State<GroupListPage> {
 
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Column(
+      body: Column(
         children: [
           SizedBox(height: 50),
           Padding(padding: EdgeInsets.all(8),
@@ -147,7 +145,13 @@ class _GroupListPageState extends State<GroupListPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: _isLoading
+                ? ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: 10,
+              itemBuilder: (context, index) => GlobalClass().ListShimmerItem(),
+            )
+                : ListView.builder(
               padding: EdgeInsets.zero,
 
               itemCount: filteredItems.length,
