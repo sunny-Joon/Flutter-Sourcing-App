@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:xml/xml.dart';
 
 class GlobalClass {
@@ -226,5 +227,60 @@ class GlobalClass {
     }
     // Return the filePath as is if it doesn't match the local prefix
     return filePath;
+  }
+
+  Widget ListShimmerItem() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
+        elevation: 5,
+        child: Container(
+          height: 60, // Increased height for better visibility
+          padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: Shimmer.fromColors(
+            direction: ShimmerDirection.ltr,
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Row(
+              children: [
+                // Circle
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                SizedBox(width: 16),
+                // Branch Name
+                Expanded(
+                  child: Text(
+                    'Loading ...',
+                    style: TextStyle(
+                      color: Colors.grey.shade300,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                // Arrow
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.grey.shade300,
+                  size: 16,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

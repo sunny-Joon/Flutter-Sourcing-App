@@ -17,6 +17,8 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
   List<CollectionBranchListDataModel> _items = [];
   List<CollectionBranchListDataModel> _allitems = [];
   String _searchText = '';
+  bool _isLoading = true;
+
 
   @override
   void initState() {
@@ -44,14 +46,14 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
           setState(() {
             _items = uniqueItems; // Store the unique response data
           });
-          EasyLoading.dismiss();
+          _isLoading = false;
 
           print('Branch List retrieved successfully');
         } else {
           GlobalClass.showUnsuccessfulAlert(
               context, "Not able to fetch Group List", 1);
           setState(() {
-            EasyLoading.dismiss();
+            _isLoading = false;
           });
         }
       });
@@ -59,7 +61,7 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
       print('Error: $e');
       GlobalClass.showErrorAlert(context, "Server Side Error", 1);
       setState(() {
-        EasyLoading.dismiss();
+        _isLoading = false;
       });
     }
   }
@@ -119,14 +121,19 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: _isLoading
+                ? ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: 10,
+              itemBuilder: (context, index) => GlobalClass().ListShimmerItem(),
+            )
+                : ListView.builder(
               padding: EdgeInsets.zero,
               itemCount: filteredItems.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
                     final selectedItem = filteredItems[index];
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(
