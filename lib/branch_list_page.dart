@@ -3,11 +3,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/group_list_page.dart';
 import 'package:flutter_sourcing_app/MasterAPIs/live_track_repository.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'kyc.dart';
 import 'Models/branch_model.dart';
 import 'Branch_recycler_item.dart';
 import 'api_service.dart';
-
 import 'global_class.dart';
 
 class BranchListPage extends StatefulWidget {
@@ -22,7 +22,7 @@ class BranchListPage extends StatefulWidget {
 class _BranchListPageState extends State<BranchListPage> {
   List<BranchDataModel> _items = [];
   String _searchText = '';
-
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -31,36 +31,39 @@ class _BranchListPageState extends State<BranchListPage> {
   }
 
   Future<void> _fetchBranchList() async {
-    EasyLoading.show(status: 'Loading...',);
-
+ //   EasyLoading.show(status: 'Loading...');
 
     final apiService = Provider.of<ApiService>(context, listen: false);
-    try{
-      await apiService.getBranchList(GlobalClass.token,GlobalClass.dbName,GlobalClass.creator).then((response) {
+    try {
+      await apiService.getBranchList(GlobalClass.token, GlobalClass.dbName, GlobalClass.creator).then((response) {
         if (response.statuscode == 200) {
           setState(() {
             _items = response.data; // Store the response data
-
+            _isLoading = false;
           });
-          EasyLoading.dismiss();
+    //      EasyLoading.dismiss();
 
           print('Branch List retrieved successfully');
         } else {
           GlobalClass.showUnsuccessfulAlert(
               context, "Not able to fetch Group List", 1);
           setState(() {
-            EasyLoading.dismiss();
+            _isLoading = false;
+  //          EasyLoading.dismiss();
           });
         }
       });
-    }catch (e) {
+    } catch (e) {
       print('Error: $e');
-      GlobalClass.showErrorAlert(context,"Server Side Error",2);
+      GlobalClass.showErrorAlert(context, "Server Side Error", 2);
       setState(() {
-        EasyLoading.dismiss();
+        _isLoading = false;
+ //       EasyLoading.dismiss();
       });
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -69,93 +72,97 @@ class _BranchListPageState extends State<BranchListPage> {
     }).toList();
 
     return Scaffold(
-
-      backgroundColor: Color(0xFFD42D3F),
-      body: Column(
-        children: [
-          SizedBox(height: 50),
-          Padding(padding: EdgeInsets.all(8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                widget.intentFrom=="COLLECTION"?SizedBox():
-                InkWell(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(width: 1, color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
+        backgroundColor: Color(0xFFD42D3F),
+        body: Column(
+          children: [
+            SizedBox(height: 50),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  widget.intentFrom == "COLLECTION" ? SizedBox() : InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(width: 1, color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
+                      height: 40,
+                      width: 40,
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                      ),
                     ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  Center(
+                    child: Image.asset(
+                      'assets/Images/logo_white.png', // Replace with your logo asset path
+                      height: 40,
+                    ),
+                  ),
+                  Container(
                     height: 40,
                     width: 40,
                     alignment: Alignment.center,
-                    child: Center(
-                      child: Icon(Icons.arrow_back_ios_sharp, size: 16),
-                    ),
                   ),
-                  onTap: () {
-                    Navigator.of(context).pop();
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 0, top: 0, left: 10, right: 10),
+              child: Card(
+                color: Colors.white,
+                elevation: 8,
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search),
+                  ),
+                  onChanged: (text) {
+                    setState(() {
+                      _searchText = text;
+                    });
                   },
                 ),
-                Center(
-                  child: Image.asset(
-                    'assets/Images/logo_white.png', // Replace with your logo asset path
-                    height: 40,
-                  ),
-                ),
-                Container(
-                  height: 40,
-                  width: 40,
-                  alignment: Alignment.center,
-                ),
-              ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 0,top: 0,left: 10,right: 10),
-            child: Card(
-              color: Colors.white,
-              elevation: 8,
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  prefixIcon: Icon(Icons.search),
-                ),
-                onChanged: (text) {
-                  setState(() {
-                    _searchText = text;
-                  });
+            Expanded(
+              child: _isLoading
+                  ? ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: 10,
+                itemBuilder: (context, index) => GlobalClass().ListShimmerItem(),
+              )
+                  : ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: filteredItems.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      final selectedItem = filteredItems[index];
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GroupListPage(
+                              Branchdata: selectedItem,
+                              intentFrom: widget.intentFrom),
+                        ),
+                      );
+                    },
+                    child: BranchRecyclerItem(item: filteredItems[index]),
+                  );
                 },
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: filteredItems.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    final selectedItem = filteredItems[index];
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => GroupListPage(
-                            Branchdata: selectedItem,
-                            intentFrom:widget.intentFrom),
-                      ),
-                    );
-                  },
-                  child: BranchRecyclerItem(item: filteredItems[index]),
-                );
-              },
-            ),
-          ),
-        ],
-      )
+          ],
+        )
     );
   }
-
 }
