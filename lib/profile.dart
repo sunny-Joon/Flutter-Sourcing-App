@@ -35,6 +35,7 @@ class _ProfileState extends State<Profile> {
   String? _imagePath;
   final picker = ImagePicker();
   bool punchCard = true;
+
   @override
   void initState() {
     super.initState();
@@ -43,8 +44,6 @@ class _ProfileState extends State<Profile> {
     _startTimer();
     _loadImage();
   }
-
-
 
   void _initializeControllers() {
     _creatorController.text = GlobalClass.creator;
@@ -117,9 +116,11 @@ class _ProfileState extends State<Profile> {
     _timer?.cancel();
     super.dispose();
   }
+
   Future<void> _loadImage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? imagePath = prefs.getString('imagePath'); // Fetch the saved image path
+    String? imagePath =
+        prefs.getString('imagePath'); // Fetch the saved image path
 
     if (imagePath != null && imagePath.isNotEmpty) {
       setState(() {
@@ -130,8 +131,6 @@ class _ProfileState extends State<Profile> {
       print('No image found in SharedPreferences.');
     }
   }
-
-
 
   Future<void> getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -153,16 +152,14 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFD42D3F),
       endDrawer: Container(
-
         width: 110,
-        height: MediaQuery.of(context).size.height / 3, // Set the height of the drawer
+        height: MediaQuery.of(context).size.height /
+            3, // Set the height of the drawer
 
         child: Drawer(
           backgroundColor: Colors.white,
@@ -203,10 +200,8 @@ class _ProfileState extends State<Profile> {
               ),
               ListTile(
                 onTap: () {
-
                   Navigator.pop(context);
                   MorphoRechargeDialog.show(context);
-
                 },
                 title: Column(
                   children: const [
@@ -260,7 +255,8 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
               Positioned.fill(
-                child: SingleChildScrollView( // Added SingleChildScrollView here
+                child: SingleChildScrollView(
+                  // Added SingleChildScrollView here
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -276,7 +272,8 @@ class _ProfileState extends State<Profile> {
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
                               crossAxisSpacing: 1,
                               mainAxisSpacing: 1,
@@ -284,21 +281,30 @@ class _ProfileState extends State<Profile> {
                             itemCount: 3,
                             itemBuilder: (context, index) {
                               if (index == 0) {
-                                return _buildGridItem('QR Payment Report', Icons.qr_code, () {
+                                return _buildGridItem(
+                                    'QR Payment Report', Icons.qr_code, () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => QrPaymentReports()),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            QrPaymentReports()),
                                   );
                                 });
                               } else if (index == 1) {
-                                return _buildGridItem('Morpho Recharge', Icons.find_in_page_sharp, () {
+                                return _buildGridItem(
+                                    'Morpho Recharge', Icons.find_in_page_sharp,
+                                    () {
                                   MorphoRechargeDialog.show(context);
                                 });
                               } else if (index == 2) {
-                                return _buildGridItem('Collection Reports', Icons.currency_rupee, () {
+                                return _buildGridItem(
+                                    'Collection Reports', Icons.currency_rupee,
+                                    () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => CollectionStatus()),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            CollectionStatus()),
                                   );
                                 });
                               }
@@ -314,11 +320,14 @@ class _ProfileState extends State<Profile> {
                           color: punchCard ? Colors.green : Colors.grey,
                           width: MediaQuery.of(context).size.width - 50,
                           child: InkWell(
-                            onTap: punchCard ? () {
-                              punchInOut(context);
-                            } : null,
+                            onTap: punchCard
+                                ? () {
+                                    punchInOut(context);
+                                  }
+                                : null,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 11.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 11.0),
                               alignment: Alignment.center,
                               child: Text(
                                 tabName,
@@ -334,43 +343,72 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                       SizedBox(height: 20),
-                      Stack(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 10),
-                            child: Image.asset(
-                              'assets/Images/earn5.png',
-                              width: MediaQuery.of(context).size.width - 20,
-                              height: 250,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 15,
-                            left: 15,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => referandearnactivity()),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                                textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+
+
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Card(
+                          elevation: 5,
+                          clipBehavior: Clip.antiAlias,
+                          color: Colors.transparent,
+                          child: Stack(
+                            children: [
+                              Container(
+                                height: 310,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(0),
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/Images/earn6.png'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
-                              child: Text("Refer Now"),
-                            ),
+                              Container(
+                                padding: EdgeInsets.all(8.0),
+                                child: Image.asset(
+                                  'assets/Images/earn5.png',
+                                  width: MediaQuery.of(context).size.width * 0.95,
+                                  height: 300,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Positioned(
+                                bottom: MediaQuery.of(context).size.height * 0.09,
+                                left: MediaQuery.of(context).size.width * 0.04,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => referandearnactivity()),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: MediaQuery.of(context).size.width * 0.04,
+                                      vertical: MediaQuery.of(context).size.height * 0.01,
+                                    ),
+                                    textStyle: TextStyle(
+                                      fontSize: MediaQuery.of(context).size.width * 0.035,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  child: Text("Refer Now"),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                      SizedBox(height: 20),
+
+
+                      SizedBox(height: 50),
                     ],
                   ),
                 ),
               ),
-
             ],
           ),
         ),
@@ -460,6 +498,7 @@ class _ProfileState extends State<Profile> {
       height: 30,
     );
   }
+
   Widget _buildProfilePicture() {
     return Center(
       child: GestureDetector(
@@ -469,29 +508,25 @@ class _ProfileState extends State<Profile> {
           backgroundColor: Colors.grey[200],
           child: _imageFile == null
               ? ClipOval(
-            child: Image.asset(
-              'assets/Images/user_ic.png', // Default image if no image exists
-              width: 120, // Image width
-              height: 120, // Image height
-              fit: BoxFit.cover,
-            ),
-          )
+                  child: Image.asset(
+                    'assets/Images/user_ic.png', // Default image if no image exists
+                    width: 120, // Image width
+                    height: 120, // Image height
+                    fit: BoxFit.cover,
+                  ),
+                )
               : ClipOval(
-            child: Image.file(
-              _imageFile!, // Use _imageFile, which is a File object
-              width: 120,
-              height: 120,
-              fit: BoxFit.cover,
-            ),
-          ),
+                  child: Image.file(
+                    _imageFile!, // Use _imageFile, which is a File object
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                ),
         ),
       ),
     );
   }
-
-
-
-
 
   Widget _buildUserDetailsCard() {
     return Card(
@@ -510,7 +545,8 @@ class _ProfileState extends State<Profile> {
             Divider(thickness: 2, indent: 16, endIndent: 16),
             _buildDetailRow(Icons.work, 'Designation ', _designationController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.admin_panel_settings, 'Creator ', _creatorController),
+            _buildDetailRow(
+                Icons.admin_panel_settings, 'Creator ', _creatorController),
             // Divider(thickness: 2, indent: 16, endIndent: 16),
             // _buildTimerRow(Icons.timer, 'Time Remaining ', _timeDisplay),
           ],
@@ -561,31 +597,29 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> punchInOut(BuildContext context) async {
-    var _latitude=0.0;
-    var _longitude=0.0;
+    var _latitude = 0.0;
+    var _longitude = 0.0;
     currentLocation _locationService = currentLocation();
     try {
       Map<String, dynamic> locationData =
-      await _locationService.getCurrentLocation();
+          await _locationService.getCurrentLocation();
       _latitude = locationData['latitude'];
       _longitude = locationData['longitude'];
-
     } catch (e) {
       print("Error getting current location: $e");
-
     }
-
 
     if (_latitude == 0.0 || _longitude == 0.0) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text("Location Error"),
-          content: Text("Please enable your location services or open location settings."),
+          content: Text(
+              "Please enable your location services or open location settings."),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();  // Close the dialog
+                Navigator.of(context).pop(); // Close the dialog
               },
               child: Text("OK"),
             ),
@@ -608,10 +642,10 @@ class _ProfileState extends State<Profile> {
         .then((value) {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
-        if(tabName == "PUNCHOUT"){
+        if (tabName == "PUNCHOUT") {
           punchCard = false;
           tabName = "PUNCHIN";
-        }else {
+        } else {
           setState(() {
             tabName = "PUNCHOUT";
           });
@@ -624,11 +658,6 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-
-
-
-
-
   Future<void> attendanceStatus(BuildContext context) async {
     EasyLoading.show(
       status: 'Loading...',
@@ -636,21 +665,22 @@ class _ProfileState extends State<Profile> {
 
     final api = Provider.of<ApiService>(context, listen: false);
 
-    await api.AttendanceStatus(GlobalClass.token,GlobalClass.dbName,  GlobalClass.id)
+    await api.AttendanceStatus(
+            GlobalClass.token, GlobalClass.dbName, GlobalClass.id)
         .then((value) async {
       if (value.statuscode == 200) {
-        if(value.data.length >0){
-          if(value.data[0].inTime !=null && value.data[0].outTime!=null){
+        if (value.data.length > 0) {
+          if (value.data[0].inTime != null && value.data[0].outTime != null) {
             setState(() {
               punchCard = false;
               tabName = "PUNCHIN";
             });
-          }else{
+          } else {
             setState(() {
               tabName = "PUNCHOUT";
             });
           }
-        }else{
+        } else {
           setState(() {
             tabName = "PUNCHIN";
           });
@@ -659,14 +689,14 @@ class _ProfileState extends State<Profile> {
         EasyLoading.dismiss();
       } else {
         EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(
-            context, "Attendance Status Fail", 1);
+        GlobalClass.showUnsuccessfulAlert(context, "Attendance Status Fail", 1);
       }
     }).catchError((error) {
       EasyLoading.dismiss();
       GlobalClass.showUnsuccessfulAlert(context, error.toString(), 1);
     });
   }
+
   Future<void> _cropImage(File imageFile) async {
     if (imageFile != null) {
       CroppedFile? cropped = await ImageCropper().cropImage(
@@ -701,9 +731,6 @@ class _ProfileState extends State<Profile> {
   }
 }
 
-
-
-
 class MorphoRechargeDialog extends StatefulWidget {
   @override
   _MorphoRechargeDialogState createState() => _MorphoRechargeDialogState();
@@ -721,8 +748,7 @@ class MorphoRechargeDialog extends StatefulWidget {
 }
 
 class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
-  final TextEditingController _deviceSirNoController =
-  TextEditingController();
+  final TextEditingController _deviceSirNoController = TextEditingController();
 
   @override
   void dispose() {
@@ -750,8 +776,7 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
         .then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
-        GlobalClass.showSuccessAlert(
-            context, value.message, 2);
+        GlobalClass.showSuccessAlert(context, value.message, 2);
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(
@@ -765,33 +790,36 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
 
   // Function to handle the "Submit" button
   void _onSubmit() async {
-    if(_deviceSirNoController.text.isEmpty){
-      GlobalClass.showErrorAlert(context, "Please Enter Correct S/N of morpho device", 1);
-    }else{
+    if (_deviceSirNoController.text.isEmpty) {
+      GlobalClass.showErrorAlert(
+          context, "Please Enter Correct S/N of morpho device", 1);
+    } else {
       try {
         Map<String, dynamic> locationData =
-        await currentLocation().getCurrentLocation();
+            await currentLocation().getCurrentLocation();
         var _latitude = locationData['latitude'] ?? 0.0;
         var _longitude = locationData['longitude'] ?? 0.0;
 
         await _MorphoRechargeApi(context, _latitude, _longitude);
-
       } catch (e) {
         print("Error getting current location: $e");
       }
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
       backgroundColor: Colors.white,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Morpho Recharge',style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold),),
+          Text(
+            'Morpho Recharge',
+            style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+          ),
           IconButton(
             icon: Icon(Icons.close),
             onPressed: () {
@@ -805,7 +833,6 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-
             Container(
               width: double.infinity,
               child: TextFormField(
@@ -832,7 +859,7 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
         ElevatedButton(
           onPressed: _onSubmit,
           style: ElevatedButton.styleFrom(
-            backgroundColor:  Color(0xFFD42D3F),
+            backgroundColor: Color(0xFFD42D3F),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
             ),

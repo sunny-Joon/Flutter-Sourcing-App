@@ -1,9 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_sourcing_app/getrewardactivity.dart';
-import 'package:flutter_sourcing_app/howtoreferactivity.dart';
+import 'package:share_plus/share_plus.dart';
 
-class referandearnactivity extends StatelessWidget {
+import 'getrewardactivity.dart';
+import 'howtoreferactivity.dart';
+
+class referandearnactivity extends StatefulWidget {
+  @override
+  _referandearnactivitystate createState() => _referandearnactivitystate();
+}
+
+class _referandearnactivitystate extends State<referandearnactivity> {
+  final TextEditingController referralCodeController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchReferralCode();
+  }
+
+  void fetchReferralCode() async {
+    await Future.delayed(Duration(seconds: 2));
+
+    String fetchedReferralCode = "rps123";
+    setState(() {
+      referralCodeController.text = fetchedReferralCode;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,17 +40,17 @@ class referandearnactivity extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: Column(
           children: [
-            // First Image - Clickable
             GestureDetector(
               onTap: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => howtoreferactivity()),
+                    context,
+                    MaterialPageRoute(builder: (context) => howtoreferactivity()),
                 );
+
               },
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.9,
-                height: 180, // Increase the height to 200
+                height: 180,
                 child: SvgPicture.asset(
                   'assets/Images/earn1.svg',
                   fit: BoxFit.fill,
@@ -36,7 +60,6 @@ class referandearnactivity extends StatelessWidget {
 
             SizedBox(height: 15),
 
-            // Second Image with Overlay Content
             Stack(
               alignment: Alignment.center,
               children: [
@@ -50,7 +73,6 @@ class referandearnactivity extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    // Referral Code Text
                     Text(
                       'Your Referral Code',
                       style: TextStyle(
@@ -61,95 +83,32 @@ class referandearnactivity extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
 
+                    // Dynamic referral code
                     Text(
-                      'ABCDEFG',
+                      referralCodeController.text.isNotEmpty
+                          ? referralCodeController.text
+                          : 'Loading...',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[700],
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 16),
 
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 19),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width *
-                                0.4, // Smaller width
-                            child: Card(
-                              elevation: 2,
-                              color: Colors.white.withOpacity(0.9),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Total Referral Friends',
-                                      style: TextStyle(
-                                        fontSize: 8, // Smaller font size
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    SizedBox(height: 11), // Smaller spacing
-                                    Text(
-                                      '0',
-                                      style: TextStyle(
-                                        fontSize: 8, // Smaller font size
-                                        color: Colors.grey[700],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 5),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width *
-                                0.4, // Smaller width
-                            child: Card(
-                              elevation: 2,
-                              color: Colors.white.withOpacity(0.9),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Total Cashback Earned',
-                                      style: TextStyle(
-                                        fontSize: 8, // Smaller font size
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    SizedBox(height: 11),
-                                    Text(
-                                      '0', // Replace with dynamic value
-                                      style: TextStyle(
-                                        fontSize: 8,
-                                        color: Colors.grey[700],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildInfoCard(
+                          title: 'Total Referral Friends',
+                          value: '0',
+                        ),
+                        _buildInfoCard(
+                          title: 'Total Cashback Earned',
+                          value: '0',
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ],
@@ -157,7 +116,6 @@ class referandearnactivity extends StatelessWidget {
 
             SizedBox(height: 15),
 
-            // Third Image - Clickable
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -166,21 +124,30 @@ class referandearnactivity extends StatelessWidget {
                 );
               },
               child: Container(
-                width: MediaQuery.of(context).size.width *
-                    0.9, // Increase width by 20%
-                height: 180, // Increase the height to 200
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: 180,
                 child: SvgPicture.asset(
-                  'assets/Images/earn3.svg', // Ensure the path is correct
-                  fit: BoxFit.fill, // Stretch image to fit the width
+                  'assets/Images/earn3.svg',
+                  fit: BoxFit.fill,
                 ),
               ),
             ),
 
             SizedBox(height: 20),
 
+            // Refer Now Button
             ElevatedButton(
               onPressed: () {
-                print("Refer Now Button Clicked");
+                String shareMessage =
+                    "Join Paisalo group with my referral code *${referralCodeController.text}* to get more benefits. "
+                    "Register on this link https://www.paisalo.in/home/cso with my referral code to become a CSO.";
+
+                try {
+                  Share.share(shareMessage);
+                  print("Message shared: $shareMessage");
+                } catch (e) {
+                  print("Error sharing message: $e");
+                }
               },
               child: Text("REFER NOW"),
               style: ElevatedButton.styleFrom(
@@ -189,6 +156,44 @@ class referandearnactivity extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Helper widget for info cards
+  Widget _buildInfoCard({required String title, required String value}) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.4,
+      child: Card(
+        elevation: 2,
+        color: Colors.white.withOpacity(0.9),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(2),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 8,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 11),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 8,
+                  color: Colors.grey[700],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

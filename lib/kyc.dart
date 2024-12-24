@@ -3049,10 +3049,11 @@ bool checkIdMendate(){
         _pincodeController.text.length != 6) {
       showToast_Error("Please enter correct Pin code");
       return false;
-    } else if (stateselected!.descriptionEn.toLowerCase() == "select") {
+    } else if (stateselected == null || stateselected!.descriptionEn.toLowerCase() == "select") {
       showToast_Error("Please select state");
       return false;
-    } else if (_loan_amountController.text.isEmpty) {
+    }
+    else if (_loan_amountController.text.isEmpty) {
       showToast_Error("Please enter correct loan amount");
       return false;
     } else if (!((int.parse(_loan_amountController.text))>=5000 && (int.parse(_loan_amountController.text))<=300000)) {
