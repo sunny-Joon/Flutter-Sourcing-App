@@ -31,14 +31,50 @@ class _referandearnactivitystate extends State<referandearnactivity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFD42D3F),
-      ),
       backgroundColor: const Color(0xFFD42D3F),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: Column(
           children: [
+            SizedBox(height: 40,),
+            Padding(padding: EdgeInsets.all(8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(width: 1, color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
+                      height: 40,
+                      width: 40,
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  Center(
+                    child: Image.asset(
+                      'assets/Images/logo_white.png', // Replace with your logo asset path
+                      height: 40,
+                    ),
+                  ),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                  ),
+                ],
+              ),
+            ),
+
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -158,10 +194,16 @@ class _referandearnactivitystate extends State<referandearnactivity> {
               },
               child: Text("REFER NOW"),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                textStyle: TextStyle(fontSize: 20),
+                foregroundColor: Colors.white, backgroundColor: Color(
+                  0xFFC01024), // Text color
+                elevation: 5, // Elevation
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12), // Rounded corners
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15), // Padding
+                textStyle: TextStyle(fontSize: 20), // Text style
               ),
-            ),
+            )
           ],
         ),
       ),

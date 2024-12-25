@@ -37,7 +37,6 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
   void initState() {
     super.initState();
     fetchData();
-
     // if(widget.page =="E SIGN"){
     _fetchCollectionBorrowerList(1);
     // }else{
@@ -58,13 +57,10 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
         GlobalClass.token,
         GlobalClass.dbName,
         GlobalClass.imei,
-        "",
-        //widget.BranchData.branchCode,
-        "0001",
-        //widget.GroupData.groupCode,
-        "GRST002946",
-        //GlobalClass.id,
-        "2024-11-20" //GlobalClass.getTodayDate(),
+        widget.Branchdata.focode,
+        widget.Branchdata.areaCd,
+        GlobalClass.id,
+        GlobalClass.getTodayDate(),
     ).then((response) {
       if (response.statuscode == 200) {
         setState(() {
