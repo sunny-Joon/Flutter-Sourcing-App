@@ -254,8 +254,15 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
+              Positioned(
+                top: 110,
+                left: 10,
+                right: 10,
+                child:_buildProfilePicture(),
+              ),
+
               Positioned.fill(
-                top: 70,
+                top: 220,
                 left: 10,
                 right: 10,
                 child: SingleChildScrollView(
@@ -263,9 +270,7 @@ class _ProfileState extends State<Profile> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.width / 3),
-                      _buildProfilePicture(),
-                      SizedBox(height: 30),
+                   //   SizedBox(height: MediaQuery.of(context).size.width / 3),
                       _buildUserDetailsCard(),
                       Container(
                         height: MediaQuery.of(context).size.height / 6,
@@ -372,13 +377,13 @@ class _ProfileState extends State<Profile> {
                                 child: Image.asset(
                                   'assets/Images/earn5.png',
                                   width: MediaQuery.of(context).size.width * 0.95,
-                                  height: 300,
+                                  height: 280,
                                   fit: BoxFit.cover,
                                 ),
                               ),
                               Positioned(
-                                bottom: MediaQuery.of(context).size.height * 0.09,
-                                left: MediaQuery.of(context).size.width * 0.04,
+                                bottom: MediaQuery.of(context).size.height * 0.03,
+                                left: MediaQuery.of(context).size.width * 0.02,
                                 child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
@@ -388,7 +393,8 @@ class _ProfileState extends State<Profile> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: Color(0xFFD42D3F),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                                     padding: EdgeInsets.symmetric(
                                       horizontal: MediaQuery.of(context).size.width * 0.04,
                                       vertical: MediaQuery.of(context).size.height * 0.01,
@@ -398,7 +404,7 @@ class _ProfileState extends State<Profile> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  child: Text("Refer Now"),
+                                  child: Text("Refer Now",style: TextStyle(color: Colors.white),),
                                 ),
                               ),
                             ],
@@ -507,7 +513,7 @@ class _ProfileState extends State<Profile> {
       child: GestureDetector(
         onTap: getImage, // Trigger image selection
         child: CircleAvatar(
-          radius: 60,
+          radius: 50,
           backgroundColor: Colors.grey[200],
           child: _imageFile == null
               ? ClipOval(
