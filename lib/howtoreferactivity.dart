@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 class howtoreferactivity extends StatelessWidget {
+  final String referralCode;
+
+  howtoreferactivity({required this.referralCode});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Refer and Earn Activity"),
+        backgroundColor: const Color(0xFFD42D3F),
       ),
+      backgroundColor: const Color(0xFFD42D3F),
       body: Container(
-        color: Colors.red,
+
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +31,7 @@ class howtoreferactivity extends StatelessWidget {
             StepWidget(
               stepNumber: "1",
               stepDescription:
-              "Click On 'Refer Now' and copy the message with the and your unique referralcode",
+              "Click On 'Refer Now' and copy the message with your unique referral code.",
             ),
             StepWidget(
               stepNumber: "2",
@@ -40,7 +46,18 @@ class howtoreferactivity extends StatelessWidget {
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  String shareMessage =
+                      "Join Paisalo group with my referral code *$referralCode* to get more benefits. "
+                      "Register on this link https://www.paisalo.in/home/cso with my referral code to become a CSO.";
+
+                  try {
+                    Share.share(shareMessage);
+                    print("Message shared: $shareMessage");
+                  } catch (e) {
+                    print("Error sharing message: $e");
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.red, // Set text color to red
                   backgroundColor: Colors.white, // Set background color to white

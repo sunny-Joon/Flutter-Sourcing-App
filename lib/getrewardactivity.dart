@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // If you're using SVG images, import this package
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:share_plus/share_plus.dart';
 
-class getRewardActivity extends StatelessWidget {
+class getrewardactivity extends StatelessWidget {
+  final String referralCode;
+
+  getrewardactivity({required this.referralCode});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Refer and Earn Activity"),
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFFD42D3F),
       ),
-      backgroundColor: Colors.red,
+      backgroundColor: const Color(0xFFD42D3F),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -27,7 +31,7 @@ class getRewardActivity extends StatelessWidget {
 
             // Second Image
             Container(
-              width: MediaQuery.of(context).size.width * 1.2, // Increase the width by 20%
+              width: MediaQuery.of(context).size.width * 1.2, // Slightly wider than the screen
               child: SvgPicture.asset(
                 'assets/Images/get2.svg', // Ensure the path is correct
                 height: 170,
@@ -48,8 +52,16 @@ class getRewardActivity extends StatelessWidget {
             // Button at the bottom
             ElevatedButton(
               onPressed: () {
-                // Add your action here
-                print("Reward Button Clicked");
+                String shareMessage =
+                    "Join Paisalo group with my referral code *$referralCode* to get more benefits. "
+                    "Register on this link https://www.paisalo.in/home/cso with my referral code to become a CSO.";
+
+                try {
+                  Share.share(shareMessage);
+                  print("Message shared: $shareMessage");
+                } catch (e) {
+                  print("Error sharing message: $e");
+                }
               },
               child: Text("REFER NOW"),
               style: ElevatedButton.styleFrom(
