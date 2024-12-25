@@ -373,12 +373,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
         });
       }
     });
-
+    GetDocs(context);
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     getAllDataApi(context);
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
-    GetDocs(context);
+
     initializeData(); // Fetch initial data
     _emailIdFocus.addListener(_validateEmail);
     _mobileFocusNode.addListener(_validateMobile);
@@ -4188,6 +4188,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String? GrNo,
     required Function(File) onImagePicked,
   }) {
+    print("Path on Gr no: ${path}");
     String baseUrl = 'https://predeptest.paisalo.in:8084';
 
     // Replace the front part of the file path and ensure the path uses forward slashes
@@ -4204,7 +4205,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           onTap: () async {
             File? pickedImage = await GlobalClass().pickImage();
             if (pickedImage != null) {
-              print("vmsdfjk");
+
               setState(() {
                 _selectedImage = pickedImage;
                 switch (id) {
@@ -4228,6 +4229,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     break;
                   case 2:
                     passbook = pickedImage;
+                    break;
+                    case 30:
+                    passport = pickedImage;
                     break;
                   case 7:
                     adhaarFront_coborrower = pickedImage;
@@ -4402,11 +4406,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
             title: "Passport",
             path: doc.passportPath,
-            id: doc.passportCheckListId,
+            id: 30,
             GrNo: '0',
             onImagePicked: (File file) {
               setState(() {
-                adhaarFront = file;
+                passport = file;
               });
             },
           ));
