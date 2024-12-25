@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFD42D3F)),
+          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFFF3C3C)),
           useMaterial3: true,
         ),
          home: SplashScreen(),
@@ -139,20 +139,6 @@ class _SplashScreenState extends State<SplashScreen> {
             TextButton(
               child: Text('Download App'),
               onPressed: () async {
-                // downloadApk('https://erpservice.paisalo.in:980/PDL.Mobile.Api/api/ApkApp/Csp');
-                // setState(() {
-                //   Navigator.of(context).pop();
-                //   _showDownloadingDialog(context);
-                // });
-                //await Clipboard.setData(ClipboardData(text: "https://erpservice.paisalo.in:980/PDL.Mobile.Api/api/ApkApp/Csp"));
-                // copied successfully
-
-                // Navigator.pushReplacement(
-                //   context as BuildContext,
-                //   MaterialPageRoute(
-                //     builder: (context) => (MyWebView(url: url,)),
-                //   ),
-                // );
                 _launchURLBrowser(url);
               },
             ),
@@ -197,25 +183,6 @@ class _SplashScreenState extends State<SplashScreen> {
               );
             });
           }
-
-
-        // } else if (appVersionModel.data is String) {
-        //
-        //   String stringValue = appVersionModel.data;
-        //   print("Response for App Version ${stringValue}");
-        //   if(apkDownloaded==0){
-        //     _showUpdateDialog(context,stringValue.trim());
-        //
-        //   }else if(apkDownloaded==2){
-        //     _showDownloadingDialog(context);
-        //
-        //   }else{
-        //     _showDownloadedDialog(context);
-        //   }
-        //
-        // } else {
-        //   // Handle other types if necessary
-        // }
       } else {
         // Handle error
 

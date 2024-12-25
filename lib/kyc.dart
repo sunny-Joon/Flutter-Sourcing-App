@@ -103,7 +103,7 @@ class _KYCPageState extends State<KYCPage> {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
-    _focusNodeAdhaarId.addListener(_validateOnFocusChange);
+   // _focusNodeAdhaarId.addListener(_validateOnFocusChange);
  //    _mobileNoController.text="9910238307";
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
@@ -117,9 +117,9 @@ class _KYCPageState extends State<KYCPage> {
 
   @override
   void dispose() {
-    _focusNodeAdhaarId
-        .removeListener(_validateOnFocusChange); // Remove listener
-    _focusNodeAdhaarId.dispose(); // Dispose FocusNode when widget is disposed
+    // _focusNodeAdhaarId
+    //     .removeListener(_validateOnFocusChange); // Remove listener
+    // _focusNodeAdhaarId.dispose(); // Dispose FocusNode when widget is disposed
     super.dispose();
   }
 
@@ -331,7 +331,7 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   void _validateOnFocusChange() {
-    if (!_focusNodeAdhaarId.hasFocus) {
+
       // Validate the input when the text field loses focus
       setState(() {
         if (_aadharIdController.text.isEmpty) {
@@ -342,12 +342,13 @@ class _KYCPageState extends State<KYCPage> {
           _errorMessageAadhaar = 'Aadhaar id is not valid';
         } else {
           _errorMessageAadhaar = "";
+          if (_aadharIdController.text.length == 12) {
+            adhaarAllData(context);
+          }
         }
       });
-      if (_aadharIdController.text.length == 12) {
-        adhaarAllData(context);
-      }
-    }
+
+
   }
 
   void _selectDate(BuildContext context, TextEditingController controller,
@@ -1475,7 +1476,10 @@ class _KYCPageState extends State<KYCPage> {
                             }
                             return null;
                           },
+                          onChanged: (value){
+                            _validateOnFocusChange();
 
+                          },
                         ),
                       )),
                 ],
@@ -1747,8 +1751,56 @@ class _KYCPageState extends State<KYCPage> {
         Row(
           children: [
             Expanded(
-              child: _buildTextField2(
-                  'Mobile no', _mobileNoController, TextInputType.number, 10),
+              child:  Container(
+                color: Colors.white,
+                margin: EdgeInsets.symmetric(vertical: 3),
+                padding: EdgeInsets.all(1),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Mobile No.",
+                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, height: 2),
+                    ),
+                    Container(
+                      width: double.infinity, // Set the desired width
+                      child: Center(
+                        child: TextFormField(
+                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+
+                          maxLength: 10,
+                          controller: _mobileNoController,
+                          keyboardType: TextInputType.number, // Set the input type
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(), counterText: ""),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter Mobile no.';
+                            }
+                            return null;
+                          },
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(
+                                '[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                            TextInputFormatter.withFunction(
+                                  (oldValue, newValue) => TextEditingValue(
+                                text: newValue.text.toUpperCase(),
+                                selection: newValue.selection,
+                              ),
+                            ),
+                          ],
+                          onChanged: (value){
+                            setState(() {
+                              otpVerified=false;
+                            });
+
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
             SizedBox(width: 5),
             // Add spacing between the text field and the button
@@ -2210,7 +2262,7 @@ class _KYCPageState extends State<KYCPage> {
       context: context,
       barrierDismissible: false, // Prevent dismissal by tapping outside
       builder: (BuildContext context) {
-        return StatefulBuilder(
+        return WillPopScope(child: StatefulBuilder(
           builder: (context, setState) {
             // Start timer once the dialog opens
             if (countdownTimer == null) startCountdown(setState);
@@ -2298,7 +2350,7 @@ class _KYCPageState extends State<KYCPage> {
               ],
             );
           },
-        );
+        ), onWillPop: () async => false);
       },
     ).then((_) {
       countdownTimer?.cancel(); // Cleanup when dialog is closed
