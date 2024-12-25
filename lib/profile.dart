@@ -255,7 +255,7 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
               Positioned.fill(
-                top: 20,
+                top: 70,
                 left: 10,
                 right: 10,
                 child: SingleChildScrollView(
