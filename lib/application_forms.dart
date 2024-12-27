@@ -3907,6 +3907,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               _currentStep -= 1;
             });
           } else if (_currentStep == 3) {
+
             setState(() {
               pageTitle = "Income & Expense";
               _currentStep -= 1;
@@ -4328,7 +4329,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
             title: "Aadhar Front",
             path: doc.aadharPath,
-            id: 1,
+            id: 7,
             GrNo: "0",
             onImagePicked: (File file) {
               setState(() {

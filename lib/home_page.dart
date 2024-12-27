@@ -141,7 +141,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 20), // Add space between sections
             // Bottom section with cards
-            GestureDetector(
+            /*GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
@@ -157,11 +157,11 @@ class _HomePageState extends State<HomePage> {
                         fontSize: 18,
                         color: Color(0xFFC5C3C3),
                         shadows: [
-                          /* Shadow(
+                          *//* Shadow(
 
                           blurRadius: 10.0,
                           color: Colors.black,
-                        ),*/
+                        ),*//*
                         ],
                       ),
                       textAlign: TextAlign.center,
@@ -171,7 +171,10 @@ class _HomePageState extends State<HomePage> {
                       color: Color(0xFFC5C3C3),
                     ),
                   ],
-                )),
+                ))*/
+
+
+
             SizedBox(height: 10), // Add space before the row
             Row(
               children: [
@@ -265,10 +268,10 @@ class _HomePageState extends State<HomePage> {
                                 textAlign: TextAlign.center,
                               ),
                               SizedBox(height: 10),
-                              Icon(
+                             /* Icon(
                                 Icons.double_arrow_outlined,
                                 color: Color(0xFFC5C3C3),
-                              ),
+                              ),*/
                             ],
                           ),
                         ),
