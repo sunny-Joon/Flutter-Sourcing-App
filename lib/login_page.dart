@@ -450,8 +450,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
 
-
-
   Future<void> _getLogin( String userName, String userPassword, BuildContext context) async {
      EasyLoading.show(status: 'Loading...',);
     final api = Provider.of<ApiService>(context, listen: false);
@@ -465,13 +463,19 @@ class _LoginPageState extends State<LoginPage> {
         .getLogins("0646498585477244", GlobalClass.dbName, requestBody)
         .then((value) async {
           try{
-            if (value.statuscode == 200) {
+            if (value.statuscode == 200 ) {
               refToken = value.data.tokenDetails.token.toString();
-              if (value.message == 'Login Successfully !!') {
+              if (value.message == 'Login Successfully !!')  {
                 // Assign values to GlobalClass static members
-
+             /*    if (value.data.foImei.isEmpty) {
+                  EasyLoading.dismiss();
+                  GlobalClass.showUnsuccessfulAlert(
+                      context, "Error: foImei is empty. Login unsuccessful.", 1);
+                  return; // Stop further execution
+                }*/
                 GlobalClass.token = 'Bearer ' + refToken;
                 GlobalClass.deviceId = value.data.tokenDetails.deviceSrNo;
+
                 GlobalClass.id = value.data.tokenDetails.userName;
                 GlobalClass.validity = value.data.tokenDetails.validity;
                 GlobalClass.imei = value.data.tokenDetails.imeino;
@@ -484,7 +488,10 @@ class _LoginPageState extends State<LoginPage> {
                   GlobalClass.mobile=value.data.foImei[0].mobNo;
                   GlobalClass.userName=value.data.foImei[0].name;
                   GlobalClass.designation=value.data.foImei[0].designation;
-                  EasyLoading.dismiss();
+
+                  // EasyLoading.dismiss();
+                  // Navigator.pushReplacement(
+                  //     context, MaterialPageRoute(builder: (context) => Fragments()));
 
                 }
                 else{

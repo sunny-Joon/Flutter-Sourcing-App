@@ -152,8 +152,6 @@ class StepWidget extends StatelessWidget {
                 color: Colors.black,
                 fontSize: 16.0,
               ),
-              overflow: TextOverflow.ellipsis, // Handle text overflow
-              maxLines: 2, // Limit to 2 lines if the text is long
             ),
           ),
         ],
@@ -161,3 +159,4 @@ class StepWidget extends StatelessWidget {
     );
   }
 }
+

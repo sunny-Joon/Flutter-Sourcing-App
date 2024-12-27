@@ -15,7 +15,6 @@ class _AddTextToImageState extends State<AddTextToImage> {
   File? _imageFile;
   File? _editedImage;
 
-  // Capture image and add text
   Future<void> captureAndEditImage() async {
     // Capture image from the camera
     final XFile? capturedImage = await _picker.pickImage(source: ImageSource.camera);
