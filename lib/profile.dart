@@ -606,6 +606,7 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> punchInOut(BuildContext context) async {
+    EasyLoading.show(status: "Please wait...");
     var _latitude = 0.0;
     var _longitude = 0.0;
     currentLocation _locationService = currentLocation();
@@ -635,6 +636,7 @@ class _ProfileState extends State<Profile> {
           ],
         ),
       );
+      EasyLoading.dismiss();
       return;
     }
 
@@ -645,6 +647,7 @@ class _ProfileState extends State<Profile> {
     Map<String, dynamic> requestBody = {
       "location": "$_latitude,$_longitude",
     };
+    EasyLoading.dismiss();
 
     return await api
         .punchInOut(GlobalClass.token, GlobalClass.dbName, requestBody, tabName)
@@ -679,7 +682,7 @@ class _ProfileState extends State<Profile> {
         .then((value) async {
       if (value.statuscode == 200) {
         if (value.data.length > 0) {
-          if (value.data[0].inTime != null && value.data[0].outTime != null) {
+          if (value.data[0].inTime.isNotEmpty && value.data[0].outTime.isNotEmpty) {
             setState(() {
               punchCard = false;
               tabName = "PUNCHIN";

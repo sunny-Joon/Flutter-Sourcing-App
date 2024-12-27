@@ -50,7 +50,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   final picker = ImagePicker();
   late ApiService apiService_protean;
   bool _isPageLoading = false;
-  int _currentStep = 3;
+  int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
   bool _isEditing = false;
   bool personalInfoEditable = true;

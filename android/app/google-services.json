@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "160761608122",
+    "project_id": "flutter-sourcing-app",
+    "storage_bucket": "flutter-sourcing-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:160761608122:android:431cecb9899da445534f83",
+        "android_client_info": {
+          "package_name": "com.sourcing.paisalo.flutter_sourcing_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh23oqXn200AsN5H-xKn8Fu1X0bpAMwxg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -179,6 +179,7 @@ class _HomePageState extends State<HomePage> {
                   child: Container(
                     height: MediaQuery.of(context).size.height / 4,
                     child: Card(
+                      color: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),
                       ),
