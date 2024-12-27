@@ -8,6 +8,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'api_service.dart';
 import 'chat_bot.dart';
@@ -451,12 +452,13 @@ class _LoginPageState extends State<LoginPage> {
 
 
   Future<void> _getLogin( String userName, String userPassword, BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
      EasyLoading.show(status: 'Loading...',);
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
       "userName": userName,
       "password": userPassword,
-      "GsmId": "SSTST002064"
+      "GsmId":  prefs.getString("GSMID")!
     };
     // String? DeviceID = await generateDeviceId(userName) as String?;
     return await api

@@ -282,13 +282,9 @@ class _FirstEsignState extends State<FirstEsign> {
           GlobalClass.showUnsuccessfulAlert(context, "Pdf Not Found\nContact to Administrator", 2);
         }
 
- 
   }
 
-
-
 }
-
 
 class DialogContent extends StatefulWidget {
   final String borrowerAdharNumber;
