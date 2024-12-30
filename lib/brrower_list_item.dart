@@ -128,6 +128,7 @@ class BorrowerListItem extends StatelessWidget {
   }
 }
 
+/*
 void main() {
   runApp(MaterialApp(
     theme: ThemeData(
@@ -163,3 +164,4 @@ void main() {
     ),
   ));
 }
+*/
