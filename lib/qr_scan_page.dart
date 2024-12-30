@@ -21,7 +21,7 @@ class _QRViewExampleState extends State<QRViewExample> {
   final int maxRetryAttempts = 3; // Maximum retry limit
   bool isLoading = false; // Track loading state
   final AudioPlayer audioPlayer = AudioPlayer();
-
+  bool isTorchOn = false; // Flash status
   @override
   void reassemble() {
     super.reassemble();
@@ -41,6 +41,7 @@ class _QRViewExampleState extends State<QRViewExample> {
               Expanded(
                 flex: 5,
                 child: QRView(
+
                   key: qrKey,
                   onQRViewCreated: _onQRViewCreated,
                   overlay: QrScannerOverlayShape(
@@ -53,8 +54,32 @@ class _QRViewExampleState extends State<QRViewExample> {
                 ),
               ),
 
+
             ],
           ),
+          Positioned(bottom:20,left: MediaQuery.of(context).size.width/2-80,child:  Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () async {
+                  if (controller != null) {
+                    await controller!.toggleFlash();
+                    final flashStatus = await controller!.getFlashStatus();
+                    setState(() {
+                      isTorchOn = flashStatus ?? false;
+                    });
+                  }
+                },
+                icon: Icon(
+                  isTorchOn ? Icons.flash_off : Icons.flash_on,
+                  color: Colors.black,
+                ),
+                label: Text(isTorchOn ? 'Turn Off Flash' : 'Turn On Flash',style: TextStyle(color: Colors.black),),
+              ),
+            ],
+          )),
+
+
           if (isLoading)
             Center(
               child: Container(

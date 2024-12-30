@@ -536,12 +536,6 @@ class _LoginPageState extends State<LoginPage> {
             final data = error.response?.data;
             if (data is Map<String, dynamic>) {
               // Access the 'message' key
-              if (data.containsKey('message')) {
-                print('Message: ${data['message']}');
-              } else {
-                print('Message key not found');
-              }
-
               // Further parsing (if necessary)
               if (data.containsKey('data')) {
                 final dataField = data['data'];
@@ -550,28 +544,33 @@ class _LoginPageState extends State<LoginPage> {
                     final foImei = dataField['foImei'];
                     if (foImei is Map<String, dynamic>) {
                       if (foImei.containsKey('errormsg')) {
-                        print('Error message from foImei: ${foImei['errormsg']}');
+
+                        GlobalClass.showErrorAlert(context, 'Error message from foImei: ${foImei['errormsg']}', 1);
+
                       }
                       if (foImei.containsKey('isValidate')) {
                         print('Is Validate: ${foImei['isValidate']}');
+                        GlobalClass.showErrorAlert(context, 'Is Validate: ${foImei['isValidate']}', 1);
                       }
                     }
                   }
                 }
               }
             } else {
-              print('Response data is not a Map<String, dynamic>');
+              GlobalClass.showErrorAlert(context, 'Error message: ${error.message}', 1);
             }
           } else {
-            print('Response or response data is null');
+            GlobalClass.showErrorAlert(context, 'Error message: ${error.message}', 1);
           }
         } else {
           print('DioError type: ${error.type}');
           print('Error message: ${error.message}');
+          GlobalClass.showErrorAlert(context, 'Error message: ${error.message}', 1);
         }
       } else {
         EasyLoading.dismiss();
         print('Unexpected error: ${error.toString()}');
+        GlobalClass.showErrorAlert(context, 'Unexpected error: ${error.toString()}', 1);
       }
     });
   }

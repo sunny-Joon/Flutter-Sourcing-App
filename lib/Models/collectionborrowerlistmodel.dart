@@ -47,11 +47,11 @@ class CollectionBorrowerListDataModel {
   String caseCode;
   String firstInstDate;
   int noOfInsts;
-  double totalDueAmt;
+  int totalDueAmt;
   int totalDueCnt;
-  double totalRecdAmt;
+  int totalRecdAmt;
   int totalRecdCnt;
-  double instsAmtDue;
+  int instsAmtDue;
   int nofInstDue;
   List<InstDatum> instData;
   double toBeDueAmt;
@@ -60,7 +60,7 @@ class CollectionBorrowerListDataModel {
   String instDueAsOn;
   String isNachReg;
   String dataAsOn;
-  double interestAmt;
+  int interestAmt;
   String schmCode;
   String errormsg;
   String isvalide;
@@ -154,7 +154,7 @@ class CollectionBorrowerListDataModel {
     "totalRecdCnt": totalRecdCnt,
     "instsAmtDue": instsAmtDue,
     "nofInstDue": nofInstDue,
-    "instData": List<dynamic>.from(instData.map((x) => x.toJson())),
+    "instData":  List<dynamic>.from(instData.map((x) => x.toJson())),
     "toBeDueAmt": toBeDueAmt,
     "toBeDueDate": toBeDueDate,
     "futureDue": futureDue,
