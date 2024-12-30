@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
  import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:provider/provider.dart';
- import 'collection.dart';
+ import 'Models/SecondEsignModel.dart';
+import 'collection.dart';
 import 'Models/borrower_list_model.dart';
 import 'Models/group_model.dart';
 import 'api_service.dart';
@@ -13,22 +14,22 @@ import 'global_class.dart';
 import 'house_visit_form.dart';
 
 
-class BorrowerList extends StatefulWidget {
+class BorrowerList2 extends StatefulWidget {
   final BranchDataModel BranchData;
+  final SecondEsignDataModel BorrowerList;
   final GroupDataModel GroupData;
-  final String page;
 
-  BorrowerList({
+  BorrowerList2({
+    required this.BorrowerList,
     required this.BranchData,
     required this.GroupData,
-    required this.page,
   });
 
   @override
-  _BorrowerListState createState() => _BorrowerListState();
+  _BorrowerList2State createState() => _BorrowerList2State();
 }
 
-class _BorrowerListState extends State<BorrowerList> {
+class _BorrowerList2State extends State<BorrowerList2> {
   List<BorrowerListDataModel> _borrowerItems = [];
   String noDataFoundMsg="";
   bool _isLoading = true;
@@ -36,64 +37,14 @@ class _BorrowerListState extends State<BorrowerList> {
   @override
   void initState() {
     super.initState();
-   if(widget.page =="E SIGN"){
-      _fetchBorrowerList(1);
-   }else{
-     _fetchBorrowerList(0);
-   }
-  }
 
-  Future<void> _fetchBorrowerList(int type) async {
-    //EasyLoading.show(status: 'Loading...',);
-
-    final apiService = Provider.of<ApiService>(context, listen: false);
-
-    await apiService.BorrowerList(
-        GlobalClass.token,
-        GlobalClass.dbName,
-
-        widget.GroupData.groupCode,
-        widget.BranchData.branchCode,
-        GlobalClass.creator.toString(),
-        type
-
-    ).then((response) {
-      if (response.statuscode == 200 && response.data[0].errormsg.isEmpty) {
-        setState(() {
-          if (widget.page == "APPLICATION FORM") {
-
-          }
-          if (widget.page == "HouseVisit") {
-            _borrowerItems =
-                response.data.where((item) => item.homeVisit == "No").toList();
-            if (_borrowerItems.length < 1) {
-              noDataFoundMsg = "No record found for House Visit!";
-            }
-          } else {
-            _borrowerItems = response.data;
-          }
-        });
-        _isLoading = false;
-        print("object++12");
-      } else {
-        setState(() {
-          noDataFoundMsg = response.data[0].errormsg;
-        });
-        _isLoading = false;
-      }
-    }).catchError((error) {
-      _isLoading = false;
-      GlobalClass.showErrorAlert(context, error.toString(),1);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-      body: /*_isLoading
-          ? Center(child: CircularProgressIndicator())*/
-          /*:*/ Column(
+      body: Column(
         children: [
           SizedBox(height: 50),
           Padding(padding: EdgeInsets.all(8),
@@ -172,53 +123,18 @@ class _BorrowerListState extends State<BorrowerList> {
                  // address: item.currentAddress,
                   pic:item.profilePic,
                   onTap: () {
-                    switch (widget.page) {
-                      case 'APPLICATION FORM':
-                        if(item.homeVisit=="No"){
-                          GlobalClass.showUnsuccessfulAlert(context, "Please fill House Visit form for this case", 1);
-
-                        }else{
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ApplicationPage(
-                                BranchData: widget.BranchData,
-                                GroupData: widget.GroupData,
-                                selectedData: item,
-                              ),
-                            ),
-                          );
-                        }
-
-                        break;
-                      case 'E SIGN':
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FirstEsign(
-                              BranchData: widget.BranchData,
-                              GroupData: widget.GroupData,
-                              selectedData: item,
-                              type: 1,
-                            ),
-                          ),
-                        );
-
-                        break;
-                        case 'HouseVisit':
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HouseVisitForm(
-                              BranchData: widget.BranchData,
-                              GroupData: widget.GroupData,
-                              selectedData: item,
-                            ),
-                          ),
-                        );
-                        break;
-                    }
-                  },
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FirstEsign(
+                          BranchData: widget.BranchData,
+                          GroupData: widget.GroupData,
+                          selectedData: item,
+                          type: 2,
+                        ),
+                      ),
+                    );                  },
                 );
               },
             ),

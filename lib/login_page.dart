@@ -485,13 +485,14 @@ class _LoginPageState extends State<LoginPage> {
                   GlobalClass.userName=value.data.foImei[0].name;
                   GlobalClass.designation=value.data.foImei[0].designation;
                   EasyLoading.dismiss();
-
-                }
-                else{
+                  Navigator.pushReplacement(
+                      context, MaterialPageRoute(builder: (context) => Fragments()));
+                }else{
                   EasyLoading.dismiss();
                   GlobalClass.showUnsuccessfulAlert(
                       context, value.statuscode.toString() + ","+ value.message,1);
                 }
+
                 EasyLoading.dismiss();
                 Navigator.pushReplacement(
                     context, MaterialPageRoute(builder: (context) => Fragments()));

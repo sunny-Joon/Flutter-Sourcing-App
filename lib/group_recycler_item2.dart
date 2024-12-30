@@ -5,10 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'Models/group_model.dart';
 
-class GroupRecyclerItem extends StatelessWidget {
-  final GroupDataModel item;
+class GroupRecyclerItem2 extends StatelessWidget {
+  final SecondEsignDataModel item;
 
-  GroupRecyclerItem({required this.item});
+  GroupRecyclerItem2({required this.item});
 
   @override
   Widget build(BuildContext context) {

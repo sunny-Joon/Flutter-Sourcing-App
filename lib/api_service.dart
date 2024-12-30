@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter_sourcing_app/Models/SecondEsignModel.dart';
 import 'package:flutter_sourcing_app/Models/collectionstatus_model.dart';
 import 'package:flutter_sourcing_app/Models/qrcode_model.dart';
 
@@ -451,6 +452,15 @@ abstract class ApiService {
       @Query("Branch_code") String Branch_code,
       @Query("Creator") String Creator,
       @Query("Type") int Type,
+      );
+
+  @GET("FiSourcing/GetSecondEsignBorrowerList")
+  Future<SecondEsignModel> BorrowerList2(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("Creator") String Creator,
+      @Query("Banchcode") String Banchcode,
+      @Query("IMEINO") String IMEINO,
       );
 
   @GET("Collection/GetPandingCollectionGroupCode")

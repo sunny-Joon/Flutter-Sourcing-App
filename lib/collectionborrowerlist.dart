@@ -49,7 +49,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
   }
 
   Future<void> _fetchCollectionBorrowerList(int type) async {
-    EasyLoading.show(status: 'Loading...',);
+   // EasyLoading.show(status: 'Loading...',);
 
     final apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
 
@@ -74,7 +74,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
       }
     }).catchError((error) {
       _isLoading = false;
-   //   GlobalClass.showErrorAlert(context, error.toString(),1);
+    //  GlobalClass.showErrorAlert(context, error.toString(),1);
     });
   }
 

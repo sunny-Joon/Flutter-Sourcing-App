@@ -43,11 +43,11 @@ class _GroupListPageState extends State<GroupListPage> {
 
     try {
       final response = await apiService.getGroupList(
-        GlobalClass.token,
-        GlobalClass.dbName,
-        GlobalClass.creator,
-        // GlobalClass.creator,
-        widget.Branchdata.branchCode
+          GlobalClass.token,
+          GlobalClass.dbName,
+          GlobalClass.creator,
+          // GlobalClass.creator,
+          widget.Branchdata.branchCode
       );
       if (response.statuscode == 200) {
         setState(() {
@@ -176,9 +176,9 @@ class _GroupListPageState extends State<GroupListPage> {
                           MaterialPageRoute(
                             //builder: (context) => ApplicationPage(),
                             builder: (context) => BorrowerList(
-                              BranchData: widget.Branchdata,
-                              GroupData: selectedItem,
-                              page:"APPLICATION FORM"
+                                BranchData: widget.Branchdata,
+                                GroupData: selectedItem,
+                                page:"APPLICATION FORM"
                             ),
                           ),
                         );
@@ -187,7 +187,7 @@ class _GroupListPageState extends State<GroupListPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                          //  builder: (context) => HouseVisitForm(),
+                            //  builder: (context) => HouseVisitForm(),
                             builder: (context) => BorrowerList(
                                 BranchData: widget.Branchdata,
                                 GroupData: selectedItem,
@@ -196,7 +196,7 @@ class _GroupListPageState extends State<GroupListPage> {
                           ),
                         );
                         break;
-                        case 'COLLECTION':
+                      case 'COLLECTION':
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -210,7 +210,7 @@ class _GroupListPageState extends State<GroupListPage> {
                         break;
                       case 'Visit Report':
                         break;
-                      case 'E SIGN':
+                      case 'E SIGN1':
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -224,7 +224,7 @@ class _GroupListPageState extends State<GroupListPage> {
                         );
                         //_showEsignPopup(context);
                         break;
-                        case 'Dealer':
+                      case 'Dealer':
                         Navigator.push(
                           context,
                           MaterialPageRoute(
