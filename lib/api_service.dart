@@ -67,8 +67,6 @@ class ApiConfig {
 @RestApi()
 abstract class ApiService {
   factory ApiService(Dio dio, {String? baseUrl}) = _ApiService;
-
-
   static ApiService create({required String baseUrl}) {
 
     final dio = Dio();

@@ -8,6 +8,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'api_service.dart';
 import 'chat_bot.dart';
@@ -450,28 +451,33 @@ class _LoginPageState extends State<LoginPage> {
   }
 
 
-
-
   Future<void> _getLogin( String userName, String userPassword, BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
      EasyLoading.show(status: 'Loading...',);
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
       "userName": userName,
       "password": userPassword,
-      "GsmId": "SSTST002064"
+      "GsmId":  prefs.getString("GSMID")!
     };
     // String? DeviceID = await generateDeviceId(userName) as String?;
     return await api
         .getLogins("0646498585477244", GlobalClass.dbName, requestBody)
         .then((value) async {
           try{
-            if (value.statuscode == 200) {
+            if (value.statuscode == 200 ) {
               refToken = value.data.tokenDetails.token.toString();
-              if (value.message == 'Login Successfully !!') {
+              if (value.message == 'Login Successfully !!')  {
                 // Assign values to GlobalClass static members
-
+             /*    if (value.data.foImei.isEmpty) {
+                  EasyLoading.dismiss();
+                  GlobalClass.showUnsuccessfulAlert(
+                      context, "Error: foImei is empty. Login unsuccessful.", 1);
+                  return; // Stop further execution
+                }*/
                 GlobalClass.token = 'Bearer ' + refToken;
                 GlobalClass.deviceId = value.data.tokenDetails.deviceSrNo;
+
                 GlobalClass.id = value.data.tokenDetails.userName;
                 GlobalClass.validity = value.data.tokenDetails.validity;
                 GlobalClass.imei = value.data.tokenDetails.imeino;
@@ -484,10 +490,18 @@ class _LoginPageState extends State<LoginPage> {
                   GlobalClass.mobile=value.data.foImei[0].mobNo;
                   GlobalClass.userName=value.data.foImei[0].name;
                   GlobalClass.designation=value.data.foImei[0].designation;
+
                   EasyLoading.dismiss();
                   Navigator.pushReplacement(
                       context, MaterialPageRoute(builder: (context) => Fragments()));
                 }else{
+
+
+                  // EasyLoading.dismiss();
+                  // Navigator.pushReplacement(
+                  //     context, MaterialPageRoute(builder: (context) => Fragments()));
+
+
                   EasyLoading.dismiss();
                   GlobalClass.showUnsuccessfulAlert(
                       context, value.statuscode.toString() + ","+ value.message,1);

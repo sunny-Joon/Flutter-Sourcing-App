@@ -131,6 +131,7 @@ class _HomePageState extends State<HomePage> {
                           textAlign: TextAlign.center,
                         ),
                       ),
+
                       // Disbursement Target text with top margin
                       Text(
                         'Comission Target',
@@ -240,6 +241,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
+
                     Flexible(
                       child: Container(
                         height: MediaQuery.of(context).size.height / 4,

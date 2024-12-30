@@ -13,8 +13,6 @@ import 'global_class.dart';
 
 class TargetSetPage extends StatefulWidget {
 
-
-
   @override
   State<TargetSetPage> createState() => _TargetSetPageState();
 }
