@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sourcing_app/Models/SecondEsignModel.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -76,7 +77,7 @@ class GroupRecyclerItem extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.center,
                       child: Text(
-                        '${item.groupCodeName}',
+                        '${"item.groupCodeName"}',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,

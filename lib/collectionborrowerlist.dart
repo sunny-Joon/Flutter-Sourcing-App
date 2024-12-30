@@ -18,7 +18,153 @@ import 'collection.dart';
 import 'global_class.dart';
 
 class CollectionBorrowerList extends StatefulWidget {
-   final CollectionBranchListDataModel Branchdata;
+
+  final CollectionBranchListDataModel Branchdata;
+
+  const CollectionBorrowerList({super.key, required this.Branchdata});
+
+  @override
+  State<CollectionBorrowerList> createState() => _CollectionBorrowerListState();
+}
+
+class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
+
+  List<CollectionBorrowerListDataModel> _borrowerItems = [];
+  List<RangeCategoryDataModel> reasonOfDelay = [];
+  String? selectedReason;
+  bool _isLoading = true;
+
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+    // if(widget.page =="E SIGN"){
+    _fetchCollectionBorrowerList(1);
+    // }else{
+    //   _fetchBorrowerList(0);
+    //   }
+  }
+
+  Future<void> fetchData() async {
+    reasonOfDelay = await DatabaseHelper().selectRangeCatData("land_owner");
+  }
+
+  Future<void> _fetchCollectionBorrowerList(int type) async {
+   // EasyLoading.show(status: 'Loading...',);
+
+    final apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+
+    await apiService.CollectionBorrowerList(
+        GlobalClass.token,
+        GlobalClass.dbName,
+        GlobalClass.imei,
+        widget.Branchdata.focode,
+        widget.Branchdata.areaCd,
+        GlobalClass.id,
+        GlobalClass.getTodayDate(),
+    ).then((response) {
+      if (response.statuscode == 200) {
+        setState(() {
+          _borrowerItems = response.data;
+        });
+        _isLoading = false;
+        print("object++12");
+      } else {
+        setState(() {});
+        _isLoading = false;
+      }
+    }).catchError((error) {
+      _isLoading = false;
+    //  GlobalClass.showErrorAlert(context, error.toString(),1);
+    });
+  }
+
+  void _showPayeeDialog(BuildContext context,
+      CollectionBorrowerListDataModel item) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white, // Red background
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildShinyButton(
+                'EMI Paying',
+                    () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                     // builder: (context) => Collection(selectedData: item),
+                      builder: (context) => Collection(),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 5),
+              Text(
+                'OR',
+                style: TextStyle(
+                    color: Color(0xFFD42D3F), fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 5),
+              _buildShinyButton(
+                'EMI Not Paying',
+                    () {
+                  _showNotPayeeDialog(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+// Custom function to build shiny, gradient-style buttons
+  Widget _buildShinyButton(String label, VoidCallback onPressed) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.redAccent, Color(0xFFD42D3F)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.4),
+              blurRadius: 10,
+              offset: Offset(5, 5),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  blurRadius: 10.0,
+                  color: Colors.black.withOpacity(0.5),
+                  offset: Offset(2.0, 2.0),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
 
    const CollectionBorrowerList({super.key, required this.Branchdata});
 
