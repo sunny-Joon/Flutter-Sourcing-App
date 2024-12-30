@@ -54,16 +54,16 @@ class CollectionBorrowerListDataModel {
   int instsAmtDue;
   int nofInstDue;
   List<InstDatum> instData;
-  double toBeDueAmt;
+  int toBeDueAmt;
   String toBeDueDate;
-  double futureDue;
+  int futureDue;
   String instDueAsOn;
   String isNachReg;
   String dataAsOn;
   int interestAmt;
   String schmCode;
   String errormsg;
-  String isvalide;
+  bool isvalide;
 
   CollectionBorrowerListDataModel({
     required this.db,
@@ -120,7 +120,7 @@ class CollectionBorrowerListDataModel {
     totalRecdCnt: json["totalRecdCnt"]??"",
     instsAmtDue: json["instsAmtDue"]??"",
     nofInstDue: json["nofInstDue"]??"",
-    instData: List<InstDatum>.from(json["instData"].map((x) => InstDatum.fromJson(x))),
+    instData: json["instData"]==null?List<InstDatum>.from([].map((x) => InstDatum.fromJson(x))):List<InstDatum>.from(json["instData"].map((x) => InstDatum.fromJson(x))),
     toBeDueAmt: json["toBeDueAmt"]??"",
     toBeDueDate: json["toBeDueDate"]??"",
     futureDue: json["futureDue"]??"",
@@ -130,7 +130,7 @@ class CollectionBorrowerListDataModel {
     interestAmt: json["interestAmt"]??"",
     schmCode: json["schmCode"]??"",
     errormsg: json["errormsg"]??"",
-    isvalide: json["isvalide"]??"",
+    isvalide: json["isvalid"]??"",
   );
 
   Map<String, dynamic> toJson() => {

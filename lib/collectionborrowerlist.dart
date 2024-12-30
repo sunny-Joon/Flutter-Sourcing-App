@@ -105,20 +105,28 @@ class CollectionBorrowerList extends StatefulWidget {
                itemCount: 10,
                itemBuilder: (context, index) => GlobalClass().ListShimmerItem(),
              )
-                 : ListView.builder(
-               itemCount: _borrowerItems.length,
-               itemBuilder: (context, index) {
-                 final item = _borrowerItems[index];
-                 return CollectionBorrowerListItem(
-                   name: item.custName,
-                   fiCode: item.caseCode.toString(),
-                   //mobile: item.pPhone,
-                   creator: item.creator,
-                   // address: item.currentAddress,
-                   // pic:item.profilePic,
-                   onTap: () {
-                     _showPayeeDialog(context, item);
-                     /*Navigator.push(
+                 : getView(),
+           ),
+         ],
+       ),
+     );
+   }
+    Widget getView(){
+     if(_borrowerItems.length>=1 && _borrowerItems[0].errormsg.isEmpty){
+       return ListView.builder(
+         itemCount: _borrowerItems.length,
+         itemBuilder: (context, index) {
+           final item = _borrowerItems[index];
+           return CollectionBorrowerListItem(
+             name: item.custName,
+             fiCode: item.caseCode.toString(),
+             //mobile: item.pPhone,
+             creator: item.creator,
+             // address: item.currentAddress,
+             // pic:item.profilePic,
+             onTap: () {
+               _showPayeeDialog(context, item);
+               /*Navigator.push(
                        context,
                        MaterialPageRoute(
                          builder: (context) => Collection(
@@ -126,15 +134,25 @@ class CollectionBorrowerList extends StatefulWidget {
                          ),
                        ),
                      );*/
-                   },
-                 );
-               },
+             },
+           );
+         },
+       );
+     }else{
+       return Container(height: MediaQuery.of(context).size.height/2,child: Column(
+         mainAxisAlignment: MainAxisAlignment.center,
+         children: [
+           Center(
+             child: Image.asset(
+               'assets/Images/no_data.png', // Replace with your logo asset path
+               height: 70,
              ),
            ),
+           Center(child: Text(_borrowerItems[0].errormsg  ,style: TextStyle(color: Colors.white,fontWeight: FontWeight.w400,fontSize: 16),),)
          ],
-       ),
-     );
-   }
+       ),);
+     }
+    }
    @override
    void initState() {
      super.initState();
@@ -168,6 +186,7 @@ class CollectionBorrowerList extends StatefulWidget {
        if (response.statuscode == 200) {
          setState(() {
            _borrowerItems = response.data;
+
          });
          _isLoading = false;
          print("object++12");
