@@ -53,10 +53,35 @@ class _FragmentsState extends State<Fragments> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       RangeCategory(context);
+      _showTemporaryDialog(context, 'You are in ${GlobalClass.creator} creator');
     });
    }
 
-
+  void _showTemporaryDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.of(context).pop(true);
+        });
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                message,
+                style: TextStyle(
+                    color: Color(0xFFD42D3F),
+                    fontSize: 18),
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return   WillPopScope(onWillPop: _onWillPop, child: Scaffold(

@@ -179,9 +179,11 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
       GlobalClass.dbName,
       GlobalClass.imei,
       widget.Branchdata.focode,
+
       widget.Branchdata.areaCd,
       GlobalClass.id,
       GlobalClass.getTodayDate(),
+
     ).then((response) {
       if (response.statuscode == 200) {
         setState(() {

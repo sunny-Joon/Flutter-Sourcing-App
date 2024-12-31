@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_sourcing_app/Models/login_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,7 +17,9 @@ class GlobalClass {
   }
 
   static String id = "";
-  static String creator = "BAREILLY";
+  static List<GetCreatorList> creatorlist = [];
+  static String creatorId = "";
+  static String creator = "";
   static String address = "";
   static String mobile = "";
   static String designation = "";

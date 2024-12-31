@@ -444,7 +444,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     String FamilymemberfromPaisalo="o";
 
     String fi_Id=widget.selectedData.id.toString();
-    String Creator=GlobalClass.creator;
+    String Creator=GlobalClass.creatorId;
     int HouseMonthlyRent=45;
     String EmpCode=GlobalClass.id;
     String GroupCode=widget.GroupData.groupCode;

@@ -3057,7 +3057,7 @@ class _DealerKYCPageState extends State<DealerKYCPage> {
         spouseF,
         spouseM,
         spouseL,
-        GlobalClass.creator,
+        GlobalClass.creatorId,
         Expense,
         Income,
         latitude,
@@ -3191,7 +3191,7 @@ class _DealerKYCPageState extends State<DealerKYCPage> {
 
         GlobalClass.showSuccessAlert(
             context,
-            "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
+            "KYC Saved with ${Fi_Code} and ${GlobalClass.creatorId} successfully!! \nPlease note these details for further process",
             2);
       } else {
         EasyLoading.dismiss();
