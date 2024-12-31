@@ -265,7 +265,7 @@ class _BranchListPageState extends State<BranchListPage> {
     await apiService.BorrowerList2(
         GlobalClass.token,
         GlobalClass.dbName,
-        GlobalClass.creator.toString(),
+        GlobalClass.creatorId.toString(),
         selectedItem.branchCode,
         GlobalClass.imei
 

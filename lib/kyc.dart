@@ -768,7 +768,7 @@ class _KYCPageState extends State<KYCPage> {
         spouseF,
         spouseM,
         spouseL,
-        GlobalClass.creator,
+        GlobalClass.creatorId,
         Expense,
         Income,
         latitude,
@@ -894,7 +894,7 @@ class _KYCPageState extends State<KYCPage> {
         });*/
         EasyLoading.dismiss();
 
-        GlobalClass.showSuccessAlert(context, "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process", 2);
+        GlobalClass.showSuccessAlert(context, "KYC Saved with ${Fi_Code} and ${GlobalClass.creatorId} successfully!! \nPlease note these details for further process", 2);
 
 
       } else {
@@ -3586,7 +3586,7 @@ bool checkIdMendate(){
             GlobalClass.showAlert(
               contextDialog,
               "KYC Already Exist with same Aadhaar",
-              "Ficode: ${Fi_Code}\nCreator: ${GlobalClass.creator}\nBorrower Name: ${value.data[0].fName } ${value.data[0].mName } ${value.data[0].lName} ",
+              "Ficode: ${Fi_Code}\nCreator: ${GlobalClass.creatorId}\nBorrower Name: ${value.data[0].fName } ${value.data[0].mName } ${value.data[0].lName} ",
               Colors.red,
               1,
             );

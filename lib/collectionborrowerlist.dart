@@ -179,9 +179,12 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
       GlobalClass.dbName,
       GlobalClass.imei,
       widget.Branchdata.focode,
-      widget.Branchdata.areaCd,
-      GlobalClass.id,
-      GlobalClass.getTodayDate(),
+      //widget.Branchdata.areaCd,
+      '0001',
+     // GlobalClass.id,
+      "GMST000243",
+     // GlobalClass.getTodayDate(),
+        "2024-11-12",
     ).then((response) {
       if (response.statuscode == 200) {
         setState(() {
@@ -199,6 +202,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
     }).catchError((error) {
       _isLoading = false;
       EasyLoading.dismiss();
+      print(error.toString());
       GlobalClass.showErrorAlert(context, error.toString(),1);
     });
   }

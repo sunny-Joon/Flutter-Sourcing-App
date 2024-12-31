@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_sourcing_app/Models/login_model.dart';
 import 'package:flutter_sourcing_app/collection_report.dart';
 import 'package:flutter_sourcing_app/qr_payment_reports.dart';
 import 'package:flutter_sourcing_app/referandearnactivity.dart';
@@ -43,10 +44,11 @@ class _ProfileState extends State<Profile> {
     _initializeControllers();
     _startTimer();
     _loadImage();
+    print("list ${GlobalClass.creatorlist}");
   }
 
   void _initializeControllers() {
-    _creatorController.text = GlobalClass.creator;
+    _creatorController.text = GlobalClass.creatorId;
     _idController.text = GlobalClass.id;
     _validityController.text = GlobalClass.address;
     _mobileNoController.text = GlobalClass.mobile;
@@ -461,25 +463,45 @@ class _ProfileState extends State<Profile> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Are you sure?'),
-            content: Text('Do you want to Logout?'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  EasyLoading.dismiss();
-                  Navigator.of(context).pop(true);
-                },
-                child: Text('No'),
-              ),
-              TextButton(
-                onPressed: () {
-                  EasyLoading.dismiss();
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => LoginPage()));
-                }, // Exit the app
-                child: Text('Yes'),
-              ),
-            ],
+            backgroundColor: Colors.white,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Are you sure?',
+                  style: TextStyle(
+                      color: Color(0xFFD42D3F),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Do you want to Logout?',
+                  style: TextStyle(color: Colors.black),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildShinyButton(
+                      'No',
+                          () {
+                        EasyLoading.dismiss();
+                        Navigator.of(context).pop(true);
+                      },
+                    ),
+                    _buildShinyButton(
+                      'Yes',
+                          () {
+                        EasyLoading.dismiss();
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => LoginPage()));
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -498,6 +520,15 @@ class _ProfileState extends State<Profile> {
       width: 40,
       alignment: Alignment.center,
       child: Icon(icon, size: 16, color: color),
+    );
+  }
+  Widget _buildShinyButton(String text, VoidCallback onPressed) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white, backgroundColor: Color(0xFFD42D3F), // foreground/text
+      ),
+      onPressed: onPressed,
+      child: Text(text),
     );
   }
 
@@ -554,10 +585,9 @@ class _ProfileState extends State<Profile> {
             Divider(thickness: 2, indent: 16, endIndent: 16),
             _buildDetailRow(Icons.work, 'Designation ', _designationController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(
-                Icons.admin_panel_settings, 'Creator ', _creatorController),
-            // Divider(thickness: 2, indent: 16, endIndent: 16),
-            // _buildTimerRow(Icons.timer, 'Time Remaining ', _timeDisplay),
+            _buildDetailList(Icons.admin_panel_settings, 'Creator ', _creatorController,
+            ),
+
           ],
         ),
       ),
@@ -585,25 +615,66 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildTimerRow(IconData icon, String label, String timerDisplay) {
+  Widget _buildDetailList(
+      IconData icon, String label, TextEditingController controller) {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
-        Text(label,
-            style: TextStyle(
-                fontFamily: "Poppins-Regular",
-                fontSize: 11,
-                fontWeight: FontWeight.bold)),
+        SizedBox(width: 8), // Add some space between the icon and the text
+        Text(
+          label,
+          style: TextStyle(
+            fontFamily: "Poppins-Regular",
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(width: 8), // Add some space between the label and the dropdown
         Expanded(
-          child: Text(
-            timerDisplay,
-            style: TextStyle(
-                fontFamily: "Poppins-Regular", color: Color(0xFFD42D3F)),
+          child: Container(
+            height: 40, // Set the height to make it smaller
+            padding: EdgeInsets.symmetric(horizontal: 8), // Add horizontal padding
+            decoration: BoxDecoration(
+              border: Border.all(color: Color(0xFFD42D3F)),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: DropdownButtonFormField<GetCreatorList>(
+              decoration: InputDecoration(
+                border: InputBorder.none, // Remove the internal border
+                isDense: true, // Make the dropdown more compact
+                contentPadding: EdgeInsets.symmetric(vertical: 10), // Center the text vertically
+              ),
+              value: GlobalClass.creatorlist.isNotEmpty
+                  ? GlobalClass.creatorlist.first
+                  : null,
+              items: GlobalClass.creatorlist.map((GetCreatorList creator) {
+                return DropdownMenuItem<GetCreatorList>(
+                  value: creator,
+                  child: Text(
+                    creator.creatorName,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFFD42D3F),
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (GetCreatorList? newValue) {
+                if (newValue != null) {
+                  GlobalClass.creator = newValue.creatorName;
+                  GlobalClass.creatorId = newValue.creatorId.toString();
+                  controller.text = newValue.creatorName;
+                  print('Selected Creator: ${GlobalClass.creator}');
+                  print('Selected Creator ID: ${GlobalClass.creatorId}');
+                }
+              },
+            ),
           ),
         ),
       ],
     );
   }
+
 
   Future<void> punchInOut(BuildContext context) async {
     EasyLoading.show(status: "Please wait...");
