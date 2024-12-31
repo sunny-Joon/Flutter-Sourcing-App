@@ -149,17 +149,21 @@ class _BranchListPageState extends State<BranchListPage> {
                   return GestureDetector(
                     onTap: () {
                       final selectedItem = filteredItems[index];
-
-                      _showPopup(context,selectedItem);
-
-                      /*Navigator.push(
+                  if(widget.intentFrom=='E SIGN'){
+                    _showPopup(context,selectedItem);
+                  }else{
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => GroupListPage(
                               Branchdata: selectedItem,
                               intentFrom: widget.intentFrom),
                         ),
-                      );*/
+                      );
+                  }
+
+
+
                     },
                     child: BranchRecyclerItem(item: filteredItems[index]),
                   );

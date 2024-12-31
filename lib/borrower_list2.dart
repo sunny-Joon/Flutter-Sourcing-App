@@ -16,7 +16,7 @@ import 'house_visit_form.dart';
 
 class BorrowerList2 extends StatefulWidget {
   final BranchDataModel BranchData;
-  final SecondEsignDataModel BorrowerList;
+  final List<SecondEsignDataModel> BorrowerList;
   final GroupDataModel GroupData;
 
   BorrowerList2({
@@ -30,13 +30,15 @@ class BorrowerList2 extends StatefulWidget {
 }
 
 class _BorrowerList2State extends State<BorrowerList2> {
-  List<BorrowerListDataModel> _borrowerItems = [];
   String noDataFoundMsg="";
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _isLoading = false;
+    });
 
   }
 
@@ -112,16 +114,16 @@ class _BorrowerList2State extends State<BorrowerList2> {
             )
                 :ListView.builder(
               padding: EdgeInsets.all(0),
-              itemCount: _borrowerItems.length,
+              itemCount: widget.BorrowerList.length,
               itemBuilder: (context, index) {
-                final item = _borrowerItems[index];
+                final item = widget.BorrowerList[index];
                 return BorrowerListItem(
-                  name: item.fullName,
+                  name: "${item.fName} ${item.mName} ${item.lName}",
                   fiCode: item.fiCode.toString(),
                   //mobile: item.pPhone,
                   creator: item.creator,
                  // address: item.currentAddress,
-                  pic:item.profilePic,
+                  pic:"",
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.push(
@@ -130,7 +132,7 @@ class _BorrowerList2State extends State<BorrowerList2> {
                         builder: (context) => FirstEsign(
                           BranchData: widget.BranchData,
                           GroupData: widget.GroupData,
-                          selectedData: item,
+                          selectedData: BorrowerListDataModel(id: 0, fiCode: int.parse(item.fiCode), creator: item.creator, dob: item.dob, gender: item.gender, aadharNo: item.aadharNo, title: "", fullName: "${item.fName} ${item.mName} ${item.lName}", cast: "", pAddress: "", pPhone: item.pPhone, currentAddress: "", groupCode: item.groupCode, branchCode: item.branchCode, borrSignStatus: item.borrSignStatus, errormsg: item.errormsg, isvalid: item.isvalid, eSignDoc: "", profilePic: "", homeVisit: ""),
                           type: 2,
                         ),
                       ),

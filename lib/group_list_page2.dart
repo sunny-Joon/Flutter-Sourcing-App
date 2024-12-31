@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/SecondEsignModel.dart';
+import 'package:flutter_sourcing_app/borrower_list2.dart';
 import 'package:flutter_sourcing_app/dealer_kycform.dart';
 import 'package:flutter_sourcing_app/group_recycler_item.dart';
 
@@ -33,9 +34,13 @@ class _GroupListPage2State extends State<GroupListPage2> {
   @override
   void initState() {
     super.initState();
-    _items = widget.BorrowerList.where((item) {
-      return item.branchCode == widget.BranchData.branchCode;
-    }).toList();
+    Set<String> seenGroupCodes = {};
+
+    _items = widget.BorrowerList
+        .where((item) =>
+    item.branchCode == widget.BranchData.branchCode &&
+        seenGroupCodes.add(item.groupCode)) // Only add if not already in Set
+        .toList();
     _isLoading = false;
   }
 
@@ -124,18 +129,17 @@ class _GroupListPage2State extends State<GroupListPage2> {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                          final selectedItem = filteredItems[index];
-                          /*                  Navigator.push(
-    context,
-    MaterialPageRoute(
-    //builder: (context) => ApplicationPage(),
-    builder: (context) => BorrowerList(
-  */ /*  BranchData: widget.Branchdata,
-    GroupData: selectedItem,*/ /*
-    page:"E SIGN"
-    ),
-    ),
-    );*/
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>BorrowerList2(BorrowerList: widget.BorrowerList
+                                  .where((item) =>
+                              item.branchCode == widget.BranchData.branchCode &&
+                                  item.branchCode == widget.BranchData.branchCode) // Only add if not already in Set
+                                  .toList(), BranchData: widget.BranchData, GroupData: GroupDataModel(groupCode: filteredItems[index].groupCode, groupCodeName: 'N/A'))
+                            ),
+                          );
                         },
                         child: GroupRecyclerItem2(item: filteredItems[index]),
                       );

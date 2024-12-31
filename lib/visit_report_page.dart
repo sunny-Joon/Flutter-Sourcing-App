@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/api_service.dart';
 import 'package:flutter_sourcing_app/global_class.dart';
+import 'package:flutter_sourcing_app/utils/camera_text_writing_process.dart';
 import 'package:flutter_sourcing_app/utils/current_location.dart';
+import 'package:camera/camera.dart';
 
  class VisitReportPage extends StatefulWidget {
    const VisitReportPage({super.key});
@@ -15,6 +17,7 @@ import 'package:flutter_sourcing_app/utils/current_location.dart';
  }
 
  class _VisitReportPageState extends State<VisitReportPage> {
+
    bool _layoutVisibility=true;
    TextEditingController _smCodeController=TextEditingController();
    TextEditingController _nameController=TextEditingController();
@@ -27,11 +30,14 @@ import 'package:flutter_sourcing_app/utils/current_location.dart';
     var _long=0.0;
     String? _aadress;
     File? imageFile;
+    late List<CameraDescription> cameras;
    RegExp regex = RegExp(r'^[A-Za-z]{4}\d{6}$');
-    @override
+  @override
   void initState() {
-    apiService=ApiService.create(baseUrl: ApiConfig.baseUrl1);
-        super.initState();
+
+initializeCamera();
+      apiService=ApiService.create(baseUrl: ApiConfig.baseUrl1);
+    super.initState();
   }
 
    Widget build(BuildContext context) {
@@ -255,10 +261,30 @@ import 'package:flutter_sourcing_app/utils/current_location.dart';
                      children: [
                        InkWell(
                          onTap: () async {
-                           File? pickedFile=await GlobalClass().pickImage();
-                           setState(() {
-                             imageFile=pickedFile;
-                           });
+
+                           final result = await Navigator.push(
+                             context,
+                             MaterialPageRoute(builder: (context) => CameraScreen(camera: cameras.first)),
+                           );
+
+                           if (result != null) {
+                             //File? pickedFile=await GlobalClass().pickImage();
+                             setState(() {
+                               imageFile=result;
+                             });
+                             // The result is the modified image
+                             // Use the result (modified image file) here, for example:
+                             print('Image path: ${result.path}');
+                             Navigator.of(context).push(
+                               MaterialPageRoute(
+                                 builder: (context) => DisplayPictureScreen(imagePath: result.path),
+                               ),
+                             );
+                           }
+                           // File? pickedFile=await GlobalClass().pickImage();
+                           // setState(() {
+                           //   imageFile=pickedFile;
+                           // });
                          },
                          child: Card(
                            elevation: 6,
@@ -279,16 +305,28 @@ import 'package:flutter_sourcing_app/utils/current_location.dart';
                          ),
                        ),
                        SizedBox(width: 10),
-                        imageFile==null? Image(
-                         image: AssetImage("assets/Images/prof_ic.png"),
-                         width: 100,
-                         height: 100,
-                       ):Image.file(
-                          File(imageFile!.path),
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
+                        InkWell(
+
+                          onTap: (){
+                            if(imageFile!=null){Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => DisplayPictureScreen(imagePath:imageFile!.path),
+                              ),
+                            );}else{GlobalClass.showSnackBar(context, "Please capture image first!!");}
+
+                          },
+                          child: imageFile==null? Image(
+                            image: AssetImage("assets/Images/prof_ic.png"),
+                            width: 100,
+                            height: 100,
+                          ):Image.file(
+                            File(imageFile!.path),
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ) ,
+                        )
+                       ,
                      ],
                    ),
                    const SizedBox(height: 15),
@@ -434,6 +472,10 @@ import 'package:flutter_sourcing_app/utils/current_location.dart';
     }
     EasyLoading.dismiss();
   });
+  }
+
+  Future<void> initializeCamera() async {
+    cameras =  await availableCameras();
   }
  }
 
