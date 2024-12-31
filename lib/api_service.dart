@@ -32,6 +32,7 @@ import 'Models/collectionbranchlistmodel.dart';
 import 'Models/borrower_list_model.dart';
 import 'Models/common_bool_model.dart';
 import 'Models/creator_list_model.dart';
+import 'Models/csorankmodel.dart';
 import 'Models/global_model.dart';
 import 'Models/global_model2.dart';
 import 'Models/kyc_update_model.dart';
@@ -596,8 +597,15 @@ abstract class ApiService {
     @Query("SmCode") String smcode,
       @Header("dbname") String dbname,
       @Header("Authorization") String authorization,
-
       );
+
+  @GET("FiSourcing/GetCsoRanks")
+  Future<CsoRankModel> GetCsoRanks(
+      @Header("Authorization") String authorization,
+      @Header("dbname") String dbname,
+      @Query("KO_ID") String KO_ID,
+      @Query("Month") String Month,
+      @Query("Year") String Year);
 
   @POST("Tracklocations/InsertBranchVisit")
   @MultiPart()
