@@ -54,7 +54,7 @@ class _BorrowerListState extends State<BorrowerList> {
 
         widget.GroupData.groupCode,
         widget.BranchData.branchCode,
-        GlobalClass.creatorId.toString(),
+        GlobalClass.creator.toString(),
         type
 
     ).then((response) {
