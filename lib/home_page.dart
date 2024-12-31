@@ -63,7 +63,9 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
+
           SliverAppBar(
+            backgroundColor: Color(0xFFD42D3F),
             expandedHeight: 200.0,
             floating: false,
             pinned: false,

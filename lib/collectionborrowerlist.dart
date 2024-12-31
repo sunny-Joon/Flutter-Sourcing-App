@@ -114,6 +114,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
   Widget getView(){
     if(_borrowerItems.length>=1 && _borrowerItems[0].errormsg.isEmpty){
       return ListView.builder(
+        padding: EdgeInsets.zero,
         itemCount: _borrowerItems.length,
         itemBuilder: (context, index) {
           final item = _borrowerItems[index];
@@ -222,8 +223,8 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      // builder: (context) => Collection(selectedData: item),
-                      builder: (context) => Collection(),
+                      builder: (context) => Collection(selectedData: item),
+                      // builder: (context) => Collection(),
                     ),
                   );
                 },

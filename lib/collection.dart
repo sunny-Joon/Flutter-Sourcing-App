@@ -10,21 +10,23 @@ import 'global_class.dart';
 
 class Collection extends StatefulWidget {
 
-  /*final CollectionBorrowerListDataModel selectedData;
+  final CollectionBorrowerListDataModel selectedData;
 
   const Collection({
     super.key,
     required this.selectedData,
-  });*/
+  });
 
   @override
   _CollectionState createState() => _CollectionState();
 }
 
 class _CollectionState extends State<Collection> with SingleTickerProviderStateMixin {
+  TextEditingController _controllerLumpSum = TextEditingController();
+
   late TabController _tabController;
   List<bool> checkboxValues = []; // Initialize with false values
- // late List<int> emiAmounts; // Sample EMI amounts
+  late List<int> emiAmounts; // Sample EMI amounts
   double interestAmount = 0;
   double lateFee = 0;
   double totalAmount = 0;
@@ -32,16 +34,18 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
   late String qrCodeUrl="";
   late GetCollectionDataModel collectionDataModel;
   String buttonName = "Submit";
+  double showingTotalAmout=0;
+  double LumpSumTotalAmt=0;
 
   @override
   void initState() {
     super.initState();
     print("QR tab opened");
 
-      //setValues();
-     // getQr(context);
-   // emiAmounts = widget.selectedData.instData.map((inst) => int.parse(inst.amount)).toList();
-   // checkboxValues = List<bool>.filled(emiAmounts.length, false);
+      setValues();
+     getQr(context);
+   emiAmounts = widget.selectedData.instData.map((inst) => int.parse(inst.amount)).toList();
+   checkboxValues = List<bool>.filled(emiAmounts.length, false);
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
 
@@ -49,6 +53,12 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
           print("QR tab opened");
           setState(() {
             buttonName = "Check Payment Status";
+          });
+
+        }else if (_tabController.index == 2){
+          setState(() {
+            buttonName = "Submit Lump Sum";
+           showingTotalAmout= int.parse(_controllerLumpSum.text.isEmpty?"0":_controllerLumpSum.text.replaceAll(",", ""))+lateFee+interestAmount;
           });
         }else{
           setState(() {
@@ -64,23 +74,25 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
     super.dispose();
   }
 
-  // void updateTotalAmount() {
-  //   totalAmount = checkboxValues.asMap().entries
-  //       .where((entry) => entry.value)
-  //   //   .map((entry) => emiAmounts[entry.key])
-  //  //     .fold(0, (prev, amount) => prev + amount);
-  //   totalAmount += interestAmount + lateFee;
-  // }
+  void updateTotalAmount() {
+    totalAmount = checkboxValues.asMap().entries
+        .where((entry) => entry.value)
+      .map((entry) => emiAmounts[entry.key])
+       .fold(0, (prev, amount) => prev + amount);
+    totalAmount += interestAmount + lateFee;
+    showingTotalAmout=totalAmount;
+
+  }
 
   @override
   Widget build(BuildContext context) {
-   // updateTotalAmount(); // Update total amount on each build
+   updateTotalAmount(); // Update total amount on each build
 
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 24.0),
           child: Column(
             children: [
               Padding(
@@ -223,16 +235,18 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                             TextSpan(
                               children: [
                                 TextSpan(text: 'Total Amount: ₹', style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)), // Static text color
-                                TextSpan(text: totalAmount.toString(), style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold)), // Dynamic text color
+                                TextSpan(text: "$showingTotalAmout", style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold)), // Dynamic text color
                               ],
                             ),
                           ),
                           ElevatedButton(
                             onPressed: () {
                               if(buttonName == "Submit"){
-                                saveReceipt(context);
+                                saveReceipt(context,0);
                               }else if(buttonName == "Check Payment Status"){
 
+                              }else if(buttonName == "Submit Lump Sum"){
+                                saveReceipt(context,1);
                               }
                                 },
                             style: ElevatedButton.styleFrom(
@@ -312,12 +326,12 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                 onChanged: (value) {
                   setState(() {
                     checkboxValues[index] = value!;
-               //     updateTotalAmount(); // Update total amount when checkbox is changed
+                   updateTotalAmount(); // Update total amount when checkbox is changed
                   });
                 },
               ),
-        //      title: Text('EMI Amount: ₹${emiAmounts[index]}'),
-            //  subtitle: Text('Due Date: ${widget.selectedData.instData[index].dueDate}'),
+             title: Text('EMI Amount: ₹${emiAmounts[index]}'),
+             subtitle: Text('Due Date: ${widget.selectedData.instData[index].dueDate}'),
             ),
           ),
         );
@@ -341,7 +355,6 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
   }
 
   Widget lumsumPaymentWidget() {
-    TextEditingController _controller = TextEditingController();
 
     // Function to format the input as a number with commas
     String _formatNumber(String value) {
@@ -363,7 +376,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
           AbsorbPointer(child: TextField(
             maxLength: 7,
             readOnly: true,
-            controller: _controller,
+            controller: _controllerLumpSum,
             keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly, // Only allow digits
@@ -373,13 +386,17 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
               labelText: 'Lump sum Amount',
               border: OutlineInputBorder(),
             ),
-            // onChanged: (value) {
-            //   _controller.value = _controller.value.copyWith(
-            //     text: _formatNumber(value),
-            //     selection: TextSelection.collapsed(offset: _controller.text.length),
-            //
-            //   );
-            // },
+            onChanged: (value) {
+              print(LumpSumTotalAmt);
+
+              _controllerLumpSum.value = _controllerLumpSum.value.copyWith(
+                text: _formatNumber(value),
+                selection: TextSelection.collapsed(offset: _controllerLumpSum.text.length),
+
+              );
+
+
+            },
           ),),
 
           SizedBox(height: 16),
@@ -412,14 +429,19 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                 return GestureDetector(
                   onTap: () {
                     if (label == 'Clear') {
-                      _controller.clear(); // Clear the text field
+                      _controllerLumpSum.clear(); // Clear the text field
                     } else if (label == '00') {
-                      String newValue = _controller.text + '00'; // Add '00' to the text
-                      _controller.text = _formatNumber(newValue); // Format and update
+                      String newValue = _controllerLumpSum.text + '00'; // Add '00' to the text
+                      _controllerLumpSum.text = _formatNumber(newValue); // Format and update
                     } else {
-                      String newValue = _controller.text + label;
-                      _controller.text = _formatNumber(newValue); // Format and update
+                      String newValue = _controllerLumpSum.text + label;
+                      _controllerLumpSum.text = _formatNumber(newValue); // Format and update
                     }
+                    setState(() {
+                      LumpSumTotalAmt=int.parse(_controllerLumpSum.text.isEmpty?"0":_controllerLumpSum.text.replaceAll(",", ""))+lateFee+interestAmount;
+                      print("LumpSumTotalAmt $LumpSumTotalAmt");
+                      showingTotalAmout=LumpSumTotalAmt;
+                    });
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -462,44 +484,44 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
     );
   }
 
-  /*void setValues() {
+ void setValues() {
     setState(() {
       interestAmount=widget.selectedData.interestAmt;
       borrower=widget.selectedData.custName;
       casecode=widget.selectedData.caseCode;
       totalAmount=widget.selectedData.totalDueAmt;
     });
-  }*/
+  }
 
 
 
-  Future<void> saveReceipt(BuildContext context) async {
+  Future<void> saveReceipt(BuildContext context,int paymentType) async {
     EasyLoading.show(status: 'Loading...');
 
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
       "VDATE":"2024-11-30",
         "InstRcvID": 120,
-        "IMEI": 357874100796785,
-        "CaseCode": "UCJS020242",
+        "IMEI": GlobalClass.imei,
+        "CaseCode": widget.selectedData.caseCode,
         "RcptNo": 1001,
-        "InstRcvAmt": 190,
-        "InstRcvDateTimeUTC": "2024-11-29T10:00:00Z",
+        "InstRcvAmt": paymentType==0?totalAmount.toInt():showingTotalAmout,
+        "InstRcvDateTimeUTC":  "2024-11-29T10:22:27",
         "Flag": "E",
         "CreationDate": "2024-11-29T10:22:27",
         "BatchNo": 1,
         "BatchDate": "2024-11-29T00:00:00",
-        "FoCode": "FO12345",
-        "DataBaseName": "YourDatabaseName",
-        "Creator": "AGRA",
-        "CustName": "John Doe",
-        "PartyCd": "PARTY123",
+        "FoCode": GlobalClass.userName,
+        "DataBaseName": GlobalClass.databaseName,
+        "Creator": GlobalClass.creator,
+        "CustName": widget.selectedData.custName,
+        "PartyCd": widget.selectedData.caseCode,
         "PayFlag": "E",
-        "SmsMobNo": "9876543210",
-        "InterestAmt": 100,
+        "SmsMobNo": widget.selectedData.mobile,
+        "InterestAmt":widget.selectedData.interestAmt.toInt(),
         "CollPoint": "FIELD",
         "PaymentMode": "CASH",
-        "collBranchCode": "BR123",
+        "collBranchCode": widget.selectedData.groupCode,
         "txnId": "TXN123456",
         "TransactionId": "TRANS123456"
     };
@@ -523,7 +545,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
 
     final api = Provider.of<ApiService>(context, listen: false);
 
-    return await api.QrGeneration(GlobalClass.token, GlobalClass.dbName,"UCDL000471"/*widget.selectedData.caseCode*/,"Link")
+    return await api.QrGeneration(GlobalClass.token, GlobalClass.dbName,widget.selectedData.caseCode/*widget.selectedData.caseCode*/,"Link")
         .then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();

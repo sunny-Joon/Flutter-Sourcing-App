@@ -617,7 +617,7 @@ abstract class ApiService {
 
 
 
-  @GET("DocGen/GetDocument")
+  @POST("DocGen/GetDocument")
   Future<CommonStringModel> getDocument(@Body() Map<String, dynamic> body);
 }
 

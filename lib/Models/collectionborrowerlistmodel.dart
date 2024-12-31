@@ -4,6 +4,13 @@
 
 import 'dart:convert';
 
+// To parse this JSON data, do
+//
+//     final collectionBorrowerListModel = collectionBorrowerListModelFromJson(jsonString);
+
+import 'package:meta/meta.dart';
+import 'dart:convert';
+
 CollectionBorrowerListModel collectionBorrowerListModelFromJson(String str) => CollectionBorrowerListModel.fromJson(json.decode(str));
 
 String collectionBorrowerListModelToJson(CollectionBorrowerListModel data) => json.encode(data.toJson());
@@ -37,13 +44,13 @@ class CollectionBorrowerListDataModel {
   String dbName;
   String creator;
   String foCode;
-  String partyCd;
+  String? partyCd;
   String custName;
   String mobile;
   String fhName;
   String groupCode;
   String address;
-  String aadhar;
+  String? aadhar;
   String caseCode;
   String firstInstDate;
   int noOfInsts;
@@ -54,16 +61,16 @@ class CollectionBorrowerListDataModel {
   double instsAmtDue;
   int nofInstDue;
   List<InstDatum> instData;
-  int toBeDueAmt;
-  String toBeDueDate;
-  int futureDue;
+  double toBeDueAmt;
+  String? toBeDueDate;
+  double futureDue;
   String instDueAsOn;
   String isNachReg;
   String dataAsOn;
   double interestAmt;
   String schmCode;
   String errormsg;
-  bool isvalide;
+  bool isvalid;
 
   CollectionBorrowerListDataModel({
     required this.db,
@@ -96,41 +103,41 @@ class CollectionBorrowerListDataModel {
     required this.interestAmt,
     required this.schmCode,
     required this.errormsg,
-    required this.isvalide,
+    required this.isvalid,
   });
 
   factory CollectionBorrowerListDataModel.fromJson(Map<String, dynamic> json) => CollectionBorrowerListDataModel(
-    db: json["db"]??"",
-    dbName: json["dbName"]??"",
-    creator: json["creator"]??"",
-    foCode: json["foCode"]??"",
-    partyCd: json["partyCd"]??"",
-    custName: json["custName"]??"",
-    mobile: json["mobile"]??"",
-    fhName: json["fhName"]??"",
-    groupCode: json["groupCode"]??"",
-    address: json["address"]??"",
-    aadhar: json["aadhar"]??"",
-    caseCode: json["caseCode"]??"",
-    firstInstDate: json["firstInstDate"]??"",
-    noOfInsts: json["noOfInsts"]??"",
-    totalDueAmt: json["totalDueAmt"]??"",
-    totalDueCnt: json["totalDueCnt"]??"",
-    totalRecdAmt: json["totalRecdAmt"]??"",
-    totalRecdCnt: json["totalRecdCnt"]??"",
-    instsAmtDue: json["instsAmtDue"]??"",
-    nofInstDue: json["nofInstDue"]??"",
-    instData: json["instData"]==null?List<InstDatum>.from([].map((x) => InstDatum.fromJson(x))):List<InstDatum>.from(json["instData"].map((x) => InstDatum.fromJson(x))),
-    toBeDueAmt: json["toBeDueAmt"]??"",
+    db: json["db"],
+    dbName: json["dbName"],
+    creator: json["creator"],
+    foCode: json["foCode"],
+    partyCd: json["partyCd"],
+    custName: json["custName"],
+    mobile: json["mobile"],
+    fhName: json["fhName"],
+    groupCode: json["groupCode"],
+    address: json["address"],
+    aadhar: json["aadhar"],
+    caseCode: json["caseCode"],
+    firstInstDate: json["firstInstDate"],
+    noOfInsts: json["noOfInsts"],
+    totalDueAmt: json["totalDueAmt"],
+    totalDueCnt: json["totalDueCnt"],
+    totalRecdAmt: json["totalRecdAmt"],
+    totalRecdCnt: json["totalRecdCnt"],
+    instsAmtDue: json["instsAmtDue"],
+    nofInstDue: json["nofInstDue"],
+    instData: List<InstDatum>.from(json["instData"].map((x) => InstDatum.fromJson(x))),
+    toBeDueAmt: json["toBeDueAmt"],
     toBeDueDate: json["toBeDueDate"]??"",
-    futureDue: json["futureDue"]??"",
-    instDueAsOn: json["instDueAsOn"]??"",
-    isNachReg: json["isNachReg"]??"",
-    dataAsOn: json["dataAsOn"]??"",
-    interestAmt: json["interestAmt"]??"",
-    schmCode: json["schmCode"]??"",
-    errormsg: json["errormsg"]??"",
-    isvalide: json["isvalid"]??"",
+    futureDue: json["futureDue"],
+    instDueAsOn: json["instDueAsOn"],
+    isNachReg: json["isNachReg"],
+    dataAsOn: json["dataAsOn"],
+    interestAmt: json["interestAmt"],
+    schmCode: json["schmCode"],
+    errormsg: json["errormsg"],
+    isvalid: json["isvalid"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -154,7 +161,7 @@ class CollectionBorrowerListDataModel {
     "totalRecdCnt": totalRecdCnt,
     "instsAmtDue": instsAmtDue,
     "nofInstDue": nofInstDue,
-    "instData":  List<dynamic>.from(instData.map((x) => x.toJson())),
+    "instData": List<dynamic>.from(instData.map((x) => x.toJson())),
     "toBeDueAmt": toBeDueAmt,
     "toBeDueDate": toBeDueDate,
     "futureDue": futureDue,
@@ -164,7 +171,7 @@ class CollectionBorrowerListDataModel {
     "interestAmt": interestAmt,
     "schmCode": schmCode,
     "errormsg": errormsg,
-    "isvalide": isvalide,
+    "isvalid": isvalid,
   };
 }
 
