@@ -272,16 +272,23 @@ class _FirstEsignState extends State<FirstEsign> {
       "DbName": "PDLERP",
     };
 
-
-      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl8).getDocument(requestBody);
-        if(response.statuscode==200){
-          print("https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "").replaceAll("\\", "/")}");
-          _loadPdf("https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "").replaceAll("\\", "/")}");
-
-        }else{
-          GlobalClass.showUnsuccessfulAlert(context, "Pdf Not Found\nContact to Administrator", 2);
-        }
-
+try {
+  final response = await ApiService.create(baseUrl: ApiConfig.baseUrl8)
+      .getDocument(requestBody);
+  if (response.statuscode == 200 && response.data.isNotEmpty) {
+    print(
+        "https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "")
+            .replaceAll("\\", "/")}");
+    _loadPdf(
+        "https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "")
+            .replaceAll("\\", "/")}");
+  } else {
+    GlobalClass.showUnsuccessfulAlert(
+        context, "Pdf Not Found\nContact to Administrator", 2);
+  }
+}catch(error){
+  GlobalClass.showErrorAlert(context, "Document Not Fetched", 2);
+}
   }
 
 }
