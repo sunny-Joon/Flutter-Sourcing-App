@@ -34,20 +34,24 @@ class LoginModel {
 
 class LoginDataModel {
   List<FoImei> foImei;
+  List<GetCreatorList> getCreatorList;
   TokenDetails tokenDetails;
 
   LoginDataModel({
     required this.foImei,
+    required this.getCreatorList,
     required this.tokenDetails,
   });
 
   factory LoginDataModel.fromJson(Map<String, dynamic> json) => LoginDataModel(
     foImei: List<FoImei>.from(json["foImei"].map((x) => FoImei.fromJson(x))),
+    getCreatorList: List<GetCreatorList>.from(json["getCreatorList"].map((x) => GetCreatorList.fromJson(x))),
     tokenDetails: TokenDetails.fromJson(json["tokenDetails"]),
   );
 
   Map<String, dynamic> toJson() => {
     "foImei": List<dynamic>.from(foImei.map((x) => x.toJson())),
+    "getCreatorList": List<dynamic>.from(getCreatorList.map((x) => x.toJson())),
     "tokenDetails": tokenDetails.toJson(),
   };
 }
@@ -125,6 +129,26 @@ class FoImei {
     "departmentName": departmentName,
     "mobNO": mobNo,
     "tag": tag,
+  };
+}
+
+class GetCreatorList {
+  int creatorId;
+  String creatorName;
+
+  GetCreatorList({
+    required this.creatorId,
+    required this.creatorName,
+  });
+
+  factory GetCreatorList.fromJson(Map<String, dynamic> json) => GetCreatorList(
+    creatorId: json["creatorID"]??"",
+    creatorName: json["creatorName"]??"",
+  );
+
+  Map<String, dynamic> toJson() => {
+    "creatorID": creatorId,
+    "creatorName": creatorName,
   };
 }
 

@@ -486,10 +486,10 @@ class _LoginPageState extends State<LoginPage> {
                 if(value.data.foImei.length>0) {
                   print('object');
                   GlobalClass.target = value.data.foImei[0].targetCommAmt;
-                  GlobalClass.creator = value.data.foImei[0].creator ?? '';
                   GlobalClass.mobile=value.data.foImei[0].mobNo;
                   GlobalClass.userName=value.data.foImei[0].name;
                   GlobalClass.designation=value.data.foImei[0].designation;
+                  GlobalClass.creator = value.data.foImei[0].creator;
 
                   EasyLoading.dismiss();
                   Navigator.pushReplacement(
@@ -505,6 +505,12 @@ class _LoginPageState extends State<LoginPage> {
                   EasyLoading.dismiss();
                   GlobalClass.showUnsuccessfulAlert(
                       context, value.statuscode.toString() + ","+ value.message,1);
+                }
+
+                if(value.data.getCreatorList.isNotEmpty){
+                  GlobalClass.creatorlist = value.data.getCreatorList;
+                }else{
+                  GlobalClass.showUnsuccessfulAlert(context, "Creator List is Empty", 1);
                 }
 
                 EasyLoading.dismiss();
