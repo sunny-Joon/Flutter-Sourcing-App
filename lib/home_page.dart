@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
 
   }
   Future<void> csoRankApi(BuildContext context) async {
-    EasyLoading.show(status: "Loading...");
+  //  EasyLoading.show(status: "Loading...");
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
 
 
@@ -80,13 +80,14 @@ class _HomePageState extends State<HomePage> {
             message = '$rank People are earning more commission';
           }
         });
-      } else {
-        GlobalClass.showUnsuccessfulAlert(context, "Rank Not Fetched", 1);
+      } else{
+        message = 'Calculating...';
+      GlobalClass.showUnsuccessfulAlert(context, "Rank Not Fetched", 1);
       }
     } catch (err) {
       GlobalClass.showErrorAlert(context, "Error in fetching Rank", 1);
     } finally {
-      EasyLoading.dismiss();
+   //   EasyLoading.dismiss();
     }
   }
 

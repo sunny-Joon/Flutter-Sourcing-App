@@ -4,20 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/Models/SecondEsignModel.dart';
 import 'package:flutter_sourcing_app/Models/collectionstatus_model.dart';
 import 'package:flutter_sourcing_app/Models/qrcode_model.dart';
-
 import 'package:flutter_sourcing_app/Models/common_string_model.dart';
-
 import 'package:flutter_sourcing_app/Models/attendancestatusmodel.dart';
-import 'package:flutter_sourcing_app/collection_report.dart';
-
-import 'package:flutter_sourcing_app/collectionborrowerlist.dart';
 import 'package:flutter_sourcing_app/Models/collectionborrowerlistmodel.dart';
 import 'package:flutter_sourcing_app/Models/bank_names_model.dart';
-
 import 'package:flutter_sourcing_app/Models/details_by_smcode_response.dart';
-
 import 'package:flutter_sourcing_app/Models/getCollectionModel.dart';
-
 import 'package:flutter_sourcing_app/Models/group_model.dart';
 import 'package:flutter_sourcing_app/Models/kyc_scanning_model.dart';
 import 'package:flutter_sourcing_app/Models/common_int_model.dart';
@@ -34,13 +26,12 @@ import 'Models/common_bool_model.dart';
 import 'Models/creator_list_model.dart';
 import 'Models/csorankmodel.dart';
 import 'Models/global_model.dart';
-import 'Models/global_model2.dart';
-import 'Models/kyc_update_model.dart';
-import 'Models/ocrdocscanningresponce.dart';
-import 'Models/range_category_model.dart';
+
+ import 'Models/range_category_model.dart';
 import 'Models/adhaar_model.dart';
 import 'Models/branch_model.dart';
 import 'Models/docs_verify.dart';
+import 'Models/qrresponse_model.dart';
 import 'Models/get_all_model.dart';
 import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
@@ -608,6 +599,13 @@ abstract class ApiService {
       @Query("KO_ID") String KO_ID,
       @Query("Month") String Month,
       @Query("Year") String Year);
+
+  @GET("FiSourcing/GetQRCodePayments")
+  Future<QrResponseModel> getQrPaymentModel(
+      @Header("Authorization") String authorization,
+      @Header("dbname") String dbname,
+      @Query("SmCode") String SmCode,
+     );
 
   @POST("Tracklocations/InsertBranchVisit")
   @MultiPart()

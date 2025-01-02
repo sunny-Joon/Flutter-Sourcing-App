@@ -232,6 +232,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                               if(buttonName == "Submit"){
                                 saveReceipt(context);
                               }else if(buttonName == "Check Payment Status"){
+                                responsecheck(context);
 
                               }
                                 },
@@ -539,4 +540,6 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
       GlobalClass.showErrorAlert(context, "Server side Error", 1);
     });
   }
+
+  void responsecheck(BuildContext context) {}
 }
