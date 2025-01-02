@@ -4014,10 +4014,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
         onPressed: () {
 
-          setState(() {
-            _currentStep = 6;
-            pageTitle = "Upload Docs";
-          });
+          // setState(() {
+          //   _currentStep = 6;
+          //   pageTitle = "Upload Docs";
+          // });
 
           if (_currentStep == 0) {
 
