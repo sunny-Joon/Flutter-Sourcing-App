@@ -6,6 +6,7 @@ import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_sourcing_app/Models/ocrdocscanningresponce.dart';
 import 'package:flutter_sourcing_app/qr_scan_page.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -47,6 +48,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   late ApiService apiService_OCR;
   late ApiService apiService;
   List<ApplicationgetAllDataModel> BorrowerInfo = [];
+
   final picker = ImagePicker();
   late ApiService apiService_protean;
   bool _isPageLoading = false;
@@ -334,6 +336,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   File? dlFront_coborrower;
   File? passport;
   File? passbook;
+  File? pickedImage;
 
   late String name, ficode, creator;
   String initialPanValue = '';
@@ -388,6 +391,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
     _pinFocusNodeC.addListener(() {
       _validatePincode("B");
     });
+
+
+
   }
 
   Future<void> initializeData() async {
@@ -4007,7 +4013,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
         onPressed: () {
+
+          // setState(() {
+          //   _currentStep = 6;
+          //   pageTitle = "Upload Docs";
+          // });
+
           if (_currentStep == 0) {
+
             if (personalInfoEditable) {
               if (_stepOneValidations()) {
                 AddFiExtraDetail(context);
@@ -4095,6 +4108,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
+
   Widget _buildTextField(String label, TextEditingController controller,
       bool saved, FocusNode FN) {
     return Container(
@@ -4181,7 +4195,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
       ),
     );
   }
-
   Widget _buildListItem({
     required String title,
     String? path,
@@ -4189,13 +4202,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String? GrNo,
     required Function(File) onImagePicked,
   }) {
-    print("Path on Gr no: ${path}");
     String baseUrl = 'https://predeptest.paisalo.in:8084';
 
-    // Replace the front part of the file path and ensure the path uses forward slashes
+    // Modify the file path and ensure forward slashes are used
     String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
-
-    // Join the base URL with the modified path
+    // Combine the base URL with the modified path
     String finalUrl = '$baseUrl/$modifiedPath';
 
     File? _selectedImage;
@@ -4204,62 +4215,60 @@ class _ApplicationPageState extends State<ApplicationPage> {
       builder: (BuildContext context, StateSetter setState) {
         return GestureDetector(
           onTap: () async {
-            File? pickedImage = await GlobalClass().pickImage();
+            pickedImage = await GlobalClass().pickImage();
             if (pickedImage != null) {
-
               setState(() {
                 _selectedImage = pickedImage;
+
                 switch (id) {
                   case 1:
-                    adhaarFront = pickedImage;
+                    OcrDocsScanning("aadharfront", BorrowerInfo[0].aadharNo, "borrower", context);
                     break;
                   case 27:
-                    adhaarBack = pickedImage;
+                    OcrDocsScanning('aadharback', BorrowerInfo[0].aadharNo, "borrower", context);
                     break;
                   case 3:
-                    voterFront = pickedImage;
+                    OcrDocsScanning('voterfront', BorrowerInfo[0].voterId, "borrower", context);
                     break;
                   case 26:
-                    voterback = pickedImage;
+                    OcrDocsScanning('voterback', BorrowerInfo[0].voterId, "borrower", context);
                     break;
                   case 4:
-                    panFront = pickedImage;
+                    OcrDocsScanning('pan', BorrowerInfo[0].panNo, "borrower", context);
                     break;
                   case 15:
-                    dlFront = pickedImage;
+                    OcrDocsScanning('DL', BorrowerInfo[0].dl, "borrower", context);
                     break;
                   case 2:
-                    passbook = pickedImage;
+                    OcrDocsScanning('passbook', BorrowerInfo[0].passbook, "borrower", context);
                     break;
-                    case 30:
+                  case 30:
                     passport = pickedImage;
                     break;
                   case 7:
-                    adhaarFront_coborrower = pickedImage;
+                    OcrDocsScanning('aadharfront', BorrowerInfo[0].guarantors[0].grAadharId, "guarantor", context);
                     break;
                   case 29:
-                    adhaarBack_coborrower = pickedImage;
+                    OcrDocsScanning('aadharback', BorrowerInfo[0].guarantors[0].grAadharId, "guarantor", context);
                     break;
                   case 5:
-                    voterFront_coborrower = pickedImage;
+                    OcrDocsScanning('voterfront', BorrowerInfo[0].guarantors[0].grVoter, "guarantor", context);
                     break;
                   case 28:
-                    voterback_coborrower = pickedImage;
+                    OcrDocsScanning('voterback', BorrowerInfo[0].guarantors[0].grVoter, "guarantor", context);
                     break;
                   case 8:
-                    panFront_coborrower = pickedImage;
+                    OcrDocsScanning('pan', BorrowerInfo[0].guarantors[0].grPan, "guarantor", context);
                     break;
                   case 16:
-                    dlFront_coborrower = pickedImage;
+                    OcrDocsScanning('DL', BorrowerInfo[0].guarantors[0].grDl, "borrower", context);
                     break;
                 }
               });
             }
           },
           child: Card(
-            color:
-                path!.isNotEmpty ? Colors.green : Colors.yellowAccent.shade700,
-            // Set color based on path
+            color: path!.isNotEmpty ? Colors.green : Colors.yellowAccent.shade700,
             margin: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
             child: Container(
               height: 70,
@@ -4271,34 +4280,30 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     Text(
                       title,
                       style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: path.isNotEmpty
-                              ? Colors.white
-                              : Colors.black), // Change text color if needed
+                        fontFamily: "Poppins-Regular",
+                        color: path.isNotEmpty ? Colors.white : Colors.black,
+                      ),
                     ),
                     _selectedImage != null
                         ? Image.file(
-                            _selectedImage!,
-                            width: 50,
-                            height: 50,
-                          )
+                      _selectedImage!,
+                      width: 50,
+                      height: 50,
+                    )
                         : path != null
-                            ? Image.network(
-                                finalUrl,
-                                width: 50,
-                                height: 50,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Icon(
-                                    Icons.hide_image_outlined,
-                                    size: 30,
-                                  );
-                                },
-                              )
-                            : Image.asset(
-                                'assets/Images/rupees.png',
-                                width: 50,
-                                height: 50,
-                              )
+                        ? Image.network(
+                      finalUrl,
+                      width: 50,
+                      height: 50,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(Icons.hide_image_outlined, size: 30);
+                      },
+                    )
+                        : Image.asset(
+                      'assets/Images/rupees.png',
+                      width: 50,
+                      height: 50,
+                    ),
                   ],
                 ),
               ),
@@ -4308,6 +4313,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       },
     );
   }
+
+
 
   List<Widget> _buildKycDocumentList({required bool isStepSeven}) {
     List<Widget> listItems = [];
@@ -4329,8 +4336,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
           listItems.add(_buildListItem(
             title: "Aadhar Front",
             path: doc.aadharPath,
-            id: 7,
+            id: 1,
             GrNo: "0",
+
             onImagePicked: (File file) {
               setState(() {
                 adhaarFront = file;
@@ -4346,6 +4354,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 adhaarBack = file;
               });
+
             },
           ));
         }
@@ -4360,6 +4369,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 voterFront = file;
               });
+
             },
           ));
           listItems.add(_buildListItem(
@@ -4371,6 +4381,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 voterFront = file;
               });
+
             },
           ));
         }
@@ -4385,6 +4396,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 panFront = file;
               });
+
             },
           ));
         }
@@ -4399,6 +4411,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 dlFront = file;
               });
+
             },
           ));
         }
@@ -4426,6 +4439,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               passbook = file;
             });
+
           },
         ));
       }
@@ -4458,7 +4472,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             onImagePicked: (File file) {
               setState(() {
                 adhaarFront_coborrower = file;
+
               });
+
             },
           ));
           listItems1.add(_buildListItem(
@@ -4470,6 +4486,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 adhaarBack_coborrower = file;
               });
+
             },
           ));
         }
@@ -4484,6 +4501,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 voterFront_coborrower = file;
               });
+
             },
           ));
           listItems1.add(_buildListItem(
@@ -4495,6 +4513,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 voterFront_coborrower = file;
               });
+
             },
           ));
         }
@@ -4509,6 +4528,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 panFront_coborrower = file;
               });
+
             },
           ));
         }
@@ -4523,6 +4543,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 dlFront_coborrower = file;
               });
+
             },
           ));
         }
@@ -6131,7 +6152,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> getDataFromOCR(String type, BuildContext context) async {
     EasyLoading.show();
-    File? pickedImage = await GlobalClass().pickImage();
+    pickedImage = await GlobalClass().pickImage();
 
     if (pickedImage != null) {
       try {
@@ -6837,6 +6858,76 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
+
+  Future<void> OcrDocsScanning(String type, String id, String subType, BuildContext context) async {
+    EasyLoading.show(); // Show loading indicator
+
+    try {
+      pickedImage;
+
+      if (pickedImage == null) {
+        debugPrint("Opening camera to pick an image...");
+        pickedImage = await GlobalClass().pickImage();
+      }
+
+      if (pickedImage == null) {
+        debugPrint("No image selected.");
+        EasyLoading.dismiss();
+        return; // Exit early if no image is selected
+      } else {
+        debugPrint("Image selected: ${pickedImage?.path}");
+      }
+
+      debugPrint("GestureDetector tapped. ID: $id, Title: $type");
+
+      final response = await apiService_OCR.OcrDocsScan(
+          type,       // Document type
+          id,         // ID (e.g., Aadhaar number)
+          pickedImage! // Picked image file
+      );
+
+      if (response.statusCode == 200) {
+
+        switch (type) {
+          case "aadharfront":
+            handleAadharFront(response, subType, "borrower", context);
+            break;
+          case "aadharback":
+            handleAadharBack(response, subType, "borrower", context);
+            break;
+          case "voterfront":
+            handleVoterFront(response, subType, "borrower", context);
+            break;
+          case "voterback":
+            handleVoterBack(response, subType, "borrower", context);
+            break;
+          case "Pan":
+            handlePan(response, subType, "borrower", context);
+            break;
+          case "DL":
+            handleDL(response, subType, "borrower", context);
+            break;
+          case "passbook":
+            handlePassbook(response, context);
+            break;
+          default:
+            showToast_Error("Unsupported document type.");
+            break;
+        }
+      } else {
+        showDocumentMismatchError(context);
+        showToast_Error("Failed to fetch data. Status Code: ${response.statusCode}.");
+      }
+    } catch (e, stackTrace) {
+      debugPrint("Error during OCR scanning: $e");
+      debugPrint("Stack trace: $stackTrace");
+      showToast_Error("An error occurred while processing the document. Please try again.");
+    } finally {
+      EasyLoading.dismiss(); // Always dismiss loading indicator
+    }
+  }
+
+
   void showIDCardDialog(
       BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
     final String name = [
@@ -6979,8 +7070,146 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (pickedFile != null) {
         _imageFile = File(pickedFile.path);
       } else {
+
         print('No image selected.');
       }
     });
   }
+
+  void handleAadharFront(response, String subType, String idType, BuildContext context) {
+    String expectedId = subType == "borrower"
+        ? BorrowerInfo[0].aadharNo
+        : BorrowerInfo[0].guarantors[0].grAadharId;
+    if (response.data.adharId == expectedId) {
+      if (response.data.isOSV == true && response.data.isIdMatched == true) {
+        if (subType == "borrower") {
+          adhaarFront = pickedImage;
+        } else if (subType == "guarantor") {
+          adhaarFront_coborrower = pickedImage;
+        }
+        EasyLoading.dismiss();
+        GlobalClass.showSuccessAlert(context, "Document successfully verified", 1);
+      } else {
+        showDocumentMismatchError(context);
+      }
+    } else {
+      showIDMismatchError(context);
+    }
+  }
+
+  void handleAadharBack(response, String subType, borrower, BuildContext context) {
+    String expectedId = subType == "borrower" ? BorrowerInfo[0].aadharNo : BorrowerInfo[0].guarantors[0].grAadharId;
+    if (response.data.adharId == expectedId) {
+    if (response.data.isOSV == true && response.data.isIdMatched == true) {
+      if (subType == "borrower") {
+        adhaarBack = pickedImage;
+      } else if (subType == "guarantor") {
+        adhaarBack_coborrower = pickedImage;
+      }
+      EasyLoading.dismiss();
+      GlobalClass.showSuccessAlert(context, "Aadhaar back document verified successfully!", 1);
+    } else {
+      showDocumentMismatchError(context);
+    }
+    } else {
+      showIDMismatchError(context);
+    }
+  }
+
+  void handleVoterFront(response, String subType, borrower, BuildContext context) {
+    String expectedId = subType == "borrower" ? BorrowerInfo[0].voterId : BorrowerInfo[0].guarantors[0].grVoter;
+    if (response.data.adharId == expectedId) {
+    if (response.data.isOSV == true && response.data.isIdMatched == true) {
+
+      if (subType == "borrower") {
+        voterFront = pickedImage;
+      } else if (subType == "guarantor") {
+        voterFront_coborrower = pickedImage;
+      }
+      EasyLoading.dismiss();
+      GlobalClass.showSuccessAlert(context, "Voter front document verified successfully!", 1);
+    } else {
+      showDocumentMismatchError(context);
+    }
+    } else {
+      showIDMismatchError(context);
+    }
+  }
+
+  void handleVoterBack(response,String subType, borrower, BuildContext context) {
+    if (response.data.isOSV == true) {
+      if (subType == "borrower") {
+        voterback = pickedImage;
+      } else if (subType == "guarantor") {
+        voterback_coborrower = pickedImage;
+      }
+      voterback = pickedImage;
+      EasyLoading.dismiss();
+      GlobalClass.showSuccessAlert(context, "Voter back document verified successfully!", 1);
+    } else {
+      showDocumentMismatchError(context);
+    }
+  }
+  void handlePan(response, String subType, borrower, BuildContext context) {
+    String expectedId = subType == "borrower" ? BorrowerInfo[0].panNo : BorrowerInfo[0].guarantors[0].grPan;
+    if (response.data.adharId == expectedId) {
+    if (response.data.isOSV == true && response.data.isIdMatched == true) {
+      if (subType == "borrower") {
+        panFront = pickedImage;
+      } else if (subType == "guarantor") {
+        panFront_coborrower = pickedImage;
+      }
+      EasyLoading.dismiss();
+      GlobalClass.showSuccessAlert(context, "PAN document verified successfully!", 1);
+    } else {
+      showDocumentMismatchError(context);
+    }
+    } else {
+      showIDMismatchError(context);
+    }
+  }
+
+  void handleDL(response, String subType, borrower, BuildContext context) {
+    String expectedId = subType == "borrower" ? BorrowerInfo[0].dl : BorrowerInfo[0].guarantors[0].grDl;
+    if (response.data.adharId == expectedId) {
+    if (response.data.isOSV == true) {
+      if (subType == "borrower") {
+        dlFront = pickedImage;
+      } else if (subType == "guarantor") {
+        dlFront_coborrower = pickedImage;
+      }
+      EasyLoading.dismiss();
+      GlobalClass.showSuccessAlert(context, "Driving License verified successfully!", 1);
+    } else {
+      showDocumentMismatchError(context);
+    }
+    } else {
+      showIDMismatchError(context);
+    }
+  }
+
+  void handlePassbook(response, BuildContext context) {
+    if (response.data.isOSV == true) {
+      passbook = pickedImage;
+      EasyLoading.dismiss();
+      GlobalClass.showSuccessAlert(context, "Passbook verified successfully!", 1);
+    } else {
+      showDocumentMismatchError(context);
+    }
+  }
+
+
+  void showDocumentMismatchError(BuildContext context) {
+    EasyLoading.dismiss();
+    showToast_Error("OSV Stamp not found or Not readable!!\nओएसवी स्टाम्प नहीं मिला या पढ़ने योग्य नहीं है!!");
+  }
+
+  void showIDMismatchError(BuildContext context) {
+    EasyLoading.dismiss();
+    showToast_Error("Did not found Document Id\nPlease check document id properly clear or readable\nदस्तावेज़ आईडी नहीं मिला\n" +
+                                                            "कृपया जाँचें कि दस्तावेज़ आईडी ठीक से स्पष्ट या पढ़ने योग्य है");
+  }
+
+
 }
+

@@ -111,7 +111,7 @@ class ApplicationgetAllDataModel {
   String createdBy;
   String modifiedOn;
   String modifiedBy;
-  bool approved;
+  String approved;
   String residentialType;
   String houseOwnerName;
   String rentofHouse;
