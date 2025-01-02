@@ -3088,6 +3088,53 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<CsoRankModel> GetCsoRanks(
+    String authorization,
+    String dbname,
+    String KO_ID,
+    String Month,
+    String Year,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'KO_ID': KO_ID,
+      r'Month': Month,
+      r'Year': Year,
+    };
+    final _headers = <String, dynamic>{
+      r'Authorization': authorization,
+      r'dbname': dbname,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<CsoRankModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'FiSourcing/GetCsoRanks',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late CsoRankModel _value;
+    try {
+      _value = CsoRankModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<GlobalModel> insertBranchVisit(
     String dbName,
     String authorization,
@@ -3203,6 +3250,53 @@ class _ApiService implements ApiService {
     late CommonStringModel _value;
     try {
       _value = CommonStringModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<OcrDocsScanningResponse> OcrDocsScan(
+    String imgType,
+    String Id,
+    File file,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'imgType': imgType,
+      r'Id': Id,
+    };
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.files.add(MapEntry(
+      'file',
+      MultipartFile.fromFileSync(
+        file.path,
+        filename: file.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    final _options = _setStreamType<OcrDocsScanningResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'OCR/DocVerifyforOSVSpaceOCR',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late OcrDocsScanningResponse _value;
+    try {
+      _value = OcrDocsScanningResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

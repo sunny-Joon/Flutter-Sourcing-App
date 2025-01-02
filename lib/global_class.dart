@@ -5,6 +5,7 @@ import 'package:flutter_sourcing_app/Models/login_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xml/xml.dart';
 
@@ -19,6 +20,7 @@ class GlobalClass {
   static String id = "";
   static List<GetCreatorList> creatorlist = [];
   static String creatorId = "";
+  static int rank = 0;
   static String creator = "";
   static String address = "";
   static String mobile = "";
@@ -32,7 +34,7 @@ class GlobalClass {
   static String liveToken = "";
   static String tag = "";
   static String imei = "";
-  static String databaseName = "PDLERP";
+  static String databaseName = "";
   static String dbName = "kDnH5KSEQ2zYUc1sg63RQg==";
   static String deviceId = "";
   static int target = 0;
@@ -79,12 +81,10 @@ class GlobalClass {
   // Private method to show an alert dialog
   static void showAlert(BuildContext context, String title, String message, Color color, int a) {
     showDialog(
-
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -150,10 +150,18 @@ class GlobalClass {
 
   static String getTodayDate() {
     final now = DateTime.now();
-    return '${now.year}/${now.month.toString().padLeft(2, '0')}/${(now.day-1).toString().padLeft(2, '0')}';
-
+    return '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}';
+  }
+  static String getCurrentYear() {
+    final now = DateTime.now();
+    return now.year.toString();
   }
 
+  static String getCurrentMonth() {
+    final now = DateTime.now();
+    // Get the full month name using DateFormat
+    return DateFormat('MMMM').format(now); // 'MMMM' returns the full month name
+  }
 
   Future<File?> pickImage() async {
     final picker = ImagePicker();

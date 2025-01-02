@@ -23,6 +23,8 @@ class _HomePageState extends State<HomePage> {
 
   final ScrollController _scrollController = ScrollController();
   bool isExpanded = true;
+  late String message = "";
+
 
   void _toggleAppBar() {
     if (isExpanded) {
@@ -51,6 +53,40 @@ class _HomePageState extends State<HomePage> {
       _showAlertDialog(context);
     } else {
       _displayValue = GlobalClass.target;
+    }
+
+    csoRankApi(context);
+
+
+  }
+  Future<void> csoRankApi(BuildContext context) async {
+    EasyLoading.show(status: "Loading...");
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+
+
+    try {
+      var response = await api
+          .GetCsoRanks(GlobalClass.token, GlobalClass.dbName, GlobalClass.id, GlobalClass.getCurrentMonth(), GlobalClass.getCurrentYear());
+
+      if (response.statuscode == 200 && response.data.isNotEmpty && (response.data[0].errormsg.isEmpty || response.data[0].errormsg == null)) {
+        setState(() {
+          int rank = response.data[0].rank;
+          if(rank == 0){
+            message = 'Calculating...';
+          }else if (rank == 1) {
+            message = 'You have set the highest target';
+          } else {
+            rank = rank -1;
+            message = '$rank People are earning more commission';
+          }
+        });
+      } else {
+        GlobalClass.showUnsuccessfulAlert(context, "Rank Not Fetched", 1);
+      }
+    } catch (err) {
+      GlobalClass.showErrorAlert(context, "Error in fetching Rank", 1);
+    } finally {
+      EasyLoading.dismiss();
     }
   }
 
@@ -202,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center, // Center vertically
                                 children: [
-                                  Text(
+                                  /*Text(
                                     'Current Earning',
                                     style: TextStyle(
                                       fontFamily: "Poppins-Regular",
@@ -226,9 +262,9 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 10), // Add some spacing
+                                  SizedBox(height: 10),*/ // Add some spacing
                                   Text(
-                                    '10 People are earning more commission',
+                                    message,
                                     style: TextStyle(
                                       fontFamily: "Poppins-Regular",
                                       fontSize: 16,

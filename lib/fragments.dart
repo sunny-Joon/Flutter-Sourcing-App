@@ -307,4 +307,6 @@ class _FragmentsState extends State<Fragments> {
       print('Data already exists in the database.');
     }
   }
+
+
 }
