@@ -34,6 +34,7 @@ import 'Models/creator_list_model.dart';
 import 'Models/global_model.dart';
 import 'Models/global_model2.dart';
 import 'Models/kyc_update_model.dart';
+import 'Models/ocrdocscanningresponce.dart';
 import 'Models/range_category_model.dart';
 import 'Models/adhaar_model.dart';
 import 'Models/branch_model.dart';
@@ -120,6 +121,7 @@ abstract class ApiService {
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
       @Query("Fi_Id") String Fi_Id);
+
 
   @GET("Collection/CollectionStatus")
   Future<CollectionStatusModel> collectionStatus(
@@ -609,5 +611,12 @@ abstract class ApiService {
 
   @GET("DocGen/GetDocument")
   Future<CommonStringModel> getDocument(@Body() Map<String, dynamic> body);
+
+
+  @POST("OCR/DocVerifyforOSVSpaceOCR")
+  Future<OcrDocsScanningResponse> OcrDocsScan(
+      @Query("imgType") String imgType,
+      @Query("Id") String Id,
+      @Part( name: "file") File file);
 }
 
