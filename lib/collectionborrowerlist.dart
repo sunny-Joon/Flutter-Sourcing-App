@@ -179,10 +179,10 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
       GlobalClass.dbName,
       GlobalClass.imei,
       widget.Branchdata.focode,
-
       widget.Branchdata.areaCd,
       GlobalClass.id,
-      GlobalClass.getTodayDate(),
+      //GlobalClass.getTodayDate(),
+      "2024-12-30"
 
     ).then((response) {
       if (response.statuscode == 200) {
@@ -222,8 +222,8 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      // builder: (context) => Collection(selectedData: item),
-                      builder: (context) => Collection(),
+                       builder: (context) => Collection(selectedData: item),
+                     // builder: (context) => Collection(),
                     ),
                   );
                 },

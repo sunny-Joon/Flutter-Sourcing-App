@@ -37,13 +37,13 @@ class CollectionBorrowerListDataModel {
   String dbName;
   String creator;
   String foCode;
-  String partyCd;
+  String? partyCd;
   String custName;
   String mobile;
   String fhName;
   String groupCode;
   String address;
-  String aadhar;
+  String? aadhar;
   String caseCode;
   String firstInstDate;
   int noOfInsts;
@@ -54,16 +54,16 @@ class CollectionBorrowerListDataModel {
   double instsAmtDue;
   int nofInstDue;
   List<InstDatum> instData;
-  int toBeDueAmt;
-  String toBeDueDate;
-  int futureDue;
+  double toBeDueAmt;
+  String? toBeDueDate;
+  double futureDue;
   String instDueAsOn;
   String isNachReg;
   String dataAsOn;
   double interestAmt;
   String schmCode;
   String errormsg;
-  bool isvalide;
+  bool isvalid;
 
   CollectionBorrowerListDataModel({
     required this.db,
@@ -96,7 +96,7 @@ class CollectionBorrowerListDataModel {
     required this.interestAmt,
     required this.schmCode,
     required this.errormsg,
-    required this.isvalide,
+    required this.isvalid,
   });
 
   factory CollectionBorrowerListDataModel.fromJson(Map<String, dynamic> json) => CollectionBorrowerListDataModel(
@@ -130,7 +130,7 @@ class CollectionBorrowerListDataModel {
     interestAmt: json["interestAmt"]??"",
     schmCode: json["schmCode"]??"",
     errormsg: json["errormsg"]??"",
-    isvalide: json["isvalid"]??"",
+    isvalid: json["isvalid"]??"",
   );
 
   Map<String, dynamic> toJson() => {
@@ -164,7 +164,7 @@ class CollectionBorrowerListDataModel {
     "interestAmt": interestAmt,
     "schmCode": schmCode,
     "errormsg": errormsg,
-    "isvalide": isvalide,
+    "isvalide": isvalid,
   };
 }
 
