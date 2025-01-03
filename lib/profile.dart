@@ -6,6 +6,7 @@ import 'package:flutter_sourcing_app/Models/login_model.dart';
 import 'package:flutter_sourcing_app/collection_report.dart';
 import 'package:flutter_sourcing_app/qr_payment_reports.dart';
 import 'package:flutter_sourcing_app/referandearnactivity.dart';
+import 'package:flutter_sourcing_app/submit_ss_qrtransaction.dart';
 import 'package:flutter_sourcing_app/utils/current_location.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -159,9 +160,9 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       backgroundColor: const Color(0xFFD42D3F),
       endDrawer: Container(
-        width: 110,
+        width: 85,
         height: MediaQuery.of(context).size.height /
-            3, // Set the height of the drawer
+            2, // Set the height of the drawer
 
         child: Drawer(
           backgroundColor: Colors.white,
@@ -178,9 +179,9 @@ class _ProfileState extends State<Profile> {
                 },
                 title: Column(
                   children: const [
-                    Icon(Icons.currency_rupee),
+                    Icon(Icons.currency_rupee,size: 50,color: Colors.blue),
                     SizedBox(height: 5),
-                    Text('QR Payment Report', style: TextStyle(fontSize: 9)),
+                    Text('QR Payment Report', style: TextStyle(fontSize: 8)),
                   ],
                 ),
               ),
@@ -194,7 +195,7 @@ class _ProfileState extends State<Profile> {
                 },
                 title: Column(
                   children: const [
-                    Icon(Icons.currency_rupee),
+                    Icon(Icons.currency_rupee,size: 50,color: Colors.blue),
                     SizedBox(height: 5),
                     Text('Collection Report', style: TextStyle(fontSize: 8)),
                   ],
@@ -207,12 +208,36 @@ class _ProfileState extends State<Profile> {
                 },
                 title: Column(
                   children: const [
-                    Icon(Icons.info),
+                    Icon(Icons.fingerprint,size: 50,color: Colors.green,),
                     SizedBox(height: 5),
                     Text('Morpho Recharge', style: TextStyle(fontSize: 8)),
                   ],
                 ),
               ),
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SubmitSsQrTransaction(
+                      smcode: "",
+                    )),
+                  );
+                },
+                title:Center(
+                  child: Column(
+                  children: const [
+                    Icon(Icons.currency_rupee_rounded,size: 50,color: Colors.blue),
+                    SizedBox(height: 5),
+                     Text(
+                        'Payment Settlement',
+                        style: TextStyle(fontSize: 7),
+                      ),
+                  ],
+                  ),
+
+                ),
+              )
             ],
           ),
         ),
