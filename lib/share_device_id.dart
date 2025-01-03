@@ -468,7 +468,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                 //     false,
                                 //     _branchFocus,100
                                 // ),
-                                child: _buildTextField('Branch Codes', _branchController, TextInputType.number, true, _branchFocus, 3, errorText: _branchError),
+                                child: _buildTextField('Branch Codes', _branchController, TextInputType.number, true, _branchFocus, 3,true, errorText: _branchError),
 
                               ),
                               // IconButton will be placed on the right of the TextField
@@ -507,10 +507,10 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                 },
                                 BranchDataModel),*/
                           //SizedBox(height:2 ),
-                          _buildTextField('Name', _nameController, TextInputType.name, true, _nameFocus, 40, errorText: _nameError),
-                          _buildTextField('Mobile No.', _mobileNoController, TextInputType.number, true, _mobileNoFocus, 10, errorText: _mobileNoError),
-                          _buildTextField('IMEI No. 1', _imei1Controller, TextInputType.number, true, _imei1Focus, 15, errorText: _imei1Error),
-                          _buildTextField('IMEI No. 2', _imei2Controller, TextInputType.number, true, _imei2Focus, 15, errorText: _imei2Error),
+                          _buildTextField('Name', _nameController, TextInputType.name, true, _nameFocus, 40,false, errorText: _nameError),
+                          _buildTextField('Mobile No.', _mobileNoController, TextInputType.number, true, _mobileNoFocus, 10,false, errorText: _mobileNoError),
+                          _buildTextField('IMEI No. 1', _imei1Controller, TextInputType.number, true, _imei1Focus, 15,false, errorText: _imei1Error),
+                          _buildTextField('IMEI No. 2', _imei2Controller, TextInputType.number, true, _imei2Focus, 15,false, errorText: _imei2Error),
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -591,6 +591,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       bool YN,
       FocusNode FN,
       int maxLength,
+      bool readOnly,
       {String? errorText}) {  // Add errorText as an optional named parameter
     return Container(
       color: Colors.white,

@@ -77,7 +77,7 @@ class GroupRecyclerItem2 extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.center,
                       child: Text(
-                        '${"item.groupCodeName"}',
+                        '${item.groupName}',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,

@@ -263,12 +263,8 @@ class _FirstEsignState extends State<FirstEsign> {
     
 
     final requestBody = {
-      "Creator": selectedData.creator,
-      "GroupCode": selectedData.groupCode,
-      "Code": selectedData.fiCode,
       "F_Id": selectedData.id,
       "Type": widget.type==1?"FirsteSign":"SecondeSign",
-      "CityCode": selectedData.branchCode,
       "DbName": "PDLERP",
     };
 
