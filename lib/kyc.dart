@@ -742,10 +742,7 @@ class _KYCPageState extends State<KYCPage> {
       String bank_name = bankselected!;
       String loan_Duration = selectedloanDuration!;
       String loan_amount = _loan_amountController.text.toString();
-      String? Image;
-      if (_imageFile == null) {
-        Image = 'Null';
-      }
+
 
       final api = Provider.of<ApiService>(context, listen: false);
 
@@ -3035,9 +3032,12 @@ bool checkIdMendate(){
     if (_aadharIdController.text.isEmpty) {
       showToast_Error("Please enter correct aadhaar id");
       return false;
-    } else if(_errorMessageAadhaar.isNotEmpty){
+    }
+    else if(_errorMessageAadhaar.isNotEmpty){
       showToast_Error("Please enter valid aadhaar id");
-    }else if (selectedTitle == null) {
+      return false;
+    }
+    else if (selectedTitle == null) {
       showToast_Error("Please choose title");
       return false;
     } else if (_nameController.text.isEmpty) {
@@ -3124,7 +3124,7 @@ bool checkIdMendate(){
         _longitudeController.text.isEmpty) {
       showToast_Error("Please turn on location service of mobile");
       return false;
-    } else if (_imageFile == null) {
+    } else if (_imageFile==null) {
       showToast_Error("Please capture borrower profile picture");
       return false;
     }

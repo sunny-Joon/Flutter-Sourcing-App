@@ -37,7 +37,7 @@ class GlobalDataModel {
   String errormsg;
   bool isvalid;
   String financialStatus;
-  String fiCode;
+  int fiCode;
   String appLink;
 
 
@@ -56,7 +56,7 @@ class GlobalDataModel {
     errormsg: json["errormsg"]??"",
     isvalid: json["isvalid"],
     financialStatus: json["financialStatus"]??"",
-    fiCode: json["fiCode"]??"",
+    fiCode: json["fiCode"]??0,
     appLink: json["appLink"]??"",
 
   );
