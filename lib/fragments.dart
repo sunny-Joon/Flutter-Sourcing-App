@@ -1,4 +1,6 @@
- import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+ import 'dart:io';
+
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -33,6 +35,7 @@ class _FragmentsState extends State<Fragments> {
   int _selectedIndex = 0;
   dynamic managerList; // Variable to store the response object
   int _page = 0;
+
   final List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     LeaderBoard(),
@@ -53,7 +56,7 @@ class _FragmentsState extends State<Fragments> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       RangeCategory(context);
-      _showTemporaryDialog(context, 'You are in ${GlobalClass.creator} creator');
+      //_showTemporaryDialog(context, 'You are in ${GlobalClass.creator} creator');
     });
    }
 
@@ -84,7 +87,12 @@ class _FragmentsState extends State<Fragments> {
   }
   @override
   Widget build(BuildContext context) {
-    return   WillPopScope(onWillPop: _onWillPop, child: Scaffold(
+    return   PopScope(
+        canPop: false,
+        onPopInvoked: (bool value) {
+          _onWillPop();
+        },
+        child: Scaffold(
         backgroundColor: Color(0xFFD42D3F), // Set background color
         body: _widgetOptions[_page], // Display the selected page
         bottomNavigationBar: CurvedNavigationBar(
@@ -199,28 +207,61 @@ class _FragmentsState extends State<Fragments> {
       ));
 
   }
-  Future<bool> _onWillPop() async {
-    bool? shouldClose = await showDialog(
+  Future<void> _onWillPop() async {
+    showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Are you sure?'),
-        content: Text('Do you want to close App?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false), // Return false
-            child: Text('No'),
-          ),
-          TextButton(
-            onPressed: () {
-              EasyLoading.dismiss();
-              Navigator.of(context).pop(true); // Return true
-            },
-            child: Text('Yes'),
-          ),
-        ],
+        backgroundColor: Colors.white,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Are you sure?',
+              style: TextStyle(
+                  color: Color(0xFFD42D3F),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Do you want to close app?',
+              style: TextStyle(color: Colors.black),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildShinyButton(
+                  'No',
+                      () {
+                    EasyLoading.dismiss();
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                _buildShinyButton(
+                  'Yes',
+                      () {
+                    EasyLoading.dismiss();
+                    exit(0);
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
-    return shouldClose ?? false; // Default to false if dismissed
+    // return shouldClose ?? false; // Default to false if dismissed
+  }
+  Widget _buildShinyButton(String text, VoidCallback onPressed) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white, backgroundColor: Color(0xFFD42D3F), // foreground/text
+      ),
+      onPressed: onPressed,
+      child: Text(text),
+    );
   }
 
   Future<void> RangeCategory(BuildContext context) async {

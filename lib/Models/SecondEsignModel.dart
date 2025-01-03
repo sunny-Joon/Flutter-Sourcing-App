@@ -72,6 +72,8 @@ class SecondEsignDataModel {
   int loanDuration;
   bool isvalid;
   String errormsg;
+  String profilePic;
+  String groupName;
 
   SecondEsignDataModel({
     required this.id,
@@ -113,6 +115,8 @@ class SecondEsignDataModel {
     required this.loanDuration,
     required this.isvalid,
     required this.errormsg,
+    required this.profilePic,
+    required this.groupName,
   });
 
   factory SecondEsignDataModel.fromJson(Map<String, dynamic> json) => SecondEsignDataModel(
@@ -155,6 +159,8 @@ class SecondEsignDataModel {
     loanDuration: json["loan_Duration"]??0,
     isvalid: json["isvalid"]??false,
     errormsg: json["errormsg"]??"",
+    groupName: json["groupName"]??"",
+    profilePic: json["profilePic"]??"",
   );
 
   Map<String, dynamic> toJson() => {
@@ -197,6 +203,8 @@ class SecondEsignDataModel {
     "loan_Duration": loanDuration,
     "isvalid": isvalid,
     "errormsg": errormsg,
+    "profilePic": profilePic,
+    "groupName": groupName,
   };
 }
 

@@ -4,8 +4,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/global_class.dart';
+import 'package:flutter_sourcing_app/show_flash_dialog.dart';
 import 'package:flutter_sourcing_app/target_set_page.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_player/video_player.dart';
 import 'api_service.dart';
 import 'target_car_gif.dart';
 import 'const/appcolors.dart';
@@ -20,11 +23,11 @@ class _HomePageState extends State<HomePage> {
   int _displayValue = 0; // Display value for the text
   int _page = 0;
   AppColors appColors = new AppColors();
-
+  late VideoPlayerController _controller;
   final ScrollController _scrollController = ScrollController();
   bool isExpanded = true;
   late String message = "";
-
+  bool _isMuted = false;
 
   void _toggleAppBar() {
     if (isExpanded) {
@@ -45,9 +48,28 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+
+  @override
+  void dispose() {
+    _controller.dispose();
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
+
+    if(GlobalClass.banner_name.toLowerCase().endsWith(".mp4")){
+      _controller = VideoPlayerController.network(
+        'https://predeptest.paisalo.in:8084/LOSDOC/BannerPost/${GlobalClass.banner_name}', // Replace with your video URL
+      )..initialize().then((_) {
+        // Ensure the first frame is shown
+        setState(() {});
+        _controller.play(); // Autoplay
+
+      });
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showBannerDialog();
+    });
     super.initState();
     if (GlobalClass.target == 0) {
       _showAlertDialog(context);
@@ -55,12 +77,13 @@ class _HomePageState extends State<HomePage> {
       _displayValue = GlobalClass.target;
     }
 
+
     csoRankApi(context);
 
 
   }
   Future<void> csoRankApi(BuildContext context) async {
-    EasyLoading.show(status: "Loading...");
+  //  EasyLoading.show(status: "Loading...");
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
 
 
@@ -80,14 +103,27 @@ class _HomePageState extends State<HomePage> {
             message = '$rank People are earning more commission';
           }
         });
-      } else {
-        GlobalClass.showUnsuccessfulAlert(context, "Rank Not Fetched", 1);
+      } else{
+        message = 'Calculating...';
+      GlobalClass.showUnsuccessfulAlert(context, "Rank Not Fetched", 1);
       }
     } catch (err) {
       GlobalClass.showErrorAlert(context, "Error in fetching Rank", 1);
     } finally {
-      EasyLoading.dismiss();
+   //   EasyLoading.dismiss();
     }
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
+    return [
+      if (hours > 0) twoDigits(hours),
+      twoDigits(minutes),
+      twoDigits(seconds),
+    ].join(":");
   }
 
 
@@ -99,16 +135,71 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
+
           SliverAppBar(
-            expandedHeight: 200.0,
+            backgroundColor: Color(0xFFD42D3F),
+            expandedHeight: GlobalClass.banner_name.isNotEmpty?200.0:0,
             floating: false,
             pinned: false,
             automaticallyImplyLeading: false,
             flexibleSpace: FlexibleSpaceBar(
-              background: Image.network(
-                'https://cdn.photographylife.com/wp-content/uploads/2014/09/Nikon-D750-Image-Samples-2.jpg',
+              background: GlobalClass.banner_name.isNotEmpty?(GlobalClass.banner_name.toLowerCase().endsWith(".mp4")?(_controller.value.isInitialized
+                  ?Stack(
+                 children: [
+                  AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  ),
+
+
+                  Positioned(
+                      bottom: 20,
+                      child:Container(color: Colors.black12,width: MediaQuery.of(context).size.width,child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              _controller.value.isPlaying
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
+                              color: Color(0xFFD42D3F),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                if (_controller.value.isPlaying) {
+                                  _controller.pause();
+                                } else {
+                                  _controller.play();
+                                }
+                              });
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              _isMuted ? Icons.volume_off : Icons.volume_up,
+                              color: Color(0xFFD42D3F),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isMuted = !_isMuted;
+                                _controller.setVolume(_isMuted ? 0 : 1);
+                              });
+                            },
+                          ),
+
+                        ],
+                      ),) ),
+                   Positioned(bottom:40,child:SizedBox(width: MediaQuery.of(context).size.width,child:   VideoProgressIndicator(
+                     _controller,
+                     allowScrubbing: true,
+                     padding: EdgeInsets.symmetric(horizontal: 50),
+                   ),),)
+                ],
+              )
+                  : Center(child: CircularProgressIndicator(color: Colors.white,),)):Image.network(
+                'https://predeptest.paisalo.in:8084/LOSDOC/BannerPost/${GlobalClass.banner_name}',
                 fit: BoxFit.cover,
-              ),
+              )):Container(),
             ),
           ),
           SliverList(
@@ -466,5 +557,28 @@ class _HomePageState extends State<HomePage> {
         GlobalClass.showErrorAlert(context, value.message, 1);
       }
     });
+  }
+
+  Future<void> _showBannerDialog() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String currentDate = DateTime.now().toIso8601String().split('T')[0];
+
+    // Check if the current date is already saved
+    String? savedDate = prefs.getString('dialog_date');
+    if (savedDate != currentDate) {
+      // If not saved, show the dialog
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return BannerDialog(
+            banner: GlobalClass.flash_image_name, // Replace with your banner URL
+            text1: GlobalClass.flash_advertisement,
+            text2:  GlobalClass.flash_description,
+          );
+        },
+      );
+    }
+
   }
 }

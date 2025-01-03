@@ -469,7 +469,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                 //     false,
                                 //     _branchFocus,100
                                 // ),
-                                child: _buildTextField('Branch Codes', _branchController, TextInputType.number, true, _branchFocus, 3, errorText: _branchError),
+                                child: _buildTextField('Branch Codes', _branchController, TextInputType.number, true, _branchFocus, 3,true, errorText: _branchError),
 
                               ),
                               // IconButton will be placed on the right of the TextField
@@ -508,17 +508,17 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                 },
                                 BranchDataModel),*/
                           //SizedBox(height:2 ),
-                          _buildTextField('Name', _nameController, TextInputType.name, true, _nameFocus, 40, errorText: _nameError),
-                          _buildTextField('Mobile No.', _mobileNoController, TextInputType.number, true, _mobileNoFocus, 10, errorText: _mobileNoError),
-                          _buildTextField('IMEI No. 1', _imei1Controller, TextInputType.number, true, _imei1Focus, 15, errorText: _imei1Error),
-                          _buildTextField('IMEI No. 2', _imei2Controller, TextInputType.number, true, _imei2Focus, 15, errorText: _imei2Error),
+                          _buildTextField('Name', _nameController, TextInputType.name, true, _nameFocus, 40,false, errorText: _nameError),
+                          _buildTextField('Mobile No.', _mobileNoController, TextInputType.number, true, _mobileNoFocus, 10,false, errorText: _mobileNoError),
+                          _buildTextField('IMEI No. 1', _imei1Controller, TextInputType.number, true, _imei1Focus, 15,false, errorText: _imei1Error),
+                          _buildTextField('IMEI No. 2', _imei2Controller, TextInputType.number, true, _imei2Focus, 15,false, errorText: _imei2Error),
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(children: [
-                                Icon(Icons.location_on_outlined,color: Colors.red,),
-                                Text("${_locationMessage}",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.red,fontWeight: FontWeight.bold),),
+                                Icon(Icons.location_on_outlined,color: Color(0xFFD42D3F),),
+                                Text("${_locationMessage}",style: TextStyle(fontFamily: "Poppins-Regular",color: Color(0xFFD42D3F),fontWeight: FontWeight.bold),),
 
                               ],),
                               InkWell(
@@ -527,7 +527,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                 child:  Card(
                                   elevation: 5,
                                   shape: CircleBorder(),
-                                  child: Padding(padding: EdgeInsets.all(3),child: Icon(Icons.refresh,size: 30,color: Color(0xffb41d2d),),),
+                                  child: Padding(padding: EdgeInsets.all(3),child: Icon(Icons.refresh,size: 30,color: Color(0xFFD42D3F),),),
                                 ),
                               )
 
@@ -592,6 +592,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       bool YN,
       FocusNode FN,
       int maxLength,
+      bool readOnly,
       {String? errorText}) {  // Add errorText as an optional named parameter
     return Container(
       color: Colors.white,
@@ -608,24 +609,28 @@ class _SharedeviceidState extends State<Sharedeviceid> {
             ),
           ),
           SizedBox(height: 1),
-          Container(
-            width: double.infinity,
-            child: Center(
-              child: TextFormField(
-                maxLength: maxLength,
-                controller: controller,
-                focusNode: FN,
-                keyboardType: inputType,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  counterText: "",
-                  errorText: errorText, // Use the errorText parameter here
-                ),
-                enabled: YN,
+      Container(
+        width: double.infinity,
+        child: Center(
+          child: TextFormField(
+            maxLength: maxLength,
+            controller: controller,
+            focusNode: FN,
+            keyboardType: inputType,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              counterText: "",
+              errorText: errorText, // Display error text dynamically
+              errorStyle: TextStyle(
+                color: Color(0xFFD42D3F), // Set the error text color here
+                fontSize: 12, // Optional: Adjust the font size
               ),
             ),
+            enabled: YN,
           ),
-        ],
+        ),
+      )
+      ],
       ),
     );
   }

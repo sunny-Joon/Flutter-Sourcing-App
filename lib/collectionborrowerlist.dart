@@ -114,6 +114,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
   Widget getView(){
     if(_borrowerItems.length>=1 && _borrowerItems[0].errormsg.isEmpty){
       return ListView.builder(
+        padding: EdgeInsets.zero,
         itemCount: _borrowerItems.length,
         itemBuilder: (context, index) {
           final item = _borrowerItems[index];
@@ -160,13 +161,14 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
     fetchData();
     // if(widget.page =="E SIGN"){
     _fetchCollectionBorrowerList(1);
+
     // }else{
     //   _fetchBorrowerList(0);
     //   }
   }
 
   Future<void> fetchData() async {
-    reasonOfDelay = await DatabaseHelper().selectRangeCatData("land_owner");
+    reasonOfDelay = await DatabaseHelper().selectRangeCatData("EMI Not Paying");
   }
 
   Future<void> _fetchCollectionBorrowerList(int type) async {
@@ -182,7 +184,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
 
       widget.Branchdata.areaCd,
       GlobalClass.id,
-      GlobalClass.getTodayDate(),
+      "2024-12-30",
 
     ).then((response) {
       if (response.statuscode == 200) {
@@ -222,8 +224,8 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      // builder: (context) => Collection(selectedData: item),
-                      builder: (context) => Collection(),
+                      builder: (context) => Collection(selectedData: item),
+                      // builder: (context) => Collection(),
                     ),
                   );
                 },
