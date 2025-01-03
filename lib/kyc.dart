@@ -1090,6 +1090,7 @@ class _KYCPageState extends State<KYCPage> {
           pickedImage!, // File
         );
         if (response.statusCode == 200) {
+          EasyLoading.dismiss();
           if (type == "adharFront") {
             setState(() {
               _aadharIdController.text = response.data.adharId;

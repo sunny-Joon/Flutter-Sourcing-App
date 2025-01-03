@@ -65,6 +65,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   String? _requestTypeError;
   String? _creatorError;
 
+
   final FocusNode _nameFocus = FocusNode();
   final FocusNode _imei1Focus = FocusNode();
   final FocusNode _imei2Focus = FocusNode();
@@ -77,7 +78,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       if (_selectedRequestType == null) {
         _requestTypeError = 'Please select a Request Type';
       } else {
-        _requestTypeError = null; // Clear error if valid
+        _requestTypeError = null;
       }
 
       if (_selectedCreator == null) {
