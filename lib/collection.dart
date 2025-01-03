@@ -1,15 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/collectionborrowerlistmodel.dart';
+import 'package:flutter_sourcing_app/submit_ss_qrtransaction.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'Models/getCollectionModel.dart';
+import 'Models/qrresponse_model.dart';
 import 'api_service.dart';
 import 'global_class.dart';
 
 class Collection extends StatefulWidget {
-
   final CollectionBorrowerListDataModel selectedData;
 
   const Collection({
@@ -21,7 +24,8 @@ class Collection extends StatefulWidget {
   _CollectionState createState() => _CollectionState();
 }
 
-class _CollectionState extends State<Collection> with SingleTickerProviderStateMixin {
+class _CollectionState extends State<Collection>
+    with SingleTickerProviderStateMixin {
   TextEditingController _controllerLumpSum = TextEditingController();
 
   late TabController _tabController;
@@ -30,42 +34,48 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
   double interestAmount = 0;
   double lateFee = 0;
   double totalAmount = 0;
-  late String casecode="",borrower = "";
-  late String qrCodeUrl="";
+  late String casecode = "", borrower = "";
+  late String qrCodeUrl = "";
   late GetCollectionDataModel collectionDataModel;
   String buttonName = "Submit";
-  double showingTotalAmout=0;
-  double LumpSumTotalAmt=0;
-
+  double showingTotalAmout = 0;
+  double totalAmountToPay = 0;
+  double LumpSumTotalAmt = 0;
   @override
   void initState() {
     super.initState();
-    print("QR tab opened");
-
-      setValues();
-     getQr(context);
-   emiAmounts = widget.selectedData.instData.map((inst) => int.parse(inst.amount)).toList();
-   checkboxValues = List<bool>.filled(emiAmounts.length, false);
+    setValues();
+    getQr(context);
+    emiAmounts = widget.selectedData.instData
+        .map((inst) => int.parse(inst.amount))
+        .toList();
+    checkboxValues = List<bool>.filled(emiAmounts.length, false);
+    totalAmountToPay = emiAmounts.fold(0, (prev, amount) => prev + amount) +
+        interestAmount +
+        lateFee;
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
-
-        if (_tabController.index == 1) {
-          print("QR tab opened");
-          setState(() {
-            buttonName = "Check Payment Status";
-          });
-
-        }else if (_tabController.index == 2){
-          setState(() {
-            buttonName = "Submit Lump Sum";
-           showingTotalAmout= int.parse(_controllerLumpSum.text.isEmpty?"0":_controllerLumpSum.text.replaceAll(",", ""))+lateFee+interestAmount;
-          });
-        }else{
-          setState(() {
-            buttonName = "Submit";
-          });
-        }
+      if (_tabController.index == 1) {
+        setState(() {
+          buttonName = "Check Payment Status";
+        });
+      } else if (_tabController.index == 2) {
+        setState(() {
+          buttonName = "Submit Lump Sum";
+          showingTotalAmout = int.parse(_controllerLumpSum.text.isEmpty
+                  ? "0"
+                  : _controllerLumpSum.text.replaceAll(",", "")) +
+              lateFee +
+              interestAmount;
+        });
+      } else {
+        setState(() {
+          updateTotalAmount();
+          buttonName = "Submit";
+        });
+      }
     });
+    updateTotalAmount();
   }
 
   @override
@@ -75,19 +85,18 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
   }
 
   void updateTotalAmount() {
-    totalAmount = checkboxValues.asMap().entries
+    totalAmount = checkboxValues
+        .asMap()
+        .entries
         .where((entry) => entry.value)
-      .map((entry) => emiAmounts[entry.key])
-       .fold(0, (prev, amount) => prev + amount);
+        .map((entry) => emiAmounts[entry.key])
+        .fold(0, (prev, amount) => prev + amount);
     totalAmount += interestAmount + lateFee;
-    showingTotalAmout=totalAmount;
-
+    showingTotalAmout = totalAmount;
   }
 
   @override
   Widget build(BuildContext context) {
-   updateTotalAmount(); // Update total amount on each build
-
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
       body: Center(
@@ -96,7 +105,7 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(top: 25,bottom: 8),
+                padding: EdgeInsets.only(top: 25, bottom: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +114,8 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(width: 1, color: Colors.grey.shade300),
+                          border:
+                              Border.all(width: 1, color: Colors.grey.shade300),
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                         ),
                         clipBehavior: Clip.antiAlias,
@@ -155,22 +165,33 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                         borderRadius: BorderRadius.circular(0),
                       ),
                       tabs: [
-                        Tab(text: 'Cash',),
+                        Tab(
+                          text: 'Cash',
+                        ),
                         Tab(text: 'QR'),
                         Tab(text: 'Lump sum'),
                       ],
-
                     ),
                     Text.rich(
                       TextSpan(
                         children: [
-                          TextSpan(text: 'Case Code: ', style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)), // Static text color
-                          TextSpan(text: casecode, style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold)), // Dynamic text color
+                          TextSpan(
+                              text: 'Case Code: ',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight:
+                                      FontWeight.bold)), // Static text color
+                          TextSpan(
+                              text: casecode,
+                              style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight:
+                                      FontWeight.bold)), // Dynamic text color
                         ],
                       ),
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height/2,
+                      height: MediaQuery.of(context).size.height / 2.1,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Colors.grey.shade100, Colors.grey.shade300],
@@ -191,6 +212,8 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -199,12 +222,22 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                                 child: Text.rich(
                                   TextSpan(
                                     children: [
-                                      TextSpan(text: 'Borrower: ', style: TextStyle(color: Colors.black)), // Static text color
-                                      TextSpan(text: borrower, style: TextStyle(color: Colors.green)), // Dynamic text color
+                                      TextSpan(
+                                          text: 'Borrower: ',
+                                          style: TextStyle(
+                                              color: Colors
+                                                  .black)), // Static text color
+                                      TextSpan(
+                                          text: borrower,
+                                          style: TextStyle(
+                                              color: Colors
+                                                  .green)), // Dynamic text color
                                     ],
                                   ),
-                                  maxLines: 2, // Allow text to wrap to a second line if necessary
-                                  overflow: TextOverflow.ellipsis, // Handle overflow gracefully
+                                  maxLines:
+                                      2, // Allow text to wrap to a second line if necessary
+                                  overflow: TextOverflow
+                                      .ellipsis, // Handle overflow gracefully
                                 ),
                               ),
                             ],
@@ -215,46 +248,94 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                               Text.rich(
                                 TextSpan(
                                   children: [
-                                    TextSpan(text: 'Interest Amount: ₹', style: TextStyle(color: Colors.black)), // Static text color
-                                    TextSpan(text: interestAmount.toString(), style: TextStyle(color: Colors.green)), // Dynamic text color
+                                    TextSpan(
+                                        text: 'Interest Amount: ₹',
+                                        style: TextStyle(
+                                            color: Colors
+                                                .black)), // Static text color
+                                    TextSpan(
+                                        text: interestAmount.toString(),
+                                        style: TextStyle(
+                                            color: Colors
+                                                .green)), // Dynamic text color
                                   ],
                                 ),
                               ),
                               Text.rich(
                                 TextSpan(
                                   children: [
-                                    TextSpan(text: 'Late Fee: ₹', style: TextStyle(color: Colors.black)), // Static text color
-                                    TextSpan(text: lateFee.toString(), style: TextStyle(color: Colors.green)), // Dynamic text color
+                                    TextSpan(
+                                        text: 'Late Fee: ₹',
+                                        style: TextStyle(
+                                            color: Colors
+                                                .black)), // Static text color
+                                    TextSpan(
+                                        text: lateFee.toString(),
+                                        style: TextStyle(
+                                            color: Colors
+                                                .green)), // Dynamic text color
                                   ],
                                 ),
                               ),
                             ],
                           ),
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                    text: 'Amount to be pay: ₹',
+                                    style: TextStyle(
+                                        color:
+                                            Colors.black)), // Static text color
+                                TextSpan(
+                                    text: "$totalAmountToPay",
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight
+                                            .bold)), // Dynamic text color
+                              ],
+                            ),
+                          ),
                           SizedBox(height: 10),
                           Text.rich(
                             TextSpan(
                               children: [
-                                TextSpan(text: 'Total Amount: ₹', style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)), // Static text color
-                                TextSpan(text: "$showingTotalAmout", style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold)), // Dynamic text color
+                                TextSpan(
+                                    text: 'Amount you are paying: ₹',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight
+                                            .bold)), // Static text color
+                                TextSpan(
+                                    text: "$showingTotalAmout",
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight
+                                            .bold)), // Dynamic text color
                               ],
                             ),
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              if(buttonName == "Submit"){
-                                saveReceipt(context,0);
-                              }else if(buttonName == "Check Payment Status"){
-
-                              }else if(buttonName == "Submit Lump Sum"){
-                                saveReceipt(context,1);
+                              if (buttonName == "Submit") {
+                                saveReceipt(context, 0);
+                              } else if (buttonName == "Check Payment Status") {
+                                responsecheck(context,widget.selectedData.caseCode);
+                              } else if (buttonName == "Submit Lump Sum") {
+                                saveReceipt(context, 1);
                               }
-                                },
+                            },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent, // Make the button background transparent
-                              shadowColor: Colors.transparent, // Remove the default shadow
-                              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32), // Button padding
+                              backgroundColor: Colors
+                                  .transparent, // Make the button background transparent
+                              shadowColor: Colors
+                                  .transparent, // Remove the default shadow
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 32), // Button padding
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8), // Rounded corners
+                                borderRadius:
+                                    BorderRadius.circular(8), // Rounded corners
                               ),
                             ),
                             child: Ink(
@@ -262,16 +343,19 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                                 gradient: LinearGradient(
                                   colors: [
                                     Colors.grey.shade200, // Start with white
-                                    Colors.grey.shade400, // Light grey end color
+                                    Colors
+                                        .grey.shade400, // Light grey end color
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
-                                borderRadius: BorderRadius.circular(8), // Rounded corners for the gradient
+                                borderRadius: BorderRadius.circular(
+                                    8), // Rounded corners for the gradient
                               ),
                               child: Container(
                                 constraints: BoxConstraints(
-                                  minHeight: 48, // Minimum height for the button
+                                  minHeight:
+                                      48, // Minimum height for the button
                                 ),
                                 alignment: Alignment.center,
                                 child: Text(
@@ -288,7 +372,6 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                         ],
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -326,12 +409,13 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                 onChanged: (value) {
                   setState(() {
                     checkboxValues[index] = value!;
-                   updateTotalAmount(); // Update total amount when checkbox is changed
+                    updateTotalAmount(); // Update total amount when checkbox is changed
                   });
                 },
               ),
-             title: Text('EMI Amount: ₹${emiAmounts[index]}'),
-             subtitle: Text('Due Date: ${widget.selectedData.instData[index].dueDate}'),
+              title: Text('EMI Amount: ₹${emiAmounts[index]}'),
+              subtitle: Text(
+                  'Due Date: ${widget.selectedData.instData[index].dueDate}'),
             ),
           ),
         );
@@ -343,7 +427,8 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
     return Center(
       child: Image.network(
         qrCodeUrl,
-        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+        errorBuilder:
+            (BuildContext context, Object exception, StackTrace? stackTrace) {
           return Icon(
             Icons.qr_code,
             size: 200,
@@ -355,7 +440,6 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
   }
 
   Widget lumsumPaymentWidget() {
-
     // Function to format the input as a number with commas
     String _formatNumber(String value) {
       final formatter = NumberFormat('#,###,###,###');
@@ -373,36 +457,37 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          AbsorbPointer(child: TextField(
-            maxLength: 7,
-            readOnly: true,
-            controller: _controllerLumpSum,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly, // Only allow digits
-            ],
-            decoration: InputDecoration(
-              counterText: "",
-              labelText: 'Lump sum Amount',
-              border: OutlineInputBorder(),
+          AbsorbPointer(
+            child: TextField(
+              maxLength: 7,
+              readOnly: true,
+              controller: _controllerLumpSum,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly, // Only allow digits
+              ],
+              decoration: InputDecoration(
+                counterText: "",
+                labelText: 'Lump sum Amount',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                print(LumpSumTotalAmt);
+
+                _controllerLumpSum.value = _controllerLumpSum.value.copyWith(
+                  text: _formatNumber(value),
+                  selection: TextSelection.collapsed(
+                      offset: _controllerLumpSum.text.length),
+                );
+              },
             ),
-            onChanged: (value) {
-              print(LumpSumTotalAmt);
-
-              _controllerLumpSum.value = _controllerLumpSum.value.copyWith(
-                text: _formatNumber(value),
-                selection: TextSelection.collapsed(offset: _controllerLumpSum.text.length),
-
-              );
-
-
-            },
-          ),),
+          ),
 
           SizedBox(height: 16),
 
           // Custom Numeric Keypad with Gradient Buttons
-          Padding(padding: EdgeInsets.all(8),child:  Expanded( // Fixed height to ensure it fits within the available space
+          Padding(
+            padding: EdgeInsets.all(8),
             child: GridView.builder(
               padding: EdgeInsets.all(0),
               shrinkWrap: true,
@@ -410,9 +495,8 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, // Number of columns
                 crossAxisSpacing: 5.0, // Reduced spacing between buttons
-                mainAxisSpacing: 9.0,  // Reduced spacing between buttons
+                mainAxisSpacing: 9.0, // Reduced spacing between buttons
                 childAspectRatio: 1.8, // Slightly adjusted aspect ratio
-
               ),
               itemBuilder: (context, index) {
                 String label;
@@ -428,19 +512,34 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
 
                 return GestureDetector(
                   onTap: () {
-                    if (label == 'Clear') {
-                      _controllerLumpSum.clear(); // Clear the text field
-                    } else if (label == '00') {
-                      String newValue = _controllerLumpSum.text + '00'; // Add '00' to the text
-                      _controllerLumpSum.text = _formatNumber(newValue); // Format and update
+                    if (_controllerLumpSum.text.length <= 5) {
+                      if (label == 'Clear') {
+                        _controllerLumpSum.clear(); // Clear the text field
+                      } else if (label == '00') {
+                        String newValue = _controllerLumpSum.text +
+                            '00'; // Add '00' to the text
+                        _controllerLumpSum.text =
+                            _formatNumber(newValue); // Format and update
+                      } else {
+                        String newValue = _controllerLumpSum.text + label;
+                        _controllerLumpSum.text =
+                            _formatNumber(newValue); // Format and update
+                      }
                     } else {
-                      String newValue = _controllerLumpSum.text + label;
-                      _controllerLumpSum.text = _formatNumber(newValue); // Format and update
+                      if (label == 'Clear') {
+                        _controllerLumpSum.clear(); // Clear the text field
+                      }
                     }
+
                     setState(() {
-                      LumpSumTotalAmt=int.parse(_controllerLumpSum.text.isEmpty?"0":_controllerLumpSum.text.replaceAll(",", ""))+lateFee+interestAmount;
+                      LumpSumTotalAmt = int.parse(_controllerLumpSum
+                                  .text.isEmpty
+                              ? "0"
+                              : _controllerLumpSum.text.replaceAll(",", "")) +
+                          lateFee +
+                          interestAmount;
                       print("LumpSumTotalAmt $LumpSumTotalAmt");
-                      showingTotalAmout=LumpSumTotalAmt;
+                      showingTotalAmout = LumpSumTotalAmt;
                     });
                   },
                   child: Container(
@@ -472,65 +571,63 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
                         ),
                       ),
                     ),
-
                   ),
                 );
               },
             ),
-          ),
           )
         ],
       ),
     );
   }
 
- void setValues() {
+  void setValues() {
     setState(() {
-      interestAmount=widget.selectedData.interestAmt;
-      borrower=widget.selectedData.custName;
-      casecode=widget.selectedData.caseCode;
-      totalAmount=widget.selectedData.totalDueAmt;
+      interestAmount = widget.selectedData.interestAmt;
+      borrower = widget.selectedData.custName;
+      casecode = widget.selectedData.caseCode;
+      totalAmount = widget.selectedData.totalDueAmt;
     });
   }
 
-
-
-  Future<void> saveReceipt(BuildContext context,int paymentType) async {
+  Future<void> saveReceipt(BuildContext context, int paymentType) async {
     EasyLoading.show(status: 'Loading...');
-
+    DateTime now = DateTime.now();
+    String currentDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
-      "VDATE":"2024-11-30",
-        "InstRcvID": 120,
-        "IMEI": GlobalClass.imei,
-        "CaseCode": widget.selectedData.caseCode,
-        "RcptNo": 1001,
-        "InstRcvAmt": paymentType==0?totalAmount.toInt():showingTotalAmout,
-        "InstRcvDateTimeUTC":  "2024-11-29T10:22:27",
-        "Flag": "E",
-        "CreationDate": "2024-11-29T10:22:27",
-        "BatchNo": 1,
-        "BatchDate": "2024-11-29T00:00:00",
-        "FoCode": GlobalClass.userName,
-        "DataBaseName": GlobalClass.databaseName,
-        "Creator": GlobalClass.creator,
-        "CustName": widget.selectedData.custName,
-        "PartyCd": widget.selectedData.caseCode,
-        "PayFlag": "E",
-        "SmsMobNo": widget.selectedData.mobile,
-        "InterestAmt":widget.selectedData.interestAmt.toInt(),
-        "CollPoint": "FIELD",
-        "PaymentMode": "CASH",
-        "collBranchCode": widget.selectedData.groupCode,
-        "txnId": "TXN123456",
-        "TransactionId": "TRANS123456"
+      "VDATE": "2024-11-30",
+      "InstRcvID": 120,
+      "IMEI": GlobalClass.imei,
+      "CaseCode": widget.selectedData.caseCode,
+      "RcptNo": 1001,
+      "InstRcvAmt": showingTotalAmout.toInt(),
+      "InstRcvDateTimeUTC": currentDate,
+      "Flag": "E",
+      "CreationDate": currentDate,
+      "BatchNo": 1,
+      "BatchDate": currentDate,
+      "FoCode": GlobalClass.userName,
+      "DataBaseName": GlobalClass.databaseName,
+      "Creator": GlobalClass.creator,
+      "CustName": widget.selectedData.custName,
+      "PartyCd": widget.selectedData.caseCode,
+      "PayFlag": "E",
+      "SmsMobNo": widget.selectedData.mobile,
+      "InterestAmt": widget.selectedData.interestAmt.toInt(),
+      "CollPoint": "FIELD",
+      "PaymentMode": "CASH",
+      "collBranchCode": widget.selectedData.groupCode,
+      "txnId": "",
+      "TransactionId": ""
     };
-    return await api.RcPosting(GlobalClass.token, GlobalClass.dbName,requestBody)
+    return await api.RcPosting(
+            GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
-        GlobalClass.showSuccessAlert(context, value.message, 2);
-      }else {
+        GlobalClass.showSuccessAlert(context, value.message, 3);
+      } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
       }
@@ -545,20 +642,267 @@ class _CollectionState extends State<Collection> with SingleTickerProviderStateM
 
     final api = Provider.of<ApiService>(context, listen: false);
 
-    return await api.QrGeneration(GlobalClass.token, GlobalClass.dbName,widget.selectedData.caseCode/*widget.selectedData.caseCode*/,"Link")
+    return await api.QrGeneration(
+            GlobalClass.token,
+            GlobalClass.dbName,
+            widget.selectedData.caseCode /*widget.selectedData.caseCode*/,
+            "Link")
         .then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
         setState(() {
           qrCodeUrl = value.data[0].qrCodeUrl;
         });
-      }else {
+      } else {
         EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(context, "${value.message} (QR Code)", 1);
+        GlobalClass.showUnsuccessfulAlert(
+            context, "${value.message} (QR Code)", 1);
       }
     }).catchError((err) {
       EasyLoading.dismiss();
       GlobalClass.showErrorAlert(context, "Server side Error", 1);
     });
+  }
+
+  Future<void> responsecheck(BuildContext context,String smCode) async {
+    EasyLoading.show(status: 'Loading...');
+
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api.getQrPaymentModel(
+        GlobalClass.token, GlobalClass.dbName, widget.selectedData.caseCode)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        if (value.data.isNotEmpty &&
+            (value.data[0].errormsg == null || value.data[0].errormsg == "")) {
+          QrResponseDataModel responseDataModel = value.data[0];
+          showTransactionDetailsDialog(
+            context,
+            responseDataModel.smCode,
+            responseDataModel.name,
+            responseDataModel.upITxnId,
+            responseDataModel.ammount,
+            responseDataModel.settlementStatus,
+            formatDate(responseDataModel.txnDateTime), // Format date
+          );
+        } else {
+          _showDialogAndRedirect(context,smCode);
+        }
+      } else {
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(context, "Data not fetched", 1);
+      }
+    }).catchError((err) {
+      EasyLoading.dismiss();
+      GlobalClass.showErrorAlert(context, "Server side Error", 1);
+    });
+  }
+  void _showDialogAndRedirect(BuildContext context,String caseCode) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing the dialog
+      builder: (context) => CountdownDialog(smCode: caseCode),
+    );
+  }
+
+  void showTransactionDetailsDialog(BuildContext context,
+      String smCode,
+      String name,
+      String upiTxnId,
+      String amount,
+      String settlementStatus,
+      String txnDateTime,) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
+                children: [
+                  Positioned(
+                    right: 0.0,
+                    child: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Center(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20.0),
+                              topRight: Radius.circular(20.0),
+                            ),
+                            child: Container(
+                              color: Colors.green,
+                              padding: EdgeInsets.all(0.0),
+                              width: MediaQuery.of(context).size.width,
+                              child: Column(
+
+                                children: [
+                                  SizedBox(height: 8.0),
+                                  Icon(Icons.check_circle, color: Colors.white,
+                                      size: 40),
+                                  SizedBox(height: 8.0),
+                                  Text(
+                                    settlementStatus,
+                                    style: TextStyle(color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(20.0),
+                                bottomLeft: Radius.circular(20.0),
+                              ),
+                              child: Container(
+                                color: Colors.white,
+                                padding: EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    _buildDetailRow('SM Code', smCode),
+                                    _buildDetailRow('Name', name),
+                                    _buildDetailRow('UPI Txn ID', upiTxnId),
+                                    _buildDetailRow('Amount', amount),
+                                    _buildDetailRow('Txn DateTime', txnDateTime),
+                                  ],
+                                ),
+                              ),
+                            )
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              color: Colors.black54,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  String formatDate(String dateTime) {
+    DateTime date = DateTime.parse(dateTime.split('T')[0]);
+    return DateFormat('dd-MM-yyyy').format(date);
+  }
+}
+class CountdownDialog extends StatefulWidget {
+  final String smCode;
+  const CountdownDialog({super.key, required this.smCode});
+
+  @override
+  State<CountdownDialog> createState() => _CountdownDialogState();
+}
+
+class _CountdownDialogState extends State<CountdownDialog> {
+  int _seconds = 8;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startCountdown();
+  }
+
+  void _startCountdown() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_seconds == 1) {
+        timer.cancel();
+        Navigator.of(context).pop(); // Close the dialog
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            // builder: (context) => Collection(selectedData: item),
+            builder: (context) =>
+                SubmitSsQrTransaction(
+                  smcode:widget.smCode,
+                ),
+          ),
+        );
+      } else {
+        setState(() {
+          _seconds--;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Ensure the timer is cancelled to avoid memory leaks
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+      backgroundColor: Colors.white,
+      title: const Text('Payment Details not found',style: TextStyle(fontSize: 18),),
+      // content: Text('Please upload payment receipt. If you have already done any payment.\n\n Redirecting in $_seconds seconds...'),
+      content:   Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+                text: 'Please upload payment receipt. If you have already done any payment.',
+                style: TextStyle(
+                    color: Colors.black, )), // Static text color
+            TextSpan(
+                text: "\nRedirecting in",
+                style: TextStyle(
+                    color: Colors.black, )),
+
+            TextSpan(
+                text: " $_seconds ",
+                style: TextStyle(
+                    color: Colors.green,
+                    fontWeight:
+                    FontWeight.bold)),
+            TextSpan(
+                text: "seconds...",
+                style: TextStyle(
+                    color: Colors.black, )), // Dynamic text color
+          ],
+        ),
+      ),
+    );
   }
 }

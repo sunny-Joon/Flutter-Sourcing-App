@@ -161,13 +161,14 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
     fetchData();
     // if(widget.page =="E SIGN"){
     _fetchCollectionBorrowerList(1);
+
     // }else{
     //   _fetchBorrowerList(0);
     //   }
   }
 
   Future<void> fetchData() async {
-    reasonOfDelay = await DatabaseHelper().selectRangeCatData("land_owner");
+    reasonOfDelay = await DatabaseHelper().selectRangeCatData("EMI Not Paying");
   }
 
   Future<void> _fetchCollectionBorrowerList(int type) async {
@@ -183,7 +184,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
 
       widget.Branchdata.areaCd,
       GlobalClass.id,
-      GlobalClass.getTodayDate(),
+      "2024-12-30",
 
     ).then((response) {
       if (response.statuscode == 200) {

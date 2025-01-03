@@ -4,12 +4,20 @@ import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/Models/SecondEsignModel.dart';
 import 'package:flutter_sourcing_app/Models/collectionstatus_model.dart';
 import 'package:flutter_sourcing_app/Models/qrcode_model.dart';
+
 import 'package:flutter_sourcing_app/Models/common_string_model.dart';
+
 import 'package:flutter_sourcing_app/Models/attendancestatusmodel.dart';
+import 'package:flutter_sourcing_app/collection_report.dart';
+
+import 'package:flutter_sourcing_app/collectionborrowerlist.dart';
 import 'package:flutter_sourcing_app/Models/collectionborrowerlistmodel.dart';
 import 'package:flutter_sourcing_app/Models/bank_names_model.dart';
+
 import 'package:flutter_sourcing_app/Models/details_by_smcode_response.dart';
+
 import 'package:flutter_sourcing_app/Models/getCollectionModel.dart';
+
 import 'package:flutter_sourcing_app/Models/group_model.dart';
 import 'package:flutter_sourcing_app/Models/kyc_scanning_model.dart';
 import 'package:flutter_sourcing_app/Models/common_int_model.dart';
@@ -20,24 +28,29 @@ import 'package:flutter_sourcing_app/Models/xml_response.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
+import 'Models/banner_post_model.dart';
 import 'Models/collectionbranchlistmodel.dart';
 import 'Models/borrower_list_model.dart';
 import 'Models/common_bool_model.dart';
 import 'Models/creator_list_model.dart';
 import 'Models/csorankmodel.dart';
 import 'Models/global_model.dart';
-
- import 'Models/range_category_model.dart';
+import 'Models/global_model2.dart';
+import 'Models/kyc_update_model.dart';
+import 'Models/ocrdocscanningresponce.dart';
+import 'Models/qrresponse_model.dart';
+import 'Models/range_category_model.dart';
 import 'Models/adhaar_model.dart';
 import 'Models/branch_model.dart';
 import 'Models/docs_verify.dart';
-import 'Models/qrresponse_model.dart';
 import 'Models/get_all_model.dart';
 import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
 import 'Models/ocr_response_model.dart';
 import 'Models/track_location_request.dart';
 part 'api_service.g.dart';
+
+
 
 class ApiConfig {
   static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
@@ -50,6 +63,8 @@ class ApiConfig {
   static const String baseUrl8 = 'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
 
 }
+
+
 
 // @RestApi(baseUrl: "https://predeptest.paisalo.in:8084/MobColen/api/")
 
@@ -488,7 +503,7 @@ abstract class ApiService {
   Future<dynamic> verifyIdentity(@Body() Map<String, dynamic> body);
 
   @POST("Collection/RcPromiseToPay")
-  Future<GlobalModel> promiseToPay(@Header("Authorization") String token,
+  Future<GlobalModel2> promiseToPay(@Header("Authorization") String token,
       @Header("dbname") String dbName,@Body() Map<String, dynamic> body);
 
 
@@ -596,13 +611,6 @@ abstract class ApiService {
       @Query("Month") String Month,
       @Query("Year") String Year);
 
-  @GET("FiSourcing/GetQRCodePayments")
-  Future<QrResponseModel> getQrPaymentModel(
-      @Header("Authorization") String authorization,
-      @Header("dbname") String dbname,
-      @Query("SmCode") String SmCode,
-     );
-
   @POST("Tracklocations/InsertBranchVisit")
   @MultiPart()
   Future<GlobalModel> insertBranchVisit(
@@ -630,5 +638,21 @@ abstract class ApiService {
       @Query("imgType") String imgType,
       @Query("Id") String Id,
       @Part( name: "file") File file);
+
+  @GET("Masters/GetBannerPost")
+  Future<BannerPostModel> getBannersAndFlashMessage(
+      @Header("dbname") String dbName,
+      @Header("Authorization")  String authorization,
+      @Query("AppType") String AppType,
+      @Query("MessageType") String MessageType
+    );
+
+
+  @GET("FiSourcing/GetQRCodePayments")
+  Future<QrResponseModel> getQrPaymentModel(
+      @Header("Authorization") String authorization,
+      @Header("dbname") String dbname,
+      @Query("SmCode") String SmCode,
+      );
 }
 

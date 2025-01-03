@@ -56,7 +56,7 @@ class _FragmentsState extends State<Fragments> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       RangeCategory(context);
-      _showTemporaryDialog(context, 'You are in ${GlobalClass.creator} creator');
+      //_showTemporaryDialog(context, 'You are in ${GlobalClass.creator} creator');
     });
    }
 
