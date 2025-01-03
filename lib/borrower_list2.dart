@@ -123,7 +123,7 @@ class _BorrowerList2State extends State<BorrowerList2> {
                   //mobile: item.pPhone,
                   creator: item.creator,
                  // address: item.currentAddress,
-                  pic:"",
+                  pic:item.profilePic,
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.push(

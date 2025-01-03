@@ -37,6 +37,10 @@ class GlobalClass {
   static String databaseName = "";
   static String dbName = "kDnH5KSEQ2zYUc1sg63RQg==";
   static String deviceId = "";
+  static String banner_name = "";
+  static String flash_image_name = "";
+  static String flash_advertisement = "";
+  static String flash_description = "";
   static int target = 0;
   static String? appVersion;
 
@@ -85,6 +89,7 @@ class GlobalClass {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),

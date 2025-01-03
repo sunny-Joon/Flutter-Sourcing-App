@@ -36,9 +36,9 @@ class GlobalDataModel {
   int fiId;
   String errormsg;
   bool isvalid;
-  dynamic financialStatus;
-  dynamic fiCode;
-  dynamic appLink;
+  String financialStatus;
+  String fiCode;
+  String appLink;
 
 
   GlobalDataModel({
