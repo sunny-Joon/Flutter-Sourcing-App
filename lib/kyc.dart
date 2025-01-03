@@ -1090,6 +1090,7 @@ class _KYCPageState extends State<KYCPage> {
           pickedImage!, // File
         );
         if (response.statusCode == 200) {
+          EasyLoading.dismiss();
           if (type == "adharFront") {
             setState(() {
               _aadharIdController.text = response.data.adharId;
@@ -1163,6 +1164,7 @@ class _KYCPageState extends State<KYCPage> {
                   return name.replaceAll(RegExp(r'[^a-zA-Z0-9.\s]'), '');
                 }
                 String cleanedGuardianName = cleanGuardianName(response.data.guardianName);
+               // print(cleanedGuardianName $cleanedGuardianName);
                   _gurNameController.text = cleanedGuardianName;
                   relationwithBorrowerselected = "Father";
 

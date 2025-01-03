@@ -761,11 +761,14 @@ class _LoginPageState extends State<LoginPage> {
     await launchUrl(launchUri);
   }
 
-  bool validateIdPassword(BuildContext context,String Id,String password) {
-    if(Id == null || Id =="" || password == null || password == "" || password.length<5 || Id.length <10 || Id.length>11){
-      GlobalClass.showErrorAlert(context, "Wrong Id or Password", 1);
+  bool validateIdPassword(BuildContext context, String? id, String? password) {
+    if (id == null || id.isEmpty || password == null || password.isEmpty) {
+      GlobalClass.showErrorAlert(context, "Please enter ID and Password", 1);
       return false;
-    }else{
+    } else if (password.length < 5 || id.length < 10 || id.length > 11) {
+      GlobalClass.showErrorAlert(context, "Invalid ID or Password. Please check and try again.", 1);
+      return false;
+    } else {
       return true;
     }
   }
@@ -804,5 +807,6 @@ class _LoginPageState extends State<LoginPage> {
 
     });
   }
+
 
 }

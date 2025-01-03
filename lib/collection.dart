@@ -78,11 +78,6 @@ class _CollectionState extends State<Collection>
           updateTotalAmount();
           buttonName = "Submit";
         });
-      } else if(_tabController.index == 2){
-        setState(() {
-          buttonName = "Submit";
-          flagLS = true;
-        });
       }
     });
     updateTotalAmount();
