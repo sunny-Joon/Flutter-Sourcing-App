@@ -516,8 +516,8 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(children: [
-                                Icon(Icons.location_on_outlined,color: Colors.red,),
-                                Text("${_locationMessage}",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.red,fontWeight: FontWeight.bold),),
+                                Icon(Icons.location_on_outlined,color: Color(0xFFD42D3F),),
+                                Text("${_locationMessage}",style: TextStyle(fontFamily: "Poppins-Regular",color: Color(0xFFD42D3F),fontWeight: FontWeight.bold),),
 
                               ],),
                               InkWell(
@@ -526,7 +526,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                 child:  Card(
                                   elevation: 5,
                                   shape: CircleBorder(),
-                                  child: Padding(padding: EdgeInsets.all(3),child: Icon(Icons.refresh,size: 30,color: Color(0xffb41d2d),),),
+                                  child: Padding(padding: EdgeInsets.all(3),child: Icon(Icons.refresh,size: 30,color: Color(0xFFD42D3F),),),
                                 ),
                               )
 
@@ -607,24 +607,28 @@ class _SharedeviceidState extends State<Sharedeviceid> {
             ),
           ),
           SizedBox(height: 1),
-          Container(
-            width: double.infinity,
-            child: Center(
-              child: TextFormField(
-                maxLength: maxLength,
-                controller: controller,
-                focusNode: FN,
-                keyboardType: inputType,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  counterText: "",
-                  errorText: errorText, // Use the errorText parameter here
-                ),
-                enabled: YN,
+      Container(
+        width: double.infinity,
+        child: Center(
+          child: TextFormField(
+            maxLength: maxLength,
+            controller: controller,
+            focusNode: FN,
+            keyboardType: inputType,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              counterText: "",
+              errorText: errorText, // Display error text dynamically
+              errorStyle: TextStyle(
+                color: Color(0xFFD42D3F), // Set the error text color here
+                fontSize: 12, // Optional: Adjust the font size
               ),
             ),
+            enabled: YN,
           ),
-        ],
+        ),
+      )
+      ],
       ),
     );
   }
