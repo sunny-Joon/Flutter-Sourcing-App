@@ -2534,7 +2534,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<GlobalModel> promiseToPay(
+  Future<GlobalModel2> promiseToPay(
     String token,
     String dbName,
     Map<String, dynamic> body,
@@ -2548,7 +2548,7 @@ class _ApiService implements ApiService {
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<GlobalModel>(Options(
+    final _options = _setStreamType<GlobalModel2>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -2565,9 +2565,9 @@ class _ApiService implements ApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late GlobalModel _value;
+    late GlobalModel2 _value;
     try {
-      _value = GlobalModel.fromJson(_result.data!);
+      _value = GlobalModel2.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -3231,7 +3231,7 @@ class _ApiService implements ApiService {
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _options = _setStreamType<CommonStringModel>(Options(
-      method: 'GET',
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
@@ -3297,6 +3297,92 @@ class _ApiService implements ApiService {
     late OcrDocsScanningResponse _value;
     try {
       _value = OcrDocsScanningResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BannerPostModel> getBannersAndFlashMessage(
+    String dbName,
+    String authorization,
+    String AppType,
+    String MessageType,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'AppType': AppType,
+      r'MessageType': MessageType,
+    };
+    final _headers = <String, dynamic>{
+      r'dbname': dbName,
+      r'Authorization': authorization,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BannerPostModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'Masters/GetBannerPost',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BannerPostModel _value;
+    try {
+      _value = BannerPostModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<QrResponseModel> getQrPaymentModel(
+    String authorization,
+    String dbname,
+    String SmCode,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'SmCode': SmCode};
+    final _headers = <String, dynamic>{
+      r'Authorization': authorization,
+      r'dbname': dbname,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<QrResponseModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'FiSourcing/GetQRCodePayments',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late QrResponseModel _value;
+    try {
+      _value = QrResponseModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

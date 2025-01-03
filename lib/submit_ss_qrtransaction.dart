@@ -4,6 +4,14 @@ import 'package:image_picker/image_picker.dart';
 import 'global_class.dart';
 
 class SubmitSsQrTransaction extends StatefulWidget {
+
+  final String smcode;
+
+  const SubmitSsQrTransaction({super.key,
+    required this.smcode,});
+
+
+
   @override
   _SubmitSsQrTransactionState createState() => _SubmitSsQrTransactionState();
 }

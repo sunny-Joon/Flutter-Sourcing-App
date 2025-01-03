@@ -28,14 +28,13 @@ import 'package:flutter_sourcing_app/Models/xml_response.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
+import 'Models/banner_post_model.dart';
 import 'Models/collectionbranchlistmodel.dart';
 import 'Models/borrower_list_model.dart';
 import 'Models/common_bool_model.dart';
 import 'Models/creator_list_model.dart';
 import 'Models/csorankmodel.dart';
 import 'Models/global_model.dart';
-import 'Models/global_model2.dart';
-import 'Models/kyc_update_model.dart';
 import 'Models/ocrdocscanningresponce.dart';
 import 'Models/range_category_model.dart';
 import 'Models/adhaar_model.dart';
@@ -48,6 +47,8 @@ import 'Models/ocr_response_model.dart';
 import 'Models/track_location_request.dart';
 part 'api_service.g.dart';
 
+
+
 class ApiConfig {
   static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
   static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
@@ -59,6 +60,8 @@ class ApiConfig {
   static const String baseUrl8 = 'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
 
 }
+
+
 
 // @RestApi(baseUrl: "https://predeptest.paisalo.in:8084/MobColen/api/")
 
@@ -497,7 +500,7 @@ abstract class ApiService {
   Future<dynamic> verifyIdentity(@Body() Map<String, dynamic> body);
 
   @POST("Collection/RcPromiseToPay")
-  Future<GlobalModel> promiseToPay(@Header("Authorization") String token,
+  Future<GlobalModel2> promiseToPay(@Header("Authorization") String token,
       @Header("dbname") String dbName,@Body() Map<String, dynamic> body);
 
 
@@ -623,7 +626,7 @@ abstract class ApiService {
 
 
 
-  @GET("DocGen/GetDocument")
+  @POST("DocGen/GetDocument")
   Future<CommonStringModel> getDocument(@Body() Map<String, dynamic> body);
 
 
@@ -632,5 +635,21 @@ abstract class ApiService {
       @Query("imgType") String imgType,
       @Query("Id") String Id,
       @Part( name: "file") File file);
+
+  @GET("Masters/GetBannerPost")
+  Future<BannerPostModel> getBannersAndFlashMessage(
+      @Header("dbname") String dbName,
+      @Header("Authorization")  String authorization,
+      @Query("AppType") String AppType,
+      @Query("MessageType") String MessageType
+    );
+
+
+  @GET("FiSourcing/GetQRCodePayments")
+  Future<QrResponseModel> getQrPaymentModel(
+      @Header("Authorization") String authorization,
+      @Header("dbname") String dbname,
+      @Query("SmCode") String SmCode,
+      );
 }
 
