@@ -27,7 +27,8 @@ import 'Models/creator_list_model.dart';
 import 'Models/csorankmodel.dart';
 import 'Models/global_model.dart';
 
- import 'Models/range_category_model.dart';
+ import 'Models/ocrdocscanningresponce.dart';
+import 'Models/range_category_model.dart';
 import 'Models/adhaar_model.dart';
 import 'Models/branch_model.dart';
 import 'Models/docs_verify.dart';
