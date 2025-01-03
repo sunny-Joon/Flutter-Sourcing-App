@@ -38,9 +38,12 @@ class _CollectionState extends State<Collection>
   late String qrCodeUrl = "";
   late GetCollectionDataModel collectionDataModel;
   String buttonName = "Submit";
+  bool flagLS = false;
+
   double showingTotalAmout = 0;
   double totalAmountToPay = 0;
   double LumpSumTotalAmt = 0;
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +62,7 @@ class _CollectionState extends State<Collection>
         setState(() {
           buttonName = "Check Payment Status";
         });
+
       } else if (_tabController.index == 2) {
         setState(() {
           buttonName = "Submit Lump Sum";
@@ -69,9 +73,15 @@ class _CollectionState extends State<Collection>
               interestAmount;
         });
       } else {
+
         setState(() {
           updateTotalAmount();
           buttonName = "Submit";
+        });
+      } else if(_tabController.index == 2){
+        setState(() {
+          buttonName = "Submit";
+          flagLS = true;
         });
       }
     });
@@ -315,6 +325,29 @@ class _CollectionState extends State<Collection>
                               ],
                             ),
                           ),
+                          if (flagLS)
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Lump Sum Amount: ₹',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  // Static text color
+                                  TextSpan(
+                                    text: totalAmount.toString(),
+                                    style: TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  // Dynamic text color
+                                ],
+                              ),
+                            ),
                           ElevatedButton(
                             onPressed: () {
                               if (buttonName == "Submit") {
