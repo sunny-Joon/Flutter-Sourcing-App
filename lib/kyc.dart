@@ -1164,6 +1164,7 @@ class _KYCPageState extends State<KYCPage> {
                   return name.replaceAll(RegExp(r'[^a-zA-Z0-9.\s]'), '');
                 }
                 String cleanedGuardianName = cleanGuardianName(response.data.guardianName);
+               // print(cleanedGuardianName $cleanedGuardianName);
                   _gurNameController.text = cleanedGuardianName;
                   relationwithBorrowerselected = "Father";
 
