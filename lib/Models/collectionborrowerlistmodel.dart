@@ -4,6 +4,13 @@
 
 import 'dart:convert';
 
+// To parse this JSON data, do
+//
+//     final collectionBorrowerListModel = collectionBorrowerListModelFromJson(jsonString);
+
+import 'package:meta/meta.dart';
+import 'dart:convert';
+
 CollectionBorrowerListModel collectionBorrowerListModelFromJson(String str) => CollectionBorrowerListModel.fromJson(json.decode(str));
 
 String collectionBorrowerListModelToJson(CollectionBorrowerListModel data) => json.encode(data.toJson());
@@ -113,24 +120,24 @@ class CollectionBorrowerListDataModel {
     aadhar: json["aadhar"]??"",
     caseCode: json["caseCode"]??"",
     firstInstDate: json["firstInstDate"]??"",
-    noOfInsts: json["noOfInsts"]??"",
-    totalDueAmt: json["totalDueAmt"]??"",
-    totalDueCnt: json["totalDueCnt"]??"",
-    totalRecdAmt: json["totalRecdAmt"]??"",
-    totalRecdCnt: json["totalRecdCnt"]??"",
-    instsAmtDue: json["instsAmtDue"]??"",
-    nofInstDue: json["nofInstDue"]??"",
-    instData: json["instData"]==null?List<InstDatum>.from([].map((x) => InstDatum.fromJson(x))):List<InstDatum>.from(json["instData"].map((x) => InstDatum.fromJson(x))),
-    toBeDueAmt: json["toBeDueAmt"]??"",
+    noOfInsts: json["noOfInsts"],
+    totalDueAmt: json["totalDueAmt"],
+    totalDueCnt: json["totalDueCnt"],
+    totalRecdAmt: json["totalRecdAmt"],
+    totalRecdCnt: json["totalRecdCnt"],
+    instsAmtDue: json["instsAmtDue"],
+    nofInstDue: json["nofInstDue"],
+    instData: List<InstDatum>.from(json["instData"].map((x) => InstDatum.fromJson(x))),
+    toBeDueAmt: json["toBeDueAmt"],
     toBeDueDate: json["toBeDueDate"]??"",
-    futureDue: json["futureDue"]??"",
+    futureDue: json["futureDue"],
     instDueAsOn: json["instDueAsOn"]??"",
     isNachReg: json["isNachReg"]??"",
     dataAsOn: json["dataAsOn"]??"",
-    interestAmt: json["interestAmt"]??"",
+    interestAmt: json["interestAmt"],
     schmCode: json["schmCode"]??"",
     errormsg: json["errormsg"]??"",
-    isvalid: json["isvalid"]??"",
+    isvalid: json["isvalid"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -154,7 +161,7 @@ class CollectionBorrowerListDataModel {
     "totalRecdCnt": totalRecdCnt,
     "instsAmtDue": instsAmtDue,
     "nofInstDue": nofInstDue,
-    "instData":  List<dynamic>.from(instData.map((x) => x.toJson())),
+    "instData": List<dynamic>.from(instData.map((x) => x.toJson())),
     "toBeDueAmt": toBeDueAmt,
     "toBeDueDate": toBeDueDate,
     "futureDue": futureDue,
@@ -164,7 +171,7 @@ class CollectionBorrowerListDataModel {
     "interestAmt": interestAmt,
     "schmCode": schmCode,
     "errormsg": errormsg,
-    "isvalide": isvalid,
+    "isvalid": isvalid,
   };
 }
 

@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_sourcing_app/Models/banner_post_model.dart';
 import 'package:flutter_sourcing_app/global_class.dart';
 import 'package:flutter_sourcing_app/popup_dialog.dart';
 import 'package:flutter_sourcing_app/share_device_id.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,12 +30,12 @@ class _LoginPageState extends State<LoginPage> {
  /* bool _isExpanded = false;
   late AnimationController _controller;
   late Animation<double> _animation;*/
-
+  String appVersion="0.0";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    getAppVersion();
   }
 
   @override
@@ -78,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 20),
                   Center(
                     child: Text(
-                      'Ver: 1.1',
+                      'Ver: $appVersion',
                       style: TextStyle(fontFamily: "Poppins-Regular",color: customColor),
                     ),
                   ),
@@ -492,8 +494,8 @@ class _LoginPageState extends State<LoginPage> {
                   GlobalClass.creator = value.data.foImei[0].creator;
 
                   EasyLoading.dismiss();
-                  Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) => Fragments()));
+                  getBannersAndFlashMessage();
+
                 }else{
 
 
@@ -513,9 +515,9 @@ class _LoginPageState extends State<LoginPage> {
                   GlobalClass.showUnsuccessfulAlert(context, "Creator List is Empty", 1);
                 }
 
-                EasyLoading.dismiss();
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => Fragments()));
+                // EasyLoading.dismiss();
+                // Navigator.pushReplacement(
+                //     context, MaterialPageRoute(builder: (context) => Fragments()));
               }
               else{
                 EasyLoading.dismiss();
@@ -593,9 +595,9 @@ class _LoginPageState extends State<LoginPage> {
       onSelected: (String value) {
         String url = '';
         if (value == 'App Link') {
-          url = 'https://erpservice.paisalo.in:980/PDL.Mobile.Api/api/ApkApp/paisaloSourcingApp';
+          url = 'https://predeptest.paisalo.in:8084/PDL.Mobile.Api/api/ApkApp/paisaloSourcingApp';
         } else if (value == 'RD Service Link') {
-          url = 'https://erpservice.paisalo.in:980/PDL.Mobile.Api/api/ApkApp/AndroidRDService';
+          url = 'https://play.google.com/store/apps/details?id=com.idemia.l1rdservice';
         } else if (value == 'NSDL Link') {
           url = 'https://erpservice.paisalo.in:980/PDL.Mobile.Api/api/ApkApp/AndroidNSDL';
         }
@@ -766,6 +768,41 @@ class _LoginPageState extends State<LoginPage> {
     }else{
       return true;
     }
+  }
+
+  void getBannersAndFlashMessage() {
+    final api = Provider.of<ApiService>(context, listen: false);
+   api.getBannersAndFlashMessage(GlobalClass.dbName, GlobalClass.token, "S", "B").then((value){
+     if(value.statuscode==200 && value.data.isNotEmpty && value.data[0].banner.isNotEmpty){
+       print(value.data[0].banner);
+       GlobalClass.banner_name=value.data[0].banner;
+       print( GlobalClass.banner_name);
+
+     }
+     api.getBannersAndFlashMessage(GlobalClass.dbName, GlobalClass.token, "S", "F").then((value){
+       if(value.statuscode==200 && value.data.isNotEmpty && value.data[0].banner.isNotEmpty){
+         print(value.data[0].banner);
+    if(value.data[0].banner.isNotEmpty){
+      GlobalClass.flash_image_name='https://predeptest.paisalo.in:8084/LOSDOC/BannerPost/${value.data[0].banner}';
+
+    }
+         GlobalClass.flash_advertisement=value.data[0].advertisement;
+         GlobalClass.flash_description=value.data[0].description;
+       }
+       Navigator.pushReplacement(
+           context, MaterialPageRoute(builder: (context) => Fragments( )));
+     });
+   });
+
+
+  }
+
+  Future<void> getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      appVersion = packageInfo.version;
+
+    });
   }
 
 }

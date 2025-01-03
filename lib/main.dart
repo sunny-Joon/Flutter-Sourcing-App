@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -216,14 +217,13 @@ class _SplashScreenState extends State<SplashScreen> {
             TextButton(
               child: Text('Download App'),
               onPressed: () async {
-                _launchURLBrowser(url);
+                _launchURLBrowser();
               },
             ),
             TextButton(
               child: Text('Close'),
               onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
+               exit(0);
               },
             ),
           ],
@@ -231,8 +231,8 @@ class _SplashScreenState extends State<SplashScreen> {
       },
     );
   }
-  Future<void> _launchURLBrowser(String url) async {
-    final Uri _url = Uri.parse(url);
+  Future<void> _launchURLBrowser() async {
+    final Uri _url = Uri.parse("https://predeptest.paisalo.in:8084/PDL.Mobile.Api/api/ApkApp/paisaloSourcingApp");
     if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $_url');
     }
@@ -242,32 +242,35 @@ class _SplashScreenState extends State<SplashScreen> {
     String appVersion = packageInfo.version;
     GlobalClass.appVersion=packageInfo.version;
 
-    try {
-     GlobalModel response= await ApiService.create(baseUrl: ApiConfig.baseUrl1).VersionCheck(GlobalClass.dbName, appVersion,"S","1");
-      if (response.statuscode == 200) {
 
-        // if (appVersionModel.data is int) {
-        print(response.toJson());
-          bool isvalid = response.data[0].isvalid;
+       ApiService.create(baseUrl: ApiConfig.baseUrl1).VersionCheck(GlobalClass.dbName, appVersion,"S","1").then((response){
 
-          if(isvalid){
-            _showUpdateDialog(context,response.data[0].appLink);
-          }else{
-            Timer(Duration(seconds: 3), () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            });
-          }
-      } else {
-        // Handle error
+         if (response.statuscode == 200) {
 
-      }
-    } catch (e) {
-      print(e);
-      // Handle exception
-     }
+
+
+           bool isvalid = response.data[0].isvalid;
+
+           if(!isvalid){
+             _showUpdateDialog(context,response.data[0].appLink);
+           }else{
+             Timer(Duration(seconds: 3), () {
+               Navigator.pushReplacement(
+                 context,
+                 MaterialPageRoute(builder: (context) => LoginPage()),
+               );
+             });
+           }
+         } else {
+           GlobalClass.showErrorAlert(context, "Please check internet connection", 1);
+
+         }
+       }).catchError((onError){
+         GlobalClass.showErrorAlert(context, "${onError}", 1);
+
+       });
+
+
   }
 
 }
