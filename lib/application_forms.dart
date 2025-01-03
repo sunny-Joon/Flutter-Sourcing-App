@@ -391,9 +391,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     _pinFocusNodeC.addListener(() {
       _validatePincode("B");
     });
-
-
-
   }
 
   Future<void> initializeData() async {
@@ -543,7 +540,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   height: 20,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 8,bottom: 8),
+                  padding: EdgeInsets.only(top: 8, bottom: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -3617,7 +3614,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               ),
                               child: Icon(
                                 Icons.check_circle,
-                                color: panVerified ? Colors.green : Colors.white,
+                                color:
+                                    panVerified ? Colors.green : Colors.white,
                               ),
                             ),
                           )),
@@ -3642,7 +3640,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           child: GestureDetector(
                             onTap: () {
                               if (_dlController.text.isEmpty ||
-                                  _dlController.text.length > 16||_dobController.text.isEmpty) {
+                                  _dlController.text.length > 16 ||
+                                  _dobController.text.isEmpty) {
                                 showToast_Error("DL No. or DOB is Incorrect");
                               } else {
                                 verifyDocs(context, _dlController.text,
@@ -3913,7 +3912,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               _currentStep -= 1;
             });
           } else if (_currentStep == 3) {
-
             setState(() {
               pageTitle = "Income & Expense";
               _currentStep -= 1;
@@ -4013,14 +4011,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
         onPressed: () {
-
           // setState(() {
           //   _currentStep = 6;
           //   pageTitle = "Upload Docs";
           // });
 
           if (_currentStep == 0) {
-
             if (personalInfoEditable) {
               if (_stepOneValidations()) {
                 AddFiExtraDetail(context);
@@ -4108,7 +4104,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-
   Widget _buildTextField(String label, TextEditingController controller,
       bool saved, FocusNode FN) {
     return Container(
@@ -4195,6 +4190,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       ),
     );
   }
+
   Widget _buildListItem({
     required String title,
     String? path,
@@ -4222,53 +4218,79 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
                 switch (id) {
                   case 1:
-                    OcrDocsScanning("aadharfront", BorrowerInfo[0].aadharNo, "borrower", context);
+                    OcrDocsScanning("aadharfront", BorrowerInfo[0].aadharNo,
+                        "borrower", context);
                     break;
                   case 27:
-                    OcrDocsScanning('aadharback', BorrowerInfo[0].aadharNo, "borrower", context);
+                    OcrDocsScanning('aadharback', BorrowerInfo[0].aadharNo,
+                        "borrower", context);
                     break;
                   case 3:
-                    OcrDocsScanning('voterfront', BorrowerInfo[0].voterId, "borrower", context);
+                    OcrDocsScanning('voterfront', BorrowerInfo[0].voterId,
+                        "borrower", context);
                     break;
                   case 26:
-                    OcrDocsScanning('voterback', BorrowerInfo[0].voterId, "borrower", context);
+                    OcrDocsScanning('voterback', BorrowerInfo[0].voterId,
+                        "borrower", context);
                     break;
                   case 4:
-                    OcrDocsScanning('pan', BorrowerInfo[0].panNo, "borrower", context);
+                    OcrDocsScanning(
+                        'pan', BorrowerInfo[0].panNo, "borrower", context);
                     break;
                   case 15:
-                    OcrDocsScanning('DL', BorrowerInfo[0].dl, "borrower", context);
+                    OcrDocsScanning(
+                        'DL', BorrowerInfo[0].dl, "borrower", context);
                     break;
                   case 2:
-                    OcrDocsScanning('passbook', BorrowerInfo[0].passbook, "borrower", context);
+                    OcrDocsScanning('passbook', BorrowerInfo[0].passbook,
+                        "borrower", context);
                     break;
                   case 30:
                     passport = pickedImage;
                     break;
                   case 7:
-                    OcrDocsScanning('aadharfront', BorrowerInfo[0].guarantors[0].grAadharId, "guarantor", context);
+                    OcrDocsScanning(
+                        'aadharfront',
+                        BorrowerInfo[0].guarantors[0].grAadharId,
+                        "guarantor",
+                        context);
                     break;
                   case 29:
-                    OcrDocsScanning('aadharback', BorrowerInfo[0].guarantors[0].grAadharId, "guarantor", context);
+                    OcrDocsScanning(
+                        'aadharback',
+                        BorrowerInfo[0].guarantors[0].grAadharId,
+                        "guarantor",
+                        context);
                     break;
                   case 5:
-                    OcrDocsScanning('voterfront', BorrowerInfo[0].guarantors[0].grVoter, "guarantor", context);
+                    OcrDocsScanning(
+                        'voterfront',
+                        BorrowerInfo[0].guarantors[0].grVoter,
+                        "guarantor",
+                        context);
                     break;
                   case 28:
-                    OcrDocsScanning('voterback', BorrowerInfo[0].guarantors[0].grVoter, "guarantor", context);
+                    OcrDocsScanning(
+                        'voterback',
+                        BorrowerInfo[0].guarantors[0].grVoter,
+                        "guarantor",
+                        context);
                     break;
                   case 8:
-                    OcrDocsScanning('pan', BorrowerInfo[0].guarantors[0].grPan, "guarantor", context);
+                    OcrDocsScanning('pan', BorrowerInfo[0].guarantors[0].grPan,
+                        "guarantor", context);
                     break;
                   case 16:
-                    OcrDocsScanning('DL', BorrowerInfo[0].guarantors[0].grDl, "borrower", context);
+                    OcrDocsScanning('DL', BorrowerInfo[0].guarantors[0].grDl,
+                        "borrower", context);
                     break;
                 }
               });
             }
           },
           child: Card(
-            color: path!.isNotEmpty ? Colors.green : Colors.yellowAccent.shade700,
+            color:
+                path!.isNotEmpty ? Colors.green : Colors.yellowAccent.shade700,
             margin: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
             child: Container(
               height: 70,
@@ -4286,24 +4308,25 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     ),
                     _selectedImage != null
                         ? Image.file(
-                      _selectedImage!,
-                      width: 50,
-                      height: 50,
-                    )
+                            _selectedImage!,
+                            width: 50,
+                            height: 50,
+                          )
                         : path != null
-                        ? Image.network(
-                      finalUrl,
-                      width: 50,
-                      height: 50,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(Icons.hide_image_outlined, size: 30);
-                      },
-                    )
-                        : Image.asset(
-                      'assets/Images/rupees.png',
-                      width: 50,
-                      height: 50,
-                    ),
+                            ? Image.network(
+                                finalUrl,
+                                width: 50,
+                                height: 50,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(Icons.hide_image_outlined,
+                                      size: 30);
+                                },
+                              )
+                            : Image.asset(
+                                'assets/Images/rupees.png',
+                                width: 50,
+                                height: 50,
+                              ),
                   ],
                 ),
               ),
@@ -4313,8 +4336,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
       },
     );
   }
-
-
 
   List<Widget> _buildKycDocumentList({required bool isStepSeven}) {
     List<Widget> listItems = [];
@@ -4338,7 +4359,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
             path: doc.aadharPath,
             id: 1,
             GrNo: "0",
-
             onImagePicked: (File file) {
               setState(() {
                 adhaarFront = file;
@@ -4354,7 +4374,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 adhaarBack = file;
               });
-
             },
           ));
         }
@@ -4369,7 +4388,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 voterFront = file;
               });
-
             },
           ));
           listItems.add(_buildListItem(
@@ -4381,7 +4399,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 voterFront = file;
               });
-
             },
           ));
         }
@@ -4396,7 +4413,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 panFront = file;
               });
-
             },
           ));
         }
@@ -4411,7 +4427,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 dlFront = file;
               });
-
             },
           ));
         }
@@ -4439,7 +4454,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               passbook = file;
             });
-
           },
         ));
       }
@@ -4472,9 +4486,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             onImagePicked: (File file) {
               setState(() {
                 adhaarFront_coborrower = file;
-
               });
-
             },
           ));
           listItems1.add(_buildListItem(
@@ -4486,7 +4498,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 adhaarBack_coborrower = file;
               });
-
             },
           ));
         }
@@ -4501,7 +4512,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 voterFront_coborrower = file;
               });
-
             },
           ));
           listItems1.add(_buildListItem(
@@ -4513,7 +4523,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 voterFront_coborrower = file;
               });
-
             },
           ));
         }
@@ -4528,7 +4537,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 panFront_coborrower = file;
               });
-
             },
           ));
         }
@@ -4543,7 +4551,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 dlFront_coborrower = file;
               });
-
             },
           ));
         }
@@ -5025,7 +5032,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please enter Reservation Category");
       _resCatFocus.requestFocus();
       return false;
-    } else if (mobileController.text.isEmpty || mobileController.text.length != 10 ||
+    } else if (mobileController.text.isEmpty ||
+        mobileController.text.length != 10 ||
         !mobileController.text.contains(RegExp(r'^[0-9]{10}$'))) {
       showToast_Error("Please enter correct Mobile Number");
       _mobileFocus.requestFocus();
@@ -5238,7 +5246,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedBankName!.toLowerCase() == 'select') {
       showToast_Error("Please Enter Bank Name");
       return false;
-    }*/ else if (_bank_IFCSController.text.isEmpty) {
+    }*/
+    else if (_bank_IFCSController.text.isEmpty) {
       showToast_Error("Please Enter Bank IFSC Code");
       _bank_IFCSFocus.requestFocus();
       return false;
@@ -5351,7 +5360,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _lnameFocus.requestFocus();
       return false;
     }*/
-    else if (_phoneController.text.isEmpty || _phoneController.text.length != 10 ||
+    else if (_phoneController.text.isEmpty ||
+        _phoneController.text.length != 10 ||
         !_phoneController.text.contains(RegExp(r'^[0-9]{10}$'))) {
       showToast_Error("Please Enter Phone Number");
       _phoneFocus.requestFocus();
@@ -5483,11 +5493,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
         EasyLoading.dismiss();
 
         // Handle failure
-        GlobalClass.showUnsuccessfulAlert(context, "Failed to update details. Please try again.",1);
+        GlobalClass.showUnsuccessfulAlert(
+            context, "Failed to update details. Please try again.", 1);
       }
     }).catchError((error) {
       EasyLoading.dismiss();
-      GlobalClass.showErrorAlert(context, error.toString(),1);
+      GlobalClass.showErrorAlert(context, error.toString(), 1);
     });
   }
 
@@ -5541,7 +5552,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     String Fi_ID = FIID.toString();
     String bankType = selectedAccountType.toString();
-  //  String bank_name = selectedBankName.toString();
+    //  String bank_name = selectedBankName.toString();
     String bank_Ac = _bank_AcController.text.toString();
     String bank_IFCS = _bank_IFCSController.text.toString();
     String bank_address = bankAddress!;
@@ -5553,7 +5564,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "Fi_ID": Fi_ID,
       "bankType": bankType,
       "bank_Ac": bank_Ac,
-  //    "bank_name": bank_name,
+      //    "bank_name": bank_name,
       "bank_IFCS": bank_IFCS,
       "bank_address": bank_address,
       "bankOpeningDate": bankOpeningDate,
@@ -5848,7 +5859,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
    // EasyLoading.dismiss();
   }*/
-  Future<void> verifyDocs(BuildContext context,String txnNumber,String type,  String ifsc, String dob) async {
+  Future<void> verifyDocs(BuildContext context, String txnNumber, String type,
+      String ifsc, String dob) async {
     EasyLoading.show(
       status: 'Loading...',
     );
@@ -5873,14 +5885,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             if (response["error"] == null) {
               panCardHolderName =
-              "${responseData['first_name']} ${responseData['last_name']}";
+                  "${responseData['first_name']} ${responseData['last_name']}";
               panVerified = true;
-            }else{
+            } else {
               panCardHolderName = "PAN no. is wrong please check";
               panVerified = false;
             }
           });
-
         } else if (type == "drivinglicense") {
           setState(() {
             dlCardHolderName = "${responseData['name']}";
@@ -5890,7 +5901,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             voterCardHolderName = "${responseData['name']}";
             voterVerified = true;
-
           });
         }
       } else {
@@ -5938,7 +5948,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-
   void docVerifyIDC(
       String type, String txnNumber, String ifsc, String dob) async {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
@@ -5960,66 +5969,66 @@ class _ApplicationPageState extends State<ApplicationPage> {
       final response = await apiService_idc.verifyIdentity(requestBody);
       // Handle response
 
-     if (response["data"]!=null) {
-       if (response["data"] is Map<String, dynamic>) {
-         Map<String, dynamic> responseData = response["data"];
-         // Parse JSON object if it’s a map
-         if (type == "bankaccount") {
-           setState(() {
-             if (response["error"] == null) {
-               bankAccHolder = "${responseData['full_name']}";
-             } else {
-               bankAccHolder = "Account no. is Not Verified!!";
-             }
-           });
-         } else if (type == "pancard") {
-           setState(() {
-             if (response["error"] == null) {
-               panCardHolderName =
-               "${responseData['first_name']} ${responseData['last_name']}";
-               panVerified = true;
-             } else {
-               panCardHolderName = "PAN no. is wrong please check";
-               panVerified = false;
-             }
-           });
-         } else if (type == "drivinglicense") {
-           setState(() {
-             dlCardHolderName = "${responseData['name']}";
-             dlVerified = true;
-           });
-         } else if (type == "voterid") {
-           setState(() {
-             voterCardHolderName = "${responseData['name']}";
-             voterVerified = true;
-           });
-         }
-       }
-       else {
-         if (type == "pancard") {
-           setState(() {
-             panCardHolderName = "PAN no is not verified";
-             panVerified = false;
-           });
-         } else if (type == "drivinglicense") {
-           setState(() {
-             dlCardHolderName = "Driving License is not verified";
-             dlVerified = false;
-           });
-         } else if (type == "voterid") {
-           setState(() {
-             voterCardHolderName = "Voter no. is not verified";
-             voterVerified = false;
-           });
-         }
-         showToast_Error("Unexpected Response: $response");
-         print("Unexpected Response: $response");
-         EasyLoading.dismiss();
-       }
-     }else{
-       showToast_Error("Unexpected Response: ${response["error"]}\n${response["message"]}");
-     }
- //     showToast_Error("Unexpected Response: $response");
+      if (response["data"] != null) {
+        if (response["data"] is Map<String, dynamic>) {
+          Map<String, dynamic> responseData = response["data"];
+          // Parse JSON object if it’s a map
+          if (type == "bankaccount") {
+            setState(() {
+              if (response["error"] == null) {
+                bankAccHolder = "${responseData['full_name']}";
+              } else {
+                bankAccHolder = "Account no. is Not Verified!!";
+              }
+            });
+          } else if (type == "pancard") {
+            setState(() {
+              if (response["error"] == null) {
+                panCardHolderName =
+                    "${responseData['first_name']} ${responseData['last_name']}";
+                panVerified = true;
+              } else {
+                panCardHolderName = "PAN no. is wrong please check";
+                panVerified = false;
+              }
+            });
+          } else if (type == "drivinglicense") {
+            setState(() {
+              dlCardHolderName = "${responseData['name']}";
+              dlVerified = true;
+            });
+          } else if (type == "voterid") {
+            setState(() {
+              voterCardHolderName = "${responseData['name']}";
+              voterVerified = true;
+            });
+          }
+        } else {
+          if (type == "pancard") {
+            setState(() {
+              panCardHolderName = "PAN no is not verified";
+              panVerified = false;
+            });
+          } else if (type == "drivinglicense") {
+            setState(() {
+              dlCardHolderName = "Driving License is not verified";
+              dlVerified = false;
+            });
+          } else if (type == "voterid") {
+            setState(() {
+              voterCardHolderName = "Voter no. is not verified";
+              voterVerified = false;
+            });
+          }
+          showToast_Error("Unexpected Response: $response");
+          print("Unexpected Response: $response");
+          EasyLoading.dismiss();
+        }
+      } else {
+        showToast_Error(
+            "Unexpected Response: ${response["error"]}\n${response["message"]}");
+      }
+      //     showToast_Error("Unexpected Response: $response");
       print("Unexpected Response: $response");
       EasyLoading.dismiss();
     } catch (e) {
@@ -6640,7 +6649,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           familyDetails(value.data[0]);
         }
 
-        if (value.data[0].fiIncomeExpenses.length != 0 && value.data[0].fiIncomeExpenses[0].inExHomeType.isNotEmpty) {
+        if (value.data[0].fiIncomeExpenses.length != 0 &&
+            value.data[0].fiIncomeExpenses[0].inExHomeType.isNotEmpty) {
           fiIncomeExpenses(value.data[0]);
         }
 
@@ -6770,8 +6780,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void financialInfo(ApplicationgetAllDataModel data) {
     setState(() {
       FinancialInfoEditable = false;
-     // selectedAccountType = data.bankAc;
-   //   selectedBankName = data.bankName;
+      // selectedAccountType = data.bankAc;
+      //   selectedBankName = data.bankName;
       _bank_AcController.text = data.bankAc;
       _bank_IFCSController.text = data.bankIfcs;
       bankAddress = data.bankAddress;
@@ -6815,8 +6825,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           item.descriptionEn.toLowerCase() ==
           data.guarantors[0].grPState.toLowerCase());
       genderselected = data.guarantors[0].grGender;
-        religionselected = data.guarantors[0].grReligion;
-      relationselected=data.guarantors[0].grRelationWithBorrower;
+      religionselected = data.guarantors[0].grReligion;
+      relationselected = data.guarantors[0].grRelationWithBorrower;
 
       _pincodeController.text = data.guarantors[0].grPincode.toString();
       _dobController.text = data.guarantors[0].grDob.toString();
@@ -6858,8 +6868,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-
-  Future<void> OcrDocsScanning(String type, String id, String subType, BuildContext context) async {
+  Future<void> OcrDocsScanning(
+      String type, String id, String subType, BuildContext context) async {
     EasyLoading.show(); // Show loading indicator
 
     try {
@@ -6881,13 +6891,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
       debugPrint("GestureDetector tapped. ID: $id, Title: $type");
 
       final response = await apiService_OCR.OcrDocsScan(
-          type,       // Document type
-          id,         // ID (e.g., Aadhaar number)
+          type, // Document type
+          id, // ID (e.g., Aadhaar number)
           pickedImage! // Picked image file
-      );
+          );
 
       if (response.statusCode == 200) {
-
         switch (type) {
           case "aadharfront":
             handleAadharFront(response, subType, "borrower", context);
@@ -6916,17 +6925,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
         }
       } else {
         showDocumentMismatchError(context);
-        showToast_Error("Failed to fetch data. Status Code: ${response.statusCode}.");
+        showToast_Error(
+            "Failed to fetch data. Status Code: ${response.statusCode}.");
       }
     } catch (e, stackTrace) {
       debugPrint("Error during OCR scanning: $e");
       debugPrint("Stack trace: $stackTrace");
-      showToast_Error("An error occurred while processing the document. Please try again.");
+      showToast_Error(
+          "An error occurred while processing the document. Please try again.");
     } finally {
       EasyLoading.dismiss(); // Always dismiss loading indicator
     }
   }
-
 
   void showIDCardDialog(
       BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
@@ -6953,6 +6963,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             onWillPop: () async =>
                 false, // Prevent closing dialog with back button
             child: AlertDialog(
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -6963,6 +6974,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       ))),
               content: SingleChildScrollView(
                 child: Container(
+                  color: Colors.white,
                   width: 300,
                   padding: EdgeInsets.all(20),
                   child: Column(
@@ -7025,7 +7037,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          ElevatedButton(
+                          /*ElevatedButton(
                             onPressed: () {
                               print('Verification Confirmed');
                               Navigator.of(context).pop();
@@ -7037,8 +7049,93 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 10),
                             ),
+                          ),*/
+                          GestureDetector(
+                            onTap: () {
+                              print('Verification Confirmed');
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.redAccent, Color(0xFFD42D3F)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.4),
+                                    blurRadius: 10,
+                                    offset: Offset(5, 5),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Verify',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 10.0,
+                                        color: Colors.black.withOpacity(0.5),
+                                        offset: Offset(2.0, 2.0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                          ElevatedButton(
+                          GestureDetector(
+                            onTap: () {
+                              print('Verification Rejected');
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.redAccent, Color(0xFFD42D3F)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.4),
+                                    blurRadius: 10,
+                                    offset: Offset(5, 5),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Reject',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 10.0,
+                                        color: Colors.black.withOpacity(0.5),
+                                        offset: Offset(2.0, 2.0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          /*ElevatedButton(
                             onPressed: () {
                               print('Verification Rejected');
                               Navigator.of(context).pop();
@@ -7051,7 +7148,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 10),
                             ),
-                          ),
+                          ),*/
                         ],
                       ),
                     ],
@@ -7070,13 +7167,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (pickedFile != null) {
         _imageFile = File(pickedFile.path);
       } else {
-
         print('No image selected.');
       }
     });
   }
 
-  void handleAadharFront(response, String subType, String idType, BuildContext context) {
+  void handleAadharFront(
+      response, String subType, String idType, BuildContext context) {
     String expectedId = subType == "borrower"
         ? BorrowerInfo[0].aadharNo
         : BorrowerInfo[0].guarantors[0].grAadharId;
@@ -7088,7 +7185,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           adhaarFront_coborrower = pickedImage;
         }
         EasyLoading.dismiss();
-        GlobalClass.showSuccessAlert(context, "Document successfully verified", 1);
+        GlobalClass.showSuccessAlert(
+            context, "Document successfully verified", 1);
       } else {
         showDocumentMismatchError(context);
       }
@@ -7097,46 +7195,54 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  void handleAadharBack(response, String subType, borrower, BuildContext context) {
-    String expectedId = subType == "borrower" ? BorrowerInfo[0].aadharNo : BorrowerInfo[0].guarantors[0].grAadharId;
+  void handleAadharBack(
+      response, String subType, borrower, BuildContext context) {
+    String expectedId = subType == "borrower"
+        ? BorrowerInfo[0].aadharNo
+        : BorrowerInfo[0].guarantors[0].grAadharId;
     if (response.data.adharId == expectedId) {
-    if (response.data.isOSV == true && response.data.isIdMatched == true) {
-      if (subType == "borrower") {
-        adhaarBack = pickedImage;
-      } else if (subType == "guarantor") {
-        adhaarBack_coborrower = pickedImage;
+      if (response.data.isOSV == true && response.data.isIdMatched == true) {
+        if (subType == "borrower") {
+          adhaarBack = pickedImage;
+        } else if (subType == "guarantor") {
+          adhaarBack_coborrower = pickedImage;
+        }
+        EasyLoading.dismiss();
+        GlobalClass.showSuccessAlert(
+            context, "Aadhaar back document verified successfully!", 1);
+      } else {
+        showDocumentMismatchError(context);
       }
-      EasyLoading.dismiss();
-      GlobalClass.showSuccessAlert(context, "Aadhaar back document verified successfully!", 1);
-    } else {
-      showDocumentMismatchError(context);
-    }
     } else {
       showIDMismatchError(context);
     }
   }
 
-  void handleVoterFront(response, String subType, borrower, BuildContext context) {
-    String expectedId = subType == "borrower" ? BorrowerInfo[0].voterId : BorrowerInfo[0].guarantors[0].grVoter;
+  void handleVoterFront(
+      response, String subType, borrower, BuildContext context) {
+    String expectedId = subType == "borrower"
+        ? BorrowerInfo[0].voterId
+        : BorrowerInfo[0].guarantors[0].grVoter;
     if (response.data.adharId == expectedId) {
-    if (response.data.isOSV == true && response.data.isIdMatched == true) {
-
-      if (subType == "borrower") {
-        voterFront = pickedImage;
-      } else if (subType == "guarantor") {
-        voterFront_coborrower = pickedImage;
+      if (response.data.isOSV == true && response.data.isIdMatched == true) {
+        if (subType == "borrower") {
+          voterFront = pickedImage;
+        } else if (subType == "guarantor") {
+          voterFront_coborrower = pickedImage;
+        }
+        EasyLoading.dismiss();
+        GlobalClass.showSuccessAlert(
+            context, "Voter front document verified successfully!", 1);
+      } else {
+        showDocumentMismatchError(context);
       }
-      EasyLoading.dismiss();
-      GlobalClass.showSuccessAlert(context, "Voter front document verified successfully!", 1);
-    } else {
-      showDocumentMismatchError(context);
-    }
     } else {
       showIDMismatchError(context);
     }
   }
 
-  void handleVoterBack(response,String subType, borrower, BuildContext context) {
+  void handleVoterBack(
+      response, String subType, borrower, BuildContext context) {
     if (response.data.isOSV == true) {
       if (subType == "borrower") {
         voterback = pickedImage;
@@ -7145,44 +7251,52 @@ class _ApplicationPageState extends State<ApplicationPage> {
       }
       voterback = pickedImage;
       EasyLoading.dismiss();
-      GlobalClass.showSuccessAlert(context, "Voter back document verified successfully!", 1);
+      GlobalClass.showSuccessAlert(
+          context, "Voter back document verified successfully!", 1);
     } else {
       showDocumentMismatchError(context);
     }
   }
+
   void handlePan(response, String subType, borrower, BuildContext context) {
-    String expectedId = subType == "borrower" ? BorrowerInfo[0].panNo : BorrowerInfo[0].guarantors[0].grPan;
+    String expectedId = subType == "borrower"
+        ? BorrowerInfo[0].panNo
+        : BorrowerInfo[0].guarantors[0].grPan;
     if (response.data.adharId == expectedId) {
-    if (response.data.isOSV == true && response.data.isIdMatched == true) {
-      if (subType == "borrower") {
-        panFront = pickedImage;
-      } else if (subType == "guarantor") {
-        panFront_coborrower = pickedImage;
+      if (response.data.isOSV == true && response.data.isIdMatched == true) {
+        if (subType == "borrower") {
+          panFront = pickedImage;
+        } else if (subType == "guarantor") {
+          panFront_coborrower = pickedImage;
+        }
+        EasyLoading.dismiss();
+        GlobalClass.showSuccessAlert(
+            context, "PAN document verified successfully!", 1);
+      } else {
+        showDocumentMismatchError(context);
       }
-      EasyLoading.dismiss();
-      GlobalClass.showSuccessAlert(context, "PAN document verified successfully!", 1);
-    } else {
-      showDocumentMismatchError(context);
-    }
     } else {
       showIDMismatchError(context);
     }
   }
 
   void handleDL(response, String subType, borrower, BuildContext context) {
-    String expectedId = subType == "borrower" ? BorrowerInfo[0].dl : BorrowerInfo[0].guarantors[0].grDl;
+    String expectedId = subType == "borrower"
+        ? BorrowerInfo[0].dl
+        : BorrowerInfo[0].guarantors[0].grDl;
     if (response.data.adharId == expectedId) {
-    if (response.data.isOSV == true) {
-      if (subType == "borrower") {
-        dlFront = pickedImage;
-      } else if (subType == "guarantor") {
-        dlFront_coborrower = pickedImage;
+      if (response.data.isOSV == true) {
+        if (subType == "borrower") {
+          dlFront = pickedImage;
+        } else if (subType == "guarantor") {
+          dlFront_coborrower = pickedImage;
+        }
+        EasyLoading.dismiss();
+        GlobalClass.showSuccessAlert(
+            context, "Driving License verified successfully!", 1);
+      } else {
+        showDocumentMismatchError(context);
       }
-      EasyLoading.dismiss();
-      GlobalClass.showSuccessAlert(context, "Driving License verified successfully!", 1);
-    } else {
-      showDocumentMismatchError(context);
-    }
     } else {
       showIDMismatchError(context);
     }
@@ -7192,24 +7306,23 @@ class _ApplicationPageState extends State<ApplicationPage> {
     if (response.data.isOSV == true) {
       passbook = pickedImage;
       EasyLoading.dismiss();
-      GlobalClass.showSuccessAlert(context, "Passbook verified successfully!", 1);
+      GlobalClass.showSuccessAlert(
+          context, "Passbook verified successfully!", 1);
     } else {
       showDocumentMismatchError(context);
     }
   }
 
-
   void showDocumentMismatchError(BuildContext context) {
     EasyLoading.dismiss();
-    showToast_Error("OSV Stamp not found or Not readable!!\nओएसवी स्टाम्प नहीं मिला या पढ़ने योग्य नहीं है!!");
+    showToast_Error(
+        "OSV Stamp not found or Not readable!!\nओएसवी स्टाम्प नहीं मिला या पढ़ने योग्य नहीं है!!");
   }
 
   void showIDMismatchError(BuildContext context) {
     EasyLoading.dismiss();
-    showToast_Error("Did not found Document Id\nPlease check document id properly clear or readable\nदस्तावेज़ आईडी नहीं मिला\n" +
-                                                            "कृपया जाँचें कि दस्तावेज़ आईडी ठीक से स्पष्ट या पढ़ने योग्य है");
+    showToast_Error(
+        "Did not found Document Id\nPlease check document id properly clear or readable\nदस्तावेज़ आईडी नहीं मिला\n" +
+            "कृपया जाँचें कि दस्तावेज़ आईडी ठीक से स्पष्ट या पढ़ने योग्य है");
   }
-
-
 }
-
