@@ -39,8 +39,6 @@ import 'Models/ocr_response_model.dart';
 import 'Models/track_location_request.dart';
 part 'api_service.g.dart';
 
-
-
 class ApiConfig {
   static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
   static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
@@ -52,8 +50,6 @@ class ApiConfig {
   static const String baseUrl8 = 'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
 
 }
-
-
 
 // @RestApi(baseUrl: "https://predeptest.paisalo.in:8084/MobColen/api/")
 
