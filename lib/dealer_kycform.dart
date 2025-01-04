@@ -3089,18 +3089,18 @@ class _DealerKYCPageState extends State<DealerKYCPage> {
           getPlace("district", stateselected!.code, "", "");
           setState(() {
             _currentStep += 1;
-            Fi_Id = value.data[0].fiId.toString();
-            Fi_Code = value.data[0].fiCode.toString();
+            // Fi_Id = value.data[0].fiId.toString();
+            // Fi_Code = value.data[0].fiCode.toString();
           });
         } else if (value.statuscode == 201) {
           print("status code 201");
-          GlobalClass.showAlert(
-            context,
-            value.message,
-            value.data[0].errormsg,
-            Colors.red,
-            1,
-          );
+          // GlobalClass.showAlert(
+          //   context,
+          //   value.message,
+          //   value.data[0].errormsg,
+          //   Colors.red,
+          //   1,
+          // );
         } else if (value.statuscode == 400) {
           GlobalClass.showSnackBar(context, "Something went wrong in API");
         }
