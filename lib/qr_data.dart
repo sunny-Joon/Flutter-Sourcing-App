@@ -34,10 +34,8 @@ class _MyHomePageState extends State<QRDATA> {
 
       BigInt bigIntScanData = BigInt.parse(result);
       List<int> byteScanData = bigIntToBytes(bigIntScanData);
-
       List<int> decompByteScanData = decompressData(byteScanData);
       List<List<int>>  parts =separateData(decompByteScanData, 255, 15);
-
       setState(() {
 
         qrResult= decodeData(parts);
@@ -58,13 +56,11 @@ class _MyHomePageState extends State<QRDATA> {
 
   List<int> decompressData(List<int> byteScanData) {
     try {
-      // Decompress the GZIP data
       List<int> decompressedData = GZipDecoder().decodeBytes(byteScanData);
 
       return decompressedData; // Return decompressed data as List<int>
     } catch (e) {
       print('Exception: Decompressing QRcode failed: $e');
-      // Handle error appropriately (e.g., throw a custom exception)
       return []; // Returning an empty List<int> on error
     }
   }
