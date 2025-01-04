@@ -97,6 +97,11 @@ class _KYCPageState extends State<KYCPage> {
   Position? position;
   bool otpVerified = false;
   bool _pageloading=true;
+
+  bool verifyButtonClick=false;
+
+
+
   @override
   void initState() {
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
@@ -1019,7 +1024,7 @@ class _KYCPageState extends State<KYCPage> {
                         MaterialPageRoute(
                             builder: (context) => QRViewExample()),
                       );
-
+                      Navigator.of(context).pop();
                       if (result != null) {
                         //
                         // BigInt bigIntScanData = BigInt.parse(result);
@@ -1036,7 +1041,7 @@ class _KYCPageState extends State<KYCPage> {
                         setQRData(result);
                         //   onResult(qrResult);
                       }
-                      Navigator.of(context).pop();
+
                     },
                     child: Text(
                       'Adhaar QR',
@@ -1116,7 +1121,8 @@ class _KYCPageState extends State<KYCPage> {
               }
             });
             Navigator.of(context).pop();
-          } else if (type == "adharBack") {
+          }
+          else if (type == "adharBack") {
             setState(() {
               _pincodeController.text = response.data.pincode;
               _cityController.text = response.data.cityName;
@@ -1791,6 +1797,7 @@ class _KYCPageState extends State<KYCPage> {
                           onChanged: (value){
                             setState(() {
                               otpVerified=false;
+                              verifyButtonClick=false;
                             });
 
                           },
@@ -1809,12 +1816,16 @@ class _KYCPageState extends State<KYCPage> {
                 child: InkWell(
                   onTap: () {
                     {
-                      if (_mobileNoController.text.isEmpty) {
-                        showToast_Error("Please enter mobile number");
-                      } else {
-                        //getOTPByMobileNo(_mobileNoController.text);
-                        mobileOtp(context, _mobileNoController.text);
+                      if(verifyButtonClick==false){
+                        if (_mobileNoController.text.isEmpty) {
+                          showToast_Error("Please enter mobile number");
+                        } else {
+                          verifyButtonClick=true;
+                          //getOTPByMobileNo(_mobileNoController.text);
+                          mobileOtp(context, _mobileNoController.text);
+                        }
                       }
+
                       // Implement OTP verification logic here
                     }
                   },
@@ -2314,6 +2325,7 @@ class _KYCPageState extends State<KYCPage> {
               actions: [
                 ElevatedButton(
                   onPressed: () {
+                    verifyButtonClick=false;
                     countdownTimer?.cancel(); // Stop timer when submitting
 
                     if (pinCode.isEmpty || pinCode.length != 6) {
@@ -2331,8 +2343,14 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ),
                 Visibility(
+                  visible: cancelButtonVisible,
                   child: ElevatedButton(
                     onPressed: () {
+
+
+                      setState(() {
+                        verifyButtonClick=false;
+                      });
                       countdownTimer?.cancel(); // Stop timer when closing
                       Navigator.of(context).pop(); // Close the dialog
                     },
@@ -2344,7 +2362,6 @@ class _KYCPageState extends State<KYCPage> {
                       style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                   ),
-                  visible: cancelButtonVisible,
                 ),
               ],
             );
@@ -3223,6 +3240,7 @@ bool checkIdMendate(){
         .mobileOtpSend(GlobalClass.token,GlobalClass.dbName, requestBody)
         .then((value) {
       if (value.statuscode == 200) {
+
         _showOTPDialog(context);
       }
     });
@@ -3233,6 +3251,10 @@ bool checkIdMendate(){
     if (dataList.length > 14) {
       if(dataList[0].toLowerCase().startsWith("v")){
         _aadharIdController.text = dataList[2];
+        if(_aadharIdController.text.length!=12){
+          GlobalClass.showErrorAlert(context, "Please Re-Enter Aadhaar number", 1);
+          _aadharIdController.text="";
+        }
         List<String> nameParts = dataList[3].split(" ");
         if (nameParts.length == 1) {
           _nameController.text = nameParts[0];
@@ -3337,6 +3359,11 @@ bool checkIdMendate(){
       else{
 
         _aadharIdController.text = dataList[1];
+        if(_aadharIdController.text.length!=12){
+          GlobalClass.showErrorAlert(context, "Please Re-Enter Aadhaar number", 1);
+          _aadharIdController.text="";
+
+        }
         List<String> nameParts = dataList[2].split(" ");
         if (nameParts.length == 1) {
           _nameController.text = nameParts[0];
@@ -3397,7 +3424,7 @@ bool checkIdMendate(){
           });
         }
         _cityController.text = dataList[6];
-        _gurNameController.text = replaceCharFromName(dataList[6]);
+        _gurNameController.text = replaceCharFromName(dataList[5]);
 
 
           _pincodeController.text = dataList[10];
@@ -3466,6 +3493,7 @@ bool checkIdMendate(){
         showToast_Error("OTP Verified...");
         setState(() {
           otpVerified = true;
+          verifyButtonClick=true;
         });
         Navigator.of(contextDialog).pop();
       } else {
