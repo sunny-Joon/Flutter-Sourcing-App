@@ -37,7 +37,7 @@ class GlobalDataModel {
   String errormsg;
   bool isvalid;
   String financialStatus;
-  String fiCode;
+  int fiCode;
   String appLink;
 
 
