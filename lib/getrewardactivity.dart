@@ -50,6 +50,9 @@ class getrewardactivity extends StatelessWidget {
             ],
           ),
         ),
+        Container(
+          height: MediaQuery.of(context).size.height-110,
+          child: SingleChildScrollView(child:
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -113,7 +116,8 @@ class getrewardactivity extends StatelessWidget {
               ),
             ],
           ),
-        ),
+        ),),)
+
       ],) ,
 
     );
