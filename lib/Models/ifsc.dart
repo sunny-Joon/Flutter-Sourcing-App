@@ -60,7 +60,7 @@ class Ifcsc {
     rtgs: json["RTGS"],
     neft: json["NEFT"],
     swift: json["SWIFT"],
-    address: json["ADDRESS"],
+    address: json["ADDRESS"]??"",
     district: json["DISTRICT"],
     bank: json["BANK"],
     bankcode: json["BANKCODE"],

@@ -169,26 +169,24 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                           // Replace with your logo asset path
                           height: 50,
                         ),*/
-                      child: Expanded(
-                        child: Column(children: [
-                          Text(
-                            "HOUSE VISIT",
-                            style: TextStyle(fontFamily: "Poppins-Regular",
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24 // Make the text bold
-                            ),
+                      child:Column(children: [
+                        Text(
+                          "HOUSE VISIT",
+                          style: TextStyle(fontFamily: "Poppins-Regular",
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24 // Make the text bold
                           ),
-                          Text(
-                            "${widget.selectedData.fiCode}/${widget.selectedData.creator}",
-                            style: TextStyle(fontFamily: "Poppins-Regular",
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16 // Make the text bold
-                            ),
+                        ),
+                        Text(
+                          "${widget.selectedData.fiCode}/${widget.selectedData.creator}",
+                          style: TextStyle(fontFamily: "Poppins-Regular",
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16 // Make the text bold
                           ),
-                        ],)
-                      )),
+                        ),
+                      ],)),
                   Container(
                     height: 40,
                     width: 40,
