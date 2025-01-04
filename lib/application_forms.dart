@@ -2699,21 +2699,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                   _bank_IFCSController.text.isEmpty) {
                                 showToast_Error(
                                     "Please Enter Bank Account number and IFSC code");
-                              } else {
-                                docVerifyIDC(
-                                    "bankaccount",
-                                    _bank_AcController.text,
-                                    _bank_IFCSController.text,
-                                    "");
-
+                              } else if(_bank_IFCSController.text.length!=11){
+                                showToast_Error(
+                                    "Please Enter Correct IFSC code");
+                              }else if(_bank_AcController.text.length<10){
+                                showToast_Error(
+                                    "Please Enter Correct Account Number");
+                              }else {
                                 ifscVerify(context, _bank_IFCSController.text);
                               }
                             }
                           : null,
                       child: Text(
-                        bankAccHolder == null
-                            ? 'VERIFY NAME'
-                            : 'VERIFY ADDRESS',
+                         'Verify Details',
                         style: TextStyle(
                             fontFamily: "Poppins-Regular",
                             fontSize: 18), // Text size
@@ -2731,7 +2729,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: 'ACC. HOLDER NAME:',
+                        text: 'BORROWER NAME:',
                         style: TextStyle(
                             fontFamily: "Poppins-Regular",
                             color: Colors.black,
@@ -2749,6 +2747,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ),
                 )
               : SizedBox(),
+          bankAccHolder != null? Divider():SizedBox(),
           bankAddress != null
               ? Text.rich(
                   TextSpan(
@@ -2772,7 +2771,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ),
                 )
               : SizedBox(),
-
+          bankAddress != null? Divider():SizedBox(),
           SizedBox(height: 10),
 
           Text(
@@ -3653,6 +3652,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                         }
                                         return null;
                                       },
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(RegExp(
+                                            '[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                                        TextInputFormatter.withFunction(
+                                              (oldValue, newValue) => TextEditingValue(
+                                            text: newValue.text.toUpperCase(),
+                                            selection: newValue.selection,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   )),
                             ],
@@ -4204,6 +4213,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     }
                     return null;
                   },
+                  inputFormatters: [
+                     // Allow only alphanumeric characters // Optional: to deny spaces
+                    TextInputFormatter.withFunction(
+                          (oldValue, newValue) => TextEditingValue(
+                        text: newValue.text.toUpperCase(),
+                        selection: newValue.selection,
+                      ),
+                    ),
+                  ],
                 ),
               )),
         ],
@@ -5514,21 +5532,33 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _ageFocus.requestFocus();
       return false;
     }
-    /*if (_voterController.text.isEmpty) {
-      if (_panController.text.isEmpty) {
-        showToast_Error("Please Enter PAN");
-        _panFocus.requestFocus();
-        return false;
-      } else if (_dlController.text.isEmpty) {
-        showToast_Error("Please Enter Driving License");
-        _dlFocus.requestFocus();
-        return false;
-      }
-      return false;
-    }*/
+    // if (_voterController.text.isEmpty) {
+    //   if (_panController.text.isEmpty) {
+    //     showToast_Error("Please Enter PAN");
+    //     _panFocus.requestFocus();
+    //     return false;
+    //   } else if (_dlController.text.isEmpty) {
+    //     showToast_Error("Please Enter Driving License");
+    //     _dlFocus.requestFocus();
+    //     return false;
+    //   }
+    //   return false;
+    // }
     else if (_p_Address1Controller.text.isEmpty) {
       showToast_Error("Please Enter Address Line 1");
       _p_Address1Focus.requestFocus();
+      return false;
+    }else if(_panController.text.isNotEmpty &&   !panVerified){
+      showToast_Error("Please Verify PAN No.");
+      _panFocus.requestFocus();
+      return false;
+    }else if(_dlController.text.isNotEmpty &&   !dlVerified){
+      showToast_Error("Please Verify Driving License");
+      _dlFocus.requestFocus();
+      return false;
+    }else if(_voterController.text.isNotEmpty &&   !voterVerified){
+      showToast_Error("Please Verify Voter No.");
+      _panFocus.requestFocus();
       return false;
     }
     /*else if (_p_Address2Controller.text.isEmpty) {
@@ -5569,7 +5599,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please Select Religion");
       return false;
     } else if (_imageFile == null) {
-      showToast_Error("Gurrantor Image Is Null");
+      showToast_Error("Please click Guarantor picture");
       return false;
     }
     return true;
@@ -5904,57 +5934,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> FiDocsUploadsApi(BuildContext context, String GurNum) async {
-    try {
-      EasyLoading.show(status: 'Loading...');
 
-      String? Image;
-      if (_imageFile == null) {
-        Image = 'Null';
-      }
 
-      final api = Provider.of<ApiService>(context, listen: false);
 
-      await api.FiDocsUploads(
-        GlobalClass.token,
-        GlobalClass.dbName,
-        widget.selectedData.id.toString(),
-        GurNum,
-        GurNum == "0" ? adhaarFront : adhaarFront_coborrower,
-        GurNum == "0" ? adhaarBack : adhaarBack_coborrower,
-        GurNum == "0" ? voterFront : voterFront_coborrower,
-        GurNum == "0" ? voterback : voterback_coborrower,
-        GurNum == "0" ? dlFront : dlFront_coborrower,
-        GurNum == "0" ? panFront : panFront_coborrower,
-        GurNum == "0" ? passport : null,
-        GurNum == "0" ? passbook : null,
-      ).then((value) async {
-        if (value.statuscode == 200) {
-          EasyLoading.dismiss();
-          GlobalClass.showSuccessAlert(
-              context, "${value.message} \n${value.data[0].errormsg}", 1);
-          setState(() {
-            _currentStep++;
-          });
-        } else if (value.statuscode == 400) {
-          EasyLoading.dismiss();
+       if(validateAllDocsForBorrower(context,GurNum)){
+         saveKYCAllDocs( context,  GurNum);
+       }
 
-          GlobalClass.showUnsuccessfulAlert(
-              context, "${value.message} \n${value.data[0].errormsg}", 1);
-        } else {
-          EasyLoading.dismiss();
 
-          GlobalClass.showUnsuccessfulAlert(
-              context, "${value.message} \n${value.data[0].errormsg}", 1);
-        }
-      }).catchError((error) {
-        GlobalClass.showSnackBar(context, "Error: ${error.toString()}");
-        EasyLoading.dismiss();
-      });
-    } catch (e) {
-      GlobalClass.showSnackBar(
-          context, "An unexpected error occurred: ${e.toString()}");
-      EasyLoading.dismiss();
-    }
+
+
+
+
+
   }
 
 /*Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file,
@@ -5999,7 +5991,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
    // EasyLoading.dismiss();
   }*/
   Future<void> verifyDocs(BuildContext context, String txnNumber, String type,
-      String ifsc, String dob) async {
+      String ifsc, String dob)
+  async {
     EasyLoading.show(
       status: 'Loading...',
     );
@@ -6284,17 +6277,24 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl3);
 
     return await api.ifscVerify(ifsc).then((value) {
-      if (value != null && value.address != null) {
+      if (value.address.isNotEmpty) {
         setState(() {
           bankAddress = value.address.toString();
         });
+        docVerifyIDC(
+            "bankaccount",
+            _bank_AcController.text,
+            _bank_IFCSController.text,
+            "");
         EasyLoading.dismiss();
       } else {
-        print('Failed to get valid data');
+        showToast_Error(
+            "Please check IFSC code is not verified");
         EasyLoading.dismiss();
       }
     }).catchError((error) {
-      print('Error occurred: $error');
+      GlobalClass.showErrorAlert(context, error, 1);
+      EasyLoading.dismiss();
     });
   }
 
@@ -7131,32 +7131,29 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
 
       } else if (response.statusCode == 201) {
-        final responseData = response.data as Map<String, dynamic>;
         OcrDocsScanningResponse ocrDocsScanningResponse =
-            OcrDocsScanningResponse.fromJson(responseData);
+            response;
 
         if (!ocrDocsScanningResponse.data.isOSV) {
           showDocumentMismatchError(context);
         } else if (!ocrDocsScanningResponse.data.isIdMatched) {
           showIDMismatchError(context);
         } else {
-          showToast_Error(
-              "Unexpected response. Status Code: ${response.statusCode}.");
+          GlobalClass.showUnsuccessfulAlert(context, "Unexpected response. Status Code: ${response.statusCode}.", 1);
+
         }
 
         EasyLoading.dismiss();
         return false;
       } else {
-        showToast_Error(
-            "Failed to fetch data. Status Code: ${response.statusCode}.");
+        GlobalClass.showUnsuccessfulAlert(context, "Failed to fetch data. Status Code: ${response.statusCode}.", 1);
+
         EasyLoading.dismiss();
         return false;
       }
     } catch (e, stackTrace) {
-      debugPrint("Error during OCR scanning: $e");
-      debugPrint("Stack trace: $stackTrace");
-      showToast_Error(
-          "An error occurred while processing the document. Please try again.");
+      GlobalClass.showUnsuccessfulAlert(context, "An error occurred while processing the document. Please try again.", 1);
+
       EasyLoading.dismiss();
       return false;
     }
@@ -7452,14 +7449,171 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void showDocumentMismatchError(BuildContext context) {
     EasyLoading.dismiss();
-    showToast_Error(
-        "OSV Stamp not found or Not readable!!\nओएसवी स्टाम्प नहीं मिला या पढ़ने योग्य नहीं है!!");
+    GlobalClass.showUnsuccessfulAlert(context, "OSV Stamp not found or Not readable!!\nओएसवी स्टाम्प नहीं मिला या पढ़ने योग्य नहीं है!!", 1);
+
   }
 
   void showIDMismatchError(BuildContext context) {
     EasyLoading.dismiss();
-    showToast_Error(
-        "Did not found Document Id\nPlease check document id properly clear or readable\nदस्तावेज़ आईडी नहीं मिला\n" +
-            "कृपया जाँचें कि दस्तावेज़ आईडी ठीक से स्पष्ट या पढ़ने योग्य है");
+    GlobalClass.showUnsuccessfulAlert(context, "Did not found Document Id\nPlease check document id properly clear or readable\nदस्तावेज़ आईडी नहीं मिला\n" +
+        "कृपया जाँचें कि दस्तावेज़ आईडी ठीक से स्पष्ट या पढ़ने योग्य है", 1);
+
+  }
+
+  Future<void> saveKYCAllDocs(BuildContext context, String GurNum) async {
+
+    try {
+      EasyLoading.show(status: 'Loading...');
+
+      String? Image;
+      if (_imageFile == null) {
+        Image = 'Null';
+      }
+
+      final api = Provider.of<ApiService>(context, listen: false);
+
+      await api.FiDocsUploads(
+        GlobalClass.token,
+        GlobalClass.dbName,
+        widget.selectedData.id.toString(),
+        GurNum,
+        GurNum == "0" ? adhaarFront : adhaarFront_coborrower,
+        GurNum == "0" ? adhaarBack : adhaarBack_coborrower,
+        GurNum == "0" ? voterFront : voterFront_coborrower,
+        GurNum == "0" ? voterback : voterback_coborrower,
+        GurNum == "0" ? dlFront : dlFront_coborrower,
+        GurNum == "0" ? panFront : panFront_coborrower,
+        GurNum == "0" ? passport : null,
+        GurNum == "0" ? passbook : null,
+      ).then((value) async {
+        if (value.statuscode == 200) {
+          EasyLoading.dismiss();
+          GlobalClass.showSuccessAlert(
+              context, "${value.message} \n${value.data[0].errormsg}", 1);
+          setState(() {
+            _currentStep++;
+          });
+        } else if (value.statuscode == 400) {
+          EasyLoading.dismiss();
+
+          GlobalClass.showUnsuccessfulAlert(
+              context, "${value.message} \n${value.data[0].errormsg}", 1);
+        } else {
+          EasyLoading.dismiss();
+
+          GlobalClass.showUnsuccessfulAlert(
+              context, "${value.message} \n${value.data[0].errormsg}", 1);
+        }
+      }).catchError((error) {
+        GlobalClass.showSnackBar(context, "Error: ${error.toString()}");
+        EasyLoading.dismiss();
+      });
+    } catch (e) {
+      GlobalClass.showSnackBar(
+          context, "An unexpected error occurred: ${e.toString()}");
+      EasyLoading.dismiss();
+    }
+  }
+
+  bool validateAllDocsForBorrower(BuildContext context, String gurNum) {
+    KycScanningDataModel kycScanningDataModel=getData.data;
+    if(gurNum=="0"){
+      if(kycScanningDataModel.addharExists){
+        if(adhaarFront==null){
+          GlobalClass.showToast_Error("Please upload Aadhaar Front");
+          return false;
+        }
+
+        if(adhaarBack==null){
+          GlobalClass.showToast_Error("Please upload Aadhaar Back");
+          return false;
+        }
+      }
+
+      if(kycScanningDataModel.drivingExists){
+        if(dlFront==null){
+          GlobalClass.showToast_Error("Please upload Driving License");
+          return false;
+        }
+      }
+
+      if(kycScanningDataModel.voterExists){
+        if(voterFront==null){
+          GlobalClass.showToast_Error("Please upload Voter Card Front");
+          return false;
+        }
+
+        if(voterback==null){
+          GlobalClass.showToast_Error("Please upload Voter Card Back");
+          return false;
+        }
+      }
+      if(kycScanningDataModel.panExists){
+        if(panFront==null){
+          GlobalClass.showToast_Error("Please upload PAN Card");
+          return false;
+        }
+      }
+
+      if(kycScanningDataModel.passportExists){
+        if(passport==null){
+          GlobalClass.showToast_Error("Please upload Passport");
+          return false;
+        }
+      }
+
+      if(passbook==null){
+        GlobalClass.showToast_Error("Please upload Passbook");
+        return false;
+      }
+
+      return true;
+    }else{
+
+      if(kycScanningDataModel.grDocs[0].addharExists){
+        if(adhaarFront_coborrower==null){
+          GlobalClass.showToast_Error("Please upload CO-Borrower Aadhaar Front");
+          return false;
+        }
+
+        if(adhaarBack_coborrower==null){
+          GlobalClass.showToast_Error("Please upload CO-Borrower Aadhaar Back");
+          return false;
+        }
+      }
+
+      if(kycScanningDataModel.grDocs[0].drivingExists){
+        if(dlFront_coborrower==null){
+          GlobalClass.showToast_Error("Please upload CO-Borrower Driving License");
+          return false;
+        }
+      }
+
+      if(kycScanningDataModel.grDocs[0].voterExists){
+        if(voterFront_coborrower==null){
+          GlobalClass.showToast_Error("Please upload CO-Borrower Voter Card Front");
+          return false;
+        }
+
+        if(voterback_coborrower==null){
+          GlobalClass.showToast_Error("Please upload CO-Borrower Voter Card Back");
+          return false;
+        }
+      }
+      if(kycScanningDataModel.grDocs[0].panExists){
+        if(panFront_coborrower==null){
+          GlobalClass.showToast_Error("Please upload CO-Borrower PAN Card");
+          return false;
+        }
+      }
+
+
+
+
+
+      return true;
+    }
+
+
   }
 }

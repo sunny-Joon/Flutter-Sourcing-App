@@ -64,7 +64,7 @@ class GlobalClass {
   static void showUnsuccessfulAlert(BuildContext context,String Message,int a) {
     showAlert(
       context,
-      'Faliure',
+      'Failure',
       Message,
       Colors.blue,
       a
