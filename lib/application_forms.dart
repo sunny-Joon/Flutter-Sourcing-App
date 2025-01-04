@@ -528,14 +528,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+        canPop: false,
+        onPopInvoked: (bool value) {
+          _onWillPop();
+        },
+        child:  Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xFFD42D3F),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
             child: Column(
               children: [
                 SizedBox(
@@ -660,7 +665,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 SizedBox(height: 10),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -677,8 +682,66 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
         ),
       ),
+    ));
+  }
+  Future<void> _onWillPop() async {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Are you sure?',
+              style: TextStyle(
+                  color: Color(0xFFD42D3F),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Do you want to close Application form?',
+              style: TextStyle(color: Colors.black),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildShinyButton(
+                  'No',
+                      () {
+                    EasyLoading.dismiss();
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                _buildShinyButton(
+                  'Yes',
+                      () {
+                    EasyLoading.dismiss();
+                   Navigator.of(context).pop();
+                   Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    // return shouldClose ?? false; // Default to false if dismissed
+  }
+  Widget _buildShinyButton(String text, VoidCallback onPressed) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white, backgroundColor: Color(0xFFD42D3F), // foreground/text
+      ),
+      onPressed: onPressed,
+      child: Text(text),
     );
   }
+
 
   Widget _getStepContent() {
     switch (_currentStep) {
@@ -1819,7 +1882,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           height: 10,
         ),
         Text(
-          'Schooling Children',
+          'School Going Children',
           style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
         ),
         SizedBox(
@@ -2617,7 +2680,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FinancialInfoEditable,
                       _bank_AcFocus,
-                      20),
+                      11),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
@@ -5179,6 +5242,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please select village");
 
       return false;
+    }else if (selectedResidingFor == null) {
+      showToast_Error("Please select years of residing");
+
+      return false;
+    }else if (selectedProperty == null) {
+      showToast_Error("Please select property in acres");
+
+      return false;
+    }else if (selectedPresentHouseOwner == null) {
+      showToast_Error("Please select house owner type");
+
+      return false;
     }
     return true;
   }
@@ -5195,7 +5270,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     } else if (selectedschoolingChildren == null ||
         selectedschoolingChildren!.isEmpty ||
         selectedschoolingChildren!.toLowerCase() == 'select') {
-      showToast_Error("Please Select Schooling Children");
+      showToast_Error("Please Select School Going Children");
       return false;
     } else if (selectedotherDependents == null ||
         selectedotherDependents!.isEmpty ||
@@ -5216,6 +5291,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedBusiness!.isEmpty ||
         selectedBusiness!.toLowerCase() == 'select') {
       showToast_Error("Please Select Business");
+      return false;
+    }else if (_currentEMIController.text.isEmpty) {
+      showToast_Error("Please Enter Current EMIs Amount");
       return false;
     } else if (selectedHomeType == null ||
         selectedHomeType!.isEmpty ||
@@ -5247,10 +5325,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedBusinessExperience!.toLowerCase() == 'select') {
       showToast_Error("Please Select Business Experience");
       return false;
-    } else if (_currentEMIController.text.isEmpty) {
-      showToast_Error("Please Enter Current EMIs Amount");
-      return false;
-    } else if (_future_IncomeController.text.isEmpty) {
+    }  else if (_future_IncomeController.text.isEmpty) {
       showToast_Error("Please Enter Future Income");
       return false;
     } else if (_agriculture_incomeController.text.isEmpty) {
