@@ -22,7 +22,7 @@ class _referandearnactivitystate extends State<referandearnactivity> {
   void fetchReferralCode() async {
     await Future.delayed(Duration(seconds: 2));
 
-    String fetchedReferralCode = "rps123";
+    String fetchedReferralCode = "ZAXM2345D";
     setState(() {
       referralCodeController.text = fetchedReferralCode;
     });
@@ -75,135 +75,146 @@ class _referandearnactivitystate extends State<referandearnactivity> {
               ),
             ),
 
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => howtoreferactivity(
-                      referralCode: referralCodeController.text,
-                    ),
-                  ),
-                );
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: 180,
-                child: SvgPicture.asset(
-                  'assets/Images/earn1.svg',
-                  fit: BoxFit.fill,
-                ),
-              ),
-            ),
-
-            SizedBox(height: 15),
-
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 180,
-                  child: SvgPicture.asset(
-                    'assets/Images/Vector.svg',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Column(
-                  children: [
-                    Text(
-                      'Your Referral Code',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-
-                    // Dynamic referral code
-                    Text(
-                      referralCodeController.text.isNotEmpty
-                          ? referralCodeController.text
-                          : 'Loading...',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[700],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-
-                    SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildInfoCard(
-                          title: 'Total Referral Friends',
-                          value: '0',
+            Container(
+              height: MediaQuery.of(context).size.height -120,
+              child:
+            SingleChildScrollView(
+              child: Column(children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => howtoreferactivity(
+                          referralCode: referralCodeController.text,
                         ),
-                        _buildInfoCard(
-                          title: 'Total Cashback Earned',
-                          value: '0',
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 180,
+                    child: SvgPicture.asset(
+                      'assets/Images/earn1.svg',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 15),
+
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: 180,
+                      child: SvgPicture.asset(
+                        'assets/Images/Vector.svg',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          'Your Referral Code',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+
+                        // Dynamic referral code
+                        Text(
+                          referralCodeController.text.isNotEmpty
+                              ? referralCodeController.text
+                              : 'Loading...',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[700],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+
+                        SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildInfoCard(
+                              title: 'Total Referral Friends',
+                              value: '0',
+                            ),
+                            _buildInfoCard(
+                              title: 'Total Cashback Earned',
+                              value: '0',
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ],
                 ),
-              ],
-            ),
 
-            SizedBox(height: 15),
+                SizedBox(height: 15),
 
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => getrewardactivity(
-                      referralCode:
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => getrewardactivity(
+                          referralCode:
                           referralCodeController.text,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 180,
+                    child: SvgPicture.asset(
+                      'assets/Images/earn3.svg',
+                      fit: BoxFit.fill,
                     ),
                   ),
-                );
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: 180,
-                child: SvgPicture.asset(
-                  'assets/Images/earn3.svg',
-                  fit: BoxFit.fill,
                 ),
-              ),
-            ),
 
-            SizedBox(height: 20),
+                SizedBox(height: 20),
 
-            // Refer Now Button
-            ElevatedButton(
-              onPressed: () {
-                String shareMessage =
-                    "Join Paisalo group with my referral code *${referralCodeController.text}* to get more benefits. "
-                    "Register on this link https://www.paisalo.in/home/cso with my referral code to become a CSO.";
+                // Refer Now Button
+                ElevatedButton(
+                  onPressed: () {
+                    String shareMessage =
+                        "Join Paisalo group with my referral code *${referralCodeController.text}* to get more benefits. "
+                        "Register on this link https://www.paisalo.in/home/cso with my referral code to become a CSO.";
 
-                try {
-                  Share.share(shareMessage);
-                  print("Message shared: $shareMessage");
-                } catch (e) {
-                  print("Error sharing message: $e");
-                }
-              },
-              child: Text("REFER NOW"),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Color(
-                  0xFFC01024), // Text color
-                elevation: 5, // Elevation
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12), // Rounded corners
+                    try {
+                      Share.share(shareMessage);
+                      print("Message shared: $shareMessage");
+                    } catch (e) {
+                      print("Error sharing message: $e");
+                    }
+                  },
+                  child: Text("REFER NOW"),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white, backgroundColor: Color(
+                      0xFFC01024), // Text color
+                    elevation: 5, // Elevation
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12), // Rounded corners
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15), // Padding
+                    textStyle: TextStyle(fontSize: 20), // Text style
+                  ),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15), // Padding
-                textStyle: TextStyle(fontSize: 20), // Text style
-              ),
-            )
+                SizedBox(height: 20),
+
+              ],),
+            ),)
+
+
           ],
         ),
       ),
