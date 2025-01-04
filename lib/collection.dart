@@ -152,257 +152,260 @@ class _CollectionState extends State<Collection>
               ),
               SizedBox(height: 20),
               Container(
+                height: MediaQuery.of(context).size.height-150,
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Column(
-                  children: [
-                    TabBar(
-                      controller: _tabController,
-                      labelColor: Colors.white,
-                      unselectedLabelColor: Colors.black,
-                      indicatorColor: Color(0xFFD42D3F),
-                      tabAlignment: TabAlignment.fill,
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicator: BoxDecoration(
-                        color: Colors.grey.shade400,
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                      tabs: [
-                        Tab(
-                          text: 'Cash',
-                        ),
-                        Tab(text: 'QR'),
-                        Tab(text: 'Lump sum'),
-                      ],
-                    ),
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                              text: 'Case Code: ',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight:
-                                      FontWeight.bold)), // Static text color
-                          TextSpan(
-                              text: casecode,
-                              style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight:
-                                      FontWeight.bold)), // Dynamic text color
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height / 2.1,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.grey.shade100, Colors.grey.shade300],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      margin: EdgeInsets.all(0), // Adjust height as needed
-                      child: TabBarView(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      TabBar(
                         controller: _tabController,
-                        children: [
-                          cashPaymentWidget(),
-                          qrPaymentWidget(),
-                          lumsumPaymentWidget(),
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.black,
+                        indicatorColor: Color(0xFFD42D3F),
+                        tabAlignment: TabAlignment.fill,
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        indicator: BoxDecoration(
+                          color: Colors.grey.shade400,
+                          borderRadius: BorderRadius.circular(0),
+                        ),
+                        tabs: [
+                          Tab(
+                            text: 'Cash',
+                          ),
+                          Tab(text: 'QR'),
+                          Tab(text: 'Lump sum'),
                         ],
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: Text.rich(
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                                text: 'Case Code: ',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight:
+                                    FontWeight.bold)), // Static text color
+                            TextSpan(
+                                text: casecode,
+                                style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight:
+                                    FontWeight.bold)), // Dynamic text color
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height / 2.1,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.grey.shade100, Colors.grey.shade300],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                        margin: EdgeInsets.all(0), // Adjust height as needed
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: [
+                            cashPaymentWidget(),
+                            qrPaymentWidget(),
+                            lumsumPaymentWidget(),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                            text: 'Borrower: ',
+                                            style: TextStyle(
+                                                color: Colors
+                                                    .black)), // Static text color
+                                        TextSpan(
+                                            text: borrower,
+                                            style: TextStyle(
+                                                color: Colors
+                                                    .green)), // Dynamic text color
+                                      ],
+                                    ),
+                                    maxLines:
+                                    2, // Allow text to wrap to a second line if necessary
+                                    overflow: TextOverflow
+                                        .ellipsis, // Handle overflow gracefully
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text.rich(
                                   TextSpan(
                                     children: [
                                       TextSpan(
-                                          text: 'Borrower: ',
+                                          text: 'Interest Amount: ₹',
                                           style: TextStyle(
                                               color: Colors
                                                   .black)), // Static text color
                                       TextSpan(
-                                          text: borrower,
+                                          text: interestAmount.toString(),
                                           style: TextStyle(
                                               color: Colors
                                                   .green)), // Dynamic text color
                                     ],
                                   ),
-                                  maxLines:
-                                      2, // Allow text to wrap to a second line if necessary
-                                  overflow: TextOverflow
-                                      .ellipsis, // Handle overflow gracefully
                                 ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text.rich(
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                        text: 'Interest Amount: ₹',
-                                        style: TextStyle(
-                                            color: Colors
-                                                .black)), // Static text color
-                                    TextSpan(
-                                        text: interestAmount.toString(),
-                                        style: TextStyle(
-                                            color: Colors
-                                                .green)), // Dynamic text color
-                                  ],
+                                Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                          text: 'Late Fee: ₹',
+                                          style: TextStyle(
+                                              color: Colors
+                                                  .black)), // Static text color
+                                      TextSpan(
+                                          text: lateFee.toString(),
+                                          style: TextStyle(
+                                              color: Colors
+                                                  .green)), // Dynamic text color
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Text.rich(
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                        text: 'Late Fee: ₹',
-                                        style: TextStyle(
-                                            color: Colors
-                                                .black)), // Static text color
-                                    TextSpan(
-                                        text: lateFee.toString(),
-                                        style: TextStyle(
-                                            color: Colors
-                                                .green)), // Dynamic text color
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                    text: 'Amount to be pay: ₹',
-                                    style: TextStyle(
-                                        color:
-                                            Colors.black)), // Static text color
-                                TextSpan(
-                                    text: "$totalAmountToPay",
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight
-                                            .bold)), // Dynamic text color
                               ],
                             ),
-                          ),
-                          SizedBox(height: 10),
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                    text: 'Amount you are paying: ₹',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight
-                                            .bold)), // Static text color
-                                TextSpan(
-                                    text: "$showingTotalAmout",
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight
-                                            .bold)), // Dynamic text color
-                              ],
-                            ),
-                          ),
-                          if (flagLS)
                             Text.rich(
                               TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: 'Lump Sum Amount: ₹',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  // Static text color
+                                      text: 'Amount to be pay: ₹',
+                                      style: TextStyle(
+                                          color:
+                                          Colors.black)), // Static text color
                                   TextSpan(
-                                    text: totalAmount.toString(),
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  // Dynamic text color
+                                      text: "$totalAmountToPay",
+                                      style: TextStyle(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight
+                                              .bold)), // Dynamic text color
                                 ],
                               ),
                             ),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (buttonName == "Submit") {
-                                saveReceipt(context, 0);
-                              } else if (buttonName == "Check Payment Status") {
-                                responsecheck(context,widget.selectedData.caseCode);
-                              } else if (buttonName == "Submit Lump Sum") {
-                                saveReceipt(context, 1);
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors
-                                  .transparent, // Make the button background transparent
-                              shadowColor: Colors
-                                  .transparent, // Remove the default shadow
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12,
-                                  horizontal: 32), // Button padding
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(8), // Rounded corners
+                            SizedBox(height: 10),
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                      text: 'Amount you are paying: ₹',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight
+                                              .bold)), // Static text color
+                                  TextSpan(
+                                      text: "$showingTotalAmout",
+                                      style: TextStyle(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight
+                                              .bold)), // Dynamic text color
+                                ],
                               ),
                             ),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.grey.shade200, // Start with white
-                                    Colors
-                                        .grey.shade400, // Light grey end color
+                            if (flagLS)
+                              Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Lump Sum Amount: ₹',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    // Static text color
+                                    TextSpan(
+                                      text: totalAmount.toString(),
+                                      style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    // Dynamic text color
                                   ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
                                 ),
-                                borderRadius: BorderRadius.circular(
-                                    8), // Rounded corners for the gradient
                               ),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                  minHeight:
-                                      48, // Minimum height for the button
+                            ElevatedButton(
+                              onPressed: () {
+                                if (buttonName == "Submit") {
+                                  saveReceipt(context, 0);
+                                } else if (buttonName == "Check Payment Status") {
+                                  responsecheck(context,widget.selectedData.caseCode);
+                                } else if (buttonName == "Submit Lump Sum") {
+                                  saveReceipt(context, 1);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors
+                                    .transparent, // Make the button background transparent
+                                shadowColor: Colors
+                                    .transparent, // Remove the default shadow
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12,
+                                    horizontal: 32), // Button padding
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(8), // Rounded corners
                                 ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  buttonName,
-                                  style: TextStyle(
-                                    fontFamily: "Poppins-Regular",
-                                    fontSize: 16,
-                                    color: Colors.black, // Text color
+                              ),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.grey.shade200, // Start with white
+                                      Colors
+                                          .grey.shade400, // Light grey end color
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                      8), // Rounded corners for the gradient
+                                ),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                    minHeight:
+                                    48, // Minimum height for the button
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    buttonName,
+                                    style: TextStyle(
+                                      fontFamily: "Poppins-Regular",
+                                      fontSize: 16,
+                                      color: Colors.black, // Text color
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                )
               ),
             ],
           ),
