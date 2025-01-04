@@ -54,7 +54,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool _isPageLoading = false;
   int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
-  bool _isEditing = false;
+
   bool personalInfoEditable = true;
   bool FiFamilyEditable = true;
   bool FiIncomeEditable = true;
@@ -63,6 +63,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool GuarantorEditable = true;
   bool borrowerDocsUploded = false;
   bool UploadFiDocsEditable = true;
+  bool editButtonFunctionOn=false;
 
   String pageTitle = "Personal Info";
 
@@ -671,7 +672,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       _buildPreviousButton(),
                       SizedBox(width: 8),
-                      _buildEditButton(),
+                      editButtonFunctionOn?
+                      _buildEditButton():SizedBox(),
                       SizedBox(width: 8),
                       _buildNextButton(),
                     ],
@@ -684,6 +686,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       ),
     ));
   }
+
   Future<void> _onWillPop() async {
     showDialog(
       barrierDismissible: false,
@@ -732,6 +735,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
     // return shouldClose ?? false; // Default to false if dismissed
   }
+
   Widget _buildShinyButton(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
@@ -3974,6 +3978,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
         //  fixtraEditable,FiIncomeEditable,FinancialInfoEditable,GuarantorEditable,UploadFiDocsEditable,FiFamilyEditable,femMemIncomeEditable
         onPressed: () {
+          setState(() {
+            editButtonFunctionOn=true;
+          });
           if (_currentStep == 0) {
             setState(() {});
           } else if (_currentStep == 1) {
@@ -4008,6 +4015,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             });
           } else if (_currentStep == 7) {
             setState(() {
+              editButtonFunctionOn=false;
               pageTitle = "Upload Docs";
               _currentStep -= 1;
             });
@@ -4067,7 +4075,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           }
         },
         child: Text(
-          _isEditing ? "SAVE" : "EDIT",
+           "EDIT",
           style: TextStyle(
               fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 13),
         ),
@@ -4155,6 +4163,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 _currentStep++;
                 pageTitle = "Upload Docs";
+                editButtonFunctionOn=false;
               });
             }
           } else if (_currentStep == 6) {
@@ -4164,6 +4173,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 _currentStep++;
                 pageTitle = "Upload Gr Docs";
+                editButtonFunctionOn=false;
               });
             }
           } else if (_currentStep == 7) {
@@ -4283,7 +4293,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     required String subType,
 
     required Function(File) onImagePicked,
-  }) {
+  })
+  {
     String baseUrl = 'https://predeptest.paisalo.in:8084';
     String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
     String finalUrl = '$baseUrl/$modifiedPath';
@@ -4346,7 +4357,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   break;
                 case 2:
                   OSVVerified = await OcrDocsScanning('passbook',
-                      BorrowerInfo[0].passbook, "borrower", context);
+                      "1", "borrower", context);
                   if (OSVVerified) {
                     passbook = pickedImage;
                   }
@@ -4481,7 +4492,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-  List<Widget> _buildKycDocumentList({required bool isStepSeven}) {
+  List<Widget> _buildKycDocumentList({required bool isStepSeven})
+  {
     List<Widget> listItems = [];
     if (_isPageLoading) {
       if (isStepSeven) {
@@ -5170,7 +5182,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       return false;
     } else if (selectedCast == null ||
         selectedCast!.toLowerCase() == "select") {
-      showToast_Error("Please select Dependents");
+      showToast_Error("Please select cast");
       return false;
     } else if (resCatController.text.isEmpty) {
       showToast_Error("Please enter Reservation Category");
@@ -5188,7 +5200,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       return false;
     } else if (selectedspecialAbility == null ||
         selectedspecialAbility!.toLowerCase() == "select") {
-      showToast_Error("Please select Dependents");
+      showToast_Error("Please select special ability");
       return false;
     } else if (selectedSpecialSocialCategory == null ||
         selectedSpecialSocialCategory!.toLowerCase() == "select") {
@@ -6782,6 +6794,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             Duration.zero, () => showIDCardDialog(context, BorrowerInfo[0]));
 
         if (!value.data[0].placeOfBirth.isEmpty) {
+
           personalInfo(value.data[0]);
         }
         if (!value.data[0].motheRFirstName.isEmpty) {
@@ -6815,6 +6828,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void personalInfo(ApplicationgetAllDataModel data) {
     setState(() {
+      editButtonFunctionOn=true;
       personalInfoEditable = false;
       // FIID,
       emailIdController.text = data.emailId;
@@ -6859,6 +6873,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void familyDetails(ApplicationgetAllDataModel data) {
     setState(() {
+      editButtonFunctionOn=true;
       FiFamilyEditable = false;
       _motherFController.text = data.motheRFirstName;
       _motherMController.text = data.motheRMiddleName;
@@ -6871,6 +6886,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void fiIncomeExpenses(ApplicationgetAllDataModel data) {
     setState(() {
+      editButtonFunctionOn=true;
       FiIncomeEditable = false;
       selectedOccupation = data.fiIncomeExpenses[0].inExOccupation;
       selectedBusiness = data.fiIncomeExpenses[0].inExBusinessDetail;
@@ -6919,6 +6935,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void financialInfo(ApplicationgetAllDataModel data) {
     setState(() {
       FinancialInfoEditable = false;
+      editButtonFunctionOn=true;
       // selectedAccountType = data.bankAc;
       //   selectedBankName = data.bankName;
       _bank_AcController.text = data.bankAc;
@@ -6931,6 +6948,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void femMemIncome(ApplicationgetAllDataModel data) {
     setState(() {
       femMemIncomeEditable = false;
+      editButtonFunctionOn=true;
 
       _femNameController.text = data.familyMembers[0].famName;
       _AgeController.text = data.familyMembers[0].famAge.toString();
@@ -6950,6 +6968,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void guarrantors(ApplicationgetAllDataModel data) {
     setState(() {
       GuarantorEditable = false;
+      editButtonFunctionOn=true;
+
       selectedTitle = data.guarantors[0].grTitle;
       _fnameController.text = data.guarantors[0].grFname;
       _mnameController.text = data.guarantors[0].grMname;
