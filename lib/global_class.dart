@@ -64,14 +64,13 @@ class GlobalClass {
   static void showUnsuccessfulAlert(BuildContext context,String Message,int a) {
     showAlert(
       context,
-      'Faliure',
+      'Failure',
       Message,
       Colors.blue,
       a
     );
   }
 
-  // Method to show a network error alert
   static void showErrorAlert(BuildContext context,String Message,int a) {
     showAlert(
       context,

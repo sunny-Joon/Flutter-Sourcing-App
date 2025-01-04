@@ -224,7 +224,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                       _buildTextField2('क्षेत्र', _AreaCodeController, TextInputType.text),
                       _buildTextField2('समूह', _GroupCodeController, TextInputType.text),
                       _buildTextField2('केन्द्र', _CenterController, TextInputType.text),
-                      _buildTextField2('ग्राह के लिये ऋण उपयोग के प्रतिशत का उल्लेख करें।', _LoanUsagePercentageController, TextInputType.number),
+                      _buildTextField2('ग्राहक के लिये ऋण उपयोग के प्रतिशत का उल्लेख करें।', _LoanUsagePercentageController, TextInputType.number),
                       _buildTextField2('व्यापार से अनुमानित मासिक आय (रुपयों में)', _monthlyIncomeController, TextInputType.number),
                       _buildTextField2('अनुमानित मासिक बिक्री (रुपयों में)(या तो सेल का कोई रिकार्ड है उससे सत्यापन करें या ग्राहक से विचार विमर्श के माध्यम से)', _monthlySalesController, TextInputType.number),
                       _buildTextField2('साक्षात्कार किये गये व्यक्ति का नाम', _NameofInterviewedController, TextInputType.name),
