@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sourcing_app/visit_report_page.dart';
 import 'kyc.dart';
 import 'branch_list_page.dart';
+import 'notifications.dart';
 
 class OnBoarding extends StatefulWidget {
 
@@ -25,25 +26,12 @@ class _OnboardingState extends State<OnBoarding>{
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  InkWell(
-                    child: Container(
-                      // decoration: BoxDecoration(
-                      //   color: Colors.white,
-                      //   border: Border.all(
-                      //       width: 1, color: Colors.grey.shade300),
-                      //   borderRadius: BorderRadius.all(Radius.circular(5)),
-                      // ),
-                      height: 40,
-                      width: 40,
-                      // alignment: Alignment.center,
-                      // child: Center(
-                      //   child: Icon(Icons.arrow_back_ios_sharp, size: 16),
-                      // ),
-                    ),
-                    // onTap: () {
-                    //   setState(() {
-                    //     Navigator.pop(context);                  });
-                    // },
+                  IconButton(
+                      onPressed: (){
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => NotificationPage()));
+                      },
+                      icon: Icon(Icons.notification_add,color: Colors.white,)
                   ),
                   Center(
                     child: Text(
