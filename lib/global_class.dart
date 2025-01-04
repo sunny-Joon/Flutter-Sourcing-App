@@ -71,7 +71,6 @@ class GlobalClass {
     );
   }
 
-  // Method to show a network error alert
   static void showErrorAlert(BuildContext context,String Message,int a) {
     showAlert(
       context,

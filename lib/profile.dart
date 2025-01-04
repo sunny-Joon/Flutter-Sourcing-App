@@ -903,24 +903,28 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
     });
   }
 
-  // Function to handle the "Submit" button
   void _onSubmit() async {
     if (_deviceSirNoController.text.isEmpty) {
-      GlobalClass.showErrorAlert(
-          context, "Please Enter Correct S/N of morpho device", 1);
-    } else {
-      try {
-        Map<String, dynamic> locationData =
-            await currentLocation().getCurrentLocation();
-        var _latitude = locationData['latitude'] ?? 0.0;
-        var _longitude = locationData['longitude'] ?? 0.0;
+      GlobalClass.showErrorAlert(context, "Please enter Your Morpho S/N.", 1);
+      return;
+    }
 
-        await _MorphoRechargeApi(context, _latitude, _longitude);
-      } catch (e) {
-        print("Error getting current location: $e");
-      }
+    if (_deviceSirNoController.text.length != 11) {
+      GlobalClass.showErrorAlert(context, "Invalid Morpho S/N. Please check and try again.", 1);
+      return;
+    }
+
+    try {
+      Map<String, dynamic> locationData = await currentLocation().getCurrentLocation();
+      var _latitude = locationData['latitude'] ?? 0.0;
+      var _longitude = locationData['longitude'] ?? 0.0;
+
+      await _MorphoRechargeApi(context, _latitude, _longitude);
+    } catch (e) {
+      print("Error getting current location: $e");
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
