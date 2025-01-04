@@ -798,88 +798,113 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         // Control this flag to enable/disable fields
 
-        Row(
+         Padding(
+            padding: const EdgeInsets.only(right: 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Dependent Persons',
+                  style: TextStyle(
+                    fontFamily: "Poppins-Regular",
+                    fontSize: 13, // Consistent font size
+                    color: Colors.black, // Optional for consistency
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                SizedBox(height: 16),
+                Container(
+                  //height: 55,
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: DropdownButton<String>(
+                    value: selectedDependent,
+                    isExpanded: true,
+                    iconSize: 24,
+                    elevation: 16,
+                    style: TextStyle(
+                      fontFamily: "Poppins-Regular",
+                      fontSize: 13, // Consistent font size
+                      color: Colors.black,
+                    ),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.transparent,
+                    ),
+                    onChanged: personalInfoEditable
+                        ? (String? newValue) {
+                      setState(() {
+                        selectedDependent = newValue!;
+                      });
+                    }
+                        : null,
+                    items: onetonine.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                            fontFamily: "Poppins-Regular",
+                            fontSize: 13, // Consistent font size
+                            color: Colors.black,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+       /* Row(
           children: [
             // Dependent Persons Column
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 0.0),
-                // Gap of 5 to the right for the first column
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // Align children to the start of the column
-                  children: [
-                    Text(
-                      'Dependent Persons',
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular", fontSize: 13),
-                      textAlign: TextAlign.left,
-                    ),
-                    SizedBox(height: 1),
-                    // Add some spacing between the Text and Container
-                    Container(
-                      height: 55,
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: DropdownButton<String>(
-                        value: selectedDependent,
-                        isExpanded: true,
-                        iconSize: 24,
-                        elevation: 16,
-                        style: TextStyle(
-                            fontFamily: "Poppins-Regular",
-                            color: Colors.black,
-                            fontSize: 13),
-                        underline: Container(
-                          height: 2,
-                          color: Colors.transparent,
-                        ),
-                        onChanged: personalInfoEditable
-                            ? (String? newValue) {
-                                setState(() {
-                                  selectedDependent = newValue!;
-                                });
-                              }
-                            : null,
-                        // Disable onChanged when isEnabled is false
-                        items: onetonine.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+
             SizedBox(width: 10), // Gap of 10 between the two columns
 
-            // Reservation Category Column
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 5.0),
-                // Gap of 5 to the left for the second column
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // Align children to the start of the column
-                  children: [
-                    _buildTextField(
-                      'Reservation Category',
-                      resCatController,
-                      personalInfoEditable,
-                      _resCatFocus,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // Flexible(
+            //   child: Padding(
+            //     padding: const EdgeInsets.only(left: 5.0),
+            //     child: Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         Text(
+            //           'Reservation Category',
+            //           style: TextStyle(
+            //             fontFamily: "Poppins-Regular",
+            //             fontSize: 13, // Consistent font size
+            //             color: Colors.black, // Optional for consistency
+            //           ),
+            //           textAlign: TextAlign.left,
+            //         ),
+            //         SizedBox(height: 1),
+            //         TextField(
+            //           controller: resCatController,
+            //           focusNode: _resCatFocus,
+            //           enabled: personalInfoEditable,
+            //           style: TextStyle(
+            //             fontFamily: "Poppins-Regular",
+            //             fontSize: 13, // Consistent font size
+            //             color: Colors.black,
+            //           ),
+            //           decoration: InputDecoration(
+            //             border: OutlineInputBorder(
+            //               borderRadius: BorderRadius.circular(5),
+            //             ),
+            //             contentPadding: EdgeInsets.symmetric(horizontal: 12),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
           ],
-        ),
+        )*/
+
 
         SizedBox(height: 10),
 
@@ -2038,7 +2063,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             Flexible(
               child: _buildTextField2(
-                  'Current EMI Amount',
+                  'Current EMI',
                   _currentEMIController,
                   TextInputType.number,
                   FiIncomeEditable,
@@ -2213,7 +2238,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Living With Spouse',
+                    'Leave With Spouse',
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2262,7 +2287,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'No of Earning Member',
+                    'Earning Member',
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2463,7 +2488,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           child: Center(
             // Center widget to center the text inside the container
             child: Text(
-              'EXPENSES',
+              'EXPENSES ON',
               style: TextStyle(
                 fontFamily: "Poppins-Regular",
                 color: Colors.white,
@@ -2529,7 +2554,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Expense On Children',
+                      'Children',
                       _spendOnChildrenController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2828,7 +2853,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 child: Column(
                   children: [
                     Text(
-                      'Relation With Borrower',
+                      'Relation',
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -5091,11 +5116,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedCast!.toLowerCase() == "select") {
       showToast_Error("Please select Dependents");
       return false;
-    } else if (resCatController.text.isEmpty) {
+    } /*else if (resCatController.text.isEmpty) {
       showToast_Error("Please enter Reservation Category");
       _resCatFocus.requestFocus();
       return false;
-    } else if (mobileController.text.isEmpty ||
+    }*/ else if (mobileController.text.isEmpty ||
         mobileController.text.length != 10 ||
         !mobileController.text.contains(RegExp(r'^[0-9]{10}$'))) {
       showToast_Error("Please enter correct Mobile Number");
@@ -5515,7 +5540,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "email_Id": emailIdController.text,
       "place_Of_Birth": placeOfBirthController.text,
       "depedent_Person": selectedDependent,
-      "reservatioN_CATEGORY": resCatController.text,
+      "reservatioN_CATEGORY": "",
       "religion": selectedReligionextra ?? "",
       "Cast": selectedCast,
       "current_Phone": mobileController.text,
