@@ -446,6 +446,14 @@ abstract class ApiService {
       @Part( name:"Address") String Address,
       @Part( name: "Image") File Picture );
 
+  @POST("Collection/InsertQrSettlement")
+  @MultiPart()
+  Future <GlobalModel> InsertQrSettlement(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Part( name:"SmCode") String SmCode,
+      @Part( name: "picture") File picture );
+
   @GET("FiSourcing/GetDataForEsign")
   Future<BorrowerListModel> BorrowerList(
       @Header("Authorization") String token,

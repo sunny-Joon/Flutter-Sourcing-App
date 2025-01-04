@@ -78,7 +78,7 @@ class _CollectionState extends State<Collection>
           updateTotalAmount();
           buttonName = "Submit";
         });
-      }
+      };
     });
     updateTotalAmount();
   }
