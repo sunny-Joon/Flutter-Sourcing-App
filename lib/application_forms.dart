@@ -7112,6 +7112,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             onWillPop: () async =>
                 false, // Prevent closing dialog with back button
             child: AlertDialog(
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -7122,6 +7123,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       ))),
               content: SingleChildScrollView(
                 child: Container(
+                  color: Colors.white,
                   width: 300,
                   padding: EdgeInsets.all(20),
                   child: Column(
@@ -7184,7 +7186,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          ElevatedButton(
+                          /*ElevatedButton(
                             onPressed: () {
                               print('Verification Confirmed');
                               Navigator.of(context).pop();
@@ -7196,8 +7198,92 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 10),
                             ),
+                          ),*/
+                          GestureDetector(
+                            onTap: (){
+                              print('Verification Confirmed');
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.redAccent, Color(0xFFD42D3F)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.4),
+                                    blurRadius: 10,
+                                    offset: Offset(5, 5),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Verify',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 10.0,
+                                        color: Colors.black.withOpacity(0.5),
+                                        offset: Offset(2.0, 2.0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                          ElevatedButton(
+
+                          GestureDetector(
+                            onTap: (){
+                              print('Verification Rejected');
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.redAccent, Color(0xFFD42D3F)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.4),
+                                    blurRadius: 10,
+                                    offset: Offset(5, 5),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Reject',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 10.0,
+                                        color: Colors.black.withOpacity(0.5),
+                                        offset: Offset(2.0, 2.0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          /*ElevatedButton(
                             onPressed: () {
                               print('Verification Rejected');
                               Navigator.of(context).pop();
@@ -7210,7 +7296,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 10),
                             ),
-                          ),
+                          ),*/
                         ],
                       ),
                     ],

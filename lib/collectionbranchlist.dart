@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'api_service.dart';
 import 'global_class.dart';
+import 'notifications.dart';
 
 class CollectionBranchListPage extends StatefulWidget {
   @override
@@ -83,10 +84,12 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: 40,
-                  width: 40,
-                  alignment: Alignment.center,
+                IconButton(
+                    onPressed: (){
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => NotificationPage()));
+                    },
+                    icon: Icon(Icons.notification_add,color: Colors.white,)
                 ),
                 Center(
                   child: Image.asset(

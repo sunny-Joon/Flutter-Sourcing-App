@@ -6,6 +6,7 @@ import 'Models/leader_board_model.dart';
 import 'api_service.dart';
 import 'const/appcolors.dart';
 import 'global_class.dart';
+import 'notifications.dart';
 
 class LeaderBoard extends StatefulWidget {
   @override
@@ -135,15 +136,12 @@ class _LeaderBoardState extends State<LeaderBoard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InkWell(
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          alignment: Alignment.center,
-                        ),
-                        onTap: () {
-                          // Navigator.of(context).pop();
-                        },
+                      IconButton(
+                          onPressed: (){
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (context) => NotificationPage()));
+                          },
+                          icon: Icon(Icons.notification_add,color: Colors.white,)
                       ),
                       Column(
                         children: [

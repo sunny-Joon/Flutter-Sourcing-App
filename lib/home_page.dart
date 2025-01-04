@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 import 'api_service.dart';
+import 'notifications.dart';
 import 'target_car_gif.dart';
 import 'const/appcolors.dart';
 
@@ -114,20 +115,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  String _formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes.remainder(60);
-    final seconds = duration.inSeconds.remainder(60);
-    return [
-      if (hours > 0) twoDigits(hours),
-      twoDigits(minutes),
-      twoDigits(seconds),
-    ].join(":");
-  }
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,14 +192,43 @@ class _HomePageState extends State<HomePage> {
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                IconButton(
-                  icon: Icon(
-                    isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                    size: 30,
-                    color: Colors.white,
-                  ),
-                  onPressed: _toggleAppBar,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // First IconButton on the left
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => NotificationPage()),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.notification_add,
+                        color: Colors.white,
+                      ),
+                    ),
+                    // Spacer to move the second button to the center-right
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                            onPressed: _toggleAppBar,
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Blank space for the right side
+                    SizedBox(width: 48), // Can adjust size if needed
+                  ],
                 ),
+
                 SizedBox(height: 40), // Add some space at the top
                 Container(
                   width: MediaQuery.of(context).size.width - 30,

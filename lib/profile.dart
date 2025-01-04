@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api_service.dart';
 import 'global_class.dart';
 import 'login_page.dart';
+import 'notifications.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -274,7 +275,13 @@ class _ProfileState extends State<Profile> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(width: 50),
+                      IconButton(
+                          onPressed: (){
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (context) => NotificationPage()));
+                          },
+                          icon: Icon(Icons.notification_add,color: Colors.white,)
+                      ),
                       _buildCenterLogo(),
                       _buildLogoutButton(context),
                     ],
