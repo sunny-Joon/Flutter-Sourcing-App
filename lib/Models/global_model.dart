@@ -56,7 +56,7 @@ class GlobalDataModel {
     errormsg: json["errormsg"]??"",
     isvalid: json["isvalid"],
     financialStatus: json["financialStatus"]??"",
-    fiCode: json["fiCode"]??"",
+    fiCode: json["fiCode"]??0,
     appLink: json["appLink"]??"",
 
   );
