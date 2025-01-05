@@ -46,13 +46,13 @@ class _TargetSetPageState extends State<TargetSetPage> {
             Center(
                 child: Container(
                   width: MediaQuery.of(context).size.width-30, // Adjust the width as needed
-                  height: MediaQuery.of(context).size.height/2,
+                  height: MediaQuery.of(context).size.height/1.7,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
                           'assets/Images/card_bg.png'),
                       // Replace with your SVG file path
-                      fit: BoxFit.contain,
+                      fit: BoxFit.fill,
                     ),
                   ),
                   child: Column(
@@ -82,7 +82,11 @@ class _TargetSetPageState extends State<TargetSetPage> {
                         alignment: Alignment.center,
                         margin: EdgeInsets.symmetric(horizontal: 50),
                         decoration: BoxDecoration(
-                            color: Color(0xFFD42D3F)),
+                          gradient: LinearGradient(
+                            colors: [Colors.redAccent, Color(0xFFD42D3F)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),),
                         child: Text(
                           '${currencyFormatter.format(_targetedAmount)}',
                           style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 26, color: Colors.white),
@@ -104,18 +108,14 @@ class _TargetSetPageState extends State<TargetSetPage> {
                               RoundSliderOverlayShape(overlayRadius: 16.0),
                             ),
                             child: Slider(
-
                               onChanged: (double value) {
-
                                 setState(() {
                                   _targetedAmount = value * _maxAmount;
                                 });
                               },
-                              onChangeEnd: (double value) {
+                              /*onChangeEnd: (double value) {
                                 _setTarget(context,_targetedAmount.toInt());
-
-
-                              },
+                              },*/
                               min: 0.0,
                               max: 1.0,
                               divisions: _divisions,
@@ -123,6 +123,50 @@ class _TargetSetPageState extends State<TargetSetPage> {
                                   _maxAmount, // Optional: If needed for discrete values
                             ),
                           )),
+
+                      SizedBox(height: 10,),
+                      GestureDetector(
+                        onTap: (){
+                          _setTarget(context,_targetedAmount.toInt());
+                        },
+                        child: Container(
+                          width: 150,
+                          height: 45,
+                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Colors.redAccent, Color(0xFFD42D3F)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.4),
+                                blurRadius: 10,
+                                offset: Offset(5, 5),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Submit",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 10.0,
+                                    color: Colors.black.withOpacity(0.5),
+                                    offset: Offset(2.0, 2.0),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
 
                       // Optional space between image and other content
                     ],

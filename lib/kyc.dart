@@ -487,75 +487,88 @@ class _KYCPageState extends State<KYCPage> {
                         //  _buildProgressIndicator(),
                         SizedBox(height: 30),
                         _pageloading?CircularProgressIndicator(color: Colors.white,):Column(children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height - 244,
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
+                        Container(
+                        height: MediaQuery.of(context).size.height - 244,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 7,
+                          ),
+                        ],
+                      ),
+                      child: Form(
+                        key: _formKey,
+                        child: _getStepContent(context),
+                      ),
+                    ),
+                    Positioned(
+                      top: -35, // Adjust the position as needed
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: InkWell(
+                          onTap: () async {
+                            File? pickedFile = await GlobalClass().pickImage();
+                            setState(() {
+                              _imageFile = pickedFile;
+                            });
+                          },
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              ClipOval(
+                                child: Container(
+                                  width: 70,
+                                  height: 70,
+                                  color: Colors.grey.shade300,
+                                  child: _imageFile == null
+                                      ? Icon(
+                                    Icons.person,
+                                    size: 50.0,
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(16),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black,
-                                        blurRadius: 7,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Form(
-                                    key: _formKey,
-                                    child: _getStepContent(context),
+                                  )
+                                      : Image.file(
+                                    File(_imageFile!.path),
+                                    width: 70,
+                                    height: 70,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                                Positioned(
-                                    top: -35, // Adjust the position as needed
-                                    left: 0,
-                                    right: 0,
-                                    child: Center(
-                                      child: _imageFile == null
-                                          ? InkWell(
-                                        onTap:() async {
-                                          File? pickedFile=await GlobalClass().pickImage();
-                                          setState(()  {
-                                            _imageFile = pickedFile;
-                                          });
-                                        } ,
-                                        child: ClipOval(
-                                          child: Container(
-                                            width: 70,
-                                            height: 70,
-                                            color: Colors.grey,
-                                            child: Icon(
-                                              Icons.person,
-                                              size: 50.0,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                          : InkWell(
-                                        child: ClipOval(
-                                          child: Image.file(
-                                            File(_imageFile!.path),
-                                            width: 70,
-                                            height: 70,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        onTap:()async {
-                                          File? pickedFile=await GlobalClass().pickImage();
-                                          setState(()  {
-                                            _imageFile = pickedFile;
-                                          });
-                                        } ,
-                                      ),
-                                    )),
-                              ],
-                            ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  padding: EdgeInsets.all(5),
+                                  child: Icon(
+                                    Icons.edit,
+                                    size: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          SizedBox(
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(
                             height: 10,
                           ),
                           Row(

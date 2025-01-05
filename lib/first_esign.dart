@@ -21,6 +21,7 @@ import 'dart:io';
 import 'MasterAPIs/live_track_repository.dart';
 import 'Models/group_model.dart';
 import 'Models/branch_model.dart';
+import 'crif.dart';
 
 class FirstEsign extends StatefulWidget {
 
@@ -525,6 +526,15 @@ class _DialogContentState extends State<DialogContent> {
         if(value.responseMessage.statusCode==200){
           LiveTrackRepository().saveLivetrackData( "",   "ESign",widget.selectedBorrower.id);
           GlobalClass.showSuccessAlert(context,"ESign Has been done",3);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              //builder: (context) => ApplicationPage(),
+              builder: (context) => LoanEligibilityPage(
+                  ficode:widget.selectedBorrower.fiCode
+              ),
+            ),
+          );
           //Navigator.of(context).pop();
         }else{
           parseResponse(value);

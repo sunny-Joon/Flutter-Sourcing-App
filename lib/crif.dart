@@ -10,9 +10,9 @@ import 'api_service.dart';
 import 'global_class.dart';
 
 class LoanEligibilityPage extends StatefulWidget {
-  final int crifScore;
+  final int ficode;
 
-  LoanEligibilityPage({this.crifScore = 900});
+  LoanEligibilityPage({required this.ficode});
 
   @override
   _LoanEligibilityPageState createState() => _LoanEligibilityPageState();
@@ -23,23 +23,14 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
   late Animation<double> _animation;
   late List<BankNamesDataModel> bankNamesList = [];
   String? selectedBank;
-
+  double  crifScore = 0;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-    _BabnkNamesAPI(context);
+    initializeCrif(context);
 
-    _animation = Tween<double>(begin: 0, end: widget.crifScore.toDouble()).animate(_controller)
-      ..addListener(() {
-        setState(() {});
-      });
 
-    _controller.forward();
   }
 
 
@@ -52,37 +43,71 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Loan Eligibility'),
-        centerTitle: true,
-      ),
+      backgroundColor: Color(0xFFD42D3F),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            SizedBox(height: 42,),
+            Padding(padding: EdgeInsets.all(8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(width: 1, color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
+                      height: 40,
+                      width: 40,
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  Center(
+                    child: Image.asset(
+                      'assets/Images/logo_white.png', // Replace with your logo asset path
+                      height: 40,
+                    ),
+                  ),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                  ),
+                ],
+              ),
+            ),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 28.0),
                   CustomPaint(
                     size: Size(300, 150), // Adjust size if needed
                     painter: SemicircleProgressPainter(crifScore: _animation.value.toInt()),
                   ),
                   SizedBox(height: 16.0),
                   Text(
-                    'Your Score:',
-                    style: TextStyle(color: Colors.red),
+                    'Loan Eligibility',
+                    style: TextStyle(color: Colors.white,fontSize: 24),
                   ),
                   Text(
                     _animation.value.toInt().toString(),
-                    style: TextStyle(fontSize: 48.0),
+                    style: TextStyle(fontSize: 48.0,color: Colors.white),
                   ),
                 ],
               ),
             ),
-            Text(
+           /* Text(
               'BANK NAME',
               style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
               textAlign: TextAlign.left,
@@ -120,39 +145,42 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
                   );
                 }).toList(),
               ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
+            ),*/
+
+            /*Text(
               'Only 3 attempts to switch bank',
               style: TextStyle(color: Colors.red),
-            ),
-            SizedBox(height: 16.0),
+            ),*/
             // Error Message
-            Column(
-              children: [
-                Icon(
-                  Icons.close,
-                  color: Colors.red,
-                  size: 50.0,
+          Column(
+            children: [
+              Icon(
+                crifScore > 18 && crifScore <= 650 ? Icons.close : Icons.check,
+                color: crifScore > 18 && crifScore <= 650 ? Colors.red : Colors.green,
+                size: 150.0,
+              ),
+              Text(
+                crifScore > 18 && crifScore <= 650 ? 'Sorry!!' : 'Congratulations!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
                 ),
-                Text(
-                  'Sorry!!',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'No rules specified for selected bank',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ],
-            ),
+              ),
+              Text(
+                crifScore > 18 && crifScore <= 650
+                    ? 'You haven’t met the required criteria!'
+                    : 'You meet the required criteria!',
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
             SizedBox(height: 16.0),
             // Try Again Button
             GestureDetector(
-              onTap: (){},
+              onTap: (){
+                GlobalClass.showSuccessAlert(context, "Crif Generated", 3);
+              },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                 decoration: BoxDecoration(
@@ -172,7 +200,7 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
                 ),
                 child: Center(
                   child: Text(
-                    'Try Again',
+                    'OKAY',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -216,6 +244,38 @@ GlobalClass.showErrorAlert(context, "Bank Name List Not Fetched", 1);      }
     }).catchError((error) {
       EasyLoading.dismiss();
       GlobalClass.showUnsuccessfulAlert(context, "Bank Name Data not Fetched", 1);
+    });
+  }
+
+  Future<void> initializeCrif(BuildContext context) async {
+    EasyLoading.show(status: "Please wait...");
+
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl9);
+
+    return await api
+        .generateCrif(/*GlobalClass.creator*/"BAREILLY","261877")
+        .then((value) {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        setState(() {
+          crifScore = 565;
+          _controller = AnimationController(
+            duration: const Duration(seconds: 2),
+            vsync: this,
+          );
+          /* _BabnkNamesAPI(context);*/
+
+          _animation = Tween<double>(begin: 0, end: crifScore).animate(_controller)
+            ..addListener(() {
+              setState(() {});
+            });
+
+          _controller.forward();
+        });
+      } else {
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
+      }
     });
   }
 
@@ -290,13 +350,13 @@ class SemicircleProgressPainter extends CustomPainter {
     };
 
 
-    textPainter('18', Offset(size.width * -0.08, size.height * .87),TextStyle(color: Colors.black));
-    textPainter('300', Offset(size.width * 0.18, size.height * -0.02),TextStyle(color: Colors.black));
-    textPainter('450', Offset(size.width * 0.45, size.height * -0.15),TextStyle(color: Colors.black));
-    textPainter('650', Offset(size.width * 0.82, size.height * .1),TextStyle(color: Colors.black));
-    textPainter('750', Offset(size.width * 0.96, size.height * .4),TextStyle(color: Colors.black));
-    textPainter('900', Offset(size.width * 0.95, size.height * 1.05),TextStyle(color: Colors.black));
-    textPainter(' 0 ', Offset(size.width * -0.04, size.height * 1.05),TextStyle(color: Colors.black));
+    textPainter('18', Offset(size.width * -0.08, size.height * .87),TextStyle(color: Colors.white));
+    textPainter('300', Offset(size.width * 0.18, size.height * -0.02),TextStyle(color: Colors.white));
+    textPainter('450', Offset(size.width * 0.45, size.height * -0.15),TextStyle(color: Colors.white));
+    textPainter('650', Offset(size.width * 0.82, size.height * .1),TextStyle(color: Colors.white));
+    textPainter('750', Offset(size.width * 0.96, size.height * .4),TextStyle(color: Colors.white));
+    textPainter('900', Offset(size.width * 0.95, size.height * 1.05),TextStyle(color: Colors.white));
+    textPainter(' 0 ', Offset(size.width * -0.04, size.height * 1.05),TextStyle(color: Colors.white));
 
     textPainter('Very High', Offset(size.width * 0.75, size.height * 0.8), TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
     textPainter('High', Offset(size.width * 0.78, size.height * 0.39), TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
@@ -377,6 +437,7 @@ class SemicircleProgressPainter extends CustomPainter {
 
     canvas.drawPath(needlePath, needlePaint);
   }
+
 
 
 
