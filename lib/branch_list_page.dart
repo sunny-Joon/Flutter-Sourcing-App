@@ -75,84 +75,88 @@ class _BranchListPageState extends State<BranchListPage> {
     }).toList();
 
     return Scaffold(
-        backgroundColor: Color(0xFFD42D3F),
-        body: Column(
-          children: [
-            SizedBox(height: 50),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  widget.intentFrom == "COLLECTION" ? SizedBox() : InkWell(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 1, color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                      ),
-                      height: 40,
-                      width: 40,
-                      alignment: Alignment.center,
-                      child: Center(
-                        child: Icon(Icons.arrow_back_ios_sharp, size: 16),
-                      ),
+      backgroundColor: Color(0xFFD42D3F),
+      body: Column(
+        children: [
+          SizedBox(height: 50),
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                widget.intentFrom == "COLLECTION" ? SizedBox() : InkWell(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 1, color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
                     ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  Center(
-                    child: Image.asset(
-                      'assets/Images/logo_white.png', // Replace with your logo asset path
-                      height: 40,
-                    ),
-                  ),
-                  Container(
                     height: 40,
                     width: 40,
                     alignment: Alignment.center,
+                    child: Center(
+                      child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                    ),
                   ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 0, top: 0, left: 10, right: 10),
-              child: Card(
-                color: Colors.white,
-                elevation: 8,
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    prefixIcon: Icon(Icons.search),
-                  ),
-                  onChanged: (text) {
-                    setState(() {
-                      _searchText = text;
-                    });
+                  onTap: () {
+                    Navigator.of(context).pop();
                   },
                 ),
+                Center(
+                  child: Image.asset(
+                    'assets/Images/logo_white.png', // Replace with your logo asset path
+                    height: 40,
+                  ),
+                ),
+                Container(
+                  height: 40,
+                  width: 40,
+                  alignment: Alignment.center,
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Card(
+              color: Colors.white,
+              elevation: 8,
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search',
+                  prefixIcon: Icon(Icons.search, size: 20), // Ensure the icon size matches the font size
+                  contentPadding: EdgeInsets.symmetric(vertical: 12), // Aligns text vertically
+                  border: InputBorder.none,
+                ),
+                style: TextStyle(fontSize: 16), // Match the text size to the icon size
+                onChanged: (text) {
+                  setState(() {
+                    _searchText = text; // Update the search text
+                  });
+                },
               ),
             ),
-            Expanded(
-              child: _isLoading
-                  ? ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: 10,
-                itemBuilder: (context, index) => GlobalClass().ListShimmerItem(),
-              )
-                  : ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: filteredItems.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      final selectedItem = filteredItems[index];
-                  if(widget.intentFrom=='E SIGN'){
-                    _showPopup(context,selectedItem);
-                  }else{
-                    Navigator.push(
+          ),
+
+          Expanded(
+            child: _isLoading
+                ? ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: 10,
+              itemBuilder: (context, index) => GlobalClass().ListShimmerItem(),
+            )
+                : ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: filteredItems.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    final selectedItem = filteredItems[index];
+                    if(widget.intentFrom == 'E SIGN') {
+                      _showPopup(context, selectedItem);
+                    } else {
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => GroupListPage(
@@ -160,20 +164,18 @@ class _BranchListPageState extends State<BranchListPage> {
                               intentFrom: widget.intentFrom),
                         ),
                       );
-                  }
-
-
-
-                    },
-                    child: BranchRecyclerItem(item: filteredItems[index]),
-                  );
-                },
-              ),
+                    }
+                  },
+                  child: BranchRecyclerItem(item: filteredItems[index]),
+                );
+              },
             ),
-          ],
-        )
+          ),
+        ],
+      ),
     );
   }
+
 
   void _showPopup(BuildContext context, BranchDataModel selectedItem) {
     showDialog(

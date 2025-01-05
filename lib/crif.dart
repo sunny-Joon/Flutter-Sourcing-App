@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:provider/provider.dart';
 import 'dart:math';
-
-import 'DATABASE/database_helper.dart';
 import 'Models/bank_names_model.dart';
-import 'Models/range_category_model.dart';
 import 'api_service.dart';
 import 'global_class.dart';
 
@@ -23,16 +19,14 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
   late Animation<double> _animation;
   late List<BankNamesDataModel> bankNamesList = [];
   String? selectedBank;
-  double  crifScore = 0;
+  double crifScore = 0;
+  bool flag = false;
 
   @override
   void initState() {
     super.initState();
     initializeCrif(context);
-
-
   }
-
 
   @override
   void dispose() {
@@ -44,13 +38,14 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: flag
+            ? Column(
           children: <Widget>[
-            SizedBox(height: 42,),
-            Padding(padding: EdgeInsets.all(8),
+            SizedBox(height: 42),
+            Padding(
+              padding: EdgeInsets.all(8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,87 +93,45 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
                   SizedBox(height: 16.0),
                   Text(
                     'Loan Eligibility',
-                    style: TextStyle(color: Colors.white,fontSize: 24),
+                    style: TextStyle(color: Colors.white, fontSize: 24),
                   ),
                   Text(
                     _animation.value.toInt().toString(),
-                    style: TextStyle(fontSize: 48.0,color: Colors.white),
+                    style: TextStyle(fontSize: 48.0, color: Colors.white),
                   ),
                 ],
               ),
             ),
-           /* Text(
-              'BANK NAME',
-              style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-              textAlign: TextAlign.left,
+            Column(
+              children: [
+                if (_animation.status == AnimationStatus.completed)
+                  Icon(
+                    crifScore > 18 && crifScore <= 650 ? Icons.close : Icons.check,
+                    color: crifScore > 18 && crifScore <= 650 ? Colors.red : Colors.green,
+                    size: 150.0,
+                  ),
+                if (_animation.status == AnimationStatus.completed)
+                  Text(
+                    crifScore > 18 && crifScore <= 650 ? 'Sorry!!' : 'Congratulations!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                if (_animation.status == AnimationStatus.completed)
+                  Text(
+                    crifScore > 18 && crifScore <= 650
+                        ? 'You haven’t met the required criteria!'
+                        : 'You meet the required criteria!',
+                    style: TextStyle(color: Colors.white),
+                  ),
+              ],
             ),
-            Container(
-              //  //height: 45,
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: DropdownButton<String>(
-                value: selectedBank,
-                isExpanded: true,
-                iconSize: 24,
-                elevation: 16,
-                style: TextStyle(
-                    fontFamily: "Poppins-Regular",
-                    color: Colors.black,
-                    fontSize: 13),
-                underline: Container(
-                  height: 2,
-                  color: Colors.transparent,
-                ),
-                onChanged:(String? newValue) {
-                  setState(() {
-                    selectedBank = newValue!;
-                  });
-                },
-
-                items: bankNamesList.map((BankNamesDataModel value) {
-                  return DropdownMenuItem<String>(
-                    value: value.bankName,
-                    child: Text(value.bankName),
-                  );
-                }).toList(),
-              ),
-            ),*/
-
-            /*Text(
-              'Only 3 attempts to switch bank',
-              style: TextStyle(color: Colors.red),
-            ),*/
-            // Error Message
-          Column(
-            children: [
-              Icon(
-                crifScore > 18 && crifScore <= 650 ? Icons.close : Icons.check,
-                color: crifScore > 18 && crifScore <= 650 ? Colors.red : Colors.green,
-                size: 150.0,
-              ),
-              Text(
-                crifScore > 18 && crifScore <= 650 ? 'Sorry!!' : 'Congratulations!',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                crifScore > 18 && crifScore <= 650
-                    ? 'You haven’t met the required criteria!'
-                    : 'You meet the required criteria!',
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
             SizedBox(height: 16.0),
             // Try Again Button
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 GlobalClass.showSuccessAlert(context, "Crif Generated", 3);
               },
               child: Container(
@@ -216,35 +169,12 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
                   ),
                 ),
               ),
-            )
+            ),
           ],
-        ),
+        )
+            : null,
       ),
     );
-  }
-
-  Future<void> _BabnkNamesAPI(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...');
-
-    final api = Provider.of<ApiService>(context, listen: false);
-
-    return await api
-        .bankNames(GlobalClass.token, GlobalClass.dbName)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        EasyLoading.dismiss();
-        if (!value.data.isEmpty) {
-          setState(() {
-            bankNamesList = value.data;
-          });
-        }
-      } else {
-        EasyLoading.dismiss();
-GlobalClass.showErrorAlert(context, "Bank Name List Not Fetched", 1);      }
-    }).catchError((error) {
-      EasyLoading.dismiss();
-      GlobalClass.showUnsuccessfulAlert(context, "Bank Name Data not Fetched", 1);
-    });
   }
 
   Future<void> initializeCrif(BuildContext context) async {
@@ -252,22 +182,28 @@ GlobalClass.showErrorAlert(context, "Bank Name List Not Fetched", 1);      }
 
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl9);
 
-    return await api
-        .generateCrif(/*GlobalClass.creator*/"BAREILLY","261877")
-        .then((value) {
+    return await api.generateCrif(/*GlobalClass.creator*/"BAREILLY", "261877").then((value) {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
         setState(() {
-          crifScore = 565;
+          crifScore = 800;
+          flag = true;
           _controller = AnimationController(
             duration: const Duration(seconds: 2),
             vsync: this,
           );
-          /* _BabnkNamesAPI(context);*/
 
           _animation = Tween<double>(begin: 0, end: crifScore).animate(_controller)
             ..addListener(() {
               setState(() {});
+            })
+            ..addStatusListener((status) {
+              if (status == AnimationStatus.completed) {
+                // Trigger the icon popup after the needle animation completes
+                setState(() {
+                  // Here, you could trigger any further logic or animations related to the popup
+                });
+              }
             });
 
           _controller.forward();
@@ -278,7 +214,6 @@ GlobalClass.showErrorAlert(context, "Bank Name List Not Fetched", 1);      }
       }
     });
   }
-
 }
 
 class SemicircleProgressPainter extends CustomPainter {
@@ -338,7 +273,7 @@ class SemicircleProgressPainter extends CustomPainter {
       );
     }
 
-      drawNeedle(canvas, size, sweepAngle); // Adjust sweepAngle as needed
+    drawNeedle(canvas, size, sweepAngle); // Adjust sweepAngle as needed
 
 
     // Draw the labels
