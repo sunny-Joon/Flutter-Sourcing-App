@@ -124,21 +124,21 @@ class _GroupListPageState extends State<GroupListPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 0,top: 0,left: 6,right: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Card(
               color: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-              elevation: 20,
+              elevation: 8,
               child: TextField(
-
                 decoration: InputDecoration(
-                  alignLabelWithHint: true,
                   hintText: 'Search',
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: Icon(Icons.search, size: 20), // Ensure the icon size matches the font size
+                  contentPadding: EdgeInsets.symmetric(vertical: 12), // Aligns text vertically
+                  border: InputBorder.none,
                 ),
+                style: TextStyle(fontSize: 16), // Match the text size to the icon size
                 onChanged: (text) {
                   setState(() {
-                    _searchText = text;
+                    _searchText = text; // Update the search text
                   });
                 },
               ),
