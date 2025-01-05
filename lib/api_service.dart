@@ -33,6 +33,7 @@ import 'Models/collectionbranchlistmodel.dart';
 import 'Models/borrower_list_model.dart';
 import 'Models/common_bool_model.dart';
 import 'Models/creator_list_model.dart';
+import 'Models/crifmodel.dart';
 import 'Models/csorankmodel.dart';
 import 'Models/global_model.dart';
 import 'Models/global_model2.dart';
@@ -60,6 +61,7 @@ class ApiConfig {
   static const String baseUrl6 = 'https://ocr.paisalo.in:950/api/';
   static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
   static const String baseUrl8 = 'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
+  static const String baseUrl9 = 'https://apiuat.paisalo.in:4015/fi/api/';
 
 }
 
@@ -143,6 +145,11 @@ abstract class ApiService {
       @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body,
       @Query("type") String type);
+
+  @POST("FIIndex/InitilizeCrif")
+  Future<CrifModel> generateCrif(
+      @Query("creator") String creator,
+      @Query("ficode") String ficode);
 
   @POST("Masters/SendSms")
   Future<CommonIntModel> mobileOtpSend(

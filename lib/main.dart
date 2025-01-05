@@ -165,8 +165,8 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFFF3C3C)),
           useMaterial3: true,
         ),
-         home: SplashScreen(),
-      //   home: LoanEligibilityPage(),
+      //   home: SplashScreen(),
+         home: LoanEligibilityPage( ficode: 101009,),
          builder: EasyLoading.init(),
       ),
     );
