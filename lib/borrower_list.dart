@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
- import 'package:flutter_sourcing_app/Models/branch_model.dart';
+import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:provider/provider.dart';
- import 'collection.dart';
+import 'collection.dart';
 import 'Models/borrower_list_model.dart';
 import 'Models/group_model.dart';
 import 'api_service.dart';
@@ -11,7 +11,6 @@ import 'brrower_list_item.dart';
 import 'first_esign.dart';
 import 'global_class.dart';
 import 'house_visit_form.dart';
-
 
 class BorrowerList extends StatefulWidget {
   final BranchDataModel BranchData;
@@ -30,39 +29,37 @@ class BorrowerList extends StatefulWidget {
 
 class _BorrowerListState extends State<BorrowerList> {
   List<BorrowerListDataModel> _borrowerItems = [];
-  String noDataFoundMsg="";
+  List<BorrowerListDataModel> _filteredItems = [];
+  String noDataFoundMsg = "";
   bool _isLoading = true;
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-   if(widget.page =="E SIGN"){
+    if (widget.page == "E SIGN") {
       _fetchBorrowerList(1);
-   }else{
-     _fetchBorrowerList(0);
-   }
+    } else {
+      _fetchBorrowerList(0);
+    }
+    _searchController.addListener(_filterList);
   }
 
   Future<void> _fetchBorrowerList(int type) async {
-    //EasyLoading.show(status: 'Loading...',);
-
     final apiService = Provider.of<ApiService>(context, listen: false);
 
     await apiService.BorrowerList(
-        GlobalClass.token,
-        GlobalClass.dbName,
-
-        widget.GroupData.groupCode,
-        widget.BranchData.branchCode,
-        GlobalClass.creator.toString(),
-        type
-
+      GlobalClass.token,
+      GlobalClass.dbName,
+      widget.GroupData.groupCode,
+      widget.BranchData.branchCode,
+      GlobalClass.creator.toString(),
+      type,
     ).then((response) {
       if (response.statuscode == 200 && response.data[0].errormsg.isEmpty) {
         setState(() {
-          if (widget.page == "APPLICATION FORM") {
+          if (widget.page == "APPLICATION FORM") {}
 
-          }
           if (widget.page == "HouseVisit") {
             _borrowerItems =
                 response.data.where((item) => item.homeVisit == "No").toList();
@@ -72,9 +69,9 @@ class _BorrowerListState extends State<BorrowerList> {
           } else {
             _borrowerItems = response.data;
           }
+          _filteredItems = _borrowerItems;
         });
         _isLoading = false;
-        print("object++12");
       } else {
         setState(() {
           noDataFoundMsg = response.data[0].errormsg;
@@ -83,20 +80,35 @@ class _BorrowerListState extends State<BorrowerList> {
       }
     }).catchError((error) {
       _isLoading = false;
-      GlobalClass.showErrorAlert(context, error.toString(),1);
+      GlobalClass.showErrorAlert(context, error.toString(), 1);
     });
+  }
+
+  void _filterList() {
+    setState(() {
+      _filteredItems = _borrowerItems.where((item) {
+        return item.fullName.toLowerCase().contains(_searchController.text.toLowerCase()) ||
+            item.fiCode.toString().toLowerCase().contains(_searchController.text.toLowerCase());
+      }).toList();
+    });
+  }
+
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-      body: /*_isLoading
-          ? Center(child: CircularProgressIndicator())*/
-          /*:*/ Column(
+      body: Column(
         children: [
           SizedBox(height: 50),
-          Padding(padding: EdgeInsets.all(8),
+          Padding(
+            padding: EdgeInsets.all(8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,44 +152,43 @@ class _BorrowerListState extends State<BorrowerList> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: TextField(
-              style: TextStyle(
-                  fontFamily: "Poppins-Regular"
-              ),
+              controller: _searchController,
+              style: TextStyle(fontFamily: "Poppins-Regular"),
               decoration: InputDecoration(
-
                 hintText: 'Search...',
                 contentPadding: EdgeInsets.all(10),
                 border: InputBorder.none,
               ),
             ),
           ),
-          noDataFoundMsg.isEmpty?
-          Expanded(
+          noDataFoundMsg.isEmpty
+              ? Expanded(
             child: _isLoading
                 ? ListView.builder(
               padding: EdgeInsets.zero,
               itemCount: 10,
-              itemBuilder: (context, index) => GlobalClass().ListShimmerItem(),
+              itemBuilder: (context, index) =>
+                  GlobalClass().ListShimmerItem(),
             )
-                :ListView.builder(
+                : ListView.builder(
               padding: EdgeInsets.all(0),
-              itemCount: _borrowerItems.length,
+              itemCount: _filteredItems.length,
               itemBuilder: (context, index) {
-                final item = _borrowerItems[index];
+                final item = _filteredItems[index];
                 return BorrowerListItem(
                   name: item.fullName,
                   fiCode: item.fiCode.toString(),
-                  //mobile: item.pPhone,
                   creator: item.creator,
-                 // address: item.currentAddress,
-                  pic:item.profilePic,
+                  pic: item.profilePic,
                   onTap: () {
                     switch (widget.page) {
                       case 'APPLICATION FORM':
-                        if(item.homeVisit=="No"){
-                          GlobalClass.showUnsuccessfulAlert(context, "Please fill House Visit form for this case", 1);
-
-                        }else{
+                        if (item.homeVisit == "No") {
+                          GlobalClass.showUnsuccessfulAlert(
+                              context,
+                              "Please fill House Visit form for this case",
+                              1);
+                        } else {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -189,7 +200,6 @@ class _BorrowerListState extends State<BorrowerList> {
                             ),
                           );
                         }
-
                         break;
                       case 'E SIGN':
                         Navigator.push(
@@ -203,9 +213,8 @@ class _BorrowerListState extends State<BorrowerList> {
                             ),
                           ),
                         );
-
                         break;
-                        case 'HouseVisit':
+                      case 'HouseVisit':
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -222,18 +231,30 @@ class _BorrowerListState extends State<BorrowerList> {
                 );
               },
             ),
-          ):Container(height: MediaQuery.of(context).size.height/2,child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: Image.asset(
-                  'assets/Images/no_data.png', // Replace with your logo asset path
-                  height: 70,
+          )
+              : Container(
+            height: MediaQuery.of(context).size.height / 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Image.asset(
+                    'assets/Images/no_data.png', // Replace with your logo asset path
+                    height: 70,
+                  ),
                 ),
-              ),
-              Center(child: Text(noDataFoundMsg ,style: TextStyle(color: Colors.white,fontWeight: FontWeight.w400,fontSize: 16),),)
-            ],
-          ),),
+                Center(
+                  child: Text(
+                    noDataFoundMsg,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

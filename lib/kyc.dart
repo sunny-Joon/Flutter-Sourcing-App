@@ -1237,6 +1237,8 @@ class _KYCPageState extends State<KYCPage> {
               }
             });
             Navigator.of(context).pop();
+
+
             EasyLoading.dismiss();
           }
         } else {
