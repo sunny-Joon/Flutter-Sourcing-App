@@ -7213,6 +7213,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final String dl = borrowerInfo.dl;
     final String voterId = borrowerInfo.voterId;
     final String dob = borrowerInfo.dob;
+    String formattedDOB = '${dob.split('T')[0].split('-')[2]}-${dob.split('T')[0].split('-')[1]}-${dob.split('T')[0].split('-')[0]}';
+
     final String loanAmt = borrowerInfo.loanAmount.toString();
     final String imageUrl =
         GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
@@ -7288,9 +7290,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       ),
                       SizedBox(height: 5),
                       // DOB
-                      Text('DOB: ${dob.split('T')[0]}',
-                          style: TextStyle(fontSize: 16)),
-                      SizedBox(height: 5),
+
+        Text(
+        'DOB: $formattedDOB',
+        style: TextStyle(fontSize: 16),
+        ),
+
+        SizedBox(height: 5),
                       // Loan Amount
                       if (loanAmt.isNotEmpty)
                         Text('Loan Amt: $loanAmt',
@@ -7300,19 +7306,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          /*ElevatedButton(
-                            onPressed: () {
-                              print('Verification Confirmed');
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('Verify',
-                                style: TextStyle(color: Colors.white)),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                            ),
-                          ),*/
                           GestureDetector(
                             onTap: (){
                               print('Verification Confirmed');
@@ -7322,7 +7315,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
-                                  colors: [Colors.redAccent, Color(0xFFD42D3F)],
+                                  colors: [Colors.greenAccent, Color(0xFF0BDC15)],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
@@ -7354,7 +7347,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               ),
                             ),
                           ),
-
                           GestureDetector(
                             onTap: (){
                               print('Verification Rejected');
@@ -7397,20 +7389,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               ),
                             ),
                           ),
-                          /*ElevatedButton(
-                            onPressed: () {
-                              print('Verification Rejected');
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('Reject',
-                                style: TextStyle(color: Colors.white)),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                            ),
-                          ),*/
                         ],
                       ),
                     ],
