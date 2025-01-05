@@ -90,7 +90,6 @@ Future<void> main() async {
       print(message.notification?.title);
       print("forground-     ${message.notification?.title}");
 
-
     }
     LocalNotificationService.display(message);
 
@@ -104,8 +103,8 @@ Future<void> main() async {
     LocalNotificationService.display(message);
     print("background_OpenedApp-     ${message.notification?.title}");
 
-
   });
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, // Allow only portrait up orientation
     // DeviceOrientation.portraitDown, // Uncomment to allow upside-down portrait
@@ -155,9 +154,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     EasyLoading.init();
     return Provider<ApiService>(
-
       create: (context) => ApiService.create(baseUrl:ApiConfig.baseUrl1),
-
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
@@ -165,8 +162,8 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFFF3C3C)),
           useMaterial3: true,
         ),
-      //   home: SplashScreen(),
-         home: LoanEligibilityPage( ficode: 101009,),
+      home: SplashScreen(),
+         //home: LoanEligibilityPage( ficode: 101009,),
          builder: EasyLoading.init(),
       ),
     );
@@ -242,12 +239,9 @@ class _SplashScreenState extends State<SplashScreen> {
     String appVersion = packageInfo.version;
     GlobalClass.appVersion=packageInfo.version;
 
-
        ApiService.create(baseUrl: ApiConfig.baseUrl1).VersionCheck(GlobalClass.dbName, appVersion,"S","1").then((response){
 
          if (response.statuscode == 200) {
-
-
 
            bool isvalid = response.data[0].isvalid;
 
@@ -269,10 +263,7 @@ class _SplashScreenState extends State<SplashScreen> {
          GlobalClass.showErrorAlert(context, "${onError}", 1);
 
        });
-
-
   }
-
 }
 
 
