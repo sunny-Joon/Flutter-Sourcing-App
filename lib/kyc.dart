@@ -1001,11 +1001,10 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ),
                 SizedBox(height: 10), // Space between buttons
-                // Adhaar Back Button
                 SizedBox(
                   width: double.infinity, // Match the width of the dialog
                   child: TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       getDataFromOCR("adharBack", context);
                     },
                     child: Text(
@@ -1016,7 +1015,7 @@ class _KYCPageState extends State<KYCPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(5), // Adjust as needed
+                        BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1130,16 +1129,14 @@ class _KYCPageState extends State<KYCPage> {
             });
             Navigator.of(context).pop();
           } else if (type == "adharBack") {
+            EasyLoading.dismiss();
             setState(() {
               _pincodeController.text = response.data.pincode;
               _cityController.text = response.data.cityName;
               String cleanAddress(String name) {
-                // Remove unwanted characters
                 String cleanedAddrName = name.replaceAll(RegExp(r'[^a-zA-Z0-9\s\-\(\)\./\\]'), '');
 
-                // Replace multiple consecutive special characters with a single instance
                 cleanedAddrName = cleanedAddrName.replaceAllMapped(RegExp(r'(\s\s+|\-\-+|\(\(+|\)\)+|\.{2,}|/{2,}|\\{2,})'), (match) {
-                  // Get the matched string and determine the appropriate replacement
                   String matchedString = match.group(0)!;
                   if (matchedString.contains('-')) return '-';
                   if (matchedString.contains('(')) return '(';
@@ -1153,20 +1150,38 @@ class _KYCPageState extends State<KYCPage> {
               }
 
               String cleanedAddName = cleanAddress(response.data.address1);
-
-              List<String> addressParts =
-              cleanedAddName.trim().split(" ");
-              if (addressParts.length == 1) {
-                _address1Controller.text = addressParts[0];
+              print("Cleaned Address: $cleanedAddName");
+              List<String> addressParts = cleanedAddName.split(" ");
+              String address1 = '';
+              String address2 = '';
+              String address3 = '';
+              if (addressParts.length >= 4) {
+                address1 = addressParts.take(3).join(" ");
+                address2 = addressParts[3] + " " + addressParts[4];
+                address3 = addressParts.sublist(5).join(" ");
+              } else if (addressParts.length == 3) {
+                address1 = addressParts.take(2).join(" ");
+                address2 = addressParts[2];
               } else if (addressParts.length == 2) {
-                _address1Controller.text = addressParts[0];
-                _address2Controller.text = addressParts[1];
-              } else {
-                _address1Controller.text = addressParts.first;
-                _address2Controller.text = addressParts.last;
-                _address3Controller.text =
-                    addressParts.sublist(1, addressParts.length - 1).join(' ');
+                address1 = addressParts[0];
+                address2 = addressParts[1];
+              } else if (addressParts.length == 1) {
+                address1 = addressParts[0];
               }
+              _address1Controller.text = address1;
+              _address2Controller.text = address2;
+              _address3Controller.text = address3;
+              print("Address1: $address1");
+              print("Address2: $address2");
+              print("Address3: $address3");
+
+              _address1Controller.text = address1;
+              _address2Controller.text = address2;
+              _address3Controller.text = address3;
+              print("Address1: $address1");
+              print("Address2: $address2");
+              print("Address3: $address3");
+
 
               if (response.data.relation.toLowerCase() == "father") {
 
@@ -1221,6 +1236,9 @@ class _KYCPageState extends State<KYCPage> {
 
               }
             });
+            Navigator.of(context).pop();
+
+
             EasyLoading.dismiss();
           }
         } else {
