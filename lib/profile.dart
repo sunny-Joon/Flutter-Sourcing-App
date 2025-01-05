@@ -277,7 +277,7 @@ class _ProfileState extends State<Profile> {
                     children: [
                       IconButton(
                           onPressed: (){
-                            Navigator.pushReplacement(context,
+                            Navigator.push(context,
                                 MaterialPageRoute(builder: (context) => NotificationPage()));
                           },
                           icon: Icon(Icons.notification_add,color: Colors.white,)

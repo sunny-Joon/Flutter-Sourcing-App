@@ -41,8 +41,7 @@ class TermsConditions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color(0xFFD42D3F),
-
-      body: Column(
+        body: Column(
 
         children: [
           SizedBox(height: 35,),

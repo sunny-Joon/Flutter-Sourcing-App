@@ -270,7 +270,6 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-
       body: SingleChildScrollView(
         child: Column(children: [
           SizedBox(height: 40),
@@ -427,7 +426,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                               iconSize: 24,
                               elevation: 16,
                               style: TextStyle(
-                                  fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 16),
+                                  fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 13),
                               underline: Container(
                                 height: 2,
                                 color: Colors.transparent, // Set to transparent to remove default underline
@@ -438,6 +437,8 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                   _creatorError = null;
                                   validateInputs(); // Clear error when user selects a value
                                   _fetchBranchList(context, _selectedCreator!);
+                                  _branchController.text="";
+                                  _selectedBranches=[];
                                 });
                               },
                               items: _creators.map((CreatorListDataModel value) {
@@ -469,7 +470,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                 //     false,
                                 //     _branchFocus,100
                                 // ),
-                                child: _buildTextField('Branch Codes', _branchController, TextInputType.number, true, _branchFocus, 3,true, errorText: _branchError),
+                                child: _buildTextField('Branch Codes', _branchController, TextInputType.number, false, _branchFocus, 3,true, errorText: _branchError),
 
                               ),
                               // IconButton will be placed on the right of the TextField
