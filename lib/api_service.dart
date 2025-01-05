@@ -510,7 +510,7 @@ abstract class ApiService {
   Future<dynamic> verifyIdentity(@Body() Map<String, dynamic> body);
 
   @POST("Collection/RcPromiseToPay")
-  Future<GlobalModel2> promiseToPay(@Header("Authorization") String token,
+  Future<GlobalModel> promiseToPay(@Header("Authorization") String token,
       @Header("dbname") String dbName,@Body() Map<String, dynamic> body);
 
 

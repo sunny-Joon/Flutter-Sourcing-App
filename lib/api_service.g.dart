@@ -2588,7 +2588,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<GlobalModel2> promiseToPay(
+  Future<GlobalModel> promiseToPay(
     String token,
     String dbName,
     Map<String, dynamic> body,
@@ -2602,7 +2602,7 @@ class _ApiService implements ApiService {
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<GlobalModel2>(Options(
+    final _options = _setStreamType<GlobalModel>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -2619,9 +2619,9 @@ class _ApiService implements ApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late GlobalModel2 _value;
+    late GlobalModel _value;
     try {
-      _value = GlobalModel2.fromJson(_result.data!);
+      _value = GlobalModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
