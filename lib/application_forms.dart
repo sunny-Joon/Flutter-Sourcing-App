@@ -1558,66 +1558,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
         SizedBox(height: 10),
 
-        Row(
-          children: [
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 0.0),
-                // Gap of 5 to the left for the second column
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // Align children to the start of the column
-                  children: [
-                    Text(
-                      'Is House Rental',
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular", fontSize: 13),
-                      textAlign: TextAlign.left, // Align text to the left
-                    ),
-                    SizedBox(height: 1),
-                    // Add some spacing between the Text and Container
-                    Container(
-                      //height: 45,
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: DropdownButton<String>(
-                        value: selectedIsHouseRental,
-                        isExpanded: true,
-                        iconSize: 24,
-                        elevation: 16,
-                        style: TextStyle(
-                            fontFamily: "Poppins-Regular",
-                            color: Colors.black,
-                            fontSize: 13),
-                        underline: Container(
-                          height: 2,
-                          color: Colors.transparent,
-                        ),
-                        onChanged: personalInfoEditable
-                            ? (String? newValue) {
-                                setState(() {
-                                  selectedIsHouseRental = newValue!;
-                                });
-                              }
-                            : null,
-                        items: trueFalse.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        Row(
+        /*Expanded(
+              child: _buildLabeledDropdownField(
+                  'Village', 'Village', listVillagesCodes, selectedVillage,
+                  (PlaceData? newValue) {
+                setState(() {
+                  selectedVillage = newValue;
+                });
+              }, String),
+            ),*/
+
+        /*Row(
           children: [
             Expanded(
               child: _buildLabeledDropdownField(
@@ -1656,18 +1607,64 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ),
           ],
-        ),
+        ),*/
         Row(
           children: [
-            Expanded(
-              child: _buildLabeledDropdownField(
-                  'Village', 'Village', listVillagesCodes, selectedVillage,
-                  (PlaceData? newValue) {
-                setState(() {
-                  selectedVillage = newValue;
-                });
-              }, String),
-            ),
+            Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 0.0),
+                    // Gap of 5 to the left for the second column
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      // Align children to the start of the column
+                      children: [
+                        Text(
+                          'Is House Rental',
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular", fontSize: 13),
+                          textAlign: TextAlign.left, // Align text to the left
+                        ),
+                        SizedBox(height: 1),
+                        // Add some spacing between the Text and Container
+                        Container(
+                          //height: 45,
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: selectedIsHouseRental,
+                            isExpanded: true,
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(
+                                fontFamily: "Poppins-Regular",
+                                color: Colors.black,
+                                fontSize: 13),
+                            underline: Container(
+                              height: 2,
+                              color: Colors.transparent,
+                            ),
+                            onChanged: personalInfoEditable
+                                ? (String? newValue) {
+                              setState(() {
+                                selectedIsHouseRental = newValue!;
+                              });
+                            }
+                                : null,
+                            items: trueFalse.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             SizedBox(width: 16.0),
             // Optional spacing between the dropdown and the column
             Expanded(
@@ -5285,7 +5282,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please enter Pincode (Current)");
       _pincodeFocusC.requestFocus();
       return false;
-    } else if (selectedDistrict == null) {
+    } /*else if (selectedDistrict == null) {
       showToast_Error("Please select District");
 
       return false;
@@ -5297,7 +5294,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please select village");
 
       return false;
-    }else if (selectedResidingFor == null) {
+    }*/else if (selectedResidingFor == null) {
       showToast_Error("Please select years of residing");
 
       return false;
@@ -5677,9 +5674,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "current_City": cityControllerP.text,
       "current_State": selectedStateextraC!.descriptionEn,
       "current_Pincode": pincodeControllerP.text,
-      "district": selectedDistrict!.distName,
-      "sub_District": selectedSubDistrict!.subDistName,
-      "village": selectedVillage!.villageName,
+      "district": "",
+      "sub_District": "",
+      "village": "",
       "Resident_for_years": selectedResidingFor,
       "Present_House_Owner": selectedPresentHouseOwner
     };
