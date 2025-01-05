@@ -32,7 +32,7 @@ class LiveTrackRepository {
       smCode: smCode,
       latitude: _latitude.toString(),
       longitude: _longitude.toString(),
-      creator: GlobalClass.creatorId,
+      creator: GlobalClass.creator,
       trackAppVersion: GlobalClass.appVersion!,
       appInBackground: "No",
       activity: activity,

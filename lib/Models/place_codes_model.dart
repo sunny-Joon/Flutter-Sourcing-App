@@ -32,7 +32,6 @@ class PlaceData {
   final String? distCode;
   final String? subDistCode;
   final String? errorMsg;
-  final bool? isValid;
   final String? subDistName;
   final String? distName;
   final String? villageCode;
@@ -45,7 +44,6 @@ class PlaceData {
     required this.distCode,
     this.subDistCode,
     this.errorMsg,
-    this.isValid,
     this.subDistName,
     required this.distName,
     this.villageCode,
@@ -60,7 +58,6 @@ class PlaceData {
       distCode: json['disT_CODE'] as String?,
       subDistCode: json['suB_DIST_CODE'] as String?,
       errorMsg: json['errormsg'] as String?,
-      isValid: json['isvalide'] as bool?,
       subDistName: json['suB_DIST_NAME'] as String?,
       distName: json['disT_NAME'] as String?,
       villageCode: json['villagE_CODE'] as String?,
@@ -76,7 +73,6 @@ class PlaceData {
       'disT_CODE': distCode,
       'suB_DIST_CODE': subDistCode,
       'errormsg': errorMsg,
-      'isvalide': isValid,
       'suB_DIST_NAME': subDistName,
       'disT_NAME': distName,
       'villagE_CODE': villageCode,

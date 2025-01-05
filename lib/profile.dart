@@ -50,7 +50,7 @@ class _ProfileState extends State<Profile> {
   }
 
   void _initializeControllers() {
-    _creatorController.text = GlobalClass.creatorId;
+    _creatorController.text = GlobalClass.creator;
     _idController.text = GlobalClass.id;
     _validityController.text = GlobalClass.address;
     _mobileNoController.text = GlobalClass.mobile;
@@ -697,7 +697,7 @@ class _ProfileState extends State<Profile> {
                   GlobalClass.creatorId = newValue.creatorId.toString();
                   controller.text = newValue.creatorName;
                   print('Selected Creator: ${GlobalClass.creator}');
-                  print('Selected Creator ID: ${GlobalClass.creatorId}');
+
                 }
               },
             ),
