@@ -159,27 +159,32 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
+
                       onPressed: () => _showImageSourceDialog(context),
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero, // Makes the corners square
+                          borderRadius: BorderRadius.all(Radius.circular(8)), // Makes the corners square
                         ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          Icon(Icons.camera_alt),
+                          Icon(Icons.camera_alt,color: Color(0xFFD42D3F),),
                           SizedBox(width: 8), // Optional: Adds space between the icon and text
-                          Text('Click Image of transaction'),
+                          Text('Click here to upload receipt',style: TextStyle(color: Color(0xFFD42D3F)),),
                         ],
                       ),
                     ),
                     SizedBox(height: 20),
                     Container(
+
                       width: imageViewWidth,
                       height: imageViewWidth * 0.75, // Adjust height based on aspect ratio
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
+                        
+                        shape: BoxShape.rectangle,
+                        border: Border.all(color: Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
@@ -193,7 +198,7 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                           ? Icon(
                         Icons.image,
                         size: imageViewWidth * 0.5,
-                        color: Colors.grey,
+                        color: Colors.grey.shade300,
                       )
                           : ClipRRect(
                         borderRadius: BorderRadius.circular(8),
@@ -206,6 +211,7 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                     SizedBox(height: 20),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                        elevation: 6,
                         backgroundColor: Colors.transparent, // Make the button background transparent
                         shadowColor: Colors.transparent, // Remove the default shadow
                         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32), // Button padding
@@ -214,14 +220,21 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                         ),
                       ),
                       onPressed: () {
-                        submitQR(context);
+                        if(_searchController.text.isEmpty){
+                          GlobalClass.showUnsuccessfulAlert(context, "Please enter case code", 1);
+                        }else if(_image==null){
+                          GlobalClass.showUnsuccessfulAlert(context, "Please upload image of receipt", 1);
+                        }else{
+                          submitQR(context);
+                        }
+
                       },
                       child: Ink(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
                               Colors.grey.shade200, // Start with white
-                              Colors.grey.shade400, // Light grey end color
+                              Colors.grey.shade600, // Light grey end color
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,

@@ -668,7 +668,7 @@ class CollectionBorrowerListItem extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'FI Code: $fiCode',
+                    'Case Code: $fiCode',
                     style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.white70,
                       fontSize: 14,
@@ -676,7 +676,7 @@ class CollectionBorrowerListItem extends StatelessWidget {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    creator,
+                    'Creator: $creator',
                     style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.white70,
                       fontSize: 14,

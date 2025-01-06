@@ -273,7 +273,7 @@ class _FragmentsState extends State<Fragments> {
     // Check if data already exists in the database
     bool dataExists = await dbHelper.isRangeCategoryDataExists();
 
-    if (!dataExists) {
+
       // If data does not exist, make the API call
       final response = await api2.RangeCategory(GlobalClass.token, GlobalClass.dbName);
 
@@ -301,11 +301,7 @@ class _FragmentsState extends State<Fragments> {
 
         GlobalClass.showUnsuccessfulAlert(context,"Backend Data Not Saved",1);
       }
-    } else {
-      EasyLoading.dismiss();
-      // If data exists, no need to make the API call
-      print('Data already exists in the database.');
-    }
+
   }
 
 

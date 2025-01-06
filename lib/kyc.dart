@@ -97,6 +97,11 @@ class _KYCPageState extends State<KYCPage> {
   Position? position;
   bool otpVerified = false;
   bool _pageloading=true;
+
+  bool verifyButtonClick=false;
+
+
+
   @override
   void initState() {
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
@@ -419,8 +424,11 @@ class _KYCPageState extends State<KYCPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: _onWillPop,
+    return PopScope(
+        canPop: false,
+        onPopInvoked: (bool value) {
+          _onWillPop();
+        },
         child: Scaffold(
           backgroundColor: Color(0xFFD42D3F),
           body: SingleChildScrollView(
@@ -778,7 +786,7 @@ class _KYCPageState extends State<KYCPage> {
         spouseF,
         spouseM,
         spouseL,
-        GlobalClass.creatorId,
+        GlobalClass.creator,
         Expense,
         Income,
         latitude,
@@ -904,7 +912,7 @@ class _KYCPageState extends State<KYCPage> {
         });*/
         EasyLoading.dismiss();
 
-        GlobalClass.showSuccessAlert(context, "KYC Saved with ${Fi_Code} and ${GlobalClass.creatorId} successfully!! \nPlease note these details for further process", 2);
+        GlobalClass.showSuccessAlert(context, "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process", 2);
 
 
       } else {
@@ -1001,10 +1009,11 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ),
                 SizedBox(height: 10), // Space between buttons
+                // Adhaar Back Button
                 SizedBox(
                   width: double.infinity, // Match the width of the dialog
                   child: TextButton(
-                    onPressed: () async {
+                    onPressed: () {
                       getDataFromOCR("adharBack", context);
                     },
                     child: Text(
@@ -1015,7 +1024,7 @@ class _KYCPageState extends State<KYCPage> {
                       backgroundColor: Color(0xFFD42D3F),
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.circular(5), // Adjust as needed
+                            BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -1031,7 +1040,7 @@ class _KYCPageState extends State<KYCPage> {
                         MaterialPageRoute(
                             builder: (context) => QRViewExample()),
                       );
-
+                      Navigator.of(context).pop();
                       if (result != null) {
                         //
                         // BigInt bigIntScanData = BigInt.parse(result);
@@ -1048,7 +1057,7 @@ class _KYCPageState extends State<KYCPage> {
                         setQRData(result);
                         //   onResult(qrResult);
                       }
-                      Navigator.of(context).pop();
+
                     },
                     child: Text(
                       'Adhaar QR',
@@ -1089,10 +1098,11 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   Future<void>getDataFromOCR(String type, BuildContext context) async {
-    EasyLoading.show();
+
     File? pickedImage = await GlobalClass().pickImage();
 
     if (pickedImage != null) {
+      EasyLoading.show();
       try {
         final response = await apiService_OCR.uploadDocument(
           type, // imgType
@@ -1129,14 +1139,16 @@ class _KYCPageState extends State<KYCPage> {
             });
             Navigator.of(context).pop();
           } else if (type == "adharBack") {
-            EasyLoading.dismiss();
             setState(() {
               _pincodeController.text = response.data.pincode;
               _cityController.text = response.data.cityName;
               String cleanAddress(String name) {
+                // Remove unwanted characters
                 String cleanedAddrName = name.replaceAll(RegExp(r'[^a-zA-Z0-9\s\-\(\)\./\\]'), '');
 
+                // Replace multiple consecutive special characters with a single instance
                 cleanedAddrName = cleanedAddrName.replaceAllMapped(RegExp(r'(\s\s+|\-\-+|\(\(+|\)\)+|\.{2,}|/{2,}|\\{2,})'), (match) {
+                  // Get the matched string and determine the appropriate replacement
                   String matchedString = match.group(0)!;
                   if (matchedString.contains('-')) return '-';
                   if (matchedString.contains('(')) return '(';
@@ -1821,6 +1833,7 @@ class _KYCPageState extends State<KYCPage> {
                           ],
                           onChanged: (value){
                             setState(() {
+                              verifyButtonClick=false;
                               otpVerified=false;
                             });
 
@@ -1840,11 +1853,16 @@ class _KYCPageState extends State<KYCPage> {
                 child: InkWell(
                   onTap: () {
                     {
-                      if (_mobileNoController.text.isEmpty) {
-                        showToast_Error("Please enter mobile number");
-                      } else {
-                        //getOTPByMobileNo(_mobileNoController.text);
-                        mobileOtp(context, _mobileNoController.text);
+                      if(verifyButtonClick==false){
+                        if (_mobileNoController.text.isEmpty) {
+                          showToast_Error("Please enter mobile number");
+                        }else  if (_mobileNoController.text.length!=10) {
+                          showToast_Error("Please enter correct mobile number");
+                        } else {
+                          verifyButtonClick=true;
+                          //getOTPByMobileNo(_mobileNoController.text);
+                          mobileOtp(context, _mobileNoController.text);
+                        }
                       }
                       // Implement OTP verification logic here
                     }
@@ -2345,6 +2363,7 @@ class _KYCPageState extends State<KYCPage> {
               actions: [
                 ElevatedButton(
                   onPressed: () {
+                    verifyButtonClick=false;
                     countdownTimer?.cancel(); // Stop timer when submitting
 
                     if (pinCode.isEmpty || pinCode.length != 6) {
@@ -2362,8 +2381,14 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ),
                 Visibility(
+                  visible: cancelButtonVisible,
                   child: ElevatedButton(
                     onPressed: () {
+
+
+                      setState(() {
+                        verifyButtonClick=false;
+                      });
                       countdownTimer?.cancel(); // Stop timer when closing
                       Navigator.of(context).pop(); // Close the dialog
                     },
@@ -2375,7 +2400,6 @@ class _KYCPageState extends State<KYCPage> {
                       style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                   ),
-                  visible: cancelButtonVisible,
                 ),
               ],
             );
@@ -2579,6 +2603,9 @@ class _KYCPageState extends State<KYCPage> {
               (PlaceData? newValue) {
             setState(() {
               selectedCityCode = newValue;
+              selectedDistrictCode=null;
+              selectedSubDistrictCode=null;
+              selectedVillageCode=null;
               // getPlace("city",stateselected!.code,"","");
               // getPlace("district",stateselected!.code,"","");
             });
@@ -2587,6 +2614,8 @@ class _KYCPageState extends State<KYCPage> {
               listDistrictCodes, selectedDistrictCode, (PlaceData? newValue) {
             setState(() {
               selectedDistrictCode = newValue;
+              selectedSubDistrictCode=null;
+              selectedVillageCode=null;
               getPlace("subdistrict", stateselected!.code,
                   selectedDistrictCode!.distCode!, "");
               // getPlace("district",stateselected!.code,"","");
@@ -2599,6 +2628,7 @@ class _KYCPageState extends State<KYCPage> {
               selectedSubDistrictCode, (PlaceData? newValue) {
             setState(() {
               selectedSubDistrictCode = newValue;
+              selectedVillageCode=null;
               getPlace("village",
                   stateselected!.code,
                   selectedDistrictCode!.distCode!,
@@ -3066,10 +3096,10 @@ bool checkIdMendate(){
       showToast_Error("Please enter correct aadhaar id");
       return false;
     }
-    else if(_errorMessageAadhaar.isNotEmpty){
-      showToast_Error("Please enter valid aadhaar id");
-      return false;
-    }
+    // else if(_errorMessageAadhaar.isNotEmpty){
+    //   showToast_Error("Please enter valid aadhaar id");
+    //   return false;
+    // }
     else if (selectedTitle == null) {
       showToast_Error("Please choose title");
       return false;
@@ -3220,7 +3250,7 @@ bool checkIdMendate(){
         stateCode, // StateCode
       );
 
-      // if (response.statuscode == 200 && response.data[0].isValid == null) {
+       if (response.statuscode == 200 && response.data.isNotEmpty) {
       setState(() {
         if (type == "city") {
           listCityCodes = response.data;
@@ -3233,8 +3263,12 @@ bool checkIdMendate(){
           listVillagesCodes = response.data;
         }
       });
+
+      } else {
+         GlobalClass.showUnsuccessfulAlert(context, "Message", 1);
+       }
+
       EasyLoading.dismiss();
-      //} else {}
     } catch (e) {
       print("Error: $e");
       EasyLoading.dismiss();
@@ -3243,6 +3277,7 @@ bool checkIdMendate(){
   }
 
   Future<void> mobileOtp(BuildContext context, String mobileNo) async {
+    EasyLoading.show(status: "Sending OTP...");
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     Map<String, dynamic> requestBody = {
       "MobileNo": mobileNo,
@@ -3254,8 +3289,15 @@ bool checkIdMendate(){
         .mobileOtpSend(GlobalClass.token,GlobalClass.dbName, requestBody)
         .then((value) {
       if (value.statuscode == 200) {
+        EasyLoading.dismiss();
         _showOTPDialog(context);
+      }else{
+        EasyLoading.dismiss();
+        GlobalClass.showErrorAlert(context, "Issue occurs in OTP sending...\n\nContact to administrator", 1);
       }
+    }).catchError((onError){
+      EasyLoading.dismiss();
+      GlobalClass.showErrorAlert(context, "Issue occurs in OTP sending...\n\n$onError", 1);
     });
   }
 
@@ -3264,6 +3306,10 @@ bool checkIdMendate(){
     if (dataList.length > 14) {
       if(dataList[0].toLowerCase().startsWith("v")){
         _aadharIdController.text = dataList[2];
+        if(_aadharIdController.text.length!=12){
+          GlobalClass.showErrorAlert(context, "Please Re-Enter Aadhaar number", 1);
+          _aadharIdController.text="";
+        }
         List<String> nameParts = dataList[3].split(" ");
         if (nameParts.length == 1) {
           _nameController.text = nameParts[0];
@@ -3368,6 +3414,11 @@ bool checkIdMendate(){
       else{
 
         _aadharIdController.text = dataList[1];
+        if(_aadharIdController.text.length!=12){
+          GlobalClass.showErrorAlert(context, "Please Re-Enter Aadhaar number", 1);
+          _aadharIdController.text="";
+
+        }
         List<String> nameParts = dataList[2].split(" ");
         if (nameParts.length == 1) {
           _nameController.text = nameParts[0];
@@ -3428,7 +3479,7 @@ bool checkIdMendate(){
           });
         }
         _cityController.text = dataList[6];
-        _gurNameController.text = replaceCharFromName(dataList[6]);
+        _gurNameController.text = replaceCharFromName(dataList[5]);
 
 
           _pincodeController.text = dataList[10];
@@ -3497,6 +3548,7 @@ bool checkIdMendate(){
         showToast_Error("OTP Verified...");
         setState(() {
           otpVerified = true;
+          verifyButtonClick=true;
         });
         Navigator.of(contextDialog).pop();
       } else {
@@ -3516,32 +3568,63 @@ bool checkIdMendate(){
     });
   }
 
-  Future<bool> _onWillPop() async {
-    // Show a confirmation dialog
-    return await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Are you sure?'),
-            content: Text('Do you want to close KYC page?'),
-            actions: [
-              TextButton(
-                onPressed: () =>
-                    Navigator.of(context).pop(false), // Stay in the app
-                child: Text('No'),
-              ),
-              TextButton(
-                onPressed: () {
-                  EasyLoading.dismiss();
-                  Navigator.of(context).pop(true);
-                }, // Exit the app
-                child: Text('Yes'),
-              ),
-            ],
-          ),
-        ) ??
-        false; // Default to false if dialog is dismissed
+  Future<void> _onWillPop() async {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Are you sure?',
+              style: TextStyle(
+                  color: Color(0xFFD42D3F),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Do you want to close KYC form?',
+              style: TextStyle(color: Colors.black),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildShinyButton(
+                  'No',
+                      () {
+                    EasyLoading.dismiss();
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                _buildShinyButton(
+                  'Yes',
+                      () {
+                    EasyLoading.dismiss();
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    // return shouldClose ?? false; // Default to false if dismissed
   }
-
+  Widget _buildShinyButton(String text, VoidCallback onPressed) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white, backgroundColor: Color(0xFFD42D3F), // foreground/text
+      ),
+      onPressed: onPressed,
+      child: Text(text),
+    );
+  }
   Future<void> adhaarAllData(BuildContext contextDialog) async {
     EasyLoading.show(status: "Aadhaar History...");
     print("object112211");
@@ -3619,7 +3702,7 @@ bool checkIdMendate(){
             GlobalClass.showAlert(
               contextDialog,
               "KYC Already Exist with same Aadhaar",
-              "Ficode: ${Fi_Code}\nCreator: ${GlobalClass.creatorId}\nBorrower Name: ${value.data[0].fName } ${value.data[0].mName } ${value.data[0].lName} ",
+              "Ficode: ${Fi_Code}\nCreator: ${GlobalClass.creator}\nBorrower Name: ${value.data[0].fName } ${value.data[0].mName } ${value.data[0].lName} ",
               Colors.red,
               1,
             );
