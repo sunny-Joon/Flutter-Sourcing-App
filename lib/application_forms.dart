@@ -6379,14 +6379,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 relationselected = "Father";
               });
               _p_CityController.text = response.data.cityName;
-              stateselected = states.firstWhere((item) =>
-                  item.descriptionEn.toLowerCase() ==
-                  response.data.stateName.toLowerCase());
-              List<String> addressParts = response.data.address1
-                  .trim()
-                  .replaceAll(response.data.pincode, "")
-                  .replaceAll(response.data.stateName, "")
-                  .split(",");
+              stateselected = states.firstWhere((item) => item.descriptionEn.toLowerCase() == response.data.stateName.toLowerCase());
+
+
+              List<String> addressParts = response.data.address1.trim().replaceAll(response.data.pincode, "").replaceAll(response.data.stateName, "").split(",");
               if (addressParts.length == 1) {
                 _p_Address1Controller.text = addressParts[0];
               } else if (addressParts.length == 2) {
