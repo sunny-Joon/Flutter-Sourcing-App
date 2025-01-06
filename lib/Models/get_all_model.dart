@@ -76,6 +76,7 @@ class ApplicationgetAllDataModel {
   String bankAc;
   String bankName;
   String bankIfcs;
+  String bankType;
   String bankAddress;
   bool isHouseRental;
   int loanAmount;
@@ -139,6 +140,7 @@ class ApplicationgetAllDataModel {
   int schoolingChildren;
   int otherDependents;
   bool isCkyCisDone;
+  bool special_Social_Category;
   String errormsg;
   bool isvalid;
   String financialStatus;
@@ -194,6 +196,7 @@ class ApplicationgetAllDataModel {
     required this.bankAc,
     required this.bankName,
     required this.bankIfcs,
+    required this.bankType,
     required this.bankAddress,
     required this.isHouseRental,
     required this.loanAmount,
@@ -267,6 +270,7 @@ class ApplicationgetAllDataModel {
     required this.fiIncomeExpenses,
     required this.familyMembers,
     required this.guarantors,
+    required this.special_Social_Category,
   });
 
   factory ApplicationgetAllDataModel.fromJson(Map<String, dynamic> json) => ApplicationgetAllDataModel(
@@ -275,6 +279,7 @@ class ApplicationgetAllDataModel {
     creator: json["creator"]??"",
     dob: json["dob"]??"",
     age: json["age"]??"",
+    special_Social_Category: json["special_Social_Category"]??false,
     gender: json["gender"]??"",
     title: json["title"]??"",
     fName: json["f_Name"]??"",
@@ -313,6 +318,7 @@ class ApplicationgetAllDataModel {
     bankAc: json["bank_Ac"]??"",
     bankName: json["bank_name"]??"",
     bankIfcs: json["bank_IFCS"]??"",
+    bankType: json["bankType"]??"",
     bankAddress: json["bank_address"]??"",
     isHouseRental: json["is_house_rental"],
     loanAmount: json["loan_amount"],
@@ -336,7 +342,7 @@ class ApplicationgetAllDataModel {
     noOfChildren: json["no_of_children"]==0?1:json["no_of_children"],
     emailId: json["email_Id"]??"",
     isHandicap: json["isHandicap"],
-    handicapType: json["handicap_type"]??"Yes",
+    handicapType: json["handicap_type"]??"",
     placeOfBirth: json["place_Of_Birth"]??"",
     forM60TnxDt: json["forM60_TNX_DT"]??"",
     forM60Submissiondate: json["forM60_SUBMISSIONDATE"]??"",
@@ -439,6 +445,7 @@ class ApplicationgetAllDataModel {
     "bank_Ac": bankAc,
     "bank_name": bankName,
     "bank_IFCS": bankIfcs,
+    "bankType": bankType,
     "bank_address": bankAddress,
     "is_house_rental": isHouseRental,
     "loan_amount": loanAmount,
@@ -450,6 +457,7 @@ class ApplicationgetAllDataModel {
     "branch_code": branchCode,
     "religion": religion,
     "smCode": smCode,
+    "special_Social_Category": special_Social_Category,
     "is_phnno_verified": isPhnnoVerified,
     "user_Id": userId,
     "property_area": propertyArea,
@@ -574,7 +582,7 @@ class FamilyMember {
 class FiIncomeExpense {
   String inExOccupation;
   String inExBusinessDetail;
-  bool inExAnyCurrentEmi;
+  String inExAnyCurrentEmi;
   int inExFutureIncome;
   int inExAgricultureIncome;
   int inExEarningMemCount;
@@ -629,7 +637,7 @@ class FiIncomeExpense {
   factory FiIncomeExpense.fromJson(Map<String, dynamic> json) => FiIncomeExpense(
     inExOccupation: (json["inEx_Occupation"]?.isEmpty ?? true) ? "Self Employeed" : json["inEx_Occupation"],
     inExBusinessDetail: json["inEx_BusinessDetail"]??"Self Employeed",
-    inExAnyCurrentEmi: json["inEx_AnyCurrentEMI"]??false,
+    inExAnyCurrentEmi: json["inEx_AnyCurrentEMI"]??"",
     inExFutureIncome: json["inEx_FutureIncome"]??0,
     inExAgricultureIncome: json["inEx_AgricultureIncome"]??0,
    // inExEarningMemCount: json["inEx_EarningMemCount"]==0?1:json["inEx_EarningMemCount"],

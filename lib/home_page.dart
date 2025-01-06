@@ -198,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                     // First IconButton on the left
                     IconButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => NotificationPage()),
                         );

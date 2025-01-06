@@ -195,7 +195,7 @@ class _TargetSetPageState extends State<TargetSetPage> {
                   children: [
                     _buildPage(Color(0xFFD42D3F), 'Welcome',
                         "${GlobalClass.userName}",
-                        'swipe to start earning', Icons.arrow_forward),
+                        'swipe left to start earning', Icons.arrow_forward),
                     _buildPage1(),
                   ],
                 ),

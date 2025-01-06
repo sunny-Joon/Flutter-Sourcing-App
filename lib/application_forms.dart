@@ -117,6 +117,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool panVerified = false;
   bool dlVerified = false;
   bool voterVerified = false;
+  bool _isHandicapVisible = false;
   String panCardHolderName =
       "Please search PAN card holder name for verification";
   String? dlCardHolderName;
@@ -137,6 +138,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
   ];
   List<String> loanDuration = ['Select', '12', '24', '36', '48'];
   List<String> trueFalse = ['Select', 'Yes', 'No'];
+  List<String> handicapTypes = [
+    'Visual Impairments',
+    'Hearing Impairments',
+    'Motor Impairments',
+    'Cognitive Impairments',
+    'Speech Impairments',
+    'Combination Handicaps'
+  ];
 
   Color iconPan = Color(0xFFD42D3F);
   Color iconPassport = Color(0xFFD42D3F);
@@ -394,6 +403,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     _pinFocusNodeC.addListener(() {
       _validatePincode("B");
     });
+    selectedIsHandicap="No";
   }
 
   Future<void> initializeData() async {
@@ -401,8 +411,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     fetchData();
     _calculateAge();
     selectedDependent = onetonine.isNotEmpty ? onetonine[0] : null;
-    selectedResidingFor = onetonine.isNotEmpty ? onetonine[0] : null;
-    selectedspecialAbility = trueFalse.isNotEmpty ? trueFalse[0] : null;
+   // selectedResidingFor = onetonine.isNotEmpty ? onetonine[0] : null;
+    //selectedspecialAbility = trueFalse.isNotEmpty ? trueFalse[0] : null;
     selectedSpecialSocialCategory = trueFalse.isNotEmpty ? trueFalse[0] : null;
     selectedEarningMembers = trueFalse.isNotEmpty ? trueFalse[0] : null;
     selectedBusinessExperience = trueFalse.isNotEmpty ? trueFalse[0] : null;
@@ -684,7 +694,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
         ),
       ),
-    ));
+    )
+    );
   }
 
   Future<void> _onWillPop() async {
@@ -1177,6 +1188,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             ? (String? newValue) {
                                 setState(() {
                                   selectedIsHandicap = newValue!;
+                                  if(newValue=="Yes"){
+                                    _isHandicapVisible=true;
+                                  }else{
+                                    _isHandicapVisible=false;
+
+                                  }
                                 });
                               }
                             : null,
@@ -1192,10 +1209,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 ),
               ),
             ),
-            SizedBox(width: 10), // Gap of 10 between the two columns
 
-            // Special Ability Column
-            Expanded(
+            SizedBox(width: _isHandicapVisible?10:0), // Gap of 10 between the two columns
+            Visibility(
+                visible: _isHandicapVisible,
+                child: Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: 5.0),
                 // Gap of 5 to the left for the second column
@@ -1233,14 +1251,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         ),
                         onChanged: personalInfoEditable
                             ? (String? newValue) {
-                                setState(() {
-                                  selectedspecialAbility = newValue!;
-                                  isSpecialSocialCategoryVisible =
-                                      (newValue == 'Yes'); // Update visibility
-                                });
-                              }
+                          setState(() {
+                            selectedspecialAbility = newValue!;
+                            isSpecialSocialCategoryVisible =
+                            (newValue == 'Yes'); // Update visibility
+                          });
+                        }
                             : null,
-                        items: trueFalse.map((String value) {
+                        items: handicapTypes.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -1251,7 +1269,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ],
                 ),
               ),
-            ),
+            ))
+            // Special Ability Column
+            ,
           ],
         ),
         SizedBox(height: 10),
@@ -1343,6 +1363,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           'State',
           states,
           selectedStateextraP,
+          personalInfoEditable,
           (RangeCategoryDataModel? newValue) {
             setState(() {
               selectedDistrict = null;
@@ -1477,7 +1498,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             Checkbox(
               value: _isAddressChecked,
-              onChanged: _onCheckboxChanged,
+              onChanged: personalInfoEditable?_onCheckboxChanged:null,
             ),
             Text(
               'Same as Permanent Address',
@@ -1506,6 +1527,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           'State',
           states,
           selectedStateextraC,
+          personalInfoEditable,
           (RangeCategoryDataModel? newValue) {
             setState(() {
               selectedStateextraC = newValue;
@@ -3896,6 +3918,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),*/
           _buildLabeledDropdownField(
               'Select State', 'State', states, stateselected,
+              false,
               (RangeCategoryDataModel? newValue) {
             setState(() {
               stateselected = newValue;
@@ -4751,6 +4774,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       String label,
       List<T> items,
       T? selectedValue,
+      bool readOnly,
       ValueChanged<T?>? onChanged,
       Type objName) {
     return Padding(
@@ -4771,6 +4795,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               width: double.infinity,
               // Ensure the dropdown takes the full width available
               child: DropdownButtonFormField<T>(
+
                 isExpanded: true,
                 // Ensure the dropdown expands to fit its content
                 decoration: InputDecoration(
@@ -4824,7 +4849,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     ), // Convert the value to string for display
                   );
                 }).toList(),
-                onChanged: onChanged,
+                onChanged: readOnly?onChanged:null,
               ),
             ),
           ],
@@ -6117,6 +6142,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void docVerifyIDC(
       String type, String txnNumber, String ifsc, String dob) async {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
+    setState(() {
+      bankAccHolder=null;
+    });
 
     EasyLoading.show(
       status: 'Loading...',
@@ -6467,6 +6495,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
     if (dataList.length > 14) {
       if (dataList[0].toLowerCase().startsWith("v")) {
         _aadharIdController.text = dataList[2];
+        if(_aadharIdController.text.length!=12){
+          GlobalClass.showErrorAlert(context, "Please Re-Enter Aadhaar number", 1);
+          _aadharIdController.text="";
+        }
         _fnameController.text = dataList[3];
         List<String> nameParts = dataList[3].split(" ");
         if (nameParts.length == 1) {
@@ -6571,6 +6603,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
         }
       } else {
         _aadharIdController.text = dataList[1];
+        if(_aadharIdController.text.length!=12){
+          GlobalClass.showErrorAlert(context, "Please Re-Enter Aadhaar number", 1);
+          _aadharIdController.text="";
+        }
+
         _fnameController.text = dataList[2];
 
         List<String> nameParts = dataList[2].split(" ");
@@ -6855,9 +6892,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
       // "gff"
       selectedReligionextra = data.religion;
       selectedCast = data.cast;
+      if(data.isHandicap){
+        _isHandicapVisible=true;
+      }
+      if (handicapTypes.contains(data.handicapType.toString())) {
+        selectedspecialAbility=data.handicapType;
+      } else {
+        selectedspecialAbility = null; // Or set a default value
+      }
 
       mobileController.text = data.pPhone;
       data.isHandicap ? selectedIsHandicap = "Yes" : selectedIsHandicap = "No";
+      data.special_Social_Category ? selectedSpecialSocialCategory = "Yes" : selectedSpecialSocialCategory = "No";
 
       data.isHouseRental
           ? selectedIsHouseRental = "Yes"
@@ -6882,7 +6928,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       //  selectedDistrict,
       //  selectedSubDistrict,
       //  selectedVillage,
-      //selectedResidingFor=data.residentialType
+      selectedResidingFor=data.liveInPresentPlace;
       selectedProperty = data.propertyArea.toString();
       selectedPresentHouseOwner = data.houseOwnerName;
       getPlace("district", selectedStateextraP!.code, "", "");
@@ -6896,9 +6942,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _motherFController.text = data.motheRFirstName;
       _motherMController.text = data.motheRMiddleName;
       _motherLController.text = data.motheRLastName;
+
+
+
+
       selectednumOfChildren = data.noOfChildren.toString();
       selectedschoolingChildren = data.schoolingChildren.toString();
-      selectedotherDependents = data.otherDependents.toString();
+      if (onetonine.contains(data.otherDependents.toString())) {
+        selectedotherDependents = data.otherDependents.toString();
+      } else {
+        selectedotherDependents = null; // Or set a default value
+      }
+
     });
   }
 
@@ -6954,7 +7009,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
     setState(() {
       FinancialInfoEditable = false;
       editButtonFunctionOn=true;
-      // selectedAccountType = data.bankAc;
+      if (accType.contains(data.bankType)) {
+        selectedAccountType = data.bankType;
+      } else {
+        selectedAccountType = null; // Or set a default value
+      }
+
       //   selectedBankName = data.bankName;
       _bank_AcController.text = data.bankAc;
       _bank_IFCSController.text = data.bankIfcs;
@@ -6988,12 +7048,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
       GuarantorEditable = false;
       editButtonFunctionOn=true;
 
-      selectedTitle = data.guarantors[0].grTitle;
-      _fnameController.text = data.guarantors[0].grFname;
+       _fnameController.text = data.guarantors[0].grFname;
       _mnameController.text = data.guarantors[0].grMname;
       _lnameController.text = data.guarantors[0].grLname;
       _guardianController.text = data.guarantors[0].grGuardianName;
-      selectedTitle = data.guarantors[0].grTitle;
+      if (titleList.contains(data.guarantors[0].grTitle)) {
+        selectedTitle = data.guarantors[0].grTitle;
+      } else {
+        selectedTitle = null; // Or set a default value
+      }
+
       _p_Address1Controller.text = data.guarantors[0].grPAddress1;
       _p_Address2Controller.text = data.guarantors[0].grPAddress2;
       _p_Address3Controller.text = data.guarantors[0].grPAddress3;
@@ -7003,7 +7067,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
           data.guarantors[0].grPState.toLowerCase());
       genderselected = data.guarantors[0].grGender;
       religionselected = data.guarantors[0].grReligion;
-      relationselected = data.guarantors[0].grRelationWithBorrower;
+      if (relation.any((item) => item.descriptionEn == data.guarantors[0].grRelationWithBorrower)) {
+        relationselected = data.guarantors[0].grRelationWithBorrower;
+      } else {
+        relationselected = null; // Or set a default value
+      }
 
       _pincodeController.text = data.guarantors[0].grPincode.toString();
       _dobController.text = data.guarantors[0].grDob.toString();
