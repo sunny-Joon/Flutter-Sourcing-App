@@ -149,6 +149,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       // Navigate back with the decoded result
       Navigator.pop(context, decodedResult);
     } catch (e) {
+      print("error in qr SCANNING$e");
       // retryAttempts++;
       // if (retryAttempts <= maxRetryAttempts) {
       //   _showMessage("Processing failed. Retrying ($retryAttempts/$maxRetryAttempts)...");
