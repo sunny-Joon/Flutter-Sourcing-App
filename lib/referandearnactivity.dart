@@ -36,7 +36,7 @@ class _referandearnactivitystate extends State<referandearnactivity> {
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: Column(
           children: [
-            SizedBox(height: 40,),
+            SizedBox(height: 36,),
             Padding(padding: EdgeInsets.all(8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -239,16 +239,16 @@ class _referandearnactivitystate extends State<referandearnactivity> {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 8,
+                  fontSize: 11,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
               ),
-              SizedBox(height: 11),
+              SizedBox(height: 6),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 8,
+                  fontSize: 15,
                   color: Colors.grey[700],
                 ),
               ),

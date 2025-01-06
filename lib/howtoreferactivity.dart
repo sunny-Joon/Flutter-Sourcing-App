@@ -9,15 +9,16 @@ class howtoreferactivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       backgroundColor: const Color(0xFFD42D3F),
       body: Container(
 
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(0),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 36,),
+
             Padding(padding: EdgeInsets.all(8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,58 +56,64 @@ class howtoreferactivity extends StatelessWidget {
                 ],
               ),
             ),
-            Text(
-              "How To Refer a Friend and Earn?",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 20),
-            StepWidget(
-              stepNumber: "1",
-              stepDescription:
-              "Click On 'Refer Now' and copy the message with your unique referral code.",
-            ),
-            StepWidget(
-              stepNumber: "2",
-              stepDescription:
-              "Send the message to your friends via SMS, WhatsApp, Facebook or Email.",
-            ),
-            StepWidget(
-              stepNumber: "3",
-              stepDescription:
-              "Ask your friend to fill in the form with your referral code and get ready to get rewarded.",
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  String shareMessage =
-                      "Join Paisalo group with my referral code *$referralCode* to get more benefits. "
-                      "Register on this link https://www.paisalo.in/home/cso with my referral code to become a CSO.";
 
-                  try {
-                    Share.share(shareMessage);
-                    print("Message shared: $shareMessage");
-                  } catch (e) {
-                    print("Error sharing message: $e");
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Color(
-                    0xFFC01024), // Text color
-                  elevation: 5, // Elevation
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12), // Rounded corners
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15), // Padding
-                  textStyle: TextStyle(fontSize: 20), // Text style
-                ),
-                child: Text('REFER NOW'),
-              ),
-            ),
+           Padding(padding: EdgeInsets.all(16),child: Column(
+             children: [
+               Text(
+                 "How To Refer a Friend and Earn?",
+                 style: TextStyle(
+                   color: Colors.white,
+                   fontSize: 20,
+                   fontWeight: FontWeight.bold,
+                 ),
+               ),
+               SizedBox(height: 20),
+               StepWidget(
+                 stepNumber: "1",
+                 stepDescription:
+                 "Click On 'Refer Now' and copy the message with your unique referral code.",
+               ),
+               StepWidget(
+                 stepNumber: "2",
+                 stepDescription:
+                 "Send the message to your friends via SMS, WhatsApp, Facebook or Email.",
+               ),
+               StepWidget(
+                 stepNumber: "3",
+                 stepDescription:
+                 "Ask your friend to fill in the form with your referral code and get ready to get rewarded.",
+               ),
+               SizedBox(height: 20),
+               Center(
+                 child: ElevatedButton(
+                   onPressed: () {
+                     String shareMessage =
+                         "Join Paisalo group with my referral code *$referralCode* to get more benefits. "
+                         "Register on this link https://www.paisalo.in/home/cso with my referral code to become a CSO.";
+
+                     try {
+                       Share.share(shareMessage);
+                       print("Message shared: $shareMessage");
+                     } catch (e) {
+                       print("Error sharing message: $e");
+                     }
+                   },
+                   style: ElevatedButton.styleFrom(
+                     foregroundColor: Colors.white, backgroundColor: Color(
+                       0xFFC01024), // Text color
+                     elevation: 5, // Elevation
+                     shape: RoundedRectangleBorder(
+                       borderRadius: BorderRadius.circular(12), // Rounded corners
+                     ),
+                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15), // Padding
+                     textStyle: TextStyle(fontSize: 20), // Text style
+                   ),
+                   child: Text('REFER NOW'),
+                 ),
+               ),
+             ],),),
+
+
           ],
         ),
       ),
