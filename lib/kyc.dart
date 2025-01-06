@@ -368,7 +368,7 @@ class _KYCPageState extends State<KYCPage> {
       setState(() {
         if (type == "dob") {
           _selectedDate = picked;
-          _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
+          _dobController.text = DateFormat('dd-MM-yyyy').format(picked);
           dlDob = DateFormat('dd-MM-yyyy').format(picked);
           _calculateAge();
         } else if (type == "passExp") {

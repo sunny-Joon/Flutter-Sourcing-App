@@ -4877,7 +4877,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         _selectedDate = picked;
         if (type.contains("open")) {
           _bankOpeningDateController.text =
-              DateFormat('yyyy-MM-dd').format(picked);
+              DateFormat('dd-MM-yyyy').format(picked);
         } else {
           _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
           _calculateAge();
