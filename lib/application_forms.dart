@@ -6946,27 +6946,44 @@ class _ApplicationPageState extends State<ApplicationPage> {
             Duration.zero, () => showIDCardDialog(context, BorrowerInfo[0]));
 
         if (!value.data[0].placeOfBirth.isEmpty) {
-
+setState(() {
+  _currentStep =1;
+});
           personalInfo(value.data[0]);
         }
         if (!value.data[0].motheRFirstName.isEmpty) {
           familyDetails(value.data[0]);
+          setState(() {
+            _currentStep =2;
+          });
         }
 
         if (value.data[0].fiIncomeExpenses.length != 0 &&
             value.data[0].fiIncomeExpenses[0].inExHomeType.isNotEmpty) {
           fiIncomeExpenses(value.data[0]);
+          setState(() {
+            _currentStep =3;
+          });
         }
 
         if (!value.data[0].bankAc.isEmpty) {
           financialInfo(value.data[0]);
+          setState(() {
+            _currentStep =4;
+          });
         }
 
         if (value.data[0].familyMembers.length != 0) {
           femMemIncome(value.data[0]);
+          setState(() {
+            _currentStep =5;
+          });
         }
         if (value.data[0].guarantors.length != 0) {
           guarrantors(value.data[0]);
+          setState(() {
+            _currentStep =6;
+          });
         }
       } else {
         setState(() {});
@@ -7215,7 +7232,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     try {
       // pickedImage;
-*/ /*
+*/
+/*
       if (pickedImage == null) {
         print("Opening camera to pick an image...");
         pickedImage = await GlobalClass().pickImage();
@@ -7224,7 +7242,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         return;
       } else {
         print("Image selected: ${pickedImage?.path}");
-      }*/ /*
+      }*/
+  /*
 
       print("GestureDetector tapped. ID: $id, Title: $type");
 

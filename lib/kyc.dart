@@ -90,7 +90,7 @@ class _KYCPageState extends State<KYCPage> {
   String income = "";
   String lati = "";
   String longi = "";
-  bool selectedMarritalStatus =false;
+  String? selectedMarritalStatus;
   String? selectedLoanReason;
 
   RangeCategoryDataModel? stateselected;
@@ -1300,8 +1300,8 @@ class _KYCPageState extends State<KYCPage> {
               } else if (response.data.relation.toLowerCase() == "husband") {
 
                   relationwithBorrowerselected = "Husband";
-                //  selectedMarritalStatus = "Married";
-                  selectedMarritalStatus = true;
+                  selectedMarritalStatus = "Married";
+                 // selectedMarritalStatus = true;
 
                 String cleanGuardianName(String name) {
                   return name.replaceAll(RegExp(r'[^a-zA-Z0-9.\s]'), '');
@@ -2072,7 +2072,7 @@ class _KYCPageState extends State<KYCPage> {
             borderRadius: BorderRadius.circular(5),
           ),
           child: DropdownButton<String>(
-            value: selectedMarritalStatus!?"Married":"Unmarried",
+            value: selectedMarritalStatus,
             isExpanded: true,
             iconSize: 24,
             elevation: 16,
@@ -2085,7 +2085,7 @@ class _KYCPageState extends State<KYCPage> {
             onChanged: (String? newValue) {
               if (newValue != null) {
                 setState(() {
-                  selectedMarritalStatus = newValue.toLowerCase() == 'married';
+                  selectedMarritalStatus = newValue;
                 });
               }
             },
@@ -3259,7 +3259,7 @@ bool checkIdMendate(){
     }*/else if ((int.parse(_expenseController.text)<=((int.parse(_incomeController.text))*0.5))) {
       showToast_Error("Expense should be greater than 50 % of Income");
       return false;
-    } else if (selectedMarritalStatus && _spouseFirstNameController.text.isEmpty) {
+    } else if (selectedMarritalStatus!.toLowerCase() == "married" && _spouseFirstNameController.text.isEmpty) {
         showToast_Error("Please enter spouse first name");
         return false;
        /*else if (_spouseLastNameController.text.isEmpty) {
@@ -3789,7 +3789,7 @@ bool checkIdMendate(){
               _fatherFirstNameController.text = value.data[0].fatheRFirstName;
               _fatherMiddleNameController.text = value.data[0].fatheRMiddleName;
               _fatherLastNameController.text = value.data[0].fatheRLastName;
-              selectedMarritalStatus = value.data[0].isMarried;
+            //  selectedMarritalStatus = (value.data[0].isMarried)?"Married":"unmarried";
               _spouseFirstNameController.text = value.data[0].spousEFirstName;
               _spouseMiddleNameController.text = value.data[0].spousEMiddleName;
               _spouseLastNameController.text = value.data[0].spousELastName;
