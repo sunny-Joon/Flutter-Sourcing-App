@@ -342,8 +342,6 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   void _validateOnFocusChange() {
-
-      // Validate the input when the text field loses focus
       setState(() {
         if (_aadharIdController.text.isEmpty) {
           _errorMessageAadhaar = 'Aadhaar Id field cannot be empty!';
@@ -358,7 +356,6 @@ class _KYCPageState extends State<KYCPage> {
           }
         }
       });
-
 
   }
 
@@ -390,14 +387,14 @@ class _KYCPageState extends State<KYCPage> {
       setState(() {
         if (type == "dob") {
           _selectedDate = picked;
-          _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
+          _dobController.text = DateFormat('dd-MM-yyyy').format(picked);
           dlDob = DateFormat('dd-MM-yyyy').format(picked);
           _calculateAge();
         } else if (type == "passExp") {
           _passportExpiryController.text =
-              DateFormat('yyyy-MM-dd').format(picked);
+              DateFormat('dd-MM-yyyy').format(picked);
         } else if (type == "dlExp") {
-          _dlExpiryController.text = DateFormat('yyyy-MM-dd').format(picked);
+          _dlExpiryController.text = DateFormat('dd-MM-yyyy').format(picked);
         }
       });
     }
@@ -1121,7 +1118,7 @@ class _KYCPageState extends State<KYCPage> {
       });
       dlDob = DateFormat('dd-MM-yyyy').format(parsedDate);
       // Return the formatted date string in yyyy-MM-dd format
-      return DateFormat('yyyy-MM-dd').format(parsedDate);
+      return DateFormat('dd-MM-yyyy').format(parsedDate);
     } catch (e) {
       // Handle any invalid format
       return 'Invalid Date';
@@ -3366,7 +3363,7 @@ bool checkIdMendate(){
       if(dataList[0].toLowerCase().startsWith("v")){
         _aadharIdController.text = dataList[2];
         if(_aadharIdController.text.length!=12){
-          GlobalClass.showErrorAlert(context, "Please Re-Enter Aadhaar number", 1);
+          GlobalClass.showErrorAlert(context, "Please Enter Aadhaar number", 1);
           _aadharIdController.text="";
         }
         List<String> nameParts = dataList[3].split(" ");

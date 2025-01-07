@@ -60,6 +60,7 @@ class _GroupListPageState extends State<GroupListPage> {
       }
       else {
         GlobalClass.showUnsuccessfulAlert(context, "Not able to fetch Group List", 2);
+
         setState(() {
           _isLoading = false;
           EasyLoading.dismiss();

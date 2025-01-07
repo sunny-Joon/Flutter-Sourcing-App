@@ -1117,6 +1117,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.0.8"
+
   leak_tracker_flutter_testing:
     dependency: transitive
     description:
@@ -1125,6 +1126,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.9"
+
   leak_tracker_testing:
     dependency: transitive
     description:
@@ -1674,6 +1676,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+
   synchronized:
     dependency: transitive
     description:
@@ -1698,6 +1701,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.4"
+
   timezone:
     dependency: transitive
     description:
@@ -1882,6 +1886,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.3.1"
+
   wakelock_plus:
     dependency: transitive
     description:
