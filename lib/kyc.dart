@@ -90,7 +90,7 @@ class _KYCPageState extends State<KYCPage> {
   String income = "";
   String lati = "";
   String longi = "";
-  String? selectedMarritalStatus;
+  bool selectedMarritalStatus =false;
   String? selectedLoanReason;
 
   RangeCategoryDataModel? stateselected;
@@ -695,12 +695,6 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-  void _showErrorMessage(String msg, BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg)),
-    );
-  }
-
   Widget _buildTextField(String label, TextEditingController controller) {
     return Container(
       color: Colors.white,
@@ -1250,7 +1244,8 @@ class _KYCPageState extends State<KYCPage> {
               } else if (response.data.relation.toLowerCase() == "husband") {
 
                   relationwithBorrowerselected = "Husband";
-                  selectedMarritalStatus = "Married";
+                //  selectedMarritalStatus = "Married";
+                  selectedMarritalStatus = true;
 
                 String cleanGuardianName(String name) {
                   return name.replaceAll(RegExp(r'[^a-zA-Z0-9.\s]'), '');
@@ -2021,7 +2016,7 @@ class _KYCPageState extends State<KYCPage> {
             borderRadius: BorderRadius.circular(5),
           ),
           child: DropdownButton<String>(
-            value: selectedMarritalStatus,
+            value: selectedMarritalStatus!?"Married":"Unmarried",
             isExpanded: true,
             iconSize: 24,
             elevation: 16,
@@ -2034,11 +2029,11 @@ class _KYCPageState extends State<KYCPage> {
             onChanged: (String? newValue) {
               if (newValue != null) {
                 setState(() {
-                  selectedMarritalStatus =
-                      newValue; // Update the selected value
+                  selectedMarritalStatus = newValue.toLowerCase() == 'married';
                 });
               }
             },
+
             items: marrital_status
                 .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
               return DropdownMenuItem<String>(
@@ -2139,6 +2134,7 @@ class _KYCPageState extends State<KYCPage> {
           child: DropdownButton<String>(
             value: selectedLoanReason,
             isExpanded: true,
+            hint: Text("Select Loan Reason"),
             iconSize: 24,
             elevation: 16,
             style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
@@ -3203,7 +3199,7 @@ bool checkIdMendate(){
     }*/else if ((int.parse(_expenseController.text)<=((int.parse(_incomeController.text))*0.5))) {
       showToast_Error("Expense should be greater than 50 % of Income");
       return false;
-    } else if (selectedMarritalStatus!.toLowerCase() == "married" && _spouseFirstNameController.text.isEmpty) {
+    } else if (selectedMarritalStatus && _spouseFirstNameController.text.isEmpty) {
         showToast_Error("Please enter spouse first name");
         return false;
        /*else if (_spouseLastNameController.text.isEmpty) {
@@ -3713,16 +3709,16 @@ bool checkIdMendate(){
               _nameController.text = value.data[0].fName;
               _nameMController.text = value.data[0].mName;
               _nameLController.text = value.data[0].lName;
-                if(value.data[0].relation_With_Borrower=="Husband"){
+                if(value.data[0].relationWithBorrower=="Husband"){
                   relationwithBorrowerselected="Husband";
                   _gurNameController.text="${value.data[0].spousEFirstName} ${value.data[0].spousEMiddleName} ${value.data[0].spousELastName}";
-                }else if(value.data[0].relation_With_Borrower=="Husband"){
+                }else if(value.data[0].relationWithBorrower=="Husband"){
                   relationwithBorrowerselected="Husband";
                   _gurNameController.text="${value.data[0].fatheRFirstName} ${value.data[0].fatheRMiddleName} ${value.data[0].fatheRLastName}";
 
                 }
                 genderselected=value.data[0].gender;
-              relationwithBorrowerselected=(value.data[0].relation_With_Borrower);
+              relationwithBorrowerselected=(value.data[0].relationWithBorrower);
               _mobileNoController.text = value.data[0].pPhone;
               _dobController.text = value.data[0].dob.toString().split("T")[0];
               // _ageController.text =value.data[0].;
@@ -3736,21 +3732,21 @@ bool checkIdMendate(){
               _fatherFirstNameController.text = value.data[0].fatheRFirstName;
               _fatherMiddleNameController.text = value.data[0].fatheRMiddleName;
               _fatherLastNameController.text = value.data[0].fatheRLastName;
-             // selectedMarritalStatus = value.data[0].maritaLStatus;
+              selectedMarritalStatus = value.data[0].isMarried;
               _spouseFirstNameController.text = value.data[0].spousEFirstName;
               _spouseMiddleNameController.text = value.data[0].spousEMiddleName;
               _spouseLastNameController.text = value.data[0].spousELastName;
-            //  _expenseController.text =value.data[0].;
-            //  _incomeController.text =value.data[0].;
-              _latitudeController.text =value.data[0].latitude;
-              _longitudeController.text =value.data[0].longitude;
+              _expenseController.text =value.data[0].expense.toString();
+              _incomeController.text =value.data[0].income.toString();
+           //   _latitudeController.text =value.data[0].latitude;
+          //    _longitudeController.text =value.data[0].longitude;
               _address1Controller.text =value.data[0].pAddress1;
               _address2Controller.text =value.data[0].pAddress2;
               _address3Controller.text =value.data[0].pAddress3;
               _cityController.text =value.data[0].pCity;
               _pincodeController.text =value.data[0].pPincode;
-              /*stateselected = states.firstWhere((item) =>
-              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/
+              stateselected = states.firstWhere((item) =>
+              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());
               _loan_amountController.text =value.data[0].loanAmount.toString();
              EasyLoading.dismiss();
 
