@@ -332,6 +332,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? Fi_Id;
   String qrResult = "";
   File? _imageFile;
+  bool grPicFlag = false;
+  late String _imageFile1;
   late String _imageFile2;
   File? adhaarFront;
   File? adhaarFront_coborrower;
@@ -362,8 +364,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   @override
   void initState() {
     super.initState();
-    _imageFile2 =
-        GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
+    _imageFile2 =GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
     FIID = widget.selectedData.id;
     creator = widget.selectedData.creator;
     ficode = widget.selectedData.fiCode.toString();
@@ -3949,9 +3950,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       6,amountReg)),
             ],
           ),
-          _imageFile == null
-              ? Text('No image selected.')
-              : Image.file(_imageFile!),
+
+          grPicFlag?Image.network(_imageFile1):( _imageFile == null
+    ? Text('No image selected.')
+        :Image.file(_imageFile!)),
+
+
+
+
           ElevatedButton(
             onPressed: getImage,
             style: ElevatedButton.styleFrom(
@@ -6991,9 +6997,6 @@ setState(() {
       _motherMController.text = data.motheRMiddleName;
       _motherLController.text = data.motheRLastName;
 
-
-
-
       selectednumOfChildren = data.noOfChildren.toString();
       selectedschoolingChildren = data.schoolingChildren.toString();
       if (onetonine.contains(data.otherDependents.toString())) {
@@ -7001,7 +7004,6 @@ setState(() {
       } else {
         selectedotherDependents = null; // Or set a default value
       }
-
     });
   }
 
@@ -7129,6 +7131,10 @@ setState(() {
       _dlController.text = data.guarantors[0].grDl;
       _voterController.text = data.guarantors[0].grVoter;
       _aadharIdController.text = data.guarantors[0].grAadharId;
+    //  _imageFile2 =GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
+
+      _imageFile1 = GlobalClass().transformFilePathToUrl(data.guarantors[0].grPicture);
+      grPicFlag = true;
       //  genderselected = data.guarantors[0].grGender;
       //  religionselected = data.guarantors[0].grReligion;
       /*      = data.guarantors[0].grEsignSucceed;
@@ -7149,6 +7155,7 @@ setState(() {
             context, "${value.message} Save Guarantor again", 1);
         setState(() {
           GuarantorEditable = true;
+          grPicFlag = false;
         });
       } else {
         EasyLoading.dismiss();
