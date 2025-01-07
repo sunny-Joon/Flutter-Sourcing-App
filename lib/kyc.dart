@@ -3692,16 +3692,13 @@ bool checkIdMendate(){
         .then((value) {
       if (value.statuscode == 200) {
 
-
         if (value.data[0].errormsg.isEmpty) {
           print("object112222");
 
           if (value.data[0].panNo.isEmpty &&
               value.data[0].dl.isEmpty &&
               value.data[0].voterId.isEmpty) {
-
             setState(() {
-
               FiType = "OLD";
               Fi_Code=value.data[0].fiCode.toString();
               Fi_Id = value.data[0].fiId.toString();
@@ -3715,7 +3712,6 @@ bool checkIdMendate(){
                 }else if(value.data[0].relationWithBorrower=="Husband"){
                   relationwithBorrowerselected="Husband";
                   _gurNameController.text="${value.data[0].fatheRFirstName} ${value.data[0].fatheRMiddleName} ${value.data[0].fatheRLastName}";
-
                 }
                 genderselected=value.data[0].gender;
               relationwithBorrowerselected=(value.data[0].relationWithBorrower);
@@ -3759,6 +3755,8 @@ bool checkIdMendate(){
               1,
             );
           } else {
+            EasyLoading.dismiss();
+
             String ficode = value.data[0].fiCode.toString();
             GlobalClass.showErrorAlert(context,
                 "Kyc is Already Done on this Adhaar Id(FiCode is $ficode)", 2);
