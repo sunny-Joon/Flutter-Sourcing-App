@@ -331,7 +331,7 @@ class _KYCPageState extends State<KYCPage> {
       child: TextField(
         controller: controller,
         readOnly: true,
-        onTap: () => _selectDate(context, controller, type),
+        onTap: () => _selectDate2(context, controller, type),
         decoration: InputDecoration(
           labelText: labelText,
           border: OutlineInputBorder(),
@@ -395,6 +395,50 @@ class _KYCPageState extends State<KYCPage> {
               DateFormat('dd-MM-yyyy').format(picked);
         } else if (type == "dlExp") {
           _dlExpiryController.text = DateFormat('yyyy-dd-MM').format(picked);
+        }
+      });
+    }
+    // if (controller == _dobController) {
+    //   _calculateAge();
+    // }
+  }
+
+  void _selectDate2(BuildContext context, TextEditingController controller,
+      String type) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(), // Only future dates
+      lastDate: DateTime(2101),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Colors.black,
+            hintColor: Colors.black,
+            colorScheme: ColorScheme.light(
+              primary: Color(0xFFD42D3F),
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() {
+        if (type == "dob") {
+          _selectedDate = picked;
+          _dobController.text = DateFormat('dd-MM-yyyy').format(picked);
+          dlDob = DateFormat('dd-MM-yyyy').format(picked);
+          _calculateAge();
+        } else if (type == "passExp") {
+          _passportExpiryController.text =
+              DateFormat('dd-MM-yyyy').format(picked);
+        } else if (type == "dlExp") {
+          _dlExpiryController.text = DateFormat('dd-MM-yyyy').format(picked);
         }
       });
     }
@@ -991,6 +1035,18 @@ class _KYCPageState extends State<KYCPage> {
                     ),
                   ),
                 ],
+                onChanged: (value){
+                  if(label == "Voter Id") {
+                    setState(() {
+                      voterVerified = false;
+                      voterCardHolderName = "";
+                    });
+                  }else if( label == "Driving License"){
+                    print('DL');
+                    dlCardHolderName = "";
+                    dlVerified = false;
+                  }
+                },
               ),
             ),
           ),
@@ -2487,6 +2543,13 @@ class _KYCPageState extends State<KYCPage> {
                                 ),
                               ),
                             ],
+                            onChanged: (value){
+                              setState(() {
+                                panVerified = false;
+                                panCardHolderName = "";
+                              });
+
+                            },
                           ),
                         ),
                       ),
@@ -3717,11 +3780,12 @@ bool checkIdMendate(){
               relationwithBorrowerselected=(value.data[0].relationWithBorrower);
               _mobileNoController.text = value.data[0].pPhone;
               _dobController.text = value.data[0].dob.toString().split("T")[0];
+              dlDob = value.data[0].dob.toString().split("T")[0];
               // _ageController.text =value.data[0].;
               if(value.data[0].pState.isNotEmpty){
                 stateselected= states
                     .firstWhere((item) =>
-                item.descriptionEn.toLowerCase() ==
+                item.code.toLowerCase() ==
                     value.data[0].pState.toLowerCase());
               }
 
@@ -3741,8 +3805,8 @@ bool checkIdMendate(){
               _address3Controller.text =value.data[0].pAddress3;
               _cityController.text =value.data[0].pCity;
               _pincodeController.text =value.data[0].pPincode;
-              stateselected = states.firstWhere((item) =>
-              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());
+              /*stateselected = states.firstWhere((item) =>
+              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/
               _loan_amountController.text =value.data[0].loanAmount.toString();
              EasyLoading.dismiss();
 
