@@ -582,10 +582,13 @@ class _KYCPageState extends State<KYCPage> {
                       child: Center(
                         child: InkWell(
                           onTap: () async {
-                            File? pickedFile = await GlobalClass().pickImage();
-                            setState(() {
-                              _imageFile = pickedFile;
-                            });
+                            if(_currentStep==0) {
+                              File? pickedFile = await GlobalClass()
+                                  .pickImage();
+                              setState(() {
+                                _imageFile = pickedFile;
+                              });
+                            }
                           },
                           child: Stack(
                             alignment: Alignment.center,
@@ -609,7 +612,7 @@ class _KYCPageState extends State<KYCPage> {
                                   ),
                                 ),
                               ),
-                              Positioned(
+                              (_currentStep==0)?Positioned(
                                 bottom: 0,
                                 right: 0,
                                 child: Container(
@@ -624,7 +627,7 @@ class _KYCPageState extends State<KYCPage> {
                                     color: Colors.white,
                                   ),
                                 ),
-                              ),
+                              ):SizedBox(),
                             ],
                           ),
                         ),
