@@ -394,7 +394,7 @@ class _KYCPageState extends State<KYCPage> {
           _passportExpiryController.text =
               DateFormat('dd-MM-yyyy').format(picked);
         } else if (type == "dlExp") {
-          _dlExpiryController.text = DateFormat('dd-MM-yyyy').format(picked);
+          _dlExpiryController.text = DateFormat('yyyy-dd-MM').format(picked);
         }
       });
     }
@@ -3467,7 +3467,7 @@ bool checkIdMendate(){
 
         _aadharIdController.text = dataList[1];
         if(_aadharIdController.text.length!=12){
-          GlobalClass.showErrorAlert(context, "Please Re-Enter Aadhaar number", 1);
+          GlobalClass.showErrorAlert(context, "Please Enter Aadhaar number", 1);
           _aadharIdController.text="";
 
         }

@@ -4895,7 +4895,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         _selectedDate = picked;
         if (type.contains("open")) {
           _bankOpeningDateController.text =
-              DateFormat('dd-MM-yyyy').format(picked);
+              DateFormat('yyyy-MM-dd').format(picked);
         } else {
           _dobController.text = DateFormat('dd-MM-yyyy').format(picked);
           _calculateAge();
@@ -5266,8 +5266,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedIsHandicap!.toLowerCase() == "select") {
       showToast_Error("Please select Is Handicap");
       return false;
-    } else if (selectedspecialAbility == null ||
-        selectedspecialAbility!.toLowerCase() == "select") {
+    } else if (selectedIsHandicap=="Yes"&& (selectedspecialAbility == null ||
+        selectedspecialAbility!.toLowerCase() == "select")) {
       showToast_Error("Please select special ability");
       return false;
     } else if (selectedSpecialSocialCategory == null ||
@@ -6429,6 +6429,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
               _p_CityController.text = response.data.cityName;
 
+
+              stateselected = states.firstWhere((item) => item.descriptionEn.toLowerCase() == response.data.stateName.toLowerCase());
+
+
+            //  List<String> addressParts = response.data.address1.trim().replaceAll(response.data.pincode, "").replaceAll(response.data.stateName, "").split(" ");
+
               String cleanAddress(String name) {
                 String cleanedAddrName = name.replaceAll(RegExp(r'[^a-zA-Z0-9\s\-\(\)\./\\]'), '');
 
@@ -6444,13 +6450,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 });
                 return cleanedAddrName;
               }
-              stateselected = states.firstWhere((item) => item.descriptionEn.toLowerCase() == response.data.stateName.toLowerCase());
-
-
-              List<String> addressParts = response.data.address1.trim().replaceAll(response.data.pincode, "").replaceAll(response.data.stateName, "").split(" ");
               String cleanedAddName = cleanAddress(response.data.address1);
               print("Cleaned Address: $cleanedAddName");
-             // List<String> addressParts = cleanedAddName.split(" ");
+
+               List<String> addressParts = cleanedAddName.split(" ");
               String address1 = '';
               String address2 = '';
               String address3 = '';
@@ -6474,13 +6477,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
               print("Address2: $address2");
               print("Address3: $address3");
 
-             _p_Address1Controller.text = address1;
-             _p_Address2Controller.text = address2;
-             _p_Address3Controller.text = address3;
+              _p_Address1Controller.text = address1;
+              _p_Address2Controller.text = address2;
+              _p_Address3Controller.text = address3;
               print("Address1: $address1");
               print("Address2: $address2");
               print("Address3: $address3");
-
 
               /*List<String> guarNameParts =
               response.data.guardianName.trim().split(" ");
@@ -6503,19 +6505,55 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 //  selectedMarritalStatus = "Married";
               });
               _p_CityController.text = response.data.cityName;
-              List<String> addressParts =
-                  response.data.address1.trim().split(" ");
-              if (addressParts.length == 1) {
-                _p_Address1Controller.text = addressParts[0];
-              } else if (addressParts.length == 2) {
-                _p_Address1Controller.text = addressParts[0];
-                _p_Address2Controller.text = addressParts[1];
-              } else {
-                _p_Address1Controller.text = addressParts.first;
-                _p_Address2Controller.text = addressParts.last;
-                _p_Address3Controller.text =
-                    addressParts.sublist(1, addressParts.length - 1).join(' ');
+
+              String cleanAddress(String name) {
+                String cleanedAddrName = name.replaceAll(RegExp(r'[^a-zA-Z0-9\s\-\(\)\./\\]'), '');
+
+                cleanedAddrName = cleanedAddrName.replaceAllMapped(RegExp(r'(\s\s+|\-\-+|\(\(+|\)\)+|\.{2,}|/{2,}|\\{2,})'), (match) {
+                  String matchedString = match.group(0)!;
+                  if (matchedString.contains('-')) return '-';
+                  if (matchedString.contains('(')) return '(';
+                  if (matchedString.contains(')')) return ')';
+                  if (matchedString.contains('.')) return '.';
+                  if (matchedString.contains('/')) return '/';
+                  if (matchedString.contains('\\')) return '\\';
+                  return ' ';
+                });
+                return cleanedAddrName;
               }
+              String cleanedAddName = cleanAddress(response.data.address1);
+              print("Cleaned Address: $cleanedAddName");
+
+              List<String> addressParts = cleanedAddName.split(" ");
+              String address1 = '';
+              String address2 = '';
+              String address3 = '';
+              if (addressParts.length >= 4) {
+                address1 = addressParts.take(3).join(" ");
+                address2 = addressParts[3] + " " + addressParts[4];
+                address3 = addressParts.sublist(5).join(" ");
+              } else if (addressParts.length == 3) {
+                address1 = addressParts.take(2).join(" ");
+                address2 = addressParts[2];
+              } else if (addressParts.length == 2) {
+                address1 = addressParts[0];
+                address2 = addressParts[1];
+              } else if (addressParts.length == 1) {
+                address1 = addressParts[0];
+              }
+              _p_Address1Controller.text = address1;
+              _p_Address2Controller.text = address2;
+              _p_Address3Controller.text = address3;
+              print("Address1: $address1");
+              print("Address2: $address2");
+              print("Address3: $address3");
+
+              _p_Address1Controller.text = address1;
+              _p_Address2Controller.text = address2;
+              _p_Address3Controller.text = address3;
+              print("Address1: $address1");
+              print("Address2: $address2");
+              print("Address3: $address3");
               /*List<String> guarNameParts =
               response.data.guardianName.trim().split(" ");
               if (guarNameParts.length == 1) {
