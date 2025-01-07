@@ -59,7 +59,8 @@ class _GroupListPageState extends State<GroupListPage> {
         print('Group List retrieved successfully');
       }
       else {
-        GlobalClass.showUnsuccessfulAlert(context, "Not able to fetch Group List", 1);
+        GlobalClass.showUnsuccessfulAlert(context, "Not able to fetch Group List", 2);
+
         setState(() {
           _isLoading = false;
           EasyLoading.dismiss();

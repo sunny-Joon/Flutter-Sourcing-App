@@ -9,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:xml/xml.dart';
 
+import 'collectionbranchlist.dart';
+
 class GlobalClass {
   // Singleton pattern to ensure only one instance of GlobalClass
   GlobalClass._privateConstructor();
@@ -87,7 +89,12 @@ class GlobalClass {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return WillPopScope(
+            onWillPop: () async {
+          // Prevent the dialog from closing when back button is pressed
+          return false;
+        },
+        child: AlertDialog(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -122,6 +129,10 @@ class GlobalClass {
               ),
               onPressed: () {
                 if (a == 1) {
+                 /* if(context == CollectionBranchListPage){
+                     // Close the popup
+
+                  }*/
                   Navigator.of(context).pop(); // Close the dialog
                 } else if (a == 2) {
                   Navigator.of(context).pop(); // Close the dialog
@@ -139,6 +150,7 @@ class GlobalClass {
               ),
             ),
           ],
+        )
         );
       },
     );

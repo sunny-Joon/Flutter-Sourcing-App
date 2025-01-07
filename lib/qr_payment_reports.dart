@@ -14,7 +14,7 @@ class QrPaymentReports extends StatefulWidget {
 }
 
 class _QrPaymentReportsState extends State<QrPaymentReports> {
-  final TextEditingController _searchController = TextEditingController(text: "UCDL000471");
+  final TextEditingController _searchController = TextEditingController(text: "");
   List<QrPaymentsDataModel> _qrPaymentsList = [];
 
   Future<void> _qrPayments(String smcode) async {
