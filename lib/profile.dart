@@ -160,6 +160,8 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFD42D3F),
+
+
       endDrawer: Container(
         width: 85,
         height: MediaQuery.of(context).size.height /
@@ -242,7 +244,9 @@ class _ProfileState extends State<Profile> {
             ],
           ),
         ),
+
       ),
+
       endDrawerEnableOpenDragGesture: true,
       body: SingleChildScrollView(
         child: ConstrainedBox(
@@ -339,15 +343,17 @@ class _ProfileState extends State<Profile> {
                                   MorphoRechargeDialog.show(context);
                                 });
                               } else if (index == 2) {
-                                return _buildGridItem(
+                                return _buildGridItem1(
                                     'Collection Reports', Icons.currency_rupee,
                                     () {
-                                  Navigator.push(
+                                      Scaffold.of(context).openEndDrawer();
+                               /*   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
+
                                             CollectionStatus()),
-                                  );
+                                  );*/
                                 });
                               }
                               return const SizedBox();
@@ -478,6 +484,36 @@ class _ProfileState extends State<Profile> {
                 style: TextStyle(
                   fontFamily: "Poppins-Regular",
                   fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGridItem1(String title, IconData icon, VoidCallback onTap) {
+    return Card(
+      color: Colors.white,
+      elevation: 6,
+      margin: EdgeInsets.all(6),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 40, color: Colors.grey),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: "Poppins-Regular",
+                  fontSize: 11,
                   fontWeight: FontWeight.normal,
                   color: Colors.black,
                 ),
