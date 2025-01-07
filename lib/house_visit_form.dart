@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/global_class.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -40,6 +41,12 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   String _locationMessage = "";
   late double _latitude=0.0;
   late double _longitude=0.0;
+
+  String nameReg ='[a-zA-Z. ]';
+  String addReg = r'[a-zA-Z0-9. ()/,-]';
+  String amountReg ='[0-9]';
+  String cityReg ='[a-zA-Z ]';
+  String IdsReg ='[a-zA-Z0-9/ ]';
 
   List<String> relation = ['Select','mother','father','husband','wife','brother','sister'];
   List<String> residing_type = ['Select','pucca','kaccha'];
@@ -218,26 +225,26 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                     children:
                     <Widget>[
                       SizedBox(height: 20),
-                      _buildTextField2('शाखा', _BranchNameController, TextInputType.text),
-                      _buildTextField2('क्षेत्र', _AreaCodeController, TextInputType.text),
-                      _buildTextField2('समूह', _GroupCodeController, TextInputType.text),
-                      _buildTextField2('केन्द्र', _CenterController, TextInputType.text),
-                      _buildTextField2('ग्राहक के लिये ऋण उपयोग के प्रतिशत का उल्लेख करें।', _LoanUsagePercentageController, TextInputType.number),
-                      _buildTextField2('व्यापार से अनुमानित मासिक आय (रुपयों में)', _monthlyIncomeController, TextInputType.number),
-                      _buildTextField2('अनुमानित मासिक बिक्री (रुपयों में)(या तो सेल का कोई रिकार्ड है उससे सत्यापन करें या ग्राहक से विचार विमर्श के माध्यम से)', _monthlySalesController, TextInputType.number),
-                      _buildTextField2('साक्षात्कार किये गये व्यक्ति का नाम', _NameofInterviewedController, TextInputType.name),
-                      _buildTextField2('साक्षात्कार किये गये व्यक्ति की आयु', _AgeofInterviewedController, TextInputType.number),
-                      _buildTextField2('आवेदक के निवास से शाखा/डीलर बिंदु तक की दूरी (किमी में)', _DistancetobranchController, TextInputType.number),
-                      _buildTextField2('शाखा/डीलर के स्थान से आवेदक के निवास तक पहुंचने के लिए आवश्यक समय(मिनट)', _TimetoreachbranchController, TextInputType.number),
-                      _buildTextField2('व्यवसाय का कुल मासिक व्यय', _TotalmonthlyexpensesofoccupationController, TextInputType.number),
-                      _buildTextField2('पैसालो से प्रस्तावित ऋण के बाद प्रस्तावित शुद्ध मासिक आय', _Netmonthlyincome_afterproposedloanController, TextInputType.number),
-                      _buildTextField2('कुल मासिक घरेलू खर्च', _TotalmonthlyhouseholdexpensesController, TextInputType.number),
-                      _buildTextField2('परिवार के अन्य सदस्यों की शुद्ध मासिक आय', _NetmonthlyincomeotherfamilymembersController, TextInputType.number),
-                      _buildTextField2('संदर्भ व्यक्ति का नाम 1', _Namereferenceperson1Controller, TextInputType.name),
+                      _buildTextField2('शाखा', _BranchNameController, TextInputType.text,addReg),
+                      _buildTextField2('क्षेत्र', _AreaCodeController, TextInputType.text,addReg),
+                      _buildTextField2('समूह', _GroupCodeController, TextInputType.text,addReg),
+                      _buildTextField2('केन्द्र', _CenterController, TextInputType.text,addReg),
+                      _buildTextField2('ग्राहक के लिये ऋण उपयोग के प्रतिशत का उल्लेख करें।', _LoanUsagePercentageController, TextInputType.number,amountReg),
+                      _buildTextField2('व्यापार से अनुमानित मासिक आय (रुपयों में)', _monthlyIncomeController, TextInputType.number,amountReg),
+                      _buildTextField2('अनुमानित मासिक बिक्री (रुपयों में)(या तो सेल का कोई रिकार्ड है उससे सत्यापन करें या ग्राहक से विचार विमर्श के माध्यम से)', _monthlySalesController, TextInputType.number,amountReg),
+                      _buildTextField2('साक्षात्कार किये गये व्यक्ति का नाम', _NameofInterviewedController, TextInputType.name,nameReg),
+                      _buildTextField2('साक्षात्कार किये गये व्यक्ति की आयु', _AgeofInterviewedController, TextInputType.number,amountReg),
+                      _buildTextField2('आवेदक के निवास से शाखा/डीलर बिंदु तक की दूरी (किमी में)', _DistancetobranchController, TextInputType.number,amountReg),
+                      _buildTextField2('शाखा/डीलर के स्थान से आवेदक के निवास तक पहुंचने के लिए आवश्यक समय(मिनट)', _TimetoreachbranchController, TextInputType.number,amountReg),
+                      _buildTextField2('व्यवसाय का कुल मासिक व्यय', _TotalmonthlyexpensesofoccupationController, TextInputType.number,amountReg),
+                      _buildTextField2('पैसालो से प्रस्तावित ऋण के बाद प्रस्तावित शुद्ध मासिक आय', _Netmonthlyincome_afterproposedloanController, TextInputType.number,amountReg),
+                      _buildTextField2('कुल मासिक घरेलू खर्च', _TotalmonthlyhouseholdexpensesController, TextInputType.number,amountReg),
+                      _buildTextField2('परिवार के अन्य सदस्यों की शुद्ध मासिक आय', _NetmonthlyincomeotherfamilymembersController, TextInputType.number,amountReg),
+                      _buildTextField2('संदर्भ व्यक्ति का नाम 1', _Namereferenceperson1Controller, TextInputType.name,nameReg),
                       _buildTextField1('फोन नंबर 1', _Mobilereferenceperson1Controller, TextInputType.number,10),
-                      _buildTextField2(' संदर्भ व्यक्ति का नाम 2', _Namereferenceperson2Controller, TextInputType.name),
+                      _buildTextField2(' संदर्भ व्यक्ति का नाम 2', _Namereferenceperson2Controller, TextInputType.name,nameReg),
                       _buildTextField1('फोन नंबर 2', _Mobilereferenceperson2Controller, TextInputType.number,10),
-                      _buildTextField2('व्यवसाय स्थान का पता', _AddressController, TextInputType.name),
+                      _buildTextField2('व्यवसाय स्थान का पता', _AddressController, TextInputType.name,addReg),
 
 
                       dropdowns('आवेदक के साथ अन्य कमाने वाले सदस्य का संबंध', relation, selected_relation!, (newValue) {setState(() {selected_relation = newValue;});}),
@@ -546,7 +553,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     });
   }
 
-  Widget _buildTextField2(String label, TextEditingController controller, TextInputType inputType) {
+  Widget _buildTextField2(String label, TextEditingController controller, TextInputType inputType,String regex) {
     return Container(
      // margin: EdgeInsets.symmetric(vertical: 4),
       padding: EdgeInsets.all(4),
@@ -578,6 +585,15 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                   }
                   return null;
                 },
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(regex)),
+                  TextInputFormatter.withFunction(
+                        (oldValue, newValue) => TextEditingValue(
+                      text: newValue.text.toUpperCase(),
+                      selection: newValue.selection,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
