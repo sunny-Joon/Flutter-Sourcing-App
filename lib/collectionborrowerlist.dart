@@ -424,7 +424,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
                                   colorScheme: ColorScheme.light(
                                     primary: Color(0xFFD42D3F),
                                     onPrimary: Colors.white,
-                                    surface: Colors.white,
+                                    surface: Colors.black,
                                     onSurface: Colors.red,
                                   ),
                                   dialogBackgroundColor: Colors.white,

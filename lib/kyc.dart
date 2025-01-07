@@ -43,6 +43,12 @@ class _KYCPageState extends State<KYCPage> {
   late ApiService apiService_protean;
   late ApiService apiService_OCR;
 
+  String nameReg ='[a-zA-Z. ]';
+  String addReg = r'[a-zA-Z0-9. ()/,-]';
+  String amountReg ='[0-9]';
+  String cityReg ='[a-zA-Z ]';
+  String IdsReg ='[a-zA-Z0-9/ ]';
+
   String FiType ="NEW";
   int _timeLeft = 60; // Timer starting at 60 seconds
   Timer? _timer;
@@ -76,7 +82,7 @@ class _KYCPageState extends State<KYCPage> {
   PlaceData? selectedSubDistrictCode;
   PlaceData? selectedVillageCode;
   bool isCKYCNumberFound=false;
-  List<String> loanDuration = ['12', '24', '36', '48'];
+  List<String> loanDuration = ['Select','12', '24', '36', '48'];
 
   List<String> titleList = ["Mr.", "Mrs.", "Miss"];
   String? selectedTitle;
@@ -360,9 +366,25 @@ class _KYCPageState extends State<KYCPage> {
       String type) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2101),
+      initialDate:DateTime.now().isBefore(DateTime(DateTime.now().year - 21, DateTime.now().month, DateTime.now().day)) ? DateTime.now() : DateTime(DateTime.now().year - 21, DateTime.now().month, DateTime.now().day),
+      firstDate: DateTime(DateTime.now().year - 60, DateTime.now().month, DateTime.now().day), // You can set this to any reasonable past date
+      lastDate: DateTime(DateTime.now().year - 21, DateTime.now().month, DateTime.now().day),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Colors.black,
+            hintColor: Colors.black,
+            colorScheme: ColorScheme.light(
+              primary: Color(0xFFD42D3F),
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       setState(() {
@@ -711,6 +733,15 @@ class _KYCPageState extends State<KYCPage> {
                     }
                     return null;
                   },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(addReg)),
+                    TextInputFormatter.withFunction(
+                          (oldValue, newValue) => TextEditingValue(
+                        text: newValue.text.toUpperCase(),
+                        selection: newValue.selection,
+                      ),
+                    ),
+                  ],
                 ),
               )),
         ],
@@ -719,6 +750,7 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   Future<void> saveFiMethod(BuildContext context) async {
+    print("Sunny");
     try {
       EasyLoading.show(status: 'Loading...');
 
@@ -930,7 +962,7 @@ class _KYCPageState extends State<KYCPage> {
   void saveDataMethod() {}
 
   Widget _buildTextField2(String label, TextEditingController controller,
-      TextInputType inputType, int maxlength) {
+      TextInputType inputType, int maxlength,String regex) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 3),
@@ -960,8 +992,7 @@ class _KYCPageState extends State<KYCPage> {
                   return null;
                 },
                 inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(
-                      '[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                  FilteringTextInputFormatter.allow(RegExp(regex)),
                   TextInputFormatter.withFunction(
                     (oldValue, newValue) => TextEditingValue(
                       text: newValue.text.toUpperCase(),
@@ -1577,6 +1608,7 @@ class _KYCPageState extends State<KYCPage> {
                       value: selectedTitle,
                       isExpanded: true,
                       iconSize: 24,
+                      hint: Text("Select"),
                       elevation: 16,
                       style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
                       underline: Container(
@@ -1604,7 +1636,7 @@ class _KYCPageState extends State<KYCPage> {
             // Add spacing between Title dropdown and Name field if needed
             Expanded(
               child: _buildTextField2(
-                  'Name', _nameController, TextInputType.name, 30),
+                  'Name', _nameController, TextInputType.text, 30,nameReg),
             ),
           ],
         ),
@@ -1614,12 +1646,12 @@ class _KYCPageState extends State<KYCPage> {
           children: [
             Expanded(
                 child: _buildTextField2(
-                    'Middle Name', _nameMController, TextInputType.name, 30)),
+                    'Middle Name', _nameMController, TextInputType.text, 30,nameReg)),
             SizedBox(width: 10),
             // Add spacing between the text fields if needed
             Expanded(
                 child: _buildTextField2(
-                    'Last Name', _nameLController, TextInputType.name, 30)),
+                    'Last Name', _nameLController, TextInputType.text, 30,nameReg)),
           ],
         ),
 
@@ -1656,7 +1688,7 @@ class _KYCPageState extends State<KYCPage> {
                       },
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(
-                              '[a-zA-Z0-9 ]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                          nameReg)), // Allow only alphanumeric characters // Optional: to deny spaces
                           TextInputFormatter.withFunction(
                                 (oldValue, newValue) => TextEditingValue(
                               text: newValue.text.toUpperCase(),
@@ -1950,19 +1982,19 @@ class _KYCPageState extends State<KYCPage> {
         ),
 
         _buildTextField2('Father First Name', _fatherFirstNameController,
-            TextInputType.text, 30),
+            TextInputType.text, 30,nameReg),
 
         Row(
           children: [
             Expanded(
               child: _buildTextField2('Middle Name',
-                  _fatherMiddleNameController, TextInputType.text, 30),
+                  _fatherMiddleNameController, TextInputType.text, 30,nameReg),
             ),
             SizedBox(width: 8),
             // Add spacing between the text fields if needed
             Expanded(
                 child: _buildTextField2('Last Name', _fatherLastNameController,
-                    TextInputType.text, 30)),
+                    TextInputType.text, 30,nameReg)),
           ],
         ),
 
@@ -2024,17 +2056,17 @@ class _KYCPageState extends State<KYCPage> {
           Column(
             children: [
               _buildTextField2('Spouse First Name', _spouseFirstNameController,
-                  TextInputType.text, 30),
+                  TextInputType.text, 30,nameReg),
               Row(
                 children: [
                   Expanded(
                     child: _buildTextField2('Middle Name',
-                        _spouseMiddleNameController, TextInputType.text, 30),
+                        _spouseMiddleNameController, TextInputType.text, 30,nameReg),
                   ),
                   SizedBox(width: 8),
                   Expanded(
                     child: _buildTextField2('Last Name',
-                        _spouseLastNameController, TextInputType.text, 30),
+                        _spouseLastNameController, TextInputType.text, 30,nameReg),
                   ),
                 ],
               ),
@@ -2044,13 +2076,13 @@ class _KYCPageState extends State<KYCPage> {
           children: [
             Expanded(
               child: _buildTextField2('Monthly Income', _incomeController,
-                  TextInputType.number, 7),
+                  TextInputType.number, 7,amountReg),
             ),
             SizedBox(width: 8),
             // Add spacing between the text fields if needed
             Expanded(
               child: _buildTextField2('Monthly Expense', _expenseController,
-                  TextInputType.number, 7),
+                  TextInputType.number, 7,amountReg),
             ),
           ],
         ),
@@ -2061,12 +2093,12 @@ class _KYCPageState extends State<KYCPage> {
           children: [
             Expanded(
               child: _buildTextField2(
-                  'City', _cityController, TextInputType.text, 30),
+                  'City', _cityController, TextInputType.text, 30,cityReg),
             ),
             SizedBox(width: 16),
             Expanded(
               child: _buildTextField2(
-                  'Pincode', _pincodeController, TextInputType.number, 6),
+                  'Pincode', _pincodeController, TextInputType.number, 6,amountReg),
             ),
           ],
         ),
@@ -2082,7 +2114,7 @@ class _KYCPageState extends State<KYCPage> {
           });
         }, String),
         _buildTextField2(
-            'Loan Amount', _loan_amountController, TextInputType.number, 7),
+            'Loan Amount', _loan_amountController, TextInputType.number, 7,amountReg),
 
         SizedBox(
           height: 6,
@@ -2146,7 +2178,7 @@ class _KYCPageState extends State<KYCPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Loan Duraction',
+                    'Loan Duration',
                     style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                   ),
                   SizedBox(height: 3),
@@ -2210,6 +2242,7 @@ class _KYCPageState extends State<KYCPage> {
                     child: DropdownButton<String>(
                       value: bankselected,
                       isExpanded: true,
+                      hint: Text('Select Bank'),
                       iconSize: 24,
                       elevation: 16,
                       style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
@@ -2506,7 +2539,7 @@ class _KYCPageState extends State<KYCPage> {
               Flexible(
                 flex: 2,
                 child: _buildTextField2('Driving License',
-                    _drivingLicenseController, TextInputType.text, 18),
+                    _drivingLicenseController, TextInputType.text, 18,IdsReg),
               ),
               SizedBox(width: 10),
               Padding(
@@ -2550,7 +2583,7 @@ class _KYCPageState extends State<KYCPage> {
               Flexible(
                 flex: 2,
                 child: _buildTextField2(
-                    'Voter Id', _voterIdController, TextInputType.text, 17),
+                    'Voter Id', _voterIdController, TextInputType.text, 17,IdsReg),
               ),
               SizedBox(width: 10),
               Padding(
@@ -2752,31 +2785,55 @@ class _KYCPageState extends State<KYCPage> {
         Map<String, dynamic> responseData = response["data"];
         // Parse JSON object if it’s a map
         if (type == "pancard") {
-          setState(() {
-            if (response["error"] == null) {
-              panCardHolderName =
-                  "${responseData['first_name']} ${responseData['last_name']}";
+            if ((responseData['first_name'] == null ||responseData['first_name'] == "")&& (responseData['last_name'] ==null ||responseData['last_name'] =="")) {
+              setState(() {
+                panCardHolderName = "Data not Verified";
+                panVerified = false;
+              });
+            }else if ((responseData['first_name'] != null ||responseData['first_name'] != "")&& (responseData['last_name'] !=null ||responseData['last_name'] !="")) {
+              setState(() {
+
+              panCardHolderName ="${responseData['first_name']} ${responseData['last_name']}";
               panVerified = true;
-            }else{
-              panCardHolderName = "PAN no. is wrong please check";
-              panVerified = false;
+              });
+
+            }else if (responseData['first_name'] != null ||responseData['first_name'] != ""){
+                setState(() {
+
+
+              panCardHolderName ="${responseData['first_name']}";
+              panVerified = true;
+                });
+
             }
-          });
           if(!isCKYCNumberFound){
             isCKYCNumberFound= await CkycRepository().searchCkyc(_aadharIdController.text, _panNoController.text, _voterIdController.text, _dobController.text, genderselected, _nameController.text + " " + _nameMController.text + " " + _nameLController.text);
 
           }
         } else if (type == "drivinglicense") {
-          setState(() {
-            dlCardHolderName = "${responseData['name']}";
-            dlVerified = true;
-          });
+          if(responseData['name'] == null || responseData['name'] == ""){
+            setState(() {
+              dlCardHolderName = "Data not Verified with DOB:$dob";
+              dlVerified = false;
+            });
+          }else {
+            setState(() {
+              dlCardHolderName = "${responseData['name']}";
+              dlVerified = true;
+            });
+          }
         } else if (type == "voterid") {
-          setState(() {
-            voterCardHolderName = "${responseData['name']}";
-            voterVerified = true;
-
-          });
+          if(responseData['name'] == null || responseData['name'] == "") {
+            setState(() {
+              voterCardHolderName = "Data not Verified";
+              voterVerified = false;
+            });
+          }else {
+            setState(() {
+              voterCardHolderName = "${responseData['name']}";
+              voterVerified = true;
+            });
+          }
           if(!isCKYCNumberFound){
             isCKYCNumberFound= await CkycRepository().searchCkyc(_aadharIdController.text, _panNoController.text, _voterIdController.text, _dobController.text, genderselected, _nameController.text + " " + _nameMController.text + " " + _nameLController.text);
 
@@ -3106,10 +3163,10 @@ bool checkIdMendate(){
     } else if (_nameController.text.isEmpty) {
       showToast_Error("Please enter borrower first name");
       return false;
-    } else if (_nameLController.text.isEmpty) {
+    }/* else if (_nameLController.text.isEmpty) {
       showToast_Error("Please enter borrower last name");
       return false;
-    } else if (_gurNameController.text.isEmpty) {
+    }*/ else if (_gurNameController.text.isEmpty) {
       showToast_Error("Please enter guardian name");
       return false;
     } else if (genderselected.toLowerCase() == "select") {
@@ -3128,10 +3185,10 @@ bool checkIdMendate(){
     } else if (_fatherFirstNameController.text.isEmpty) {
       showToast_Error("Please enter father first name");
       return false;
-    } else if (_fatherLastNameController.text.isEmpty) {
+    } /*else if (_fatherLastNameController.text.isEmpty) {
       showToast_Error("Please enter father last name");
       return false;
-    } else if (selectedMarritalStatus == null) {
+    }*/ else if (selectedMarritalStatus == null) {
       showToast_Error("Please select marital status");
       return false;
     } else if (_expenseController.text.isEmpty ) {
@@ -3140,20 +3197,22 @@ bool checkIdMendate(){
     } else if (_incomeController.text.isEmpty) {
       showToast_Error("Please Enter Monthly Income");
       return false;
-    }else if (!(int.parse(_incomeController.text)<=25000 && int.parse(_incomeController.text)>=10000)) {
+    }else if ((!GlobalClass.creator.startsWith('VH') || !GlobalClass.creator.startsWith('vh')) && !(int.parse(_incomeController.text)<=25000 && int.parse(_incomeController.text)>=10000)) {
+        showToast_Error("Income should be greater than 10,000 and less than 25,000");
+      return false;
+    }/*else if (!(int.parse(_incomeController.text)<=25000 && int.parse(_incomeController.text)>=10000)) {
       showToast_Error("Income should be greater than 10,000 and less than 25,000");
       return false;
-    }else if ((int.parse(_expenseController.text)<=((int.parse(_incomeController.text))*0.5))) {
+    }*/else if ((int.parse(_expenseController.text)<=((int.parse(_incomeController.text))*0.5))) {
       showToast_Error("Expense should be greater than 50 % of Income");
       return false;
-    } else if (selectedMarritalStatus!.toLowerCase() == "married") {
-      if (_spouseFirstNameController.text.isEmpty) {
+    } else if (selectedMarritalStatus!.toLowerCase() == "married" && _spouseFirstNameController.text.isEmpty) {
         showToast_Error("Please enter spouse first name");
         return false;
-      } else if (_spouseLastNameController.text.isEmpty) {
+       /*else if (_spouseLastNameController.text.isEmpty) {
         showToast_Error("Please enter spouse last name");
         return false;
-      }
+      }*/
     } else if (_address1Controller.text.isEmpty) {
       showToast_Error("Please enter address 1");
       return false;
@@ -3177,10 +3236,10 @@ bool checkIdMendate(){
     } else if (selectedLoanReason == null) {
       showToast_Error("Please select loan reason");
       return false;
-    } else if (selectedloanDuration == null) {
+    } else if (selectedloanDuration == null ||selectedloanDuration!.toLowerCase() == "select") {
       showToast_Error("Please select loan duration");
       return false;
-    } else if (bankselected!.toLowerCase() == "select") {
+    } else if (bankselected == null ||bankselected!.toLowerCase() == "select"  ) {
       showToast_Error("Please select bank");
       return false;
     } else if (_latitudeController.text.isEmpty ||

@@ -20,10 +20,7 @@ import 'home_page.dart';
 import 'leader_board.dart';
 import 'on_boarding.dart';
 
-
 class Fragments extends StatefulWidget {
-
-
 
   @override
   _FragmentsState createState() => _FragmentsState();
@@ -32,7 +29,6 @@ class Fragments extends StatefulWidget {
 class _FragmentsState extends State<Fragments> {
   AppColors appColors = new AppColors();
 
-  int _selectedIndex = 0;
   dynamic managerList; // Variable to store the response object
   int _page = 0;
 
@@ -45,46 +41,19 @@ class _FragmentsState extends State<Fragments> {
     Profile(),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       RangeCategory(context);
-      //_showTemporaryDialog(context, 'You are in ${GlobalClass.creator} creator');
+      Fluttertoast.showToast(msg: 'You are in ${GlobalClass.creator} creator',toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0,);
     });
    }
 
-  void _showTemporaryDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        Future.delayed(Duration(seconds: 2), () {
-          Navigator.of(context).pop(true);
-        });
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                message,
-                style: TextStyle(
-                    color: Color(0xFFD42D3F),
-                    fontSize: 18),
-              ),
-              SizedBox(height: 10),
-            ],
-          ),
-        );
-      },
-    );
-  }
   @override
   Widget build(BuildContext context) {
     return   PopScope(
@@ -155,7 +124,7 @@ class _FragmentsState extends State<Fragments> {
           animationCurve: Curves.easeInOut,
           animationDuration: const Duration(milliseconds: 400),
           onTap: (index) {
-            setState(() {
+
               setState(() {
                 _page = index;
                 // if(_page==0){
@@ -199,7 +168,7 @@ class _FragmentsState extends State<Fragments> {
                 //   );
                 // }
               });
-            });
+
           },
           letIndexChange: (index) => true,
         ),
@@ -303,6 +272,5 @@ class _FragmentsState extends State<Fragments> {
       }
 
   }
-
 
 }
