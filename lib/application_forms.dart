@@ -4899,8 +4899,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               today.day < _selectedDate!.day)) {
         age--;
       }
-
       _ageController.text = age.toString();
+
     } else {
       _ageController.text = '';
     }

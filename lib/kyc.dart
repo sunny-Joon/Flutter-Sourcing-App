@@ -336,8 +336,6 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   void _validateOnFocusChange() {
-
-      // Validate the input when the text field loses focus
       setState(() {
         if (_aadharIdController.text.isEmpty) {
           _errorMessageAadhaar = 'Aadhaar Id field cannot be empty!';
@@ -352,7 +350,6 @@ class _KYCPageState extends State<KYCPage> {
           }
         }
       });
-
 
   }
 
@@ -373,9 +370,9 @@ class _KYCPageState extends State<KYCPage> {
           _calculateAge();
         } else if (type == "passExp") {
           _passportExpiryController.text =
-              DateFormat('yyyy-MM-dd').format(picked);
+              DateFormat('dd-MM-yyyy').format(picked);
         } else if (type == "dlExp") {
-          _dlExpiryController.text = DateFormat('yyyy-MM-dd').format(picked);
+          _dlExpiryController.text = DateFormat('dd-MM-yyyy').format(picked);
         }
       });
     }
@@ -1090,7 +1087,7 @@ class _KYCPageState extends State<KYCPage> {
       });
       dlDob = DateFormat('dd-MM-yyyy').format(parsedDate);
       // Return the formatted date string in yyyy-MM-dd format
-      return DateFormat('yyyy-MM-dd').format(parsedDate);
+      return DateFormat('dd-MM-yyyy').format(parsedDate);
     } catch (e) {
       // Handle any invalid format
       return 'Invalid Date';
@@ -3128,10 +3125,10 @@ bool checkIdMendate(){
     } else if (_fatherFirstNameController.text.isEmpty) {
       showToast_Error("Please enter father first name");
       return false;
-    } else if (_fatherLastNameController.text.isEmpty) {
+    } /*else if (_fatherLastNameController.text.isEmpty) {
       showToast_Error("Please enter father last name");
       return false;
-    } else if (selectedMarritalStatus == null) {
+    }*/ else if (selectedMarritalStatus == null) {
       showToast_Error("Please select marital status");
       return false;
     } else if (_expenseController.text.isEmpty ) {
@@ -3150,10 +3147,10 @@ bool checkIdMendate(){
       if (_spouseFirstNameController.text.isEmpty) {
         showToast_Error("Please enter spouse first name");
         return false;
-      } else if (_spouseLastNameController.text.isEmpty) {
+      } /*else if (_spouseLastNameController.text.isEmpty) {
         showToast_Error("Please enter spouse last name");
         return false;
-      }
+      }*/
     } else if (_address1Controller.text.isEmpty) {
       showToast_Error("Please enter address 1");
       return false;
@@ -3307,7 +3304,7 @@ bool checkIdMendate(){
       if(dataList[0].toLowerCase().startsWith("v")){
         _aadharIdController.text = dataList[2];
         if(_aadharIdController.text.length!=12){
-          GlobalClass.showErrorAlert(context, "Please Re-Enter Aadhaar number", 1);
+          GlobalClass.showErrorAlert(context, "Please Enter Aadhaar number", 1);
           _aadharIdController.text="";
         }
         List<String> nameParts = dataList[3].split(" ");
