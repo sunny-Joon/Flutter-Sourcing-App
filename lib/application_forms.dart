@@ -354,6 +354,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String initialDlValue = '';
   String initialVoterValue = '';
 
+  String nameReg ='[a-zA-Z. ]';
+  String addReg = r'[a-zA-Z0-9. ()/,-]';
+  String amountReg ='[0-9]';
+  String cityReg ='[a-zA-Z ]';
+  String idsReg ='[a-zA-Z0-9/ ]';
   @override
   void initState() {
     super.initState();
@@ -874,7 +879,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         SizedBox(height: 10),
 
         _buildTextField('Place of Birth', placeOfBirthController,
-            personalInfoEditable, _placeOfBirthFocus),
+            personalInfoEditable, _placeOfBirthFocus,addReg),
         SizedBox(height: 10),
 
         // Control this flag to enable/disable fields
@@ -1351,15 +1356,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
         SizedBox(height: 10),
 
         _buildTextField('Address1', address1ControllerP, personalInfoEditable,
-            _address1FocusP),
+            _address1FocusP,addReg),
         SizedBox(height: 10),
 
         _buildTextField('Address2', address2ControllerP, personalInfoEditable,
-            _address2FocusP),
+            _address2FocusP,addReg),
         SizedBox(height: 10),
 
         _buildTextField('Address3', address3ControllerP, personalInfoEditable,
-            _address3FocusP),
+            _address3FocusP,addReg),
         SizedBox(height: 10),
         _buildLabeledDropdownField(
           'Select State',
@@ -1432,7 +1437,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             // City TextField
             Flexible(
               child: _buildTextField(
-                  'City', cityControllerP, personalInfoEditable, _cityFocusP),
+                  'City', cityControllerP, personalInfoEditable, _cityFocusP,cityReg),
             ),
             SizedBox(width: 10),
             // Add some space between the City TextField and Pin Code Text
@@ -1514,15 +1519,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ],
         ),
         _buildTextField('Address1', address1ControllerC, personalInfoEditable,
-            _address1FocusC),
+            _address1FocusC,addReg),
         SizedBox(height: 10),
 
         _buildTextField('Address2', address2ControllerC, personalInfoEditable,
-            _address2FocusC),
+            _address2FocusC,addReg),
         SizedBox(height: 10),
 
         _buildTextField('Address3', address3ControllerC, personalInfoEditable,
-            _address3FocusC),
+            _address3FocusC,addReg),
         SizedBox(height: 10),
 
         _buildLabeledDropdownField(
@@ -1546,7 +1551,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             // City TextField
             Flexible(
               child: _buildTextField(
-                  'City', cityControllerC, personalInfoEditable, _cityFocusC),
+                  'City', cityControllerC, personalInfoEditable, _cityFocusC,cityReg),
             ),
             SizedBox(width: 10),
             // Add some space between the City TextField and Pin Code Text
@@ -1864,7 +1869,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTextField(
-            'Mother name', _motherFController, FiFamilyEditable, _motherFFocus),
+            'Mother name', _motherFController, FiFamilyEditable, _motherFFocus,nameReg),
         SizedBox(
           height: 10,
         ),
@@ -1872,12 +1877,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             Flexible(
                 child: _buildTextField('Middle Name', _motherMController,
-                    FiFamilyEditable, _motherMFocus)),
+                    FiFamilyEditable, _motherMFocus,nameReg)),
             SizedBox(width: 13),
             // Add spacing between the text fields if needed
             Flexible(
                 child: _buildTextField('Last Name', _motherLController,
-                    FiFamilyEditable, _motherLFocus)),
+                    FiFamilyEditable, _motherLFocus,nameReg)),
           ],
         ),
         SizedBox(
@@ -2157,7 +2162,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   TextInputType.number,
                   FiIncomeEditable,
                   _currentEMIFocus,
-                  6),
+                  6,amountReg),
             ),
             SizedBox(width: 10), // Spacing between the two columns
             Flexible(
@@ -2495,7 +2500,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FiIncomeEditable,
                       _future_IncomeFocus,
-                      6),
+                      6,amountReg),
                 ),
                 Flexible(
                   child: _buildTextField2(
@@ -2504,7 +2509,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FiIncomeEditable,
                       _agriculture_incomeFocus,
-                      6),
+                      6,amountReg),
                 ),
               ],
             ),
@@ -2517,7 +2522,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FiIncomeEditable,
                       _any_RentalIncomeFocus,
-                      6),
+                      6,amountReg),
                 ),
                 Flexible(
                   child: _buildTextField2(
@@ -2526,7 +2531,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FiIncomeEditable,
                       _annuaL_INCOMEFocus,
-                      6),
+                      6,amountReg),
                 ),
               ],
             ),
@@ -2539,7 +2544,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FiIncomeEditable,
                       _other_IncomeFocus,
-                      6),
+                      6,amountReg),
                 ),
                 Flexible(
                   child: _buildTextField2(
@@ -2548,7 +2553,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FiIncomeEditable,
                       _pensionIncomeFocus,
-                      6),
+                      6,amountReg),
                 ),
               ],
             ),
@@ -2561,7 +2566,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FiIncomeEditable,
                       _otheR_THAN_AGRICULTURAL_INCOMEFocus,
-                      6),
+                      6,amountReg),
                 ),
               ],
             ),
@@ -2592,11 +2597,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2('Rent', _rentController,
-                      TextInputType.number, FiIncomeEditable, _rentFocus, 6),
+                      TextInputType.number, FiIncomeEditable, _rentFocus, 6,amountReg),
                 ),
                 Flexible(
                   child: _buildTextField2('Food', _foodingController,
-                      TextInputType.number, FiIncomeEditable, _foodingFocus, 6),
+                      TextInputType.number, FiIncomeEditable, _foodingFocus, 6,amountReg),
                 ),
               ],
             ),
@@ -2609,11 +2614,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FiIncomeEditable,
                       _educationFocus,
-                      6),
+                      6,addReg),
                 ),
                 Flexible(
                   child: _buildTextField2('Health', _healthController,
-                      TextInputType.number, FiIncomeEditable, _healthFocus, 6),
+                      TextInputType.number, FiIncomeEditable, _healthFocus, 6,amountReg),
                 ),
               ],
             ),
@@ -2626,7 +2631,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FiIncomeEditable,
                       _travellingFocus,
-                      6),
+                      6,amountReg),
                 ),
                 Flexible(
                   child: _buildTextField2(
@@ -2635,7 +2640,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FiIncomeEditable,
                       _entertainmentFocus,
-                      6),
+                      6,amountReg),
                 ),
               ],
             ),
@@ -2648,11 +2653,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       FiIncomeEditable,
                       _spendOnChildrenFocus,
-                      6),
+                      6,amountReg),
                 ),
                 Flexible(
                   child: _buildTextField2('Others', _othersController,
-                      TextInputType.number, FiIncomeEditable, _othersFocus, 6),
+                      TextInputType.number, FiIncomeEditable, _othersFocus, 6,amountReg),
                 ),
               ],
             ),
@@ -2724,14 +2729,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildTextField('IFSC', _bank_IFCSController,
-                      FinancialInfoEditable, _bank_IFCSFocus),
+                      FinancialInfoEditable, _bank_IFCSFocus,'[a-zA-Z0-9]'),
                   _buildTextField2(
                       'BANK ACCOUNT',
                       _bank_AcController,
                       TextInputType.number,
                       FinancialInfoEditable,
                       _bank_AcFocus,
-                      11),
+                      17,amountReg),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
@@ -2858,7 +2863,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTextField(
-              'Name', _femNameController, femMemIncomeEditable, _femNameFocus),
+              'Name', _femNameController, femMemIncomeEditable, _femNameFocus,nameReg),
           SizedBox(
             height: 10,
           ),
@@ -2866,7 +2871,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Flexible(
                 child: _buildTextField2('Age', _AgeController,
-                    TextInputType.number, femMemIncomeEditable, _AgeFocus, 2),
+                    TextInputType.number, femMemIncomeEditable, _AgeFocus, 2,amountReg),
               ),
               SizedBox(width: 10), // Adds space between the fields
               Flexible(
@@ -2876,7 +2881,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     TextInputType.number,
                     femMemIncomeEditable,
                     _IncomeFocus,
-                    6),
+                    6,amountReg),
               ),
             ],
           ),
@@ -3338,7 +3343,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       GuarantorEditable,
                       _aadharIdFocus,
-                      12)),
+                      12,amountReg)),
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 // Add 10px padding from above
@@ -3412,7 +3417,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               // Add spacing between Title dropdown and Name field if needed
               Flexible(
                 child: _buildTextField(
-                    'Name', _fnameController, GuarantorEditable, _fnameFocus),
+                    'Name', _fnameController, GuarantorEditable, _fnameFocus,nameReg),
               ),
             ],
           ),
@@ -3423,17 +3428,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 'Middle Name',
                 _mnameController,
                 GuarantorEditable,
-                _mnameFocus,
+                _mnameFocus,nameReg
               )),
               SizedBox(width: 13),
               // Add spacing between the text fields if needed
               Flexible(
                   child: _buildTextField('Last Name', _lnameController,
-                      GuarantorEditable, _lnameFocus)),
+                      GuarantorEditable, _lnameFocus,nameReg)),
             ],
           ),
           _buildTextField2('Guardian Name', _guardianController,
-              TextInputType.name, GuarantorEditable, _guardianFocus, 20),
+              TextInputType.name, GuarantorEditable, _guardianFocus, 20,nameReg),
           Row(
             children: [
               Flexible(
@@ -3597,7 +3602,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ),
           _buildTextField2('Mobile no', _phoneController, TextInputType.number,
-              GuarantorEditable, _phoneFocus, 10),
+              GuarantorEditable, _phoneFocus, 10,amountReg),
           Row(
             children: [
               // Age Box
@@ -3758,7 +3763,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Flexible(
                         child: _buildTextField('Driving License', _dlController,
-                            GuarantorEditable, _dlFocus),
+                            GuarantorEditable, _dlFocus,nameReg),
                       ),
                       SizedBox(width: 10),
                       Padding(
@@ -3818,7 +3823,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     children: [
                       Flexible(
                         child: _buildTextField('Voter Id', _voterController,
-                            GuarantorEditable, _voterFocus),
+                            GuarantorEditable, _voterFocus,idsReg),
                       ),
                       SizedBox(width: 10),
                       Padding(
@@ -3869,13 +3874,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           SizedBox(height: 10),
           _buildTextField('Address 1', _p_Address1Controller, GuarantorEditable,
-              _p_Address1Focus),
+              _p_Address1Focus,addReg),
           SizedBox(height: 10),
           _buildTextField('Address 2', _p_Address2Controller, GuarantorEditable,
-              _p_Address2Focus),
+              _p_Address2Focus,addReg),
           SizedBox(height: 10),
           _buildTextField('Address 3', _p_Address3Controller, GuarantorEditable,
-              _p_Address3Focus),
+              _p_Address3Focus,addReg),
           SizedBox(height: 10),
           /*Text(
             'State Name',
@@ -3921,7 +3926,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),*/
           _buildLabeledDropdownField(
               'Select State', 'State', states, stateselected,
-              false,
+              true,
               (RangeCategoryDataModel? newValue) {
             setState(() {
               stateselected = newValue;
@@ -3932,7 +3937,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Flexible(
                   child: _buildTextField('City', _p_CityController,
-                      GuarantorEditable, _p_CityFocus)),
+                      GuarantorEditable, _p_CityFocus,cityReg)),
               SizedBox(width: 10),
               Flexible(
                   child: _buildTextField2(
@@ -3941,7 +3946,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       TextInputType.number,
                       GuarantorEditable,
                       _pincodeFocus,
-                      6)),
+                      6,amountReg)),
             ],
           ),
           _imageFile == null
@@ -4238,7 +4243,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Widget _buildTextField(String label, TextEditingController controller,
-      bool saved, FocusNode FN) {
+      bool saved, FocusNode FN,String regex) {
     return Container(
       //margin: EdgeInsets.symmetric(vertical: 4),
       // padding: EdgeInsets.all(4),
@@ -4272,6 +4277,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     return null;
                   },
                   inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(
+                        regex)),
                      // Allow only alphanumeric characters // Optional: to deny spaces
                     TextInputFormatter.withFunction(
                           (oldValue, newValue) => TextEditingValue(
@@ -4288,7 +4295,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Widget _buildTextField2(String label, TextEditingController controller,
-      TextInputType inputType, bool saved, FocusNode FN, int maxlength) {
+      TextInputType inputType, bool saved, FocusNode FN, int maxlength, String regex) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 0),
@@ -4324,7 +4331,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     return 'Please enter $label';
                   }
                   return null;
-                },
+                },inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(
+                    regex)),
+                // Allow only alphanumeric characters // Optional: to deny spaces
+                TextInputFormatter.withFunction(
+                      (oldValue, newValue) => TextEditingValue(
+                    text: newValue.text.toUpperCase(),
+                    selection: newValue.selection,
+                  ),
+                ),
+              ],
+
               ),
             ),
           ),
@@ -4879,7 +4897,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           _bankOpeningDateController.text =
               DateFormat('dd-MM-yyyy').format(picked);
         } else {
-          _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
+          _dobController.text = DateFormat('dd-MM-yyyy').format(picked);
           _calculateAge();
         }
       });
@@ -5188,7 +5206,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       if (result != null) {
                         setQRData(result);
                       }
-
+                    print("result $result");
                       Navigator.of(context).pop();
                     },
                     child: Text(
