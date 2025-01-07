@@ -390,11 +390,6 @@ class _KYCPageState extends State<KYCPage> {
           _dobController.text = DateFormat('dd-MM-yyyy').format(picked);
           dlDob = DateFormat('dd-MM-yyyy').format(picked);
           _calculateAge();
-        } else if (type == "passExp") {
-          _passportExpiryController.text =
-              DateFormat('dd-MM-yyyy').format(picked);
-        } else if (type == "dlExp") {
-          _dlExpiryController.text = DateFormat('yyyy-dd-MM').format(picked);
         }
       });
     }
@@ -526,15 +521,15 @@ class _KYCPageState extends State<KYCPage> {
                               ),
                             ),
                             onTap: () {
+                              Navigator.of(context).pop();
 
-                              if (_currentStep == 1) {
+                              /*if (_currentStep == 1) {
                                 setState(() {
-                                  _currentStep--;
-
+                                  Navigator.of(context).pop();
                                 });
                               } else {
                                 Navigator.of(context).pop();
-                              }
+                              }*/
                             },
                           ),
                           Center(
@@ -918,7 +913,8 @@ class _KYCPageState extends State<KYCPage> {
     String dl = _drivingLicenseController.text.toString();
     String? DLExpireDate = _dlExpiryController.text.toString().isEmpty
         ? null
-        : _dlExpiryController.text.toString();
+        : DateFormat('yyyy-MM-dd').format(
+        DateFormat('dd-MM-yyyy').parse(_dlExpiryController.text));
     String voter_id = _voterIdController.text.toString();
     String passport = _passportController.text.toString();
     String? PassportExpireDate =
@@ -1043,8 +1039,12 @@ class _KYCPageState extends State<KYCPage> {
                     });
                   }else if( label == "Driving License"){
                     print('DL');
+                    setState(() {
+
                     dlCardHolderName = "";
                     dlVerified = false;
+                    });
+
                   }
                 },
               ),
@@ -2841,27 +2841,27 @@ class _KYCPageState extends State<KYCPage> {
         Map<String, dynamic> responseData = response["data"];
         // Parse JSON object if it’s a map
         if (type == "pancard") {
-            if ((responseData['first_name'] == null ||responseData['first_name'] == "")&& (responseData['last_name'] ==null ||responseData['last_name'] =="")) {
-              setState(() {
-                panCardHolderName = "Data not Verified";
-                panVerified = false;
-              });
-            }else if ((responseData['first_name'] != null ||responseData['first_name'] != "")&& (responseData['last_name'] !=null ||responseData['last_name'] !="")) {
-              setState(() {
+          if ((responseData['name'] == null ||responseData['name'] == "")) {
+            setState(() {
+              panCardHolderName = "Data not Verified";
+              panVerified = false;
+            });
+          }else if ((responseData['name'] != null ||responseData['name'] != "")) {
+            setState(() {
 
-              panCardHolderName ="${responseData['first_name']} ${responseData['last_name']}";
+              panCardHolderName ="${responseData['name']} ";
               panVerified = true;
-              });
+            });
 
-            }else if (responseData['first_name'] != null ||responseData['first_name'] != ""){
-                setState(() {
+          }else if (responseData['name'] != null ||responseData['name'] != ""){
+            setState(() {
 
 
-              panCardHolderName ="${responseData['first_name']}";
+              panCardHolderName ="${responseData['name']}";
               panVerified = true;
-                });
+            });
 
-            }
+          }
           if(!isCKYCNumberFound){
             isCKYCNumberFound= await CkycRepository().searchCkyc(_aadharIdController.text, _panNoController.text, _voterIdController.text, _dobController.text, genderselected, _nameController.text + " " + _nameMController.text + " " + _nameLController.text);
 
@@ -2946,31 +2946,22 @@ class _KYCPageState extends State<KYCPage> {
     );
 
     try {
-      // Initialize Dio
-
-      // Create ApiService instance
-
-      // API body
       Map<String, dynamic> requestBody = {
         "userID": userid,
         "dlno": dlNo,
-        "dob": dob
+       // "dob": dob
+        "dob": "02-10-2000"
       };
-
-      // Hit the API
 
       final response =
           await apiService_protean.getDLDetailsProtean(requestBody);
 
-      EasyLoading.show(
-        status: 'Loading...',
-      );
-
-      // Handle response
       if (response is Map<String, dynamic>) {
         Map<String, dynamic> responseData = response["data"];
-        // Parse JSON object if it’s a map
         setState(() {
+          print('Sunny Joon');
+          EasyLoading.dismiss();
+
           if (responseData['result']['name'] != null) {
             dlCardHolderName = "${responseData['result']['name']}";
             dlVerified = true;
@@ -2979,7 +2970,11 @@ class _KYCPageState extends State<KYCPage> {
                 _dobController.text);
           }
         });
+        EasyLoading.dismiss();
+
       } else {
+        EasyLoading.dismiss();
+
         docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
             _dobController.text);
       }
@@ -2987,6 +2982,8 @@ class _KYCPageState extends State<KYCPage> {
       // Handle errors
       docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
           _dobController.text);
+      EasyLoading.dismiss();
+
     }
     EasyLoading.dismiss();
   }
