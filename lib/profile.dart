@@ -163,7 +163,8 @@ class _ProfileState extends State<Profile> {
 
 
       endDrawer: Container(
-        width: 85,
+        alignment: Alignment.center,
+        width:120,
         height: MediaQuery.of(context).size.height /
             2, // Set the height of the drawer
 
@@ -181,6 +182,8 @@ class _ProfileState extends State<Profile> {
                   );
                 },
                 title: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: const [
                     Icon(Icons.currency_rupee,size: 50,color: Colors.blue),
                     SizedBox(height: 5),
@@ -310,21 +313,21 @@ class _ProfileState extends State<Profile> {
                     children: [
                    //   SizedBox(height: MediaQuery.of(context).size.width / 3),
                       _buildUserDetailsCard(),
-                      Container(
+                      SizedBox(
                         height: MediaQuery.of(context).size.height / 6,
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: GridView.builder(
+
                             padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
+
+                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
+                              crossAxisCount: 4,
                               crossAxisSpacing: 1,
-                              mainAxisSpacing: 1,
+                              mainAxisSpacing: 2,
                             ),
-                            itemCount: 3,
+                            itemCount: 4,
                             itemBuilder: (context, index) {
                               if (index == 0) {
                                 return _buildGridItem(
@@ -338,22 +341,29 @@ class _ProfileState extends State<Profile> {
                                 });
                               } else if (index == 1) {
                                 return _buildGridItem(
-                                    'Morpho Recharge', Icons.find_in_page_sharp,
+                                    'Morpho Recharge', Icons.fingerprint,
                                     () {
                                   MorphoRechargeDialog.show(context);
                                 });
-                              } else if (index == 2) {
-                                return _buildGridItem1(
-                                    'Collection Reports', Icons.currency_rupee,
+                              }else if (index == 2) {
+                                return _buildGridItem(
+                                    'Collection Report', Icons.file_present_rounded,
                                     () {
-                                      Scaffold.of(context).openEndDrawer();
-                               /*   Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-
-                                            CollectionStatus()),
-                                  );*/
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => CollectionStatus()),
+                                      );
+                                });
+                              } else if (index == 3) {
+                                return _buildGridItem(
+                                    'Payment Settlement', Icons.currency_rupee,
+                                    () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => SubmitSsQrTransaction(
+                                          smcode: "",
+                                        )),
+                                      );
                                 });
                               }
                               return const SizedBox();
@@ -466,34 +476,39 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget _buildGridItem(String title, IconData icon, VoidCallback onTap) {
-    return Card(
-      color: Colors.white,
-      elevation: 6,
-      margin: EdgeInsets.all(6),
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.all(4),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 20, color: Colors.grey),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: "Poppins-Regular",
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black,
-                ),
-              ),
-            ],
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            height: 50,
+            width: 60,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200, // Background color for grid item
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              icon,
+              size: 40, // Adjust the size of the icon
+              color: Colors.blueAccent,
+            ),
           ),
         ),
-      ),
+       // Space between icon and text
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 10, // Adjust text size
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ],
     );
   }
+
 
   Widget _buildGridItem1(String title, IconData icon, VoidCallback onTap) {
     return Card(
