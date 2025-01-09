@@ -7322,8 +7322,7 @@ setState(() {
     }
   }
 
-  void showIDCardDialog(
-      BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
+  void showIDCardDialog(BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
     final String name = [
       borrowerInfo.fName,
       borrowerInfo.mName,

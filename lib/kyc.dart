@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 
 import 'DATABASE/database_helper.dart';
 import 'MasterAPIs/ckyc_repository.dart';
+import 'Models/adhaar_model.dart';
 import 'Models/bank_names_model.dart';
 import 'Models/group_model.dart';
 import 'Models/place_codes_model.dart';
@@ -42,6 +43,8 @@ class _KYCPageState extends State<KYCPage> {
   late ApiService apiService_idc;
   late ApiService apiService_protean;
   late ApiService apiService_OCR;
+
+  late AdhaarDataModel adhaardata;
 
   String nameReg ='[a-zA-Z. ]';
   String addReg = r'[a-zA-Z0-9. ()/,-]';
@@ -3740,6 +3743,7 @@ bool checkIdMendate(){
       child: Text(text),
     );
   }
+
   Future<void> adhaarAllData(BuildContext contextDialog) async {
     EasyLoading.show(status: "Aadhaar History...");
     print("object112211");
@@ -3757,10 +3761,15 @@ bool checkIdMendate(){
 
         if (value.data[0].errormsg.isEmpty) {
           print("object112222");
+          adhaardata = value.data[0];
 
           if (value.data[0].panNo.isEmpty &&
               value.data[0].dl.isEmpty &&
               value.data[0].voterId.isEmpty) {
+
+            Future.delayed(
+                Duration.zero, () => showIDCardDialog(context, adhaardata,2));
+
             setState(() {
               FiType = "OLD";
               Fi_Code=value.data[0].fiCode.toString();
@@ -3820,10 +3829,11 @@ bool checkIdMendate(){
             );
           } else {
             EasyLoading.dismiss();
-
-            String ficode = value.data[0].fiCode.toString();
+            Future.delayed(
+                Duration.zero, () => showIDCardDialog(context, adhaardata,1));
+           /* String ficode = value.data[0].fiCode.toString();
             GlobalClass.showErrorAlert(context,
-                "Kyc is Already Done on this Adhaar Id(FiCode is $ficode)", 2);
+                "Kyc is Already Done on this Adhaar Id(FiCode is $ficode)", 2);*/
           }
         }
       } else {
@@ -3833,6 +3843,209 @@ bool checkIdMendate(){
       print("ERRORRRR$err");
       EasyLoading.dismiss();
     });
+  }
+
+  void showIDCardDialog(BuildContext context, AdhaarDataModel borrowerInfo,int page) {
+    final String name = [
+      borrowerInfo.fName,
+      borrowerInfo.mName,
+      borrowerInfo.lName
+    ].where((part) => part != null && part.isNotEmpty).join(" ");
+    final String aadhaarNo = borrowerInfo.aadharNo;
+    final String panNo = borrowerInfo.panNo;
+    final String dl = borrowerInfo.dl;
+    final String voterId = borrowerInfo.voterId;
+    final String dob = borrowerInfo.dob;
+    String formattedDOB = '${dob.split('T')[0].split('-')[2]}-${dob.split('T')[0].split('-')[1]}-${dob.split('T')[0].split('-')[0]}';
+
+    final String loanAmt = borrowerInfo.loanAmount.toString();
+   // final String imageUrl =GlobalClass().transformFilePathToUrl(borrowerInfo.profilepic);
+
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent closing dialog when tapping outside
+      builder: (BuildContext context) {
+        return WillPopScope(
+            onWillPop: () async =>
+            false, // Prevent closing dialog with back button
+            child: AlertDialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              title: Center(
+                  child: Text('Borrower Details',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ))),
+              content: SingleChildScrollView(
+                child: Container(
+                  color: Colors.white,
+                  width: 300,
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      /*Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.grey,
+                              width: 2), // Border around image
+                          borderRadius:
+                          BorderRadius.circular(50), // Circle border
+                        ),
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(imageUrl),
+                        ),
+                      ),*/
+                      SizedBox(height: 10),
+                      // Name
+                      Text(
+                        name,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 5),
+                      // Adhaar No.
+                      Text(
+                        'UID: $aadhaarNo',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 5),
+                      // PAN, DL, Voter No. (showing all if they exist)
+                      Column(
+                        children: [
+                          if (voterId.isNotEmpty)
+                            Text('Voter: $voterId',
+                                style: TextStyle(fontSize: 16)),
+                          if (panNo.isNotEmpty)
+                            Text('Pan: $panNo', style: TextStyle(fontSize: 16)),
+                          if (dl.isNotEmpty)
+                            Text('DL: $dl', style: TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      // DOB
+
+                      Text(
+                        'DOB: $formattedDOB',
+                        style: TextStyle(fontSize: 16),
+                      ),
+
+                      SizedBox(height: 5),
+                      // Loan Amount
+                      if (loanAmt.isNotEmpty)
+                        Text('Loan Amt: $loanAmt',
+                            style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 20),
+                      // Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          page==2?GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                _currentStep += 1;
+                                Fi_Id = borrowerInfo.fiId.toString();
+                                Fi_Code = borrowerInfo.fiCode.toString();
+                                dlDob = borrowerInfo.dob.toString();
+                                _dobController.text = borrowerInfo.dob.toString();
+                              });
+                              print('Verification Confirmed');
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.greenAccent, Color(0xFF0BDC15)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.4),
+                                    blurRadius: 10,
+                                    offset: Offset(5, 5),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Submit Ids',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 10.0,
+                                        color: Colors.black.withOpacity(0.5),
+                                        offset: Offset(2.0, 2.0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ):SizedBox(),
+                          page==1?GestureDetector(
+                            onTap: (){
+                              print('Verification Rejected');
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.redAccent, Color(0xFFD42D3F)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.4),
+                                    blurRadius: 10,
+                                    offset: Offset(5, 5),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Close(Already done)',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 10.0,
+                                        color: Colors.black.withOpacity(0.5),
+                                        offset: Offset(2.0, 2.0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ):SizedBox(),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ));
+      },
+    );
   }
 
 }
