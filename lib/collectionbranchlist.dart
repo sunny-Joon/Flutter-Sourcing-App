@@ -112,7 +112,7 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
               elevation: 8,
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: 'Search',
+                  hintText: 'Search Branch in ' + GlobalClass.creator,
                   prefixIcon: Icon(Icons.search, size: 20), // Ensure the icon size matches the font size
                   contentPadding: EdgeInsets.symmetric(vertical: 12), // Aligns text vertically
                   border: InputBorder.none,

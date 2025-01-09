@@ -722,7 +722,7 @@ class _CollectionState extends State<Collection>
         }
       } else {
         EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(context, "Data not fetched", 1);
+        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
       }
     }).catchError((err) {
       EasyLoading.dismiss();

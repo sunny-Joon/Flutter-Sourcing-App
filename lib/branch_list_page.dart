@@ -124,7 +124,7 @@ class _BranchListPageState extends State<BranchListPage> {
               elevation: 8,
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: 'Search',
+                  hintText: 'Search Branch in ' + GlobalClass.creator,
                   prefixIcon: Icon(Icons.search, size: 20), // Ensure the icon size matches the font size
                   contentPadding: EdgeInsets.symmetric(vertical: 12), // Aligns text vertically
                   border: InputBorder.none,
@@ -289,7 +289,7 @@ class _BranchListPageState extends State<BranchListPage> {
         );
 
       }else{
-        GlobalClass.showUnsuccessfulAlert(context, "Data not Fetched", 1);
+        GlobalClass.showUnsuccessfulAlert(context,response.message, 1);
       }
     }).catchError((error) {
       _isLoading = false;
