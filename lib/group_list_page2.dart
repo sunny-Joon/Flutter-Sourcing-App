@@ -104,7 +104,7 @@ class _GroupListPage2State extends State<GroupListPage2> {
               child: TextField(
                 decoration: InputDecoration(
                   alignLabelWithHint: true,
-                  hintText: 'Search',
+                  hintText: 'Search Group in ' + GlobalClass.creator,
                   prefixIcon: Icon(Icons.search),
                 ),
                 onChanged: (text) {

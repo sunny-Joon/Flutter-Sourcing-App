@@ -7260,7 +7260,7 @@ setState(() {
 
       if (response.statusCode == 200) {
         EasyLoading.dismiss();
-        GlobalClass.showSuccessAlert(context, "Document successfully verified", 1);
+        GlobalClass.showSuccessAlert(context, response.message, 1);
         return true;
 
 
