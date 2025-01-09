@@ -138,7 +138,6 @@ class _HomePageState extends State<HomePage> {
                     child: VideoPlayer(_controller),
                   ),
 
-
                   Positioned(
                       bottom: 20,
                       child:Container(color: Colors.black12,width: MediaQuery.of(context).size.width,child: Row(
