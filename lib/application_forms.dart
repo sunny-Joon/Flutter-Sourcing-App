@@ -25,6 +25,7 @@ import 'Models/kyc_scanning_model.dart';
 import 'Models/place_codes_model.dart';
 import 'Models/range_category_model.dart';
 import 'api_service.dart';
+import 'const/validators.dart';
 import 'global_class.dart';
 
 class ApplicationPage extends StatefulWidget {
@@ -48,6 +49,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
   late ApiService apiService_OCR;
   late ApiService apiService;
   List<ApplicationgetAllDataModel> BorrowerInfo = [];
+  final FocusNode _focusNodeAdhaarId = FocusNode();
+  String _errorMessageAadhaar="";
+  String temp = "";
+  bool verifyFlag = true;
 
   final picker = ImagePicker();
   late ApiService apiService_protean;
@@ -2710,7 +2715,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Bank Type',
+            'ACCOUNT TYPE',
             style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
             textAlign: TextAlign.left,
           ),
@@ -2768,7 +2773,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   _buildTextField('IFSC', _bank_IFCSController,
                       FinancialInfoEditable, _bank_IFCSFocus, '[a-zA-Z0-9]'),
                   _buildTextField2(
-                      'BANK ACCOUNT',
+                      'BANK ACCOUNT NO.',
                       _bank_AcController,
                       TextInputType.number,
                       FinancialInfoEditable,
@@ -2800,7 +2805,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               } else if (_bank_AcController.text.length < 10) {
                                 showToast_Error(
                                     "Please Enter Correct Account Number");
-                              } else {
+
+                              }else if(BorrowerInfo[0].bankAc != "" &&_bank_AcController.text == BorrowerInfo[0].bankAc){
+                                showToast_Error("Account Number already Verified");
+                              }else if(_bank_AcController.text==temp){
+                                showToast_Error("Account Number already Verified");
+
+                              }else {
+
                                 ifscVerify(context, _bank_IFCSController.text);
                               }
                             }
@@ -3380,36 +3392,66 @@ class _ApplicationPageState extends State<ApplicationPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Flexible(
-                  child: _buildTextField2(
-                      'Aadhaar Id',
-                      _aadharIdController,
-                      TextInputType.number,
-                      GuarantorEditable,
-                      _aadharIdFocus,
-                      12,
-                      amountReg)),
-              Padding(
-                padding: EdgeInsets.only(top: 20),
-                // Add 10px padding from above
-                child: GestureDetector(
-                  onTap: () => _showPopup(context, (String result) {
-                    setState(() {
-                      qrResult = result;
-                    });
-                  }), // Show popup on image click
-                  child: Icon(
-                    Icons.qr_code_2_sharp,
-                    size: 50.0, // Set the size of the icon
-                    color: Colors.grey, // Set the color of the icon
+
+        Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Aadhaar ID",
+                  style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13, height: 2),
+                ),
+                SizedBox(height: 8), // Adjust the spacing
+                Container(
+                  padding: EdgeInsets.zero,
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    maxLength: 12,
+                    style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                    focusNode: _focusNodeAdhaarId,
+                    controller: _aadharIdController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      errorText: _errorMessageAadhaar.isEmpty ? null : _errorMessageAadhaar,
+                      counterText: "",
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter Aadhaar ID';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      _validateOnFocusChange();
+                    },
                   ),
                 ),
-              )
-            ],
+              ],
+            ),
           ),
-          Row(
+          Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: GestureDetector(
+              onTap: () => _showPopup(context, (String result) {
+                setState(() {
+                  qrResult = result;
+                });
+              }),
+              child: Icon(
+                Icons.qr_code_2_sharp,
+                size: 50.0,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ],
+      ),
+
+      Row(
             children: [
               SizedBox(
                 width: 95, // Fixed width for the Title dropdown
@@ -4239,6 +4281,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             }
           } else if (_currentStep == 3) {
+
             if (FinancialInfoEditable) {
               if (_stepFourValidations()) {
                 AddFinancialInfo(context);
@@ -6043,6 +6086,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           _currentStep += 1;
           pageTitle = "Financial Info.";
           FiIncomeEditable = false;
+          verifyFlag = false;
         });
         EasyLoading.dismiss();
       } else {
@@ -6219,8 +6263,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  void docVerifyIDC(
-      String type, String txnNumber, String ifsc, String dob) async {
+  void docVerifyIDC(String type, String txnNumber, String ifsc, String dob) async {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     setState(() {
       bankAccHolder = null;
@@ -6250,7 +6293,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
           if (type == "bankaccount") {
             setState(() {
               if (response["error"] == null) {
-                bankAccHolder = "${responseData['full_name']}";
+                temp =txnNumber;
+                verifyFlag ==true;
+
+                    bankAccHolder = "${responseData['full_name']}";
               } else {
                 bankAccHolder = "Account no. is Not Verified!!";
               }
@@ -6415,7 +6461,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     EasyLoading.show(
       status: 'Loading...',
     );
-
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl3);
 
     return await api.ifscVerify(ifsc).then((value) {
@@ -6450,6 +6495,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           if (type == "adharFront") {
             setState(() {
               _aadharIdController.text = response.data.adharId;
+              _validateOnFocusChange();
               List<String> nameParts = response.data.name.trim().split(" ");
               if (nameParts.length == 1) {
                 _fnameController.text = nameParts[0];
@@ -7074,6 +7120,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     setState(() {
       editButtonFunctionOn = true;
       FiIncomeEditable = false;
+      verifyFlag = false;
       selectedOccupation = data.fiIncomeExpenses[0].inExOccupation;
       selectedBusiness = data.fiIncomeExpenses[0].inExBusinessDetail;
       _currentEMIController.text =
@@ -7914,4 +7961,24 @@ class _ApplicationPageState extends State<ApplicationPage> {
       return true;
     }
   }
+
+  void _validateOnFocusChange() {
+    setState(() {
+      if (_aadharIdController.text.isEmpty) {
+        _errorMessageAadhaar = 'Aadhaar Id field cannot be empty!';
+      } else if (_aadharIdController.text.length != 12) {
+        _errorMessageAadhaar = 'Aadhaar must be 12 characters long.';
+      } else if (!Validators.validateVerhoeff(_aadharIdController.text)) {
+        _errorMessageAadhaar = 'Aadhaar id is not valid';
+      } else if (_aadharIdController.text.length == 12&& _aadharIdController.text == widget.selectedData.aadharNo) {
+          _errorMessageAadhaar = 'Borrower can`t be Co-Borrower';
+
+         // adhaarAllData(context);
+        }else{
+      _errorMessageAadhaar = "";
+      }
+    });
+
+  }
+
 }
