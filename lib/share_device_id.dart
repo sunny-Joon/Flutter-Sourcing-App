@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'api_service.dart';
 import 'Models/creator_list_model.dart';
 import 'popup_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Sharedeviceid extends StatefulWidget {
   final String mobile;
@@ -39,7 +40,6 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   List<BranchDataModel> _branch_codes = [];
   bool _isLoading = true;
 
-
   TextEditingController _nameController = TextEditingController();
   TextEditingController _imei1Controller = TextEditingController();
   TextEditingController _imei2Controller = TextEditingController();
@@ -65,13 +65,11 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   String? _requestTypeError;
   String? _creatorError;
 
-
   final FocusNode _nameFocus = FocusNode();
   final FocusNode _imei1Focus = FocusNode();
   final FocusNode _imei2Focus = FocusNode();
   final FocusNode _mobileNoFocus = FocusNode();
   final FocusNode _branchFocus = FocusNode();
-
 
   void validateInputs() {
     setState(() {
@@ -126,7 +124,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
     }
 
     // Validate User ID
-    if (_userIdController==null) {
+    if (_userIdController == null) {
       _userIdError = "User ID Not Found";
       isValid = false;
     } else {
@@ -188,7 +186,6 @@ class _SharedeviceidState extends State<Sharedeviceid> {
     return isValid;
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -219,17 +216,18 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
   Future<void> _fetchBranchList(BuildContext context, String creators) async {
     final api = Provider.of<ApiService>(context, listen: false);
-    final value = await api.getBranchList(GlobalClass.token,GlobalClass.dbName, creators);
+    final value = await api.getBranchList(
+        GlobalClass.token, GlobalClass.dbName, creators);
     if (value.statuscode == 200) {
       setState(() {
-        _branch_codes = value.data; // Assuming value.data is a list of BranchDataModel
+        _branch_codes =
+            value.data; // Assuming value.data is a list of BranchDataModel
         _isLoading = false;
       });
-    }else{
-      _branch_codes =[];
+    } else {
+      _branch_codes = [];
     }
   }
-
 
   /* _onSave(BuildContext context) {
     final error = _validateData();
@@ -254,7 +252,6 @@ class _SharedeviceidState extends State<Sharedeviceid> {
         _latitudeController.text,
         _selectedRequestType.toString());*/
 
-
   void showToast_Error(String message) {
     Fluttertoast.showToast(
         msg: message,
@@ -269,221 +266,249 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFD42D3F),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          SizedBox(height: 40),
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                          width: 1, color: Colors.grey.shade300),
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(5)),
-                    ),
-                    height: 40,
-                    width: 40,
-                    alignment: Alignment.center,
-                    child: Center(
-                      child:
-                      Icon(Icons.arrow_back_ios_sharp, size: 16),
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                Center(
-                  child: Image.asset(
-                    'assets/Images/logo_white.png',
-                    // Replace with your logo asset path
-                    height: 30,
-                  ),
-                ),
-                Container(
-                  height: 40,
-                  width: 40,
-                  alignment: Alignment.center,
-                ),
-              ],
-            ),
-          ),
-          _isLoading
-              ? Center(
-            child: CircularProgressIndicator(),
-          )
-              :   Column(
+        backgroundColor: Color(0xFFD42D3F),
+        body: SingleChildScrollView(
+          child: Column(
             children: [
+              SizedBox(height: 40),
               Padding(
-                padding: const EdgeInsets.all(20.0),
-                child:
-                Container(
-                  padding: EdgeInsets.all(20),
-                  height: MediaQuery.of(context).size.height-180,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 7,
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border:
+                              Border.all(width: 1, color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                        ),
+                        height: 40,
+                        width: 40,
+                        alignment: Alignment.center,
+                        child: Center(
+                          child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                        ),
                       ),
-                    ],
-                  ),
-                  child: SingleChildScrollView(
-                    child:Form(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Device Id:- ${_deviceIdController}',
-                            style: TextStyle(fontFamily: "Poppins-Regular",
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            'User Id:- ${_userIdController}',
-                            style: TextStyle(fontFamily: "Poppins-Regular",
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold),
-                          ),
-
-                          //SizedBox(height:2 ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Request Type',
-                            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.symmetric(vertical: 4),
-                            padding: EdgeInsets.all(4),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    Center(
+                      child: Image.asset(
+                        'assets/Images/logo_white.png',
+                        // Replace with your logo asset path
+                        height: 30,
+                      ),
+                    ),
+                    Container(
+                      height: 40,
+                      width: 40,
+                      alignment: Alignment.center,
+                    ),
+                  ],
+                ),
+              ),
+              _isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Container(
+                            padding: EdgeInsets.all(20),
+                            height: MediaQuery.of(context).size.height - 180,
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  blurRadius: 7,
+                                ),
+                              ],
                             ),
-                            child: DropdownButton<String>(
-                              value: _selectedRequestType,
-                              isExpanded: true,
-                              iconSize: 24,
-                              elevation: 16,
-                              style: TextStyle(
-                                  fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 13),
-                              underline: Container(
-                                height: 2,
-                                color: Colors.transparent, // Set to transparent to remove default underline
-                              ),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _selectedRequestType = newValue;
-                                  validateInputs();
-                                  _requestTypeError = null; // Clear error when user selects a value
-                                });
-                              },
-                              items: _requestTypes.map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                          // Display error for Request Type
-                          if (_requestTypeError != null)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 1,left: 15),
-                              child: Text(
-                                _requestTypeError!,
-                                style: TextStyle(color: Color(0xFFD42D3F), fontSize: 12),
-                              ),
-                            ),
+                            child: SingleChildScrollView(
+                              child: Form(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Device Id:- ${_deviceIdController}',
+                                      style: TextStyle(
+                                          fontFamily: "Poppins-Regular",
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      'User Id:- ${_userIdController}',
+                                      style: TextStyle(
+                                          fontFamily: "Poppins-Regular",
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                    ),
 
-                          SizedBox(height: 4),
+                                    //SizedBox(height:2 ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      AppLocalizations.of(context)!.requesttype,
+                                      style: TextStyle(
+                                          fontFamily: "Poppins-Regular",
+                                          fontSize: 13),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      margin: EdgeInsets.symmetric(vertical: 4),
+                                      padding: EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: DropdownButton<String>(
+                                        value: _selectedRequestType,
+                                        isExpanded: true,
+                                        iconSize: 24,
+                                        elevation: 16,
+                                        style: TextStyle(
+                                            fontFamily: "Poppins-Regular",
+                                            color: Colors.black,
+                                            fontSize: 13),
+                                        underline: Container(
+                                          height: 2,
+                                          color: Colors
+                                              .transparent, // Set to transparent to remove default underline
+                                        ),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            _selectedRequestType = newValue;
+                                            validateInputs();
+                                            _requestTypeError =
+                                                null; // Clear error when user selects a value
+                                          });
+                                        },
+                                        items:
+                                            _requestTypes.map((String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                    // Display error for Request Type
+                                    if (_requestTypeError != null)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 1, left: 15),
+                                        child: Text(
+                                          _requestTypeError!,
+                                          style: TextStyle(
+                                              color: Color(0xFFD42D3F),
+                                              fontSize: 12),
+                                        ),
+                                      ),
 
-                          SizedBox(height: 4),
-                          Text(
-                            'Creator',
-                            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.symmetric(vertical: 4),
-                            padding: EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: DropdownButton<String>(
-                              value: _selectedCreator,
-                              isExpanded: true,
-                              iconSize: 24,
-                              elevation: 16,
-                              style: TextStyle(
-                                  fontFamily: "Poppins-Regular", color: Colors.black, fontSize: 13),
-                              underline: Container(
-                                height: 2,
-                                color: Colors.transparent, // Set to transparent to remove default underline
-                              ),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _selectedCreator = newValue;
-                                  _creatorError = null;
-                                  validateInputs(); // Clear error when user selects a value
-                                  _fetchBranchList(context, _selectedCreator!);
-                                  _branchController.text="";
-                                  _selectedBranches=[];
-                                });
-                              },
-                              items: _creators.map((CreatorListDataModel value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.creator,
-                                  child: Text(value.creator),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                          // Display error for Creator
-                          if (_creatorError != null)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 1,left: 15),
-                              child: Text(
-                                _creatorError!,
-                                style: TextStyle(color: Color(0xFFD42D3F), fontSize: 12),
-                              ),
-                            ),
+                                    SizedBox(height: 4),
 
-                          Row(
-                            children: [
-                              // Expanded widget makes the TextField take up the available space
-                              Expanded(
-                                // child: _buildTextField(
-                                //     'Branch Codes',
-                                //     _branchController,
-                                //     TextInputType.name,
-                                //     false,
-                                //     _branchFocus,100
-                                // ),
-                                child: _buildTextField('Branch Codes', _branchController, TextInputType.number, false, _branchFocus, 3,true, errorText: _branchError),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      AppLocalizations.of(context)!.creater,
+                                      style: TextStyle(
+                                          fontFamily: "Poppins-Regular",
+                                          fontSize: 13),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      margin: EdgeInsets.symmetric(vertical: 4),
+                                      padding: EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: DropdownButton<String>(
+                                        value: _selectedCreator,
+                                        isExpanded: true,
+                                        iconSize: 24,
+                                        elevation: 16,
+                                        style: TextStyle(
+                                            fontFamily: "Poppins-Regular",
+                                            color: Colors.black,
+                                            fontSize: 13),
+                                        underline: Container(
+                                          height: 2,
+                                          color: Colors
+                                              .transparent, // Set to transparent to remove default underline
+                                        ),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            _selectedCreator = newValue;
+                                            _creatorError = null;
+                                            validateInputs(); // Clear error when user selects a value
+                                            _fetchBranchList(
+                                                context, _selectedCreator!);
+                                            _branchController.text = "";
+                                            _selectedBranches = [];
+                                          });
+                                        },
+                                        items: _creators
+                                            .map((CreatorListDataModel value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value.creator,
+                                            child: Text(value.creator),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                    // Display error for Creator
+                                    if (_creatorError != null)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 1, left: 15),
+                                        child: Text(
+                                          _creatorError!,
+                                          style: TextStyle(
+                                              color: Color(0xFFD42D3F),
+                                              fontSize: 12),
+                                        ),
+                                      ),
 
-                              ),
-                              // IconButton will be placed on the right of the TextField
-                              IconButton(
-                                onPressed: () {
-                                  _showMultiSelect();  // Define your action for the icon button
-                                },
-                                icon: Icon(Icons.arrow_drop_down_circle_sharp),
-                              ),
-                            ],
-                          ),
+                                    Row(
+                                      children: [
+                                        // Expanded widget makes the TextField take up the available space
+                                        Expanded(
+                                          // child: _buildTextField(
+                                          //     'Branch Codes',
+                                          //     _branchController,
+                                          //     TextInputType.name,
+                                          //     false,
+                                          //     _branchFocus,100
+                                          // ),
+                                          child: _buildTextField(
+                                              AppLocalizations.of(context)!.branchcode,
+                                              _branchController,
+                                              TextInputType.number,
+                                              false,
+                                              _branchFocus,
+                                              3,
+                                              true,
+                                              errorText: _branchError),
+                                        ),
+                                        // IconButton will be placed on the right of the TextField
+                                        IconButton(
+                                          onPressed: () {
+                                            _showMultiSelect(); // Define your action for the icon button
+                                          },
+                                          icon: Icon(Icons
+                                              .arrow_drop_down_circle_sharp),
+                                        ),
+                                      ],
+                                    ),
 
-                          /*_buildLabeledDropdownField(
+                                    /*_buildLabeledDropdownField(
                                 context,
                                 'Creator',
                                 'Creator',
@@ -508,82 +533,131 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                   });
                                 },
                                 BranchDataModel),*/
-                          //SizedBox(height:2 ),
-                          _buildTextField('Name', _nameController, TextInputType.name, true, _nameFocus, 40,false, errorText: _nameError),
-                          _buildTextField('Mobile No.', _mobileNoController, TextInputType.number, true, _mobileNoFocus, 10,false, errorText: _mobileNoError),
-                          _buildTextField('IMEI No. 1', _imei1Controller, TextInputType.number, true, _imei1Focus, 15,false, errorText: _imei1Error),
-                          _buildTextField('IMEI No. 2', _imei2Controller, TextInputType.number, true, _imei2Focus, 15,false, errorText: _imei2Error),
+                                    //SizedBox(height:2 ),
+                                    _buildTextField(
+                                        AppLocalizations.of(context)!.name,
+                                        _nameController,
+                                        TextInputType.name,
+                                        true,
+                                        _nameFocus,
+                                        40,
+                                        false,
+                                        errorText: _nameError),
+                                    _buildTextField(
+                                        AppLocalizations.of(context)!.mobile,
+                                        _mobileNoController,
+                                        TextInputType.number,
+                                        true,
+                                        _mobileNoFocus,
+                                        10,
+                                        false,
+                                        errorText: _mobileNoError),
+                                    _buildTextField(
+                                        AppLocalizations.of(context)!.imei1,
+                                        _imei1Controller,
+                                        TextInputType.number,
+                                        true,
+                                        _imei1Focus,
+                                        15,
+                                        false,
+                                        errorText: _imei1Error),
+                                    _buildTextField(
+                                        AppLocalizations.of(context)!.imei2,
+                                        _imei2Controller,
+                                        TextInputType.number,
+                                        true,
+                                        _imei2Focus,
+                                        15,
+                                        false,
+                                        errorText: _imei2Error),
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(children: [
-                                Icon(Icons.location_on_outlined,color: Color(0xFFD42D3F),),
-                                Text("${_locationMessage}",style: TextStyle(fontFamily: "Poppins-Regular",color: Color(0xFFD42D3F),fontWeight: FontWeight.bold),),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.location_on_outlined,
+                                              color: Color(0xFFD42D3F),
+                                            ),
+                                            Text(
+                                              "${_locationMessage}",
+                                              style: TextStyle(
+                                                  fontFamily: "Poppins-Regular",
+                                                  color: Color(0xFFD42D3F),
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            geolocator();
+                                          },
+                                          child: Card(
+                                            elevation: 5,
+                                            shape: CircleBorder(),
+                                            child: Padding(
+                                              padding: EdgeInsets.all(3),
+                                              child: Icon(
+                                                Icons.refresh,
+                                                size: 30,
+                                                color: Color(0xFFD42D3F),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
 
-                              ],),
-                              InkWell(
-                                onTap: (){geolocator();},
-
-                                child:  Card(
-                                  elevation: 5,
-                                  shape: CircleBorder(),
-                                  child: Padding(padding: EdgeInsets.all(3),child: Icon(Icons.refresh,size: 30,color: Color(0xFFD42D3F),),),
+                                    //SizedBox(height:2 ),
+                                    if (_errorText != null)
+                                      Text(
+                                        _errorText!,
+                                        style: TextStyle(
+                                            fontFamily: "Poppins-Regular",
+                                            color: Color(0xFFD42D3F),
+                                            fontSize: 13),
+                                      ),
+                                    //SizedBox(height:2 ),
+                                    Center(
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          if (validate()) {
+                                            _saveMappingReq(context);
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Color(0xFFD42D3F),
+                                          minimumSize: Size(150, 36),
+                                          // Set the width to 150 and the height to 36 (or your preferred height)
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                0), // Rectangular shape
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical:
+                                                  12), // Adjust vertical padding as needed
+                                        ),
+                                        child: Text(
+                                          AppLocalizations.of(context)!.save,
+                                          style: TextStyle(
+                                              fontFamily: "Poppins-Regular",
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              )
-
-
-                            ],
-                          ),
-
-                          //SizedBox(height:2 ),
-                          if (_errorText != null)
-                            Text(
-                              _errorText!,
-                              style: TextStyle(fontFamily: "Poppins-Regular",
-                                  color: Color(0xFFD42D3F), fontSize: 13),
-                            ),
-                          //SizedBox(height:2 ),
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (validate()) {
-                                  _saveMappingReq(context);
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFFD42D3F),
-                                minimumSize: Size(150,
-                                    36), // Set the width to 150 and the height to 36 (or your preferred height)
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(
-                                      0), // Rectangular shape
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical:
-                                    12), // Adjust vertical padding as needed
-                              ),
-                              child: Text(
-                                'Save',
-                                style:
-                                TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ) // _buildNextButton(context),
+                      ],
                     ),
-                  ),
-                ),
-
-              )// _buildNextButton(context),
             ],
           ),
-        ],),
-      )
-
-    );
+        ));
   }
 
   Widget _buildTextField(
@@ -594,7 +668,8 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       FocusNode FN,
       int maxLength,
       bool readOnly,
-      {String? errorText}) {  // Add errorText as an optional named parameter
+      {String? errorText}) {
+    // Add errorText as an optional named parameter
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -610,40 +685,37 @@ class _SharedeviceidState extends State<Sharedeviceid> {
             ),
           ),
           SizedBox(height: 1),
-      Container(
-        width: double.infinity,
-        child: Center(
-          child: TextFormField(
-            maxLength: maxLength,
-            controller: controller,
-            focusNode: FN,
-            keyboardType: inputType,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              counterText: "",
-              errorText: errorText, // Display error text dynamically
-              errorStyle: TextStyle(
-                color: Color(0xFFD42D3F), // Set the error text color here
-                fontSize: 12, // Optional: Adjust the font size
+          Container(
+            width: double.infinity,
+            child: Center(
+              child: TextFormField(
+                maxLength: maxLength,
+                controller: controller,
+                focusNode: FN,
+                keyboardType: inputType,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  counterText: "",
+                  errorText: errorText, // Display error text dynamically
+                  errorStyle: TextStyle(
+                    color: Color(0xFFD42D3F), // Set the error text color here
+                    fontSize: 12, // Optional: Adjust the font size
+                  ),
+                ),
+                enabled: YN,
               ),
             ),
-            enabled: YN,
-          ),
-        ),
-      )
-      ],
+          )
+        ],
       ),
     );
   }
-
-
 
   Future<void> geolocator() async {
     try {
       Position position = await _getCurrentPosition();
       setState(() {
-        _locationMessage =
-            "${position.latitude},${position.longitude}";
+        _locationMessage = "${position.latitude},${position.longitude}";
         print(
             " geolocatttion: $_locationMessage"); // Print the location message to the console
         _latitudeController = position.latitude.toString();
@@ -712,18 +784,15 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
 
-
-          GlobalClass.showSuccessAlert(
-              context, value.message,2);
-
+        GlobalClass.showSuccessAlert(context, value.message, 2);
       } else {
         EasyLoading.dismiss();
-        GlobalClass.showErrorAlert(
-            context,value.message,1);
+        GlobalClass.showErrorAlert(context, value.message, 1);
       }
-    }).catchError((err){
+    }).catchError((err) {
       EasyLoading.dismiss();
-      GlobalClass.showUnsuccessfulAlert(context, "Device details are not saved or updated", 1);
+      GlobalClass.showUnsuccessfulAlert(
+          context, "Device details are not saved or updated", 1);
     });
   }
 
@@ -733,7 +802,6 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
-
           builder: (BuildContext context, StateSetter setModalState) {
             return Column(
               children: [
@@ -741,7 +809,10 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Select Branches',
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontFamily: "Poppins-Regular",
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
                 Expanded(
@@ -749,15 +820,17 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                     itemCount: _branch_codes.length,
                     itemBuilder: (BuildContext context, int index) {
                       return CheckboxListTile(
-
                         title: Text(_branch_codes[index].branchName),
-                        value: _selectedBranches.contains(_branch_codes[index].branchCode),
+                        value: _selectedBranches
+                            .contains(_branch_codes[index].branchCode),
                         onChanged: (bool? value) {
                           setModalState(() {
                             if (value == true) {
-                              _selectedBranches.add(_branch_codes[index].branchCode);
+                              _selectedBranches
+                                  .add(_branch_codes[index].branchCode);
                             } else {
-                              _selectedBranches.remove(_branch_codes[index].branchCode);
+                              _selectedBranches
+                                  .remove(_branch_codes[index].branchCode);
                             }
                           });
                         },
@@ -765,28 +838,25 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                     },
                   ),
                 ),
-
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context, _selectedBranches);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFD42D3F),
-                    minimumSize: Size(150,
-                        36), // Set the width to 150 and the height to 36 (or your preferred height)
+                    minimumSize: Size(150, 36),
+                    // Set the width to 150 and the height to 36 (or your preferred height)
                     shape: RoundedRectangleBorder(
                       borderRadius:
-                      BorderRadius.circular(
-                          0), // Rectangular shape
+                          BorderRadius.circular(0), // Rectangular shape
                     ),
                     padding: EdgeInsets.symmetric(
-                        vertical:
-                        12), // Adjust vertical padding as needed
+                        vertical: 12), // Adjust vertical padding as needed
                   ),
                   child: Text(
                     'Add Branches',
-                    style:
-                    TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
+                    style: TextStyle(
+                        fontFamily: "Poppins-Regular", color: Colors.white),
                   ),
                 )
               ],
@@ -799,14 +869,9 @@ class _SharedeviceidState extends State<Sharedeviceid> {
     if (selectedValues != null) {
       setState(() {
         _selectedBranches = selectedValues;
-        _branchController.text = _selectedBranches.join(", "); // Update the TextField with selected branches
+        _branchController.text = _selectedBranches
+            .join(", "); // Update the TextField with selected branches
       });
     }
   }
-
-
-
-
-
 }
-

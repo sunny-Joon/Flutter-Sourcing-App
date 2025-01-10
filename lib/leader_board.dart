@@ -7,6 +7,8 @@ import 'api_service.dart';
 import 'const/appcolors.dart';
 import 'global_class.dart';
 import 'notifications.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class LeaderBoard extends StatefulWidget {
   @override
@@ -146,7 +148,7 @@ class _LeaderBoardState extends State<LeaderBoard> {
                       Column(
                         children: [
                           Text(
-                            "ALL INDIA",
+                            AppLocalizations.of(context)!.allindia,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -155,7 +157,7 @@ class _LeaderBoardState extends State<LeaderBoard> {
                             ),
                           ),
                           Text(
-                            "LEADER BOARD",
+                            AppLocalizations.of(context)!.leader,
                             style: TextStyle(
                               color: Colors.white,
                               fontFamily: "Poppins-Regular",

@@ -13,6 +13,8 @@ import 'api_service.dart';
 import 'notifications.dart';
 import 'target_car_gif.dart';
 import 'const/appcolors.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -98,7 +100,7 @@ class _HomePageState extends State<HomePage> {
           if(rank == 0){
             message = 'Calculating...';
           }else if (rank == 1) {
-            message = 'You have set the highest target';
+            message =  AppLocalizations.of(context)!.highesttarget;
           } else {
             rank = rank -1;
             message = '$rank People are earning more commission';
@@ -265,7 +267,7 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.only(top: 5),
                         child: Text(
-                          'Monthly',
+                          AppLocalizations.of(context)!.month,
                           style: TextStyle(
                             fontFamily: "Poppins-Regular",
                             fontSize: 20,
@@ -277,7 +279,7 @@ class _HomePageState extends State<HomePage> {
 
                       // Disbursement Target text with top margin
                       Text(
-                        'Comission Target',
+                        AppLocalizations.of(context)!.comission,
                         style: TextStyle(
                           fontFamily: "Poppins-Regular",
                           fontSize: 20,
@@ -313,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                         child: Text(
-                          'Reset target',
+                          AppLocalizations.of(context)!.target,
                           style: TextStyle(
                             fontFamily: "Poppins-Regular",
                             color: Colors.white,
@@ -402,7 +404,7 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Earn Maximum Commission',
+                                    AppLocalizations.of(context)!.earnmaximum,
                                     style: TextStyle(
                                       fontFamily: "Poppins-Regular",
                                       fontSize: 16,
@@ -412,7 +414,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   SizedBox(height: 5),
                                   Text(
-                                    'AB RUKNA NAHI',
+                                    AppLocalizations.of(context)!.abruknanhi,
                                     style: TextStyle(
                                       fontFamily: "Poppins-Regular",
                                       fontSize: 16,
@@ -485,7 +487,7 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Text(
-                        'Monthly',
+                        AppLocalizations.of(context)!.month,
                         style: TextStyle(fontFamily: "Poppins-Regular",
                           fontSize: 24,
                           color: Color(0xFF6D6D6D),
@@ -496,7 +498,7 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Text(
-                        'Disbursement Target',
+                        AppLocalizations.of(context)!.disbursement,
                         style: TextStyle(fontFamily: "Poppins-Regular",
                           fontSize: 24,
                           color: Color(0xFF6D6D6D),

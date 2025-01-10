@@ -17,7 +17,10 @@ import 'chat_bot.dart';
 import 'device_id_generator.dart';
 import 'fragments.dart';
 import 'Models/login_model.dart';
+import 'languageprovider.dart';
 import 'terms_conditions.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -46,9 +49,6 @@ class _LoginPageState extends State<LoginPage> {
     final TextEditingController mobileControllerlogin = TextEditingController(text: 'GRST002064');
     String deviceId = '';
 
-    // Check and request permissions
-   // _checkAndRequestPermissions(context);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -57,22 +57,44 @@ class _LoginPageState extends State<LoginPage> {
           // Align all text to the left
           children: [
             SizedBox(height: 50,),
+
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // _buildBackButton(context),
+                  // Asset image with PopupMenuButton for the dropdown
+                  PopupMenuButton<String>(
+                    icon: Image.asset(
+                      'assets/Images/language.png', // Path to your asset image
+                      height: 48.0, // Adjust the size as needed
+                      width: 48.0,
+                    ),
+                    onSelected: (value) {
+                      context.read<languageprovider>().changelanguage(value);
+                    },
+                    itemBuilder: (BuildContext context) {
+                      return languageprovider.language.map((language) {
+                        return PopupMenuItem<String>(
+                          value: language['locale'],
+                          child: Text(language['name']),
+                        );
+                      }).toList();
+                    },
+                  ),
+                  // _buildMenuButton(context) on the right
                   _buildMenuButton(context),
                 ],
               ),
             ),
+
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 50),
+                  SizedBox(height: 10),
                   Image.asset(
                     'assets/Images/paisa_logo.png', // Adjust the image path
                     width: double.infinity,
@@ -113,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   SizedBox(height: 20),
                   Text(
-                    'User ID',
+                    AppLocalizations.of(context)!.user,
                     style: TextStyle(fontFamily: "Poppins-Regular",
                       color: customColor,
                       fontSize: 20,
@@ -142,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   SizedBox(height: 2),
                   Text(
-                    'User Name must be at least 10 characters',
+                    AppLocalizations.of(context)!.usererror,
                     style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.grey,
                       fontSize: 12,
@@ -151,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 10),
 
                   Text(
-                    'Password',
+                    AppLocalizations.of(context)!.password,
                     style: TextStyle(fontFamily: "Poppins-Regular",
                       color: customColor,
                       fontSize: 20,
@@ -196,13 +218,13 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    'Password must be at least 5 characters',
+                    AppLocalizations.of(context)!.passerror,
                     style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.grey,
                       fontSize: 12,
                     ),
                   ),
-                  SizedBox(height: 50),
+                  SizedBox(height: 30),
                 //  Padding(
                   //  padding: const EdgeInsets.symmetric(horizontal: 25),
                   ElevatedButton(
@@ -220,10 +242,9 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(0), // Rectangular corners
                         ),
                       ),
-                      child: Text('LOGIN'),
+                      child: Text(AppLocalizations.of(context)!.login),
                     ),
               //    ),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -235,16 +256,16 @@ class _LoginPageState extends State<LoginPage> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: const Text('Error'),
+                                  title:  Text(AppLocalizations.of(context)!.error),
                                   content:
-                                      const Text('UserId cannot be blank.'),
+                                       Text(AppLocalizations.of(context)!.usererror),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context)
                                             .pop(); // Close the dialog
                                       },
-                                      child: const Text('OK'),
+                                      child:  Text(AppLocalizations.of(context)!.ok),
                                     ),
                                   ],
                                 );
@@ -271,15 +292,15 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: const Text('Error'),
-                                    content: const Text(
-                                        'Failed to generate Device ID.'),
+                                    content:  Text(
+                                        AppLocalizations.of(context)!.faileddeviceid),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
                                           Navigator.of(context)
                                               .pop(); // Close the dialog
                                         },
-                                        child: const Text('OK'),
+                                        child:  Text(AppLocalizations.of(context)!.ok),
                                       ),
                                     ],
                                   );
@@ -288,8 +309,8 @@ class _LoginPageState extends State<LoginPage> {
                             }
                           }
                         },
-                        child: const Text(
-                          'Share Device Id',
+                        child:  Text(
+                          AppLocalizations.of(context)!.sharedevice,
                           style: TextStyle(fontFamily: "Poppins-Regular",
                             color: customColor,
                             fontSize: 12,
@@ -305,7 +326,7 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         },
                         child: Text(
-                          'Terms & Conditions',
+                          AppLocalizations.of(context)!.term,
                           style: TextStyle(fontFamily: "Poppins-Regular",
                             color: customColor,
                             fontSize: 12,
@@ -316,6 +337,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
+
             )
           ],
         ),
@@ -344,20 +366,20 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context) => AlertDialog(
           title: Text('Permissions Required'),
           content: Text(
-              'This app requires certain permissions to function correctly. Please grant the necessary permissions.'),
+              AppLocalizations.of(context)!.necessarypermissions),
           actions: [
             TextButton(
               onPressed: () async {
                 await openAppSettings();
                 Navigator.of(context).pop(false); // User chose to deny
               },
-              child: Text('Open Settings'),
+              child: Text(AppLocalizations.of(context)!.opensetting),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false); // User chose to deny
               },
-              child: Text('Deny'),
+              child: Text(AppLocalizations.of(context)!.deny),
             ),
           ],
         ),
@@ -512,7 +534,7 @@ class _LoginPageState extends State<LoginPage> {
                 if(value.data.getCreatorList.isNotEmpty){
                   GlobalClass.creatorlist = value.data.getCreatorList;
                 }else{
-                  GlobalClass.showUnsuccessfulAlert(context, "Creator List is Empty", 1);
+                  GlobalClass.showUnsuccessfulAlert(context,value.message, 1);
                 }
 
                 // EasyLoading.dismiss();
@@ -673,7 +695,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         SpeedDialChild(
           child: Icon(Icons.chat),
-          label: 'Chatbot',
+          label: AppLocalizations.of(context)!.chat,
           onTap: () {
             Navigator.push(
               context,
@@ -707,7 +729,7 @@ class _LoginPageState extends State<LoginPage> {
         ),*/
         SpeedDialChild(
           child: Icon(Icons.call),
-          label: 'Call Support',
+          label: AppLocalizations.of(context)!.callsupport,
           onTap: () => _makePhoneCall('918595847059'),
         ),
        /* SpeedDialChild(
@@ -717,7 +739,7 @@ class _LoginPageState extends State<LoginPage> {
         ),*/
         SpeedDialChild(
           child: Icon(Icons.email),
-          label: 'Email Support',
+          label: AppLocalizations.of(context)!.emailsupport,
           onTap: () => _sendEmail('techsupport1@paisalo.in'),
         ),
       ],
