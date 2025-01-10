@@ -71,10 +71,10 @@
   "doyouwant": "Do you want to Logout?",
   "no": "No",
   "yes": "Yes",
-  "id": "ID ",
-  "name": "Name ",
-  "mno": "Mobile No ",
-  "designation": "Designation ",
+  "id": " ID ",
+  "name": " Name ",
+  "mno": " Mobile No ",
+  "designation": " Designation ",
   "locationerror": "Please enable your location services or open location settings.",
   "entermorpho": "Enter Morpho S/N"
 }

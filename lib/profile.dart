@@ -187,7 +187,7 @@ class _ProfileState extends State<Profile> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children:  [
-                    Icon(Icons.currency_rupee,size: 50,color: Colors.blue),
+                    Icon(Icons.currency_rupee,size: 40,color: Colors.blue),
                     SizedBox(height: 5),
                     Text(AppLocalizations.of(context)!.qrpaymentreport, style: TextStyle(fontSize: 8)),
                   ],
@@ -662,15 +662,16 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow(Icons.credit_card, AppLocalizations.of(context)!.id, _idController),
+            _buildDetailRow(Icons.credit_card, AppLocalizations.of(context)!.id
+                , _idController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.person, AppLocalizations.of(context)!.name, _nameController),
+            _buildDetailRow(Icons.person, AppLocalizations.of(context)!.name , _nameController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.phone, AppLocalizations.of(context)!.mno, _mobileNoController),
+            _buildDetailRow(Icons.phone, AppLocalizations.of(context)!.mno , _mobileNoController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.work, AppLocalizations.of(context)!.designation, _designationController),
+            _buildDetailRow(Icons.work, AppLocalizations.of(context)!.designation , _designationController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailList(Icons.admin_panel_settings, AppLocalizations.of(context)!.creater, _creatorController,
+            _buildDetailList(Icons.admin_panel_settings, AppLocalizations.of(context)!.creater , _creatorController,
             ),
 
           ],
