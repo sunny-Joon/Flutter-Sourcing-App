@@ -2571,11 +2571,12 @@ class _KYCPageState extends State<KYCPage> {
                   enableFeedback: true,
                   onTap: () {
                     if (_panNoController.text.isEmpty ||
-                        _panNoController.text.length != 10) {
-                      showToast_Error("Please Enter Correct PAN No.");
+                        !_panNoController.text.contains(RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$'))) {
+                      showToast_Error("Please Enter Correct PAN No..");
                     } else {
                       docVerifyIDC("pancard", _panNoController.text, "", "");
                     }
+
                   },
                   child: Container(
                     padding: EdgeInsets.all(3),
@@ -2609,10 +2610,14 @@ class _KYCPageState extends State<KYCPage> {
                 child: GestureDetector(
                   onTap: () {
                     if (_drivingLicenseController.text.isEmpty ||
-                        _drivingLicenseController.text.length < 10) {
+                        _drivingLicenseController.text.length < 5 ||
+                        _drivingLicenseController.text.length > 17) {
                       showToast_Error("Please Enter Correct Driving License");
                     } else {
                       dlVerifyByProtean(GlobalClass.id,
+
+
+
                           _drivingLicenseController.text, dlDob!);
                     }
                   },
@@ -2652,8 +2657,10 @@ class _KYCPageState extends State<KYCPage> {
                 padding: EdgeInsets.only(top: 20),
                 child: GestureDetector(
                   onTap: () {
-                    if (_voterIdController.text.isEmpty) {
-                      showToast_Error("Please Enter Voter No.");
+                    if (_voterIdController.text.isEmpty ||
+                        _voterIdController.text.length < 5 ||
+                        _voterIdController.text.length > 17) {
+                      showToast_Error("Please Enter Correct Voter No.");
                     } else {
                       voterVerifyByProtean(
                           GlobalClass.id, _voterIdController.text);
@@ -2825,8 +2832,7 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-  void docVerifyIDC(
-      String type, String txnNumber, String ifsc, String dob) async {
+  void docVerifyIDC(String type, String txnNumber, String ifsc, String dob) async {
     EasyLoading.show(
       status: 'Loading...',
     );
@@ -2918,8 +2924,8 @@ class _KYCPageState extends State<KYCPage> {
             voterVerified = false;
           });
         }
-        showToast_Error("Unexpected Response: $response");
-        print("Unexpected Response: $response");
+        showToast_Error("Please Enter Correct ID: $response");
+        print("Please Enter Correct Correct ID: $response");
         EasyLoading.dismiss();
       }
       EasyLoading.dismiss();
