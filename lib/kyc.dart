@@ -1197,6 +1197,7 @@ class _KYCPageState extends State<KYCPage> {
           if (type == "adharFront") {
             setState(() {
               _aadharIdController.text = response.data.adharId;
+              adhaarAllData(context);
               List<String> nameParts = response.data.name.trim().split(" ");
               if (nameParts.length == 1) {
                 _nameController.text = nameParts[0];
@@ -3837,6 +3838,8 @@ bool checkIdMendate(){
           }
         }
       } else {
+        EasyLoading.dismiss();
+
         setState(() {});
       }
     }).catchError((err) {
