@@ -77,6 +77,8 @@ class ApplicationgetAllDataModel {
   String bankName;
   String bankIfcs;
   String bankType;
+  String bankAccName;
+
   String bankAddress;
   bool isHouseRental;
   int loanAmount;
@@ -196,6 +198,8 @@ class ApplicationgetAllDataModel {
     required this.bankAc,
     required this.bankName,
     required this.bankIfcs,
+    required this.bankAccName,
+
     required this.bankType,
     required this.bankAddress,
     required this.isHouseRental,
@@ -318,6 +322,8 @@ class ApplicationgetAllDataModel {
     bankAc: json["bank_Ac"]??"",
     bankName: json["bank_name"]??"",
     bankIfcs: json["bank_IFCS"]??"",
+    bankAccName: json["bankAcc_Name"]??"",
+
     bankType: json["bankType"]??"",
     bankAddress: json["bank_address"]??"",
     isHouseRental: json["is_house_rental"],
@@ -445,6 +451,8 @@ class ApplicationgetAllDataModel {
     "bank_Ac": bankAc,
     "bank_name": bankName,
     "bank_IFCS": bankIfcs,
+    "bankAcc_Name": bankAccName,
+
     "bankType": bankType,
     "bank_address": bankAddress,
     "is_house_rental": isHouseRental,
