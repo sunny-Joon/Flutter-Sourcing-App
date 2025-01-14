@@ -50,7 +50,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   late ApiService apiService;
   List<ApplicationgetAllDataModel> BorrowerInfo = [];
   final FocusNode _focusNodeAdhaarId = FocusNode();
-  String _errorMessageAadhaar = "";
+  String _errorMessageAadhaar="";
   String temp = "";
   bool verifyFlag = true;
 
@@ -70,7 +70,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool UploadFiDocsEditable = true;
   bool editButtonFunctionOn = false;
 
-  String pageTitle = "Personal Info";
+  String pageTitle = "Application Form";
 
   final _mobileFocusNode = FocusNode();
   final _pinFocusNodeP = FocusNode();
@@ -366,6 +366,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String amountReg = '[0-9]';
   String cityReg = '[a-zA-Z ]';
   String idsReg = '[a-zA-Z0-9/ ]';
+
   @override
   void initState() {
     super.initState();
@@ -1221,10 +1222,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ),
 
-            SizedBox(
-                width: _isHandicapVisible
-                    ? 10
-                    : 0), // Gap of 10 between the two columns
+            SizedBox(width: _isHandicapVisible ? 10 : 0),
+            // Gap of 10 between the two columns
             Visibility(
                 visible: _isHandicapVisible,
                 child: Expanded(
@@ -2806,15 +2805,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               } else if (_bank_AcController.text.length < 10) {
                                 showToast_Error(
                                     "Please Enter Correct Account Number");
-                              } else if (BorrowerInfo[0].bankAc != "" &&
-                                  _bank_AcController.text ==
-                                      BorrowerInfo[0].bankAc) {
-                                showToast_Error(
-                                    "Account Number already Verified");
-                              } else if (_bank_AcController.text == temp) {
-                                showToast_Error(
-                                    "Account Number already Verified");
-                              } else {
+
+                              }else if(BorrowerInfo[0].bankAc != "" &&_bank_AcController.text == BorrowerInfo[0].bankAc){
+                                showToast_Error("Account Number already Verified");
+                              }else if(_bank_AcController.text==temp){
+                                showToast_Error("Account Number already Verified");
+
+                              }else {
+
                                 ifscVerify(context, _bank_IFCSController.text);
                               }
                             }
@@ -3394,70 +3392,66 @@ class _ApplicationPageState extends State<ApplicationPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Aadhaar ID",
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          fontSize: 13,
-                          height: 2),
-                    ),
-                    SizedBox(height: 8), // Adjust the spacing
-                    Container(
-                      padding: EdgeInsets.zero,
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        maxLength: 12,
-                        style: TextStyle(
-                            fontFamily: "Poppins-Regular", fontSize: 13),
-                        focusNode: _focusNodeAdhaarId,
-                        controller: _aadharIdController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          errorText: _errorMessageAadhaar.isEmpty
-                              ? null
-                              : _errorMessageAadhaar,
-                          counterText: "",
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter Aadhaar ID';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          _validateOnFocusChange();
-                        },
-                      ),
-                    ),
-                  ],
+
+        Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Aadhaar ID",
+                  style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13, height: 2),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: GestureDetector(
-                  onTap: () => _showPopup(context, (String result) {
-                    setState(() {
-                      qrResult = result;
-                    });
-                  }),
-                  child: Icon(
-                    Icons.qr_code_2_sharp,
-                    size: 50.0,
-                    color: Colors.grey,
+                SizedBox(height: 8), // Adjust the spacing
+                Container(
+                  padding: EdgeInsets.zero,
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    maxLength: 12,
+                    style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                    focusNode: _focusNodeAdhaarId,
+                    controller: _aadharIdController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      errorText: _errorMessageAadhaar.isEmpty ? null : _errorMessageAadhaar,
+                      counterText: "",
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter Aadhaar ID';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      _validateOnFocusChange();
+                    },
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          Row(
+          Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: GestureDetector(
+              onTap: () => _showPopup(context, (String result) {
+                setState(() {
+                  qrResult = result;
+                });
+              }),
+              child: Icon(
+                Icons.qr_code_2_sharp,
+                size: 50.0,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ],
+      ),
+
+      Row(
             children: [
               SizedBox(
                 width: 95, // Fixed width for the Title dropdown
@@ -3806,8 +3800,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                         return null;
                                       },
                                       inputFormatters: [
-                                        FilteringTextInputFormatter.allow(RegExp(
-                                            '[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp('[a-zA-Z0-9]')),
+                                        // Allow only alphanumeric characters // Optional: to deny spaces
                                         TextInputFormatter.withFunction(
                                           (oldValue, newValue) =>
                                               TextEditingValue(
@@ -4286,6 +4281,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             }
           } else if (_currentStep == 3) {
+
             if (FinancialInfoEditable) {
               if (_stepFourValidations()) {
                 AddFinancialInfo(context);
@@ -5364,7 +5360,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedCast!.toLowerCase() == "select") {
       showToast_Error("Please select cast");
       return false;
-    } /*else if (resCatController.text.isEmpty) {
+    }
+    /*else if (resCatController.text.isEmpty) {
       showToast_Error("Please enter Reservation Category");
       _resCatFocus.requestFocus();
       return false;
@@ -5442,7 +5439,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please enter Pincode (Current)");
       _pincodeFocusC.requestFocus();
       return false;
-    } /*else if (selectedDistrict == null) {
+    }
+    /*else if (selectedDistrict == null) {
       showToast_Error("Please select District");
 
       return false;
@@ -6265,8 +6263,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  void docVerifyIDC(
-      String type, String txnNumber, String ifsc, String dob) async {
+  void docVerifyIDC(String type, String txnNumber, String ifsc, String dob) async {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     setState(() {
       bankAccHolder = null;
@@ -6296,10 +6293,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
           if (type == "bankaccount") {
             setState(() {
               if (response["error"] == null) {
-                temp = txnNumber;
-                verifyFlag == true;
+                temp =txnNumber;
+                verifyFlag ==true;
 
-                bankAccHolder = "${responseData['full_name']}";
+                    bankAccHolder = "${responseData['full_name']}";
               } else {
                 bankAccHolder = "Account no. is Not Verified!!";
               }
@@ -6991,17 +6988,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (!value.data[0].placeOfBirth.isEmpty) {
           setState(() {
-            print("11111");
             _currentStep = 1;
+            pageTitle = "Personal Info";
           });
           personalInfo(value.data[0]);
         }
         if (!value.data[0].motheRFirstName.isEmpty) {
           familyDetails(value.data[0]);
           setState(() {
-            print("11112");
-
             _currentStep = 2;
+            pageTitle = "Family Details";
           });
         }
 
@@ -7009,9 +7005,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
             value.data[0].fiIncomeExpenses[0].inExHomeType.isNotEmpty) {
           fiIncomeExpenses(value.data[0]);
           setState(() {
-            print("11113");
-
             _currentStep = 3;
+            pageTitle = "Income & Expense";
           });
         }
 
@@ -7019,8 +7014,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           financialInfo(value.data[0]);
           setState(() {
             _currentStep = 4;
-            print("11114");
-
+            pageTitle = "Financial Info.";
           });
         }
 
@@ -7028,16 +7022,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
           femMemIncome(value.data[0]);
           setState(() {
             _currentStep = 5;
-            print("11115");
-
+            pageTitle = "Guarantor Form";
           });
         }
         if (value.data[0].guarantors.length != 0) {
           guarrantors(value.data[0]);
           setState(() {
             _currentStep = 6;
-            print("11116");
-
+            pageTitle = "Docs Upload";
           });
         }
       } else {
@@ -7598,7 +7590,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               print('Verification Rejected');
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();
-                              Navigator.of(context).pop();
                             },
                             child: Container(
                               padding: EdgeInsets.symmetric(
@@ -7979,14 +7970,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
         _errorMessageAadhaar = 'Aadhaar must be 12 characters long.';
       } else if (!Validators.validateVerhoeff(_aadharIdController.text)) {
         _errorMessageAadhaar = 'Aadhaar id is not valid';
-      } else if (_aadharIdController.text.length == 12 &&
-          _aadharIdController.text == widget.selectedData.aadharNo) {
-        _errorMessageAadhaar = 'Borrower can`t be Co-Borrower';
+      } else if (_aadharIdController.text.length == 12&& _aadharIdController.text == widget.selectedData.aadharNo) {
+          _errorMessageAadhaar = 'Borrower can`t be Co-Borrower';
 
-        // adhaarAllData(context);
-      } else {
-        _errorMessageAadhaar = "";
+         // adhaarAllData(context);
+        }else{
+      _errorMessageAadhaar = "";
       }
     });
+
   }
+
 }
