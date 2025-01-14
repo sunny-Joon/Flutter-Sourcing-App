@@ -3358,7 +3358,7 @@ bool checkIdMendate(){
   void getPlace(String type, String stateCode, String districtCode,
       String subDistrictCode) async {
     EasyLoading.show(status: "Please wait...");
-    print(GlobalClass.token);
+    print(GlobalClass.token + stateCode);
     try {
       PlaceCodesModel response = await apiService.getVillageStateDistrict(
         GlobalClass.token,
@@ -3767,11 +3767,24 @@ bool checkIdMendate(){
           if (value.data[0].panNo.isEmpty &&
               value.data[0].dl.isEmpty &&
               value.data[0].voterId.isEmpty) {
+            EasyLoading.dismiss();
 
             Future.delayed(
                 Duration.zero, () => showIDCardDialog(context, adhaardata,2));
 
-            setState(() {
+            /*setState(() {
+              _dobController.text = value.data[0].dob.toString().split("T")[0];
+              dlDob = value.data[0].dob.toString().split("T")[0];
+              // _ageController.text =value.data[0].;
+              if(value.data[0].pState.isNotEmpty){
+                stateselected= states
+                    .firstWhere((item) =>
+                item.code.toLowerCase() ==
+                    value.data[0].pState.toLowerCase());
+              }
+            });*/
+
+            /*setState(() {
               FiType = "OLD";
               Fi_Code=value.data[0].fiCode.toString();
               Fi_Id = value.data[0].fiId.toString();
@@ -3815,8 +3828,8 @@ bool checkIdMendate(){
               _address3Controller.text =value.data[0].pAddress3;
               _cityController.text =value.data[0].pCity;
               _pincodeController.text =value.data[0].pPincode;
-              /*stateselected = states.firstWhere((item) =>
-              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/
+              *//*stateselected = states.firstWhere((item) =>
+              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*//*
               _loan_amountController.text =value.data[0].loanAmount.toString();
              EasyLoading.dismiss();
 
@@ -3827,7 +3840,7 @@ bool checkIdMendate(){
               "Ficode: ${Fi_Code}\nCreator: ${GlobalClass.creator}\nBorrower Name: ${value.data[0].fName } ${value.data[0].mName } ${value.data[0].lName} ",
               Colors.red,
               1,
-            );
+            );*/
           } else {
             EasyLoading.dismiss();
             Future.delayed(
@@ -3958,6 +3971,20 @@ bool checkIdMendate(){
                                 Fi_Code = borrowerInfo.fiCode.toString();
                                 dlDob = borrowerInfo.dob.toString();
                                 _dobController.text = borrowerInfo.dob.toString();
+
+                                if(borrowerInfo.pState.isNotEmpty){
+                                  stateselected= states
+                                      .firstWhere((item) =>
+                                  item.code.toLowerCase() ==
+                                      borrowerInfo.pState.toLowerCase());
+                                }
+                                //String statecode = borrowerInfo.pState.toString();
+                                _dobController.text = borrowerInfo.dob.toString().split("T")[0];
+                                dlDob = borrowerInfo.dob.toString().split("T")[0];
+
+                                print("sssssssss" +stateselected!.code);
+                                getPlace("city", stateselected!.code, "", "");
+                                getPlace("district", stateselected!.code, "", "");
                               });
                               print('Verification Confirmed');
                               Navigator.of(context).pop();
