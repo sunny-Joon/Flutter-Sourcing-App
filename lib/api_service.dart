@@ -524,6 +524,9 @@ abstract class ApiService {
   @POST("DocVerify/GetDLDetails")
   Future<dynamic> getDLDetailsProtean(@Body() Map<String, dynamic> body);
 
+  @POST("DocVerify/GetBankVerify")
+  Future<dynamic> getBankDetailsProtean(@Body() Map<String, dynamic> body);
+
   @POST("DocVerify/GetVoterDetails")
   Future<dynamic> getVoteretailsProtean(@Body() Map<String, dynamic> body);
 

@@ -127,6 +127,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "Please search PAN card holder name for verification";
   String? dlCardHolderName;
   String? voterCardHolderName;
+  bool banknameverified = false;
 
   //fiextra
   List<String> onetonine = [
@@ -5907,6 +5908,70 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }).catchError((error) {});
   }
 
+
+  Future<void> saveIDsMethod(BuildContext context) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+
+    print("object");
+    int isNameVerify = 1;
+    final _passportExpiryController = TextEditingController();
+    final _dlExpiryController = TextEditingController();
+    String? PassportExpireDate =
+    _passportExpiryController.text.toString().isEmpty
+        ? null
+        : _passportExpiryController.text;
+    String? DLExpireDate = _dlExpiryController.text.toString().isEmpty
+        ? null
+        : DateFormat('yyyy-MM-dd').format(
+        DateFormat('dd-MM-yyyy').parse(_dlExpiryController.text));
+    String fiid= FIID.toString();
+    print("fiidrps $FIID.toString()");
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    Map<String, dynamic> requestBody = {
+      "Fi_ID": fiid,
+      "pan_no": "",
+      "dl": "",
+      "voter_id": "",
+      "passport": "",
+      "PassportExpireDate": PassportExpireDate,
+      "isAadharVerified": 0,
+      "is_phnno_verified": 0,
+      "isNameVerify": isNameVerify,
+      "Pan_Name": "",
+      "VoterId_Name": "",
+      "Aadhar_Name": "",
+      "DrivingLic_Name": "",
+      "VILLAGE_CODE": "",
+      "CITY_CODE": "",
+      "SUB_DIST_CODE": "",
+      "DIST_CODE": "",
+      "STATE_CODE":"",
+      "DLExpireDate": DLExpireDate,
+      "BankAcc_Name": bankAccHolder,
+    };
+
+    return await api
+        .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        /*setState(() {
+          _currentStep += 1;
+        });*/
+        EasyLoading.dismiss();
+
+      } else {
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
+      }
+    }).catchError((onError){
+      EasyLoading.dismiss();
+      GlobalClass.showErrorAlert(context, onError, 1);
+    });
+  }
+
   Future<void> AddFinancialInfo(BuildContext context) async {
     EasyLoading.show(
       status: 'Loading...',
@@ -5926,7 +5991,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "Fi_ID": Fi_ID,
       "bankType": bankType,
       "bank_Ac": bank_Ac,
-      //    "bank_name": bank_name,
+        //    "bank_name": bank_name,
       "bank_IFCS": bank_IFCS,
       "bank_address": bank_address,
       "bankOpeningDate": bankOpeningDate,
@@ -6174,8 +6239,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
    // EasyLoading.dismiss();
   }*/
-  Future<void> verifyDocs(BuildContext context, String txnNumber, String type,
-      String ifsc, String dob) async {
+  Future<void> verifyDocs(BuildContext context, String txnNumber, String type, String ifsc, String dob) async {
     EasyLoading.show(
       status: 'Loading...',
     );
@@ -6217,6 +6281,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
             voterCardHolderName = "${responseData['name']}";
             voterVerified = true;
           });
+        }else if (type == "bankaccount") {
+          setState(() {
+            bankAccHolder = "${responseData['full_name']}";
+            banknameverified = true;
+            saveIDsMethod(context);
+          });
         }
       } else {
         if (type == "pancard") {
@@ -6229,10 +6299,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
             dlCardHolderName = "Driving License is not verified";
             dlVerified = false;
           });
-        } else if (type == "voterid") {
+        } else if (type == "bankaccount") {
           setState(() {
-            voterCardHolderName = "Voter no. is not verified";
-            voterVerified = false;
+            bankAccHolder = "Bank Account is not verified";
+            banknameverified = false;
+            saveIDsMethod(context);
           });
         }
         showToast_Error("Unexpected Response: $response");
@@ -6257,6 +6328,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           voterCardHolderName = "Voter no. is not verified";
           voterVerified = false;
+        });
+      }else if (type == "bankaccount") {
+        setState(() {
+          bankAccHolder = "Bank Account is not verified";
+          banknameverified = false;
+          saveIDsMethod(context);
         });
       }
       EasyLoading.dismiss();
@@ -6297,6 +6374,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 verifyFlag ==true;
 
                     bankAccHolder = "${responseData['full_name']}";
+                banknameverified=true;
+                saveIDsMethod(context);
               } else {
                 bankAccHolder = "Account no. is Not Verified!!";
               }
@@ -6455,6 +6534,48 @@ class _ApplicationPageState extends State<ApplicationPage> {
     EasyLoading.show(
       status: 'Loading...',
     );
+  }
+
+  void bankVerifyByProtean(String userid, String dlNo, String dob) async {
+    EasyLoading.show(
+      status: 'Loading...',
+    );
+    try {
+      // Initialize Dio
+      // Create ApiService instance
+      // API body
+      Map<String, dynamic> requestBody = {
+        "userID": userid,
+        "accNo": _bank_AcController.text,
+        "ifsc": _bank_IFCSController.text
+      };
+      // Hit the API
+      final response =
+      await apiService_protean.getBankDetailsProtean(requestBody);
+      EasyLoading.show(
+        status: 'Loading...',
+      );
+      // Handle response
+      if (response is Map<String, dynamic>) {
+        Map<String, dynamic> responseData = response["data"];
+        // Parse JSON object if it’s a map
+        setState(() {
+          if (responseData['result']['accountName'] != null) {
+            bankAccHolder = "${responseData['result']['accountName']}";
+            banknameverified = true;
+            saveIDsMethod(context);
+          } else {
+            docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
+          }
+        });
+      } else {
+        docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
+      }
+    } catch (e) {
+      // Handle errors
+      docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
+    }
+    EasyLoading.dismiss();
   }
 
   Future<void> ifscVerify(BuildContext context, String ifsc) async {
@@ -7176,6 +7297,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       }
 
       //   selectedBankName = data.bankName;
+      bankAccHolder = data.bankAccName;
       _bank_AcController.text = data.bankAc;
       _bank_IFCSController.text = data.bankIfcs;
       bankAddress = data.bankAddress;
