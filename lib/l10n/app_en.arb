@@ -72,9 +72,65 @@
   "no": "No",
   "yes": "Yes",
   "id": " ID ",
-  "name": " Name ",
   "mno": " Mobile No ",
   "designation": " Designation ",
   "locationerror": "Please enable your location services or open location settings.",
-  "entermorpho": "Enter Morpho S/N"
+  "entermorpho": "Enter Morpho S/N",
+
+  "referal": "Your Referral Code",
+  "loading": "Loading...",
+  "totalreferral": "Total Referral Friends",
+  "totalcashback": "Total Cashback Earned",
+
+  "howtorefer": "How To Refer a Friend and Earn?",
+  "earn1": "Click On 'Refer Now' and copy the message with your unique referral code.",
+  "earn2": "Send the message to your friends via SMS, WhatsApp, Facebook or Email.",
+  "earn3": "Ask your friend to fill in the form with your referral code and get ready to get rewarded.",
+
+  "adhar": "Aadhaar ID",
+  "title": "Title",
+  "mname": "Middle Name",
+  "lname": "Last Name",
+  "gurname": "Guardian Name",
+  "gender": "Gender",
+  "relationship": "Relationship",
+  "age": "Age",
+  "dob": "Date of Birth",
+  "ffnane": "Father First Name",
+  "marital": "Marital Status",
+  "sfname": "Spouse First Name",
+  "monthlyincome": "Monthly Income",
+  "monthlyexpence": "Monthly Expense",
+  "monthlyexpence": "Monthly Expense",
+  "address1": "Address1",
+  "address2": "Address2",
+  "address3": "Address3",
+  "address3": "Address3",
+  "city": "City",
+  "pincode": "Pincode",
+  "sstate": "Select State",
+  "loanamount": "Loan Amount",
+  "loanreason": "Loan Reason",
+  "loanduration": "Loan Duration",
+  "bankname": "Bank Name",
+  "close": "Close",
+  "panno": "PAN No.",
+  "dl": "Driving License",
+  "dlexpiry": "Driving License Expiry Date",
+  "voter": "Voter Id",
+  "passport": "Passport",
+  "passportexpiry": "Passport Expiry Date",
+  "selectcity": "Select City",
+  "selectdistric": "Select District",
+  "selectsubdistric": "Select Sub-District",
+  "selectvillage": "Select Village"
+
+
+
+
+
+
+
+
+
 }

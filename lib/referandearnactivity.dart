@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import 'getrewardactivity.dart';
 import 'howtoreferactivity.dart';
@@ -117,7 +119,7 @@ class _referandearnactivitystate extends State<referandearnactivity> {
                     Column(
                       children: [
                         Text(
-                          'Your Referral Code',
+                          AppLocalizations.of(context)!.referal,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -130,7 +132,7 @@ class _referandearnactivitystate extends State<referandearnactivity> {
                         Text(
                           referralCodeController.text.isNotEmpty
                               ? referralCodeController.text
-                              : 'Loading...',
+                              : AppLocalizations.of(context)!.loading,
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey[700],
@@ -143,11 +145,11 @@ class _referandearnactivitystate extends State<referandearnactivity> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             _buildInfoCard(
-                              title: 'Total Referral Friends',
+                              title: AppLocalizations.of(context)!.totalreferral,
                               value: '0',
                             ),
                             _buildInfoCard(
-                              title: 'Total Cashback Earned',
+                              title: AppLocalizations.of(context)!.totalcashback,
                               value: '0',
                             ),
                           ],
@@ -197,7 +199,7 @@ class _referandearnactivitystate extends State<referandearnactivity> {
                       print("Error sharing message: $e");
                     }
                   },
-                  child: Text("REFER NOW"),
+                  child: Text(AppLocalizations.of(context)!.refernow),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Color(
                       0xFFC01024), // Text color

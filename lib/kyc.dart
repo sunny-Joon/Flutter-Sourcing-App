@@ -25,6 +25,8 @@ import 'Models/place_codes_model.dart';
 import 'Models/range_category_model.dart';
 import 'api_service.dart';
 import 'global_class.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 class KYCPage extends StatefulWidget {
@@ -1574,7 +1576,7 @@ class _KYCPageState extends State<KYCPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Aadhaar ID",
+                    AppLocalizations.of(context)!.adhar,
                     style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, height: 2),
                   ),
                   SizedBox(height: 1),
@@ -1639,7 +1641,8 @@ class _KYCPageState extends State<KYCPage> {
                     height: 2,
                   ),
                   Text(
-                    'Title',
+                    AppLocalizations.of(context)!.title,
+
                     style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                   ),
                   SizedBox(
@@ -1687,7 +1690,8 @@ class _KYCPageState extends State<KYCPage> {
             // Add spacing between Title dropdown and Name field if needed
             Expanded(
               child: _buildTextField2(
-                  'Name', _nameController, TextInputType.text, 30,nameReg),
+                  AppLocalizations.of(context)!.name,
+                  _nameController, TextInputType.text, 30,nameReg),
             ),
           ],
         ),
@@ -1697,12 +1701,14 @@ class _KYCPageState extends State<KYCPage> {
           children: [
             Expanded(
                 child: _buildTextField2(
-                    'Middle Name', _nameMController, TextInputType.text, 30,nameReg)),
+                    AppLocalizations.of(context)!.mname,
+                    _nameMController, TextInputType.text, 30,nameReg)),
             SizedBox(width: 10),
             // Add spacing between the text fields if needed
             Expanded(
                 child: _buildTextField2(
-                    'Last Name', _nameLController, TextInputType.text, 30,nameReg)),
+                    AppLocalizations.of(context)!.lname,
+                    _nameLController, TextInputType.text, 30,nameReg)),
           ],
         ),
 
@@ -1714,7 +1720,8 @@ class _KYCPageState extends State<KYCPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Guardian Name",
+                AppLocalizations.of(context)!.gurname,
+
                 style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
               ),
               SizedBox(height: 1),
@@ -1764,7 +1771,8 @@ class _KYCPageState extends State<KYCPage> {
                   height: 6,
                 ),
                 Text(
-                  'Gender',
+                  AppLocalizations.of(context)!.gender,
+
                   style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                 ),
                 SizedBox(
@@ -1822,7 +1830,8 @@ class _KYCPageState extends State<KYCPage> {
                   height: 6,
                 ),
                 Text(
-                  'Relationship',
+                  AppLocalizations.of(context)!.relationship,
+
                   style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                 ),
                 SizedBox(
@@ -1884,7 +1893,8 @@ class _KYCPageState extends State<KYCPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Mobile No.",
+                      AppLocalizations.of(context)!.mno,
+
                       style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, height: 2),
                     ),
                     Container(
@@ -1978,7 +1988,8 @@ class _KYCPageState extends State<KYCPage> {
                     height: 6,
                   ),
                   Text(
-                    'Age',
+                    AppLocalizations.of(context)!.age,
+
                     style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                   ),
                   SizedBox(height: 3),
@@ -2007,7 +2018,8 @@ class _KYCPageState extends State<KYCPage> {
                     height: 6,
                   ),
                   Text(
-                    'Date of Birth',
+                    AppLocalizations.of(context)!.dob,
+
                     style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                   ),
                   SizedBox(height: 3),
@@ -2032,19 +2044,22 @@ class _KYCPageState extends State<KYCPage> {
           ],
         ),
 
-        _buildTextField2('Father First Name', _fatherFirstNameController,
+        _buildTextField2(  AppLocalizations.of(context)!.ffnane,
+            _fatherFirstNameController,
             TextInputType.text, 30,nameReg),
 
         Row(
           children: [
             Expanded(
-              child: _buildTextField2('Middle Name',
+              child: _buildTextField2(  AppLocalizations.of(context)!.mname,
+
                   _fatherMiddleNameController, TextInputType.text, 30,nameReg),
             ),
             SizedBox(width: 8),
             // Add spacing between the text fields if needed
             Expanded(
-                child: _buildTextField2('Last Name', _fatherLastNameController,
+                child: _buildTextField2( AppLocalizations.of(context)!.lname,
+                    _fatherLastNameController,
                     TextInputType.text, 30,nameReg)),
           ],
         ),
@@ -2054,7 +2069,8 @@ class _KYCPageState extends State<KYCPage> {
         ),
 
         Text(
-          'Marital Status',
+          AppLocalizations.of(context)!.marital,
+
           style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
         ),
 
@@ -2106,17 +2122,19 @@ class _KYCPageState extends State<KYCPage> {
         if (selectedMarritalStatus.toString() == 'Married')
           Column(
             children: [
-              _buildTextField2('Spouse First Name', _spouseFirstNameController,
+              _buildTextField2(AppLocalizations.of(context)!.sfname,
+                  _spouseFirstNameController,
                   TextInputType.text, 30,nameReg),
               Row(
                 children: [
                   Expanded(
-                    child: _buildTextField2('Middle Name',
+                    child: _buildTextField2(AppLocalizations.of(context)!.mname,
+
                         _spouseMiddleNameController, TextInputType.text, 30,nameReg),
                   ),
                   SizedBox(width: 8),
                   Expanded(
-                    child: _buildTextField2('Last Name',
+                    child: _buildTextField2(AppLocalizations.of(context)!.lname,
                         _spouseLastNameController, TextInputType.text, 30,nameReg),
                   ),
                 ],
@@ -2126,30 +2144,30 @@ class _KYCPageState extends State<KYCPage> {
         Row(
           children: [
             Expanded(
-              child: _buildTextField2('Monthly Income', _incomeController,
+              child: _buildTextField2(AppLocalizations.of(context)!.monthlyincome, _incomeController,
                   TextInputType.number, 7,amountReg),
             ),
             SizedBox(width: 8),
             // Add spacing between the text fields if needed
             Expanded(
-              child: _buildTextField2('Monthly Expense', _expenseController,
+              child: _buildTextField2(AppLocalizations.of(context)!.monthlyexpence, _expenseController,
                   TextInputType.number, 7,amountReg),
             ),
           ],
         ),
-        _buildTextField('Address1', _address1Controller),
-        _buildTextField('Address2', _address2Controller),
-        _buildTextField('Address3', _address3Controller),
+        _buildTextField(AppLocalizations.of(context)!.address1, _address1Controller),
+        _buildTextField(AppLocalizations.of(context)!.address2, _address2Controller),
+        _buildTextField(AppLocalizations.of(context)!.address3, _address3Controller),
         Row(
           children: [
             Expanded(
               child: _buildTextField2(
-                  'City', _cityController, TextInputType.text, 30,cityReg),
+                  AppLocalizations.of(context)!.city, _cityController, TextInputType.text, 30,cityReg),
             ),
             SizedBox(width: 16),
             Expanded(
               child: _buildTextField2(
-                  'Pincode', _pincodeController, TextInputType.number, 6,amountReg),
+                  AppLocalizations.of(context)!.pincode, _pincodeController, TextInputType.number, 6,amountReg),
             ),
           ],
         ),
@@ -2158,20 +2176,20 @@ class _KYCPageState extends State<KYCPage> {
         ),
 
         _buildLabeledDropdownField(
-            'Select State', 'State', states, stateselected,
+            AppLocalizations.of(context)!.sstate, 'State', states, stateselected,
             (RangeCategoryDataModel? newValue) {
           setState(() {
             stateselected = newValue;
           });
         }, String),
         _buildTextField2(
-            'Loan Amount', _loan_amountController, TextInputType.number, 7,amountReg),
+            AppLocalizations.of(context)!.loanamount, _loan_amountController, TextInputType.number, 7,amountReg),
 
         SizedBox(
           height: 6,
         ),
         Text(
-          'Loan Reason',
+          AppLocalizations.of(context)!.loanreason,
           style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
         ),
         SizedBox(
@@ -2230,7 +2248,7 @@ class _KYCPageState extends State<KYCPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Loan Duration',
+                    AppLocalizations.of(context)!.loanduration,
                     style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                   ),
                   SizedBox(height: 3),
@@ -2279,7 +2297,7 @@ class _KYCPageState extends State<KYCPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Bank Name',
+                    AppLocalizations.of(context)!.bankname,
                     style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
                   ),
                   SizedBox(height: 3),
@@ -2461,7 +2479,7 @@ class _KYCPageState extends State<KYCPage> {
                     backgroundColor: Colors.green, // Button color
                   ),
                   child: Text(
-                    'Submit',
+                    AppLocalizations.of(context)!.submit,
                     style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                   ),
                 ),
@@ -2481,7 +2499,7 @@ class _KYCPageState extends State<KYCPage> {
                       backgroundColor: Colors.red, // Button color
                     ),
                     child: Text(
-                      'Close',
+                      AppLocalizations.of(context)!.close,
                       style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                   ),
@@ -2514,7 +2532,7 @@ class _KYCPageState extends State<KYCPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "PAN No.",
+                        AppLocalizations.of(context)!.panno,
                         style: TextStyle(fontFamily: "Poppins-Regular",
                           fontSize: 13,
                         ),
@@ -2597,7 +2615,7 @@ class _KYCPageState extends State<KYCPage> {
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField2('Driving License',
+                child: _buildTextField2(AppLocalizations.of(context)!.dl,
                     _drivingLicenseController, TextInputType.text, 18,IdsReg),
               ),
               SizedBox(width: 10),
@@ -2635,14 +2653,14 @@ class _KYCPageState extends State<KYCPage> {
                 )
               : Text(dlCardHolderName!,
                   style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.green, fontSize: 14)),
-          _buildDatePickerField(context, 'Driving License Expiry Date',
+          _buildDatePickerField(context, AppLocalizations.of(context)!.dlexpiry,
               _dlExpiryController, "dlExp"),
           Row(
             children: [
               Flexible(
                 flex: 2,
                 child: _buildTextField2(
-                    'Voter Id', _voterIdController, TextInputType.text, 17,IdsReg),
+                    AppLocalizations.of(context)!.voter, _voterIdController, TextInputType.text, 17,IdsReg),
               ),
               SizedBox(width: 10),
               Padding(
@@ -2683,15 +2701,15 @@ class _KYCPageState extends State<KYCPage> {
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField('Passport', _passportController),
+                child: _buildTextField(AppLocalizations.of(context)!.passport, _passportController),
               ),
             ],
           ),
 
-          _buildDatePickerField(context, 'Passport Expiry Date',
+          _buildDatePickerField(context, AppLocalizations.of(context)!.passportexpiry,
               _passportExpiryController, "passExp"),
           _buildLabeledDropdownField(
-              'Select City', 'Cities', listCityCodes, selectedCityCode,
+              AppLocalizations.of(context)!.selectcity, 'Cities', listCityCodes, selectedCityCode,
               (PlaceData? newValue) {
             setState(() {
               selectedCityCode = newValue;
@@ -2702,7 +2720,7 @@ class _KYCPageState extends State<KYCPage> {
               // getPlace("district",stateselected!.code,"","");
             });
           }, String),
-          _buildLabeledDropdownField('Select District', 'Districts',
+          _buildLabeledDropdownField(AppLocalizations.of(context)!.selectdistric, 'Districts',
               listDistrictCodes, selectedDistrictCode, (PlaceData? newValue) {
             setState(() {
               selectedDistrictCode = newValue;
@@ -2714,7 +2732,7 @@ class _KYCPageState extends State<KYCPage> {
             });
           }, String),
           _buildLabeledDropdownField(
-              'Select Sub-District',
+              AppLocalizations.of(context)!.selectsubdistric,
               'Sub-Districts',
               listSubDistrictCodes,
               selectedSubDistrictCode, (PlaceData? newValue) {
@@ -2728,7 +2746,7 @@ class _KYCPageState extends State<KYCPage> {
               // getPlace("district",stateselected!.code,"","");
             });
           }, String),
-          _buildLabeledDropdownField('Select Village', 'Village',
+          _buildLabeledDropdownField(AppLocalizations.of(context)!.selectvillage, 'Village',
               listVillagesCodes, selectedVillageCode, (PlaceData? newValue) {
             setState(() {
               selectedVillageCode = newValue;
@@ -2825,7 +2843,7 @@ class _KYCPageState extends State<KYCPage> {
   void docVerifyIDC(
       String type, String txnNumber, String ifsc, String dob) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status:AppLocalizations.of(context)!.loading,
     );
     try {
       Map<String, dynamic> requestBody = {
@@ -3096,7 +3114,7 @@ class _KYCPageState extends State<KYCPage> {
           // }
         },
         child: Text(
-          "SUBMIT",
+          AppLocalizations.of(context)!.submit,
           style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white, fontSize: 16),
         ),
       ),
@@ -3112,7 +3130,7 @@ class _KYCPageState extends State<KYCPage> {
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: Text("OK"),
+              child: Text(AppLocalizations.of(context)!.ok,),
               onPressed: () {
                 Navigator.of(context).pop();
               },

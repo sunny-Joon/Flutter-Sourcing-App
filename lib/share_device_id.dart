@@ -200,7 +200,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
   Future<void> _fetchCreatorList() async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     final api = Provider.of<ApiService>(context, listen: false);
