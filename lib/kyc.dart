@@ -1195,6 +1195,7 @@ class _KYCPageState extends State<KYCPage> {
         if (response.statusCode == 200) {
           EasyLoading.dismiss();
           if (type == "adharFront") {
+            EasyLoading.dismiss();
             setState(() {
               _aadharIdController.text = response.data.adharId;
               adhaarAllData(context);
@@ -1222,6 +1223,7 @@ class _KYCPageState extends State<KYCPage> {
                 selectedTitle = "Mrs.";
               }
             });
+            EasyLoading.dismiss();
             Navigator.of(context).pop();
           } else if (type == "adharBack") {
             setState(() {
@@ -3765,7 +3767,7 @@ class _KYCPageState extends State<KYCPage> {
     )
         .then((value) {
       if (value.statuscode == 200) {
-
+        EasyLoading.dismiss();
         if (value.data[0].errormsg.isEmpty) {
           print("object112222");
           adhaardata = value.data[0];

@@ -4500,7 +4500,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   break;
                 case 26:
                   OSVVerified = await OcrDocsScanning('voterback',
-                      BorrowerInfo[0].voterId, "borrower", context);
+                      "1", "borrower", context);
                   if (OSVVerified) {
                     voterback = pickedImage;
                   }
@@ -6264,7 +6264,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             if (response["error"] == null) {
               panCardHolderName =
-                  "${responseData['first_name']} ${responseData['last_name']}";
+                  "${responseData['name']} ";
               panVerified = true;
             } else {
               panCardHolderName = "PAN no. is wrong please check";
@@ -6384,7 +6384,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               if (response["error"] == null) {
                 panCardHolderName =
-                    "${responseData['first_name']} ${responseData['last_name']}";
+                    "${responseData['name']} ";
                 panVerified = true;
               } else {
                 panCardHolderName = "PAN no. is wrong please check";
@@ -7159,7 +7159,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }).catchError((err) {
       print("ERRORRRR$err");
       EasyLoading.dismiss();
-      GlobalClass.showErrorAlert(context, "Corrupt Case", 2);
+    //  GlobalClass.showErrorAlert(context, "Corrupt Case", 2);
     });
   }
 
