@@ -7110,7 +7110,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         if (!value.data[0].placeOfBirth.isEmpty) {
           setState(() {
             _currentStep = 1;
-            pageTitle = "Personal Info";
+            pageTitle = "Family Details";
           });
           personalInfo(value.data[0]);
         }
@@ -7118,7 +7118,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           familyDetails(value.data[0]);
           setState(() {
             _currentStep = 2;
-            pageTitle = "Family Details";
+            pageTitle = "Income & Expense";
           });
         }
 
@@ -7127,7 +7127,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           fiIncomeExpenses(value.data[0]);
           setState(() {
             _currentStep = 3;
-            pageTitle = "Income & Expense";
+            pageTitle = "Financial Info.";
           });
         }
 
@@ -7135,7 +7135,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           financialInfo(value.data[0]);
           setState(() {
             _currentStep = 4;
-            pageTitle = "Financial Info.";
+            pageTitle = "Family Income";
           });
         }
 
