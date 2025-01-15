@@ -11,6 +11,8 @@ import 'Models/branch_model.dart';
 import 'Branch_recycler_item.dart';
 import 'api_service.dart';
 import 'global_class.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class BranchListPage extends StatefulWidget {
   final String intentFrom;
@@ -207,7 +209,7 @@ class _BranchListPageState extends State<BranchListPage> {
                       );
                     },
                     child: Text(
-                      'First E-Sign',
+                      AppLocalizations.of(context)!.fesign,
                       style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
@@ -242,7 +244,7 @@ class _BranchListPageState extends State<BranchListPage> {
                       );*/
                     },
                     child: Text(
-                      'Second E-Sign',
+                        AppLocalizations.of(context)!.sesign,
                       style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
