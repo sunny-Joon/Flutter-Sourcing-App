@@ -225,6 +225,8 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                         }else if(_image==null){
                           GlobalClass.showUnsuccessfulAlert(context, "Please upload image of receipt", 1);
                         }else{
+                          print("smcode3 = $widget.smcode");
+
                           submitQR(context);
                         }
 
@@ -317,9 +319,12 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
     final api = Provider.of<ApiService>(context, listen: false);
 
     return await api.InsertQrSettlement(
-        GlobalClass.token, GlobalClass.dbName, widget.smcode,_image!)
+        GlobalClass.token, GlobalClass.dbName, _searchController.text,_image!)
         .then((value) async {
+          print("smcode1 = $widget.smcode");
       if (value.statuscode == 200) {
+        print("smcode2 = $widget.smcode");
+
         EasyLoading.dismiss();
         GlobalClass.showSuccessAlert(context, value.message, 3);
 

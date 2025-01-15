@@ -7357,7 +7357,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
       }
 
       _pincodeController.text = data.guarantors[0].grPincode.toString();
-      _dobController.text = data.guarantors[0].grDob.toString();
+
+
+      DateTime parsedDate = DateTime.parse(data.guarantors[0].grDob);
+      String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
+      _dobController.text = formattedDate;
+      //_dobController.text = data.guarantors[0].grDob.toString();
+
+
+
       _ageController.text = data.guarantors[0].grAge.toString();
       _phoneController.text = data.guarantors[0].grPhone;
       _panController.text = data.guarantors[0].grPan;
@@ -7523,7 +7531,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
         //   default:
         //     showToast_Error("Unsupported document type.");
         //     break;
+        //
         // }
+        // return true;
       } else if (response.statusCode == 201) {
         OcrDocsScanningResponse ocrDocsScanningResponse = response;
 
@@ -7826,11 +7836,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
         : BorrowerInfo[0].guarantors[0].grVoter;
     if (response.data.adharId == expectedId) {
       if (response.data.isOSV == true && response.data.isIdMatched == true) {
-        if (subType == "borrower") {
-          voterFront = pickedImage;
-        } else if (subType == "guarantor") {
-          voterFront_coborrower = pickedImage;
-        }
+        // if (subType == "borrower") {
+        //   voterFront = pickedImage;
+        // } else if (subType == "guarantor") {
+        //   voterFront_coborrower = pickedImage;
+        // }
         EasyLoading.dismiss();
         GlobalClass.showSuccessAlert(
             context, "Voter front document verified successfully!", 1);
