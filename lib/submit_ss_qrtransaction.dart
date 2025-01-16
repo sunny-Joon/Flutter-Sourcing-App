@@ -177,37 +177,43 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    Container(
-
-                      width: imageViewWidth,
-                      height: imageViewWidth * 0.75, // Adjust height based on aspect ratio
-                      decoration: BoxDecoration(
-                        
-                        shape: BoxShape.rectangle,
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: _image == null
-                          ? Icon(
-                        Icons.image,
-                        size: imageViewWidth * 0.5,
-                        color: Colors.grey.shade300,
-                      )
-                          : ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.file(
-                          _image!,
-                          fit: BoxFit.cover,
+                    InkWell(
+                      onTap:() {
+                        _showImageSourceDialog(context);
+                      },
+                      child: Container(
+                        width: imageViewWidth,
+                        height: imageViewWidth * 0.75, // Adjust height based on aspect ratio
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                            ),
+                          ],
                         ),
-                      ),
+
+                        child:
+                        _image == null
+                            ? Icon(
+                          Icons.image,
+                          size: imageViewWidth * 0.5,
+                          color: Colors.grey.shade300,
+                        )
+                            : ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.file(
+                            _image!,
+                            fit: BoxFit.cover,
+                          ),
+                        )
                     ),
+                    ),
+
                     SizedBox(height: 20),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -315,19 +321,29 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
 
   Future<void> submitQR(BuildContext context) async {
     EasyLoading.show(status: 'Loading...');
-
+    String sm;
+    if(!flag) {
+       sm= widget.smcode;
+    }else{
+      sm =_searchController.text;
+    }
     final api = Provider.of<ApiService>(context, listen: false);
 
+
     return await api.InsertQrSettlement(
-        GlobalClass.token, GlobalClass.dbName, _searchController.text,_image!)
+        GlobalClass.token, GlobalClass.dbName, sm,_image!)
+
         .then((value) async {
           print("smcode1 = $widget.smcode");
       if (value.statuscode == 200) {
         print("smcode2 = $widget.smcode");
 
         EasyLoading.dismiss();
-        GlobalClass.showSuccessAlert(context, value.message, 3);
-
+        if(flag) {
+          GlobalClass.showSuccessAlert(context, value.message, 2);
+        }else{
+          GlobalClass.showSuccessAlert(context, value.message, 3);
+        }
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(context, value.message, 1);

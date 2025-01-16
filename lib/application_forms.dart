@@ -3415,6 +3415,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     focusNode: _focusNodeAdhaarId,
                     controller: _aadharIdController,
+                    enabled: GuarantorEditable,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       errorText: _errorMessageAadhaar.isEmpty ? null : _errorMessageAadhaar,
@@ -4792,100 +4793,110 @@ class _ApplicationPageState extends State<ApplicationPage> {
     List<Widget> listItems1 = [];
     if (_isPageLoading) {
       if (isStepEight) {
-        GrDoc grDoc = getData.data.grDocs[0];
+        if(getData.data.grDocs.isNotEmpty) {
+          GrDoc grDoc = getData.data.grDocs[0];
 
-        listItems1.add(
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Co Borrower Docs",
-              style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+          listItems1.add(
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Co Borrower Docs",
+                style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+              ),
             ),
-          ),
-        );
+          );
 
-        if (grDoc.addharExists == true) {
-          listItems1.add(_buildListItem(
-            title: "Aadhar Front",
-            path: grDoc.aadharPath,
-            id: 7,
-            GrNo: '1',
-            onImagePicked: (File file) {
-              setState(() {
-                adhaarFront_coborrower = file;
-              });
-            },
-            subType: 'guarantor',
-          ));
-          listItems1.add(_buildListItem(
-            title: "Aadhar Back",
-            path: grDoc.aadharBPath,
-            id: 29,
-            GrNo: '1',
-            onImagePicked: (File file) {
-              setState(() {
-                adhaarBack_coborrower = file;
-              });
-            },
-            subType: 'guarantor',
-          ));
-        }
+          if (grDoc.addharExists == true) {
+            listItems1.add(_buildListItem(
+              title: "Aadhar Front",
+              path: grDoc.aadharPath,
+              id: 7,
+              GrNo: '1',
+              onImagePicked: (File file) {
+                setState(() {
+                  adhaarFront_coborrower = file;
+                });
+              },
+              subType: 'guarantor',
+            ));
+            listItems1.add(_buildListItem(
+              title: "Aadhar Back",
+              path: grDoc.aadharBPath,
+              id: 29,
+              GrNo: '1',
+              onImagePicked: (File file) {
+                setState(() {
+                  adhaarBack_coborrower = file;
+                });
+              },
+              subType: 'guarantor',
+            ));
+          }
 
-        if (grDoc.voterExists == true) {
-          listItems1.add(_buildListItem(
-            title: "Voter Front",
-            path: grDoc.voterPath,
-            id: 5,
-            GrNo: '1',
-            onImagePicked: (File file) {
-              setState(() {
-                voterFront_coborrower = file;
-              });
-            },
-            subType: 'guarantor',
-          ));
-          listItems1.add(_buildListItem(
-            title: "Voter Back",
-            path: grDoc.voterBPath,
-            id: 28,
-            GrNo: '1',
-            onImagePicked: (File file) {
-              setState(() {
-                voterFront_coborrower = file;
-              });
-            },
-            subType: 'guarantor',
-          ));
-        }
+          if (grDoc.voterExists == true) {
+            listItems1.add(_buildListItem(
+              title: "Voter Front",
+              path: grDoc.voterPath,
+              id: 5,
+              GrNo: '1',
+              onImagePicked: (File file) {
+                setState(() {
+                  voterFront_coborrower = file;
+                });
+              },
+              subType: 'guarantor',
+            ));
+            listItems1.add(_buildListItem(
+              title: "Voter Back",
+              path: grDoc.voterBPath,
+              id: 28,
+              GrNo: '1',
+              onImagePicked: (File file) {
+                setState(() {
+                  voterFront_coborrower = file;
+                });
+              },
+              subType: 'guarantor',
+            ));
+          }
 
-        if (grDoc.panExists == true) {
-          listItems1.add(_buildListItem(
-            title: "Pan Front",
-            path: grDoc.panPath,
-            id: 8,
-            GrNo: '1',
-            onImagePicked: (File file) {
-              setState(() {
-                panFront_coborrower = file;
-              });
-            },
-            subType: 'guarantor',
-          ));
-        }
+          if (grDoc.panExists == true) {
+            listItems1.add(_buildListItem(
+              title: "Pan Front",
+              path: grDoc.panPath,
+              id: 8,
+              GrNo: '1',
+              onImagePicked: (File file) {
+                setState(() {
+                  panFront_coborrower = file;
+                });
+              },
+              subType: 'guarantor',
+            ));
+          }
 
-        if (grDoc.drivingExists == true) {
-          listItems1.add(_buildListItem(
-            title: "DL Front",
-            path: grDoc.drivingPath,
-            id: 16,
-            GrNo: '1',
-            onImagePicked: (File file) {
-              setState(() {
-                dlFront_coborrower = file;
-              });
-            },
-            subType: 'guarantor',
-          ));
+          if (grDoc.drivingExists == true) {
+            listItems1.add(_buildListItem(
+              title: "DL Front",
+              path: grDoc.drivingPath,
+              id: 16,
+              GrNo: '1',
+              onImagePicked: (File file) {
+                setState(() {
+                  dlFront_coborrower = file;
+                });
+              },
+              subType: 'guarantor',
+            ));
+          }
+        }else{
+          listItems1.add(
+            Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFFD42D3F),
+              ),
+            ),
+          );
         }
       }
     } else {
