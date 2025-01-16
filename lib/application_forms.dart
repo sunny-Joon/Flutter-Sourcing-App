@@ -26,6 +26,8 @@ import 'Models/place_codes_model.dart';
 import 'Models/range_category_model.dart';
 import 'api_service.dart';
 import 'global_class.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class ApplicationPage extends StatefulWidget {
   final BranchDataModel BranchData;
@@ -398,6 +400,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     getAllDataApi(context);
+    print("getAllDataApi(context):> $getAllDataApi(context)");
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
 
     initializeData(); // Fetch initial data
@@ -714,7 +717,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Are you sure?',
+            AppLocalizations.of(context)!.areyousure,
               style: TextStyle(
                   color: Color(0xFFD42D3F),
                   fontWeight: FontWeight.bold,
@@ -722,7 +725,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
             SizedBox(height: 10),
             Text(
-              'Do you want to close Application form?',
+              AppLocalizations.of(context)!.douwanyapplication,
               style: TextStyle(color: Colors.black),
             ),
             SizedBox(height: 20),
@@ -730,14 +733,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildShinyButton(
-                  'No',
+                  AppLocalizations.of(context)!.no,
                       () {
                     EasyLoading.dismiss();
                     Navigator.of(context).pop(true);
                   },
                 ),
                 _buildShinyButton(
-                  'Yes',
+                  AppLocalizations.of(context)!.yes,
                       () {
                     EasyLoading.dismiss();
                    Navigator.of(context).pop();
@@ -855,7 +858,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       children: [
         // _buildTextField('Email ID', emailIdController, fixtraEditable),
         Text(
-          "Email Id",
+          AppLocalizations.of(context)!.email,
           style: TextStyle(
             fontFamily: "Poppins-Regular",
             fontSize: 13,
@@ -879,7 +882,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             )),
         SizedBox(height: 10),
 
-        _buildTextField('Place of Birth', placeOfBirthController,
+        _buildTextField( AppLocalizations.of(context)!.placeofbirth, placeOfBirthController,
             personalInfoEditable, _placeOfBirthFocus,addReg),
         SizedBox(height: 10),
 
@@ -891,7 +894,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Dependent Persons',
+                  AppLocalizations.of(context)!.dependentpersons,
                   style: TextStyle(
                     fontFamily: "Poppins-Regular",
                     fontSize: 13, // Consistent font size
@@ -1007,7 +1010,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   // Align children to the start of the column
                   children: [
                     Text(
-                      'Religion',
+                      AppLocalizations.of(context)!.religion,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                       textAlign: TextAlign.left,
@@ -1067,7 +1070,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   // Align children to the start of the column
                   children: [
                     Text(
-                      'Cast',
+                      AppLocalizations.of(context)!.cast,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                       textAlign: TextAlign.left,
@@ -1124,7 +1127,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         SizedBox(height: 10),
 
         Text(
-          "Mobile No.",
+          AppLocalizations.of(context)!.mobile,
           style: TextStyle(
             fontFamily: "Poppins-Regular",
             fontSize: 13,
@@ -1166,7 +1169,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   // Align children to the start of the column
                   children: [
                     Text(
-                      'Is Handicap',
+                      AppLocalizations.of(context)!.ishandicap,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                       textAlign: TextAlign.left, // Align text to the left
@@ -1231,7 +1234,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   // Align children to the start of the column
                   children: [
                     Text(
-                      'Special Ability',
+                      AppLocalizations.of(context)!.specialability,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                       textAlign: TextAlign.left, // Align text to the left
@@ -1289,7 +1292,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Special Social Category',
+              AppLocalizations.of(context)!.specialsocialability,
               style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
             ),
             SizedBox(height: 1),
@@ -1345,7 +1348,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           child: Center(
             // Center widget to center the text inside the container
             child: Text(
-              'PERMANENT',
+              AppLocalizations.of(context)!.permanent,
               style: TextStyle(
                 fontFamily: "Poppins-Regular",
                 color: Colors.white,
@@ -1356,19 +1359,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
         SizedBox(height: 10),
 
-        _buildTextField('Address1', address1ControllerP, personalInfoEditable,
+        _buildTextField(AppLocalizations.of(context)!.address1,
+            address1ControllerP, personalInfoEditable,
             _address1FocusP,addReg),
         SizedBox(height: 10),
 
-        _buildTextField('Address2', address2ControllerP, personalInfoEditable,
+        _buildTextField(AppLocalizations.of(context)!.address2, address2ControllerP, personalInfoEditable,
             _address2FocusP,addReg),
         SizedBox(height: 10),
 
-        _buildTextField('Address3', address3ControllerP, personalInfoEditable,
+        _buildTextField(AppLocalizations.of(context)!.address3, address3ControllerP, personalInfoEditable,
             _address3FocusP,addReg),
         SizedBox(height: 10),
         _buildLabeledDropdownField(
-          'Select State',
+          AppLocalizations.of(context)!.sstate,
           'State',
           states,
           selectedStateextraP,
@@ -1438,7 +1442,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             // City TextField
             Flexible(
               child: _buildTextField(
-                  'City', cityControllerP, personalInfoEditable, _cityFocusP,cityReg),
+                  AppLocalizations.of(context)!.city, cityControllerP, personalInfoEditable, _cityFocusP,cityReg),
             ),
             SizedBox(width: 10),
             // Add some space between the City TextField and Pin Code Text
@@ -1448,7 +1452,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Pin Code",
+                    AppLocalizations.of(context)!.pincode,
                     style: TextStyle(
                       fontFamily: "Poppins-Regular",
                       fontSize: 13,
@@ -1493,7 +1497,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           child: Center(
             // Center widget to center the text inside the container
             child: Text(
-              'CURRENT',
+              AppLocalizations.of(context)!.currunt,
               style: TextStyle(
                 fontFamily: "Poppins-Regular",
                 color: Colors.white,
@@ -1510,7 +1514,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               onChanged: personalInfoEditable?_onCheckboxChanged:null,
             ),
             Text(
-              'Same as Permanent Address',
+              AppLocalizations.of(context)!.sameaspermanent,
               style: TextStyle(
                 fontFamily: "Poppins-Regular",
                 fontSize: 10.0,
@@ -1519,20 +1523,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
-        _buildTextField('Address1', address1ControllerC, personalInfoEditable,
+        _buildTextField(AppLocalizations.of(context)!.address1, address1ControllerC, personalInfoEditable,
             _address1FocusC,addReg),
         SizedBox(height: 10),
 
-        _buildTextField('Address2', address2ControllerC, personalInfoEditable,
+        _buildTextField(AppLocalizations.of(context)!.address2, address2ControllerC, personalInfoEditable,
             _address2FocusC,addReg),
         SizedBox(height: 10),
 
-        _buildTextField('Address3', address3ControllerC, personalInfoEditable,
+        _buildTextField(AppLocalizations.of(context)!.address3, address3ControllerC, personalInfoEditable,
             _address3FocusC,addReg),
         SizedBox(height: 10),
 
         _buildLabeledDropdownField(
-          'Select State',
+          AppLocalizations.of(context)!.sstate,
           'State',
           states,
           selectedStateextraC,
@@ -1552,7 +1556,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             // City TextField
             Flexible(
               child: _buildTextField(
-                  'City', cityControllerC, personalInfoEditable, _cityFocusC,cityReg),
+                  AppLocalizations.of(context)!.city, cityControllerC, personalInfoEditable, _cityFocusC,cityReg),
             ),
             SizedBox(width: 10),
             // Add some space between the City TextField and Pin Code Text
@@ -1562,7 +1566,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Pin Code",
+                    AppLocalizations.of(context)!.pincode,
                     style: TextStyle(
                       fontFamily: "Poppins-Regular",
                       fontSize: 13,
@@ -1650,7 +1654,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       // Align children to the start of the column
                       children: [
                         Text(
-                          'Is House Rental',
+                          AppLocalizations.of(context)!.ishouserent,
                           style: TextStyle(
                               fontFamily: "Poppins-Regular", fontSize: 13),
                           textAlign: TextAlign.left, // Align text to the left
@@ -1703,7 +1707,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Residing for (Years)',
+                    AppLocalizations.of(context)!.residingyear,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
@@ -1756,7 +1760,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Property (In Acres)',
+                    AppLocalizations.of(context)!.property,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
@@ -1809,7 +1813,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'House Owner',
+                      AppLocalizations.of(context)!.houseowner,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -1870,19 +1874,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTextField(
-            'Mother name', _motherFController, FiFamilyEditable, _motherFFocus,nameReg),
+            AppLocalizations.of(context)!.mothername, _motherFController, FiFamilyEditable, _motherFFocus,nameReg),
         SizedBox(
           height: 10,
         ),
         Row(
           children: [
             Flexible(
-                child: _buildTextField('Middle Name', _motherMController,
+                child: _buildTextField(AppLocalizations.of(context)!.mname, _motherMController,
                     FiFamilyEditable, _motherMFocus,nameReg)),
             SizedBox(width: 13),
             // Add spacing between the text fields if needed
             Flexible(
-                child: _buildTextField('Last Name', _motherLController,
+                child: _buildTextField(AppLocalizations.of(context)!.lname, _motherLController,
                     FiFamilyEditable, _motherLFocus,nameReg)),
           ],
         ),
@@ -1890,7 +1894,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           height: 10,
         ),
         Text(
-          'No. of Children',
+          AppLocalizations.of(context)!.noofchildren,
           style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
         ),
         SizedBox(
@@ -1939,7 +1943,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           height: 10,
         ),
         Text(
-          'School Going Children',
+          AppLocalizations.of(context)!.schoolgoingchildren,
           style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
         ),
         SizedBox(
@@ -1988,7 +1992,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           height: 10,
         ),
         Text(
-          'Other Dependents',
+          AppLocalizations.of(context)!.otherdependentis,
           style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
         ),
         Container(
@@ -2050,7 +2054,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Occupation',
+                    AppLocalizations.of(context)!.occupation,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
@@ -2103,7 +2107,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Business Detail',
+                    AppLocalizations.of(context)!.businessdetail,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
@@ -2158,7 +2162,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             Flexible(
               child: _buildTextField2(
-                  'Current EMI',
+                  AppLocalizations.of(context)!.currentemi,
                   _currentEMIController,
                   TextInputType.number,
                   FiIncomeEditable,
@@ -2171,7 +2175,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Home Type',
+                    AppLocalizations.of(context)!.hometype,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2227,7 +2231,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Roof Type',
+                    AppLocalizations.of(context)!.rooftype,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2277,7 +2281,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Toilet Type',
+                    AppLocalizations.of(context)!.toilettype,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2333,7 +2337,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Leave With Spouse',
+                    AppLocalizations.of(context)!.leavewithspouse,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2382,7 +2386,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Earning Member',
+                    AppLocalizations.of(context)!.earningmember,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2431,7 +2435,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           height: 10,
         ),
         Text(
-          'Business Experience',
+          AppLocalizations.of(context)!.businessexperience,
           style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
           textAlign: TextAlign.left,
         ),
@@ -2481,7 +2485,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           child: Center(
             // Center widget to center the text inside the container
             child: Text(
-              'INCOMES',
+              AppLocalizations.of(context)!.income,
               style: TextStyle(
                 fontFamily: "Poppins-Regular",
                 color: Colors.white,
@@ -2496,7 +2500,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Future Income',
+                      AppLocalizations.of(context)!.futureincome,
                       _future_IncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2505,7 +2509,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 ),
                 Flexible(
                   child: _buildTextField2(
-                      'Agriculture Income',
+                      AppLocalizations.of(context)!.agricultureincome,
                       _agriculture_incomeController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2518,7 +2522,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Rental Income',
+                      AppLocalizations.of(context)!.rentalincome,
                       _any_RentalIncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2527,7 +2531,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 ),
                 Flexible(
                   child: _buildTextField2(
-                      'Annual Income',
+                      AppLocalizations.of(context)!.annualincome,
                       _annuaL_INCOMEController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2540,7 +2544,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Other Income',
+                      AppLocalizations.of(context)!.otherincome,
                       _other_IncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2549,7 +2553,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 ),
                 Flexible(
                   child: _buildTextField2(
-                      'Pension Income',
+                      AppLocalizations.of(context)!.pensionincome,
                       _pensionIncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2562,7 +2566,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Other than Agricultural Income',
+                      AppLocalizations.of(context)!.otherthanagriculturalincome,
                       _otheR_THAN_AGRICULTURAL_INCOMEController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2583,7 +2587,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           child: Center(
             // Center widget to center the text inside the container
             child: Text(
-              'EXPENSES ON',
+              AppLocalizations.of(context)!.expenseson,
               style: TextStyle(
                 fontFamily: "Poppins-Regular",
                 color: Colors.white,
@@ -2597,11 +2601,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
             Row(
               children: [
                 Flexible(
-                  child: _buildTextField2('Rent', _rentController,
+                  child: _buildTextField2(AppLocalizations.of(context)!.rent, _rentController,
                       TextInputType.number, FiIncomeEditable, _rentFocus, 6,amountReg),
                 ),
                 Flexible(
-                  child: _buildTextField2('Food', _foodingController,
+                  child: _buildTextField2(AppLocalizations.of(context)!.food, _foodingController,
                       TextInputType.number, FiIncomeEditable, _foodingFocus, 6,amountReg),
                 ),
               ],
@@ -2610,7 +2614,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Education',
+                      AppLocalizations.of(context)!.eductation,
                       _educationController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2618,7 +2622,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       6,addReg),
                 ),
                 Flexible(
-                  child: _buildTextField2('Health', _healthController,
+                  child: _buildTextField2(AppLocalizations.of(context)!.health, _healthController,
                       TextInputType.number, FiIncomeEditable, _healthFocus, 6,amountReg),
                 ),
               ],
@@ -2627,7 +2631,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Travelling',
+                      AppLocalizations.of(context)!.travelling,
                       _travellingController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2636,7 +2640,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 ),
                 Flexible(
                   child: _buildTextField2(
-                      'Entertainment',
+                      AppLocalizations.of(context)!.entertainment,
                       _entertainmentController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2649,7 +2653,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Children',
+                      AppLocalizations.of(context)!.children,
                       _spendOnChildrenController,
                       TextInputType.number,
                       FiIncomeEditable,
@@ -2657,7 +2661,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       6,amountReg),
                 ),
                 Flexible(
-                  child: _buildTextField2('Others', _othersController,
+                  child: _buildTextField2(AppLocalizations.of(context)!.other, _othersController,
                       TextInputType.number, FiIncomeEditable, _othersFocus, 6,amountReg),
                 ),
               ],
@@ -2674,7 +2678,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Bank Type',
+            AppLocalizations.of(context)!.banktype,
             style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
             textAlign: TextAlign.left,
           ),
@@ -2732,7 +2736,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   _buildTextField('IFSC', _bank_IFCSController,
                       FinancialInfoEditable, _bank_IFCSFocus,'[a-zA-Z0-9]'),
                   _buildTextField2(
-                      'BANK ACCOUNT',
+                      AppLocalizations.of(context)!.bankacc,
                       _bank_AcController,
                       TextInputType.number,
                       FinancialInfoEditable,
@@ -2768,7 +2772,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             }
                           : null,
                       child: Text(
-                         'Verify Details',
+                        AppLocalizations.of(context)!.verifydetails,
                         style: TextStyle(
                             fontFamily: "Poppins-Regular",
                             fontSize: 18), // Text size
@@ -2786,7 +2790,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: 'BORROWER NAME:',
+                        text: AppLocalizations.of(context)!.borrowername,
                         style: TextStyle(
                             fontFamily: "Poppins-Regular",
                             color: Colors.black,
@@ -2810,7 +2814,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: 'BANK ADDRESS:',
+                        text: AppLocalizations.of(context)!.bankaddress,
                         style: TextStyle(
                             fontFamily: "Poppins-Regular",
                             color: Colors.black,
@@ -2832,7 +2836,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           SizedBox(height: 10),
 
           Text(
-            'BANK OPENING DATE',
+            AppLocalizations.of(context)!.bankopeningdate,
             style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
           ),
           SizedBox(height: 10), // Adds space between the fields
@@ -2864,20 +2868,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTextField(
-              'Name', _femNameController, femMemIncomeEditable, _femNameFocus,nameReg),
+              AppLocalizations.of(context)!.name, _femNameController, femMemIncomeEditable, _femNameFocus,nameReg),
           SizedBox(
             height: 10,
           ),
           Row(
             children: [
               Flexible(
-                child: _buildTextField2('Age', _AgeController,
+                child: _buildTextField2(AppLocalizations.of(context)!.age, _AgeController,
                     TextInputType.number, femMemIncomeEditable, _AgeFocus, 2,amountReg),
               ),
               SizedBox(width: 10), // Adds space between the fields
               Flexible(
                 child: _buildTextField2(
-                    'Income',
+                    AppLocalizations.of(context)!.income,
                     _IncomeController,
                     TextInputType.number,
                     femMemIncomeEditable,
@@ -2896,7 +2900,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Gender',
+                      AppLocalizations.of(context)!.gender,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -2947,7 +2951,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 child: Column(
                   children: [
                     Text(
-                      'Relation',
+                      AppLocalizations.of(context)!.relation,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3005,7 +3009,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Health',
+                      AppLocalizations.of(context)!.health,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3057,7 +3061,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Education',
+                      AppLocalizations.of(context)!.eductation,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3115,7 +3119,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'SchoolType',
+                      AppLocalizations.of(context)!.schooltype,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3167,7 +3171,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Business',
+                      AppLocalizations.of(context)!.business,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3225,7 +3229,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Business Type',
+                      AppLocalizations.of(context)!.businesstype,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3277,7 +3281,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'IncomeType',
+                      AppLocalizations.of(context)!.incometype,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3339,7 +3343,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Flexible(
                   child: _buildTextField2(
-                      'Aadhaar Id',
+                      AppLocalizations.of(context)!.adhar,
                       _aadharIdController,
                       TextInputType.number,
                       GuarantorEditable,
@@ -3371,7 +3375,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Title',
+                      AppLocalizations.of(context)!.title,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3418,7 +3422,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               // Add spacing between Title dropdown and Name field if needed
               Flexible(
                 child: _buildTextField(
-                    'Name', _fnameController, GuarantorEditable, _fnameFocus,nameReg),
+                    AppLocalizations.of(context)!.name, _fnameController, GuarantorEditable, _fnameFocus,nameReg),
               ),
             ],
           ),
@@ -3426,7 +3430,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Flexible(
                   child: _buildTextField(
-                'Middle Name',
+                      AppLocalizations.of(context)!.mname,
                 _mnameController,
                 GuarantorEditable,
                 _mnameFocus,nameReg
@@ -3434,11 +3438,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               SizedBox(width: 13),
               // Add spacing between the text fields if needed
               Flexible(
-                  child: _buildTextField('Last Name', _lnameController,
+                  child: _buildTextField(AppLocalizations.of(context)!.lname, _lnameController,
                       GuarantorEditable, _lnameFocus,nameReg)),
             ],
           ),
-          _buildTextField2('Guardian Name', _guardianController,
+          _buildTextField2(AppLocalizations.of(context)!.gurname, _guardianController,
               TextInputType.name, GuarantorEditable, _guardianFocus, 20,nameReg),
           Row(
             children: [
@@ -3448,7 +3452,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Gender',
+                      AppLocalizations.of(context)!.gender,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3504,7 +3508,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Relationship',
+              AppLocalizations.of(context)!.relationship,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3556,7 +3560,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ],
           ),
           Text(
-            'Religion',
+          AppLocalizations.of(context)!.religion,
             style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
           ),
           Container(
@@ -3602,7 +3606,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               }).toList(),
             ),
           ),
-          _buildTextField2('Mobile no', _phoneController, TextInputType.number,
+          _buildTextField2(AppLocalizations.of(context)!.mobile, _phoneController, TextInputType.number,
               GuarantorEditable, _phoneFocus, 10,amountReg),
           Row(
             children: [
@@ -3613,7 +3617,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Age',
+    AppLocalizations.of(context)!.age,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3637,7 +3641,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Date of Birth',
+                      AppLocalizations.of(context)!.dob,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3683,7 +3687,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'PAN No',
+                                AppLocalizations.of(context)!.panno,
                                 style: TextStyle(
                                   fontFamily: "Poppins-Regular",
                                   fontSize: 13,
@@ -3763,7 +3767,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   Row(
                     children: [
                       Flexible(
-                        child: _buildTextField('Driving License', _dlController,
+                        child: _buildTextField(AppLocalizations.of(context)!.dl, _dlController,
                             GuarantorEditable, _dlFocus,nameReg),
                       ),
                       SizedBox(width: 10),
@@ -3812,7 +3816,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               fontSize: 14)),
                   SizedBox(height: 4),
                   Text(
-                    'OR',
+                    AppLocalizations.of(context)!.or,
                     style: TextStyle(
                       fontFamily: "Poppins-Regular",
                       fontSize: 13,
@@ -3823,7 +3827,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   Row(
                     children: [
                       Flexible(
-                        child: _buildTextField('Voter Id', _voterController,
+                        child: _buildTextField(AppLocalizations.of(context)!.voter, _voterController,
                             GuarantorEditable, _voterFocus,idsReg),
                       ),
                       SizedBox(width: 10),
@@ -3874,13 +3878,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
             )),
           ),
           SizedBox(height: 10),
-          _buildTextField('Address 1', _p_Address1Controller, GuarantorEditable,
+          _buildTextField(AppLocalizations.of(context)!.address1, _p_Address1Controller, GuarantorEditable,
               _p_Address1Focus,addReg),
           SizedBox(height: 10),
-          _buildTextField('Address 2', _p_Address2Controller, GuarantorEditable,
+          _buildTextField(AppLocalizations.of(context)!.address2, _p_Address2Controller, GuarantorEditable,
               _p_Address2Focus,addReg),
           SizedBox(height: 10),
-          _buildTextField('Address 3', _p_Address3Controller, GuarantorEditable,
+          _buildTextField(AppLocalizations.of(context)!.address3, _p_Address3Controller, GuarantorEditable,
               _p_Address3Focus,addReg),
           SizedBox(height: 10),
           /*Text(
@@ -3926,7 +3930,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ),*/
           _buildLabeledDropdownField(
-              'Select State', 'State', states, stateselected,
+              AppLocalizations.of(context)!.sstate, 'State', states, stateselected,
               true,
               (RangeCategoryDataModel? newValue) {
             setState(() {
@@ -3942,7 +3946,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               SizedBox(width: 10),
               Flexible(
                   child: _buildTextField2(
-                      'Pincode',
+                      AppLocalizations.of(context)!.pincode,
                       _pincodeController,
                       TextInputType.number,
                       GuarantorEditable,
@@ -3952,7 +3956,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
 
           grPicFlag?Image.network(_imageFile1):( _imageFile == null
-    ? Text('No image selected.')
+    ? Text(AppLocalizations.of(context)!.noimageselected)
         :Image.file(_imageFile!)),
 
 
@@ -3971,7 +3975,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 Icon(Icons.camera_alt),
                 SizedBox(width: 8),
                 // Optional: Adds space between the icon and text
-                Text('Click Guarantor Pic'),
+                Text(AppLocalizations.of(context)!.clickguarantorpic,),
               ],
             ),
           ),
@@ -4044,45 +4048,45 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {});
           } else if (_currentStep == 1) {
             setState(() {
-              pageTitle = "Personal Info";
+              pageTitle = AppLocalizations.of(context)!.personalinfo;
               _currentStep -= 1;
             });
           } else if (_currentStep == 2) {
             setState(() {
-              pageTitle = "Family Details";
+              pageTitle = AppLocalizations.of(context)!.familydetails;
               _currentStep -= 1;
             });
           } else if (_currentStep == 3) {
             setState(() {
-              pageTitle = "Income & Expense";
+              pageTitle = AppLocalizations.of(context)!.incomeexpense;
               _currentStep -= 1;
             });
           } else if (_currentStep == 4) {
             setState(() {
-              pageTitle = "Financial Info.";
+              pageTitle = AppLocalizations.of(context)!.financialinfo;
               _currentStep -= 1;
             });
           } else if (_currentStep == 5) {
             setState(() {
               _currentStep -= 1;
-              pageTitle = "Family Income";
+              pageTitle = AppLocalizations.of(context)!.familyincome;
             });
           } else if (_currentStep == 6) {
             setState(() {
-              pageTitle = "Guarantor Form";
+              pageTitle = AppLocalizations.of(context)!.guarantorform;
               _currentStep -= 1;
             });
           } else if (_currentStep == 7) {
             setState(() {
               editButtonFunctionOn=false;
-              pageTitle = "Upload Docs";
+              pageTitle = AppLocalizations.of(context)!.uploaddocs;
               _currentStep -= 1;
             });
           }
         },
 
         child: Text(
-          "PREVIOUS",
+            AppLocalizations.of(context)!.previous,
           style: TextStyle(
               fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 13),
         ),
@@ -4134,7 +4138,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           }
         },
         child: Text(
-           "EDIT",
+          AppLocalizations.of(context)!.edit,
           style: TextStyle(
               fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 13),
         ),
@@ -4166,7 +4170,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Family Details";
+                pageTitle = AppLocalizations.of(context)!.familydetails;
               });
             }
           } else if (_currentStep == 1) {
@@ -4177,7 +4181,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Income & Expense";
+                pageTitle = AppLocalizations.of(context)!.incomeexpense;
               });
             }
           } else if (_currentStep == 2) {
@@ -4188,7 +4192,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Financial Info.";
+                pageTitle = AppLocalizations.of(context)!.financialinfo;
               });
             }
           } else if (_currentStep == 3) {
@@ -4199,7 +4203,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Family Income";
+                pageTitle = AppLocalizations.of(context)!.familyincome;
               });
             }
           } else if (_currentStep == 4) {
@@ -4210,7 +4214,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Guarantor Form";
+                pageTitle = AppLocalizations.of(context)!.guarantorform;
               });
             }
           } else if (_currentStep == 5) {
@@ -4221,7 +4225,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Upload Docs";
+                pageTitle =AppLocalizations.of(context)!.uploaddocs;
                 editButtonFunctionOn=false;
               });
             }
@@ -4231,7 +4235,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Upload Gr Docs";
+                pageTitle =AppLocalizations.of(context)!.uploadgrdocs;
                 editButtonFunctionOn=false;
               });
             }
@@ -4240,7 +4244,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           }
         },
         child: Text(
-          _currentStep == 7 ? "SUBMIT" : "NEXT",
+          _currentStep == 7 ? AppLocalizations.of(context)!.submit : AppLocalizations.of(context)!.next,
           style: TextStyle(
               fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 13),
         ),
@@ -4575,7 +4579,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "Borrower Docs",
+              AppLocalizations.of(context)!.borrowerdocs,
               style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
             ),
           ),
@@ -4583,7 +4587,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (doc.addharExists == true) {
           listItems.add(_buildListItem(
-            title: "Aadhar Front",
+            title: AppLocalizations.of(context)!.aadharfront,
             path: doc.aadharPath,
             id: 1,
             GrNo: "0",
@@ -4594,7 +4598,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             }, subType: 'borrower',
           ));
           listItems.add(_buildListItem(
-            title: "Aadhar Back",
+            title: AppLocalizations.of(context)!.aadharback,
             path: doc.aadharBPath,
             id: 27,
             GrNo: '0',
@@ -4608,7 +4612,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (doc.voterExists == true) {
           listItems.add(_buildListItem(
-            title: "Voter Front",
+            title: AppLocalizations.of(context)!.voterfront,
             path: doc.voterPath,
             id: 3,
             GrNo: '0',
@@ -4619,7 +4623,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             },subType: 'borrower',
           ));
           listItems.add(_buildListItem(
-            title: "Voter Back",
+            title: AppLocalizations.of(context)!.voterback,
             path: doc.voterBPath,
             id: 26,
             GrNo: '0',
@@ -4633,7 +4637,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (doc.panExists == true) {
           listItems.add(_buildListItem(
-            title: "Pan Front",
+            title: AppLocalizations.of(context)!.panfront,
             path: doc.panPath,
             id: 4,
             GrNo: '0',
@@ -4647,7 +4651,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (doc.drivingExists == true) {
           listItems.add(_buildListItem(
-            title: "DL Front",
+            title: AppLocalizations.of(context)!.dlfront,
             path: doc.drivingPath,
             id: 15,
             GrNo: '0',
@@ -4661,7 +4665,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (doc.passportExists == true) {
           listItems.add(_buildListItem(
-            title: "Passport",
+            title: AppLocalizations.of(context)!.passport,
             path: doc.passportPath,
             id: 30,
             GrNo: '0',
@@ -4674,7 +4678,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         }
 
         listItems.add(_buildListItem(
-          title: "Passbook Front",
+          title: AppLocalizations.of(context)!.passbookfront,
           path: doc.passBookPath,
           id: 2,
           GrNo: '0',
@@ -4699,7 +4703,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "Co Borrower Docs",
+              AppLocalizations.of(context)!.uploadgrdocs,
               style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
             ),
           ),
@@ -4707,7 +4711,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (grDoc.addharExists == true) {
           listItems1.add(_buildListItem(
-            title: "Aadhar Front",
+            title: AppLocalizations.of(context)!.aadharfront,
             path: grDoc.aadharPath,
             id: 7,
             GrNo: '1',
@@ -4718,7 +4722,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             },subType: 'guarantor',
           ));
           listItems1.add(_buildListItem(
-            title: "Aadhar Back",
+            title: AppLocalizations.of(context)!.aadharback,
             path: grDoc.aadharBPath,
             id: 29,
             GrNo: '1',
@@ -4732,7 +4736,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (grDoc.voterExists == true) {
           listItems1.add(_buildListItem(
-            title: "Voter Front",
+            title: AppLocalizations.of(context)!.voterfront,
             path: grDoc.voterPath,
             id: 5,
             GrNo: '1',
@@ -4743,7 +4747,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             },subType: 'guarantor',
           ));
           listItems1.add(_buildListItem(
-            title: "Voter Back",
+            title: AppLocalizations.of(context)!.voterback,
             path: grDoc.voterBPath,
             id: 28,
             GrNo: '1',
@@ -4757,7 +4761,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (grDoc.panExists == true) {
           listItems1.add(_buildListItem(
-            title: "Pan Front",
+            title: AppLocalizations.of(context)!.panfront,
             path: grDoc.panPath,
             id: 8,
             GrNo: '1',
@@ -4771,7 +4775,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (grDoc.drivingExists == true) {
           listItems1.add(_buildListItem(
-            title: "DL Front",
+            title: AppLocalizations.of(context)!.dlfront,
             path: grDoc.drivingPath,
             id: 16,
             GrNo: '1',
@@ -5162,7 +5166,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       getDataFromOCR("adharFront", context);
                     },
                     child: Text(
-                      'Adhaar Front',
+                        AppLocalizations.of(context)!.aadharfront,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", color: Colors.white),
                     ),
@@ -5184,7 +5188,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       getDataFromOCR("adharBack", context);
                     },
                     child: Text(
-                      'Adhaar Back',
+                        AppLocalizations.of(context)!.aadharback,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", color: Colors.white),
                     ),
@@ -5216,7 +5220,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       Navigator.of(context).pop();
                     },
                     child: Text(
-                      'Adhaar QR',
+                        AppLocalizations.of(context)!.adharqr,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", color: Colors.white),
                     ),
@@ -5693,7 +5697,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> AddFiExtraDetail(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     int A = selectedIsHandicap == 'Yes' ? 1 : 0;
@@ -5740,7 +5744,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
-          pageTitle = "Family Details";
+          pageTitle = AppLocalizations.of(context)!.familydetails;
           personalInfoEditable = false;
         });
         EasyLoading.dismiss();
@@ -5759,7 +5763,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> AddFiFamilyDetail(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     String Fi_ID = FIID.toString();
@@ -5790,7 +5794,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
-          pageTitle = "Income & Expense";
+          pageTitle = AppLocalizations.of(context)!.incomeexpense;
           FiFamilyEditable = false;
         });
         EasyLoading.dismiss();
@@ -5802,7 +5806,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> AddFinancialInfo(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     String Fi_ID = FIID.toString();
@@ -5832,7 +5836,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         if (value.statuscode == 200) {
           setState(() {
             _currentStep += 1;
-            pageTitle = "Family Income";
+            pageTitle = AppLocalizations.of(context)!.familydetails;
             FinancialInfoEditable = false;
           });
           EasyLoading.dismiss();
@@ -5849,7 +5853,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> FiFemMemIncome(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     String Fi_ID = FIID.toString();
@@ -5888,7 +5892,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
-          pageTitle = "Guarantor Form";
+          pageTitle = AppLocalizations.of(context)!.guarantorform;
           femMemIncomeEditable = false;
         });
         EasyLoading.dismiss();
@@ -5904,7 +5908,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> AddFiIncomeAndExpense(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     String fi_ID = FIID.toString();
@@ -5977,7 +5981,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
-          pageTitle = "Financial Info.";
+          pageTitle = AppLocalizations.of(context)!.financialinfo;
           FiIncomeEditable = false;
         });
         EasyLoading.dismiss();
@@ -5993,7 +5997,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> GetDocs(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     final api = Provider.of<ApiService>(context, listen: false);
@@ -6080,7 +6084,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       String ifsc, String dob)
   async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
     try {
       Map<String, dynamic> requestBody = {
@@ -6174,7 +6178,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
 
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     Map<String, dynamic> requestBody = {
@@ -6276,7 +6280,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void dlVerifyByProtean(String userid, String dlNo, String dob) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
     try {
       // Initialize Dio
@@ -6291,7 +6295,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       final response =
           await apiService_protean.getDLDetailsProtean(requestBody);
       EasyLoading.show(
-        status: 'Loading...',
+        status: AppLocalizations.of(context)!.loading,
       );
       // Handle response
       if (response is Map<String, dynamic>) {
@@ -6320,7 +6324,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void voterVerifyByProtean(String userid, String voterNo) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
     try {
       // Initialize Dio
@@ -6354,13 +6358,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
       docVerifyIDC("voterid", _voterController.text, "", "");
     }
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
   }
 
   Future<void> ifscVerify(BuildContext context, String ifsc) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl3);
@@ -6731,7 +6735,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> saveGuarantorMethod(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     print("object");
@@ -6797,7 +6801,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
-          pageTitle = "Docs Upload";
+          pageTitle = AppLocalizations.of(context)!.uploaddocs;
           GuarantorEditable = false;
           GetDocs(context);
         });
@@ -6872,14 +6876,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> getAllDataApi(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...');
+    EasyLoading.show(status: AppLocalizations.of(context)!.loading);
 
     final api = Provider.of<ApiService>(context, listen: false);
-
+    print("getAllDataApi1");
     return await api
         .dataByFIID(GlobalClass.token, GlobalClass.dbName, FIID)
         .then((value) async {
       if (value.statuscode == 200) {
+        print("getAllDataApi2");
         EasyLoading.dismiss();
         BorrowerInfo = value.data;
         Future.delayed(
@@ -7144,7 +7149,7 @@ setState(() {
   }
 
   Future<void> DeleteGur(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...');
+    EasyLoading.show(status: AppLocalizations.of(context)!.loading);
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
         .deleteGurrantor(GlobalClass.token, GlobalClass.dbName, FIID.toString())
@@ -7322,8 +7327,7 @@ setState(() {
     }
   }
 
-  void showIDCardDialog(
-      BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
+  void showIDCardDialog(BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
     final String name = [
       borrowerInfo.fName,
       borrowerInfo.mName,
@@ -7341,10 +7345,7 @@ setState(() {
         GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
     // Replace with your image URL
 
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevent closing dialog when tapping outside
-      builder: (BuildContext context) {
+    showDialog(context: context, barrierDismissible: false, builder: (BuildContext context) {
         return WillPopScope(
             onWillPop: () async =>
                 false, // Prevent closing dialog with back button
@@ -7354,7 +7355,7 @@ setState(() {
                 borderRadius: BorderRadius.circular(10),
               ),
               title: Center(
-                  child: Text('Borrower Details',
+                  child: Text(AppLocalizations.of(context)!.borrowerdetails,
                       style: TextStyle(
                         fontSize: 16,
                       ))),
@@ -7451,7 +7452,7 @@ setState(() {
                               ),
                               child: Center(
                                 child: Text(
-                                  'Verify',
+        AppLocalizations.of(context)!.verify,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 13,
@@ -7493,7 +7494,7 @@ setState(() {
                               ),
                               child: Center(
                                 child: Text(
-                                  'Reject',
+        AppLocalizations.of(context)!.reject,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 13,
