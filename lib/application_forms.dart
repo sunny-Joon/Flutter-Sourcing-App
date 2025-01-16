@@ -7301,7 +7301,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _bank_AcController.text = data.bankAc;
       _bank_IFCSController.text = data.bankIfcs;
       bankAddress = data.bankAddress;
-      _bankOpeningDateController.text = data.bankAcOpenDate.split("T")[0];
+
+      DateTime parsedDate = DateTime.parse(data.bankAcOpenDate);
+      String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
+      _bankOpeningDateController.text = formattedDate;
+    //  _bankOpeningDateController.text = data.bankAcOpenDate.split("T")[0];
     });
   }
 
@@ -7339,6 +7343,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       } else {
         selectedTitle = null; // Or set a default value
       }
+
 
       _p_Address1Controller.text = data.guarantors[0].grPAddress1;
       _p_Address2Controller.text = data.guarantors[0].grPAddress2;
