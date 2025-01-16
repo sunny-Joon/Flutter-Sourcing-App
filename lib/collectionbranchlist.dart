@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/collectionbranchlistmodel.dart';
@@ -30,40 +32,47 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
   Future<void> _fetchBranchList() async {
   //  EasyLoading.show(status: 'Loading...');
 
-    final apiService = Provider.of<ApiService>(context, listen: false);
     try {
-      await apiService.CollectionBranchList(
-          GlobalClass.token,
-          GlobalClass.dbName,
-          GlobalClass.imei,
-          GlobalClass.id
-      ).then((response) {
-        if (response.statuscode == 200) {
-          _allitems = response.data;
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        final apiService = Provider.of<ApiService>(context, listen: false);
+        try {
+          await apiService.CollectionBranchList(
+              GlobalClass.token,
+              GlobalClass.dbName,
+              GlobalClass.imei,
+              GlobalClass.id
+          ).then((response) {
+            if (response.statuscode == 200) {
+              _allitems = response.data;
 
-          final focodeSet = <String>{};
-          final uniqueItems = response.data.where((item) => focodeSet.add(item.focode)).toList();
+              final focodeSet = <String>{};
+              final uniqueItems = response.data.where((item) => focodeSet.add(item.focode)).toList();
 
-          setState(() {
-            _items = uniqueItems; // Store the unique response data
+              setState(() {
+                _items = uniqueItems; // Store the unique response data
+              });
+              _isLoading = false;
+
+              print('Branch List retrieved successfully');
+            } else {
+              GlobalClass.showUnsuccessfulAlert(
+                  context, "Not able to fetch Group List", 1);
+              setState(() {
+                _isLoading = false;
+              });
+            }
           });
-          _isLoading = false;
-
-          print('Branch List retrieved successfully');
-        } else {
-          GlobalClass.showUnsuccessfulAlert(
-              context, "Not able to fetch Group List", 1);
+        } catch (e) {
+          print('Error: $e');
+          GlobalClass.showErrorAlert(context, "Data not Fetched", 1);
           setState(() {
             _isLoading = false;
           });
         }
-      });
-    } catch (e) {
-      print('Error: $e');
-      GlobalClass.showErrorAlert(context, "Server Side Error", 1);
-      setState(() {
-        _isLoading = false;
-      });
+      }
+    } on SocketException catch (_) {
+      GlobalClass.showErrorAlert(context, "Network not Connected", 1);
     }
   }
 
