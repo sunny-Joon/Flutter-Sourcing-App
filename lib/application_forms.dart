@@ -4501,7 +4501,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   break;
                 case 26:
                   OSVVerified = await OcrDocsScanning('voterback',
-                      BorrowerInfo[0].voterId, "borrower", context);
+                      "1", "borrower", context);
                   if (OSVVerified) {
                     voterback = pickedImage;
                   }
@@ -6275,7 +6275,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             if (response["error"] == null) {
               panCardHolderName =
-                  "${responseData['first_name']} ${responseData['last_name']}";
+                  "${responseData['name']} ";
               panVerified = true;
             } else {
               panCardHolderName = "PAN no. is wrong please check";
@@ -6395,7 +6395,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               if (response["error"] == null) {
                 panCardHolderName =
-                    "${responseData['first_name']} ${responseData['last_name']}";
+                    "${responseData['name']} ";
                 panVerified = true;
               } else {
                 panCardHolderName = "PAN no. is wrong please check";
@@ -7121,7 +7121,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         if (!value.data[0].placeOfBirth.isEmpty) {
           setState(() {
             _currentStep = 1;
-            pageTitle = "Personal Info";
+            pageTitle = "Family Details";
           });
           personalInfo(value.data[0]);
         }
@@ -7129,7 +7129,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           familyDetails(value.data[0]);
           setState(() {
             _currentStep = 2;
-            pageTitle = "Family Details";
+            pageTitle = "Income & Expense";
           });
         }
 
@@ -7138,7 +7138,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           fiIncomeExpenses(value.data[0]);
           setState(() {
             _currentStep = 3;
-            pageTitle = "Income & Expense";
+            pageTitle = "Financial Info.";
           });
         }
 
@@ -7146,7 +7146,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           financialInfo(value.data[0]);
           setState(() {
             _currentStep = 4;
-            pageTitle = "Financial Info.";
+            pageTitle = "Family Income";
           });
         }
 
@@ -7170,7 +7170,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }).catchError((err) {
       print("ERRORRRR$err");
       EasyLoading.dismiss();
-      GlobalClass.showErrorAlert(context, "Corrupt Case", 2);
+    //  GlobalClass.showErrorAlert(context, "Corrupt Case", 2);
     });
   }
 
@@ -7312,7 +7312,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _bank_AcController.text = data.bankAc;
       _bank_IFCSController.text = data.bankIfcs;
       bankAddress = data.bankAddress;
-      _bankOpeningDateController.text = data.bankAcOpenDate.split("T")[0];
+
+      DateTime parsedDate = DateTime.parse(data.bankAcOpenDate);
+      String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
+      _bankOpeningDateController.text = formattedDate;
+    //  _bankOpeningDateController.text = data.bankAcOpenDate.split("T")[0];
     });
   }
 
@@ -7351,6 +7355,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedTitle = null; // Or set a default value
       }
 
+
       _p_Address1Controller.text = data.guarantors[0].grPAddress1;
       _p_Address2Controller.text = data.guarantors[0].grPAddress2;
       _p_Address3Controller.text = data.guarantors[0].grPAddress3;
@@ -7368,7 +7373,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
       }
 
       _pincodeController.text = data.guarantors[0].grPincode.toString();
-      _dobController.text = data.guarantors[0].grDob.toString();
+
+
+      DateTime parsedDate = DateTime.parse(data.guarantors[0].grDob);
+      String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
+      _dobController.text = formattedDate;
+      //_dobController.text = data.guarantors[0].grDob.toString();
+
+
+
       _ageController.text = data.guarantors[0].grAge.toString();
       _phoneController.text = data.guarantors[0].grPhone;
       _panController.text = data.guarantors[0].grPan;
@@ -7534,7 +7547,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
         //   default:
         //     showToast_Error("Unsupported document type.");
         //     break;
+        //
         // }
+        // return true;
       } else if (response.statusCode == 201) {
         OcrDocsScanningResponse ocrDocsScanningResponse = response;
 
@@ -7837,11 +7852,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
         : BorrowerInfo[0].guarantors[0].grVoter;
     if (response.data.adharId == expectedId) {
       if (response.data.isOSV == true && response.data.isIdMatched == true) {
-        if (subType == "borrower") {
-          voterFront = pickedImage;
-        } else if (subType == "guarantor") {
-          voterFront_coborrower = pickedImage;
-        }
+        // if (subType == "borrower") {
+        //   voterFront = pickedImage;
+        // } else if (subType == "guarantor") {
+        //   voterFront_coborrower = pickedImage;
+        // }
         EasyLoading.dismiss();
         GlobalClass.showSuccessAlert(
             context, "Voter front document verified successfully!", 1);

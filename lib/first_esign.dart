@@ -304,6 +304,7 @@ class _DialogContentState extends State<DialogContent> {
   bool _isChecked = false;
   late ApiService _apiServiceForESign;
   List<String> authModeTypeList = ["Biometric"];
+
   String authModeType="Biometric";
 
   @override
