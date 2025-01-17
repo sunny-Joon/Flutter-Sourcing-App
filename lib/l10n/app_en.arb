@@ -219,7 +219,6 @@
 
   "noimageselected": "No image selected.",
 
-
   "borrowerdocs": "Borrower Docs",
   "aadharfront": "Aadhar Front",
   "aadharback": "Aadhar Back",
@@ -229,16 +228,101 @@
   "dlfront": "DL Front",
   "passbookfront": "Passbook Front",
   "coborrowerdocs": "Co Borrower Docs",
-
   "douwanyapplication": "Do you want to close Application form?",
-
   "adharqr": "Adhaar QR",
   "borrowerdetails": "Borrower Details",
-
   "verify": "Verify",
-  "reject": "Reject"
+  "reject": "Reject",
+
+
+
+  "branch": "Branch",
+  "area": "Area",
+  "group": "Group",
+  "center": "Center",
+  "loanusagepercentage": "Mention the percentage of loan usage for the customer",
+  "monthlyincomehouse": "Estimated monthly income from business (in rupees)",
+  "monthlysales": "Estimated monthly sales (in rupees) (Verify with any sales record or through discussion with the customer)",
+  "interviewedpersonname": "Name of the interviewed person",
+  "interviewedpersonage": "Age of the interviewed person",
+  "distancetobranch": "Distance from applicant's residence to branch/dealer point (in km)",
+  "timetoreachbranch": "Time required to reach from branch/dealer location to applicant's residence (in minutes)",
+  "totalmonthlyexpenses": "Total monthly expenses of the business",
+  "netmonthlyincomeafterloan": "Proposed net monthly income after the proposed loan",
+  "totalmonthlyhouseholdexpenses": "Total monthly household expenses",
+  "netmonthlyincomeotherfamily": "Net monthly income of other family members",
+  "referenceperson1name": "Name of reference person 1",
+  "referenceperson1phone": "Phone number 1",
+  "referenceperson2name": "Name of reference person 2",
+  "referenceperson2phone": "Phone number 2",
+  "addresshouse": "Business location address",
+  "relationwithearningmember": "Relation with the other earning member in the applicant's family",
+  "residingtype": "Type of residence",
+  "residingwith": "Living with",
+  "residentialstability": "Residential stability (years)",
+  "totalexperience": "Total experience in the current business (in years)",
+  "applicantresponse": "Applicant's feedback from nearby residents",
+  "relationwithinterviewed": "Relation with the interviewed person",
+  "roofwalltype": "Type of roof and walls as per residential standards",
+  "validlocation": "Customer resides in an approved area",
+  "lifestyleverification": "Verify lifestyle as per the CPF section (very low, low, lower middle class)",
+
+  "verificationofloan": "Verification of loan application, CP and KYC papers",
+
+  "idverification": "Verify ID card against the original",
+  "currentaddressverification": "Verify current residence address against the original proof",
+  "ageverification": "Verify age proof of customer and spouse against the original",
+  "addressfilledincpf": "Ensure complete permanent address and pincode are filled in CPF",
+  "stampedphotocopy": "Ensure verified photocopies are stamped and signed against the original",
+  "lastloanusage": "Check if the last loan was used for the intended purpose",
+  "centermeetingabsence": "Investigate reasons for absence from center meetings",
+  "paymentdelays": "Verify reasons for payment delays and ensure they are not intentional",
+  "loanpurpose": "Check if the loan purpose is for consumption or income-generating activities",
+  "loanamountappropriate": "Check if the applied loan amount is appropriate for the intended purpose",
+  "familyawareness": "Check if the customer's spouse/son is aware of the loan application",
+  "businesssuitability": "Check if the loan purpose is suitable for the customer's business",
+  "loanimpactonbusiness": "Investigate if the customer's business is affected by the loan",
+  "repaymentcapacity": "Verify if the customer has sufficient repayment capacity for the loan",
+  "familycashflow": "Match household cash flow and surplus with customer profile",
+  "incomeafterloan": "Proposed net monthly income after loan from Paisa",
+
+  "businessverification": "Mandatory business verification for all loans (fill this section at the business site for all loans above Rs. 35,000).",
+  "commissiondemand": "Was any commission demanded during the loan application process?",
+  "borrowersupportedgroup": "Has the borrower supported their group members in the past years?",
+  "groupreadytovilay": "Is the group ready for a merger (applicable only if a merger letter is attached with the application)?",
+  "grouphasbloodrelation": "Check for blood relatives in the group (as defined by the policy).",
+  "understandinsurancepolicy": "Check if the customer understands the insurance claim process.",
+  "verifyexternalloan": "Verify if the external loan information provided in the customer profile form matches the customer's borrowing.",
+  "understandsfaultpolicy": "Does the customer understand the impact of the credit bureau, that if they default on payments, they will not get loans in the future?",
+  "overlimitloanborrowfromgroup": "Inquire if there is over-limit borrowing or mutual borrowing within the group. Repeat the example of the resolution video.",
+  "totaldebtunderlimit": "Ensure that the customer's total debt does not exceed Rs. 50,000.",
+  "workingplaceverification": "Business site inspection done.",
+  "isworkingplacevalid": "Wherever the business site is outside the working perimeter (ensure verification through family members, group members, and neighbors), attach the email approval from DM.",
+  "workingplacedescription": "Business site description (owned, rented, or leased).",
+  "workexperience": "Number of years in business.",
+  "seasondependency": "Verify the seasonal nature of the business and ensure that the customer has adequate cash flow during the off-season to make timely loan repayments.",
+  "stockverification": "Stock verification done wherever applicable.",
+  "loansufficientwithdebt": "Ensure that the applied loan amount is appropriate for the intended purpose.",
+  "clickwithhouse": "Photograph the house with\n the applicant",
+  "isclosehousevisit": "Do you want to close House Visit page?",
+
+
+  "meetingtype": "Meeting Type",
+  "smcode": "Sm Code",
+  "amount": "Amount",
+  "comment": "Comment",
+  "clickimage": "Click Image",
+
+  "clickheretoupload": "Click here to upload receipt",
+  "clickgallary": "Select from gallery",
+  "clickcamera": "Take a photo",
+  "optionchhoose": "Choose an option"
 
 
 
 
 }
+
+
+
+

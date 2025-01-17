@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'api_service.dart';
 import 'global_class.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class SubmitSsQrTransaction extends StatefulWidget {
 
@@ -172,7 +174,7 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                         children: [
                           Icon(Icons.camera_alt,color: Color(0xFFD42D3F),),
                           SizedBox(width: 8), // Optional: Adds space between the icon and text
-                          Text('Click here to upload receipt',style: TextStyle(color: Color(0xFFD42D3F)),),
+                          Text(AppLocalizations.of(context)!.clickheretoupload,style: TextStyle(color: Color(0xFFD42D3F)),),
                         ],
                       ),
                     ),
@@ -247,7 +249,7 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            "Submit",
+                            AppLocalizations.of(context)!.submit,
                             style: TextStyle(
                               fontFamily: "Poppins-Regular",
                               fontSize: 16,
@@ -272,12 +274,12 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Choose an option'),
+          title: Text(AppLocalizations.of(context)!.optionchhoose),
           content: SingleChildScrollView(
             child: ListBody(
               children: [
                 GestureDetector(
-                  child: Text('Take a photo'),
+                  child: Text(AppLocalizations.of(context)!.clickcamera),
                   onTap: () {
                     Navigator.of(context).pop();
                     _getImage(ImageSource.camera);
@@ -285,7 +287,7 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                 ),
                 Padding(padding: EdgeInsets.all(8.0)),
                 GestureDetector(
-                  child: Text('Select from gallery'),
+                  child: Text(AppLocalizations.of(context)!.clickgallary),
                   onTap: () {
                     Navigator.of(context).pop();
                     _getImage(ImageSource.gallery);
