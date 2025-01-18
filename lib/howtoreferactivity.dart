@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class howtoreferactivity extends StatelessWidget {
   final String referralCode;
@@ -60,7 +62,7 @@ class howtoreferactivity extends StatelessWidget {
            Padding(padding: EdgeInsets.all(16),child: Column(
              children: [
                Text(
-                 "How To Refer a Friend and Earn?",
+                 AppLocalizations.of(context)!.howtorefer,
                  style: TextStyle(
                    color: Colors.white,
                    fontSize: 20,
@@ -71,17 +73,17 @@ class howtoreferactivity extends StatelessWidget {
                StepWidget(
                  stepNumber: "1",
                  stepDescription:
-                 "Click On 'Refer Now' and copy the message with your unique referral code.",
+                 AppLocalizations.of(context)!.earn1,
                ),
                StepWidget(
                  stepNumber: "2",
                  stepDescription:
-                 "Send the message to your friends via SMS, WhatsApp, Facebook or Email.",
+                 AppLocalizations.of(context)!.earn2,
                ),
                StepWidget(
                  stepNumber: "3",
                  stepDescription:
-                 "Ask your friend to fill in the form with your referral code and get ready to get rewarded.",
+                 AppLocalizations.of(context)!.earn3,
                ),
                SizedBox(height: 20),
                Center(
@@ -108,7 +110,7 @@ class howtoreferactivity extends StatelessWidget {
                      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15), // Padding
                      textStyle: TextStyle(fontSize: 20), // Text style
                    ),
-                   child: Text('REFER NOW'),
+                   child: Text(AppLocalizations.of(context)!.refernow),
                  ),
                ),
              ],),),

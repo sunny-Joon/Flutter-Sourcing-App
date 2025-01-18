@@ -16,6 +16,8 @@ import 'api_service.dart';
 import 'global_class.dart';
 import 'login_page.dart';
 import 'notifications.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class Profile extends StatefulWidget {
   @override
@@ -184,10 +186,10 @@ class _ProfileState extends State<Profile> {
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.currency_rupee,size: 50,color: Colors.blue),
+                  children:  [
+                    Icon(Icons.currency_rupee,size: 40,color: Colors.blue),
                     SizedBox(height: 5),
-                    Text('QR Payment Report', style: TextStyle(fontSize: 8)),
+                    Text(AppLocalizations.of(context)!.qrpaymentreport, style: TextStyle(fontSize: 8)),
                   ],
                 ),
               ),
@@ -200,10 +202,10 @@ class _ProfileState extends State<Profile> {
                   );
                 },
                 title: Column(
-                  children: const [
+                  children:  [
                     Icon(Icons.currency_rupee,size: 50,color: Colors.blue),
                     SizedBox(height: 5),
-                    Text('Collection Report', style: TextStyle(fontSize: 8)),
+                    Text(AppLocalizations.of(context)!.collectionreport, style: TextStyle(fontSize: 8)),
                   ],
                 ),
               ),
@@ -213,10 +215,10 @@ class _ProfileState extends State<Profile> {
                   MorphoRechargeDialog.show(context);
                 },
                 title: Column(
-                  children: const [
-                    Icon(Icons.fingerprint,size: 50,color: Colors.green,),
-                    SizedBox(height: 5),
-                    Text('Morpho Recharge', style: TextStyle(fontSize: 8)),
+                  children: [
+                    const Icon(Icons.fingerprint,size: 50,color: Colors.green,),
+                    const SizedBox(height: 5),
+                    Text(AppLocalizations.of(context)!.morpho, style: const TextStyle(fontSize: 8)),
                   ],
                 ),
               ),
@@ -232,12 +234,12 @@ class _ProfileState extends State<Profile> {
                 },
                 title:Center(
                   child: Column(
-                  children: const [
-                    Icon(Icons.currency_rupee_rounded,size: 50,color: Colors.blue),
-                    SizedBox(height: 5),
+                  children: [
+                    const Icon(Icons.currency_rupee_rounded,size: 50,color: Colors.blue),
+                    const SizedBox(height: 5),
                      Text(
-                        'Payment Settlement',
-                        style: TextStyle(fontSize: 7),
+                       AppLocalizations.of(context)!.payment,
+                        style: const TextStyle(fontSize: 7),
                       ),
                   ],
                   ),
@@ -331,7 +333,7 @@ class _ProfileState extends State<Profile> {
                             itemBuilder: (context, index) {
                               if (index == 0) {
                                 return _buildGridItem(
-                                    'QR Payment Report', Icons.qr_code, () {
+                                    AppLocalizations.of(context)!.qrpaymentreport, Icons.qr_code, () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -341,13 +343,13 @@ class _ProfileState extends State<Profile> {
                                 });
                               } else if (index == 1) {
                                 return _buildGridItem(
-                                    'Morpho Recharge', Icons.fingerprint,
+                                    AppLocalizations.of(context)!.morpho, Icons.fingerprint,
                                     () {
                                   MorphoRechargeDialog.show(context);
                                 });
                               }else if (index == 2) {
                                 return _buildGridItem(
-                                    'Collection Report', Icons.file_present_rounded,
+                                    AppLocalizations.of(context)!.collectionreport, Icons.file_present_rounded,
                                     () {
                                       Navigator.push(
                                         context,
@@ -356,7 +358,7 @@ class _ProfileState extends State<Profile> {
                                 });
                               } else if (index == 3) {
                                 return _buildGridItem(
-                                    'Payment Settlement', Icons.currency_rupee,
+                                    AppLocalizations.of(context)!.payment, Icons.currency_rupee,
                                     () {
                                       Navigator.push(
                                         context,
@@ -454,7 +456,7 @@ class _ProfileState extends State<Profile> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  child: Text("Refer Now",style: TextStyle(color: Colors.white),),
+                                  child: Text(AppLocalizations.of(context)!.refernow,style: TextStyle(color: Colors.white),),
                                 ),
                               ),
                             ],
@@ -551,7 +553,7 @@ class _ProfileState extends State<Profile> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Are you sure?',
+                  AppLocalizations.of(context)!.areyousure,
                   style: TextStyle(
                       color: Color(0xFFD42D3F),
                       fontWeight: FontWeight.bold,
@@ -559,7 +561,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'Do you want to Logout?',
+                  AppLocalizations.of(context)!.doyouwant,
                   style: TextStyle(color: Colors.black),
                 ),
                 SizedBox(height: 20),
@@ -567,14 +569,14 @@ class _ProfileState extends State<Profile> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildShinyButton(
-                      'No',
+                      AppLocalizations.of(context)!.no,
                           () {
                         EasyLoading.dismiss();
                         Navigator.of(context).pop(true);
                       },
                     ),
                     _buildShinyButton(
-                      'Yes',
+                      AppLocalizations.of(context)!.yes,
                           () {
                         EasyLoading.dismiss();
                         Navigator.pushReplacement(context,
@@ -660,49 +662,22 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow(Icons.credit_card, 'ID ', _idController),
+            _buildDetailRow(Icons.credit_card, AppLocalizations.of(context)!.id
+                , _idController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.person, 'Name ', _nameController),
+            _buildDetailRow(Icons.person, AppLocalizations.of(context)!.name , _nameController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.phone, 'Mobile No ', _mobileNoController),
+            _buildDetailRow(Icons.phone, AppLocalizations.of(context)!.mno , _mobileNoController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.work, 'Designation ', _designationController),
+            _buildDetailRow(Icons.work, AppLocalizations.of(context)!.designation , _designationController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            Row(
-              children: [
-                Icon(Icons.admin_panel_settings, color: Color(0xFFD42D3F)),
-                Text(
-                  'Switch Creator ',
-                  style: TextStyle(
-                    fontFamily: "Poppins-Regular",
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    _creatorController.text,
-                    style: TextStyle(
-                      fontFamily: "Poppins-Regular",
-                      color: Color(0xFFD42D3F),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.edit, color: Color(0xFFD42D3F)),
-                  onPressed: () {
-                    _showCreatorDialog(context);
-                  },
-                )
-              ]
+            _buildDetailList(Icons.admin_panel_settings, AppLocalizations.of(context)!.creater , _creatorController,
+            ),
 
-
-    )      // _buildDetailList(Icons.admin_panel_settings, 'Creator ', _creatorController,),
-]
-    )
-    )
+          ],
+        ),
+      ),
     );
-
   }
 
   Widget _buildDetailRow(
@@ -726,7 +701,8 @@ class _ProfileState extends State<Profile> {
     );
   }
 
- /* Widget _buildDetailList(IconData icon, String label, TextEditingController controller) {
+  Widget _buildDetailList(
+      IconData icon, String label, TextEditingController controller) {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
@@ -783,98 +759,7 @@ class _ProfileState extends State<Profile> {
         ),
       ],
     );
-  }*/
-
-  void _showCreatorDialog(BuildContext context) {
-    String? selectedCreatorName = GlobalClass.creator;
-    String? selectedCreatorId = GlobalClass.creatorId;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text(
-            'Select Creator',
-            style: TextStyle(color: Color(0xFFD42D3F)),
-          ),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: GlobalClass.creatorlist.length,
-              itemBuilder: (BuildContext context, int index) {
-                final creator = GlobalClass.creatorlist[index];
-                return ListTile(
-                  title: Text(
-                    creator.creatorName,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFFD42D3F),
-                    ),
-                  ),
-                  leading: Radio<String>(
-                    value: creator.creatorId.toString(),
-                    groupValue: selectedCreatorId,
-                    onChanged: (String? value) {
-                      if (value != null) {
-                        selectedCreatorId = value;
-                        selectedCreatorName = creator.creatorName;
-                        (context as Element).markNeedsBuild();
-                      }
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-          Navigator.pop(context); // Close the dialog
-        },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFD42D3F),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                minimumSize: Size(80, 40),
-              ),
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFD42D3F),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                minimumSize: Size(80, 40),
-              ),
-              onPressed: () {
-                if (selectedCreatorName != null && selectedCreatorId != null) {
-
-                  print('Selected Creator: $selectedCreatorName');
-                  setState(() {
-                    _creatorController.text = selectedCreatorName!;
-                    _creatorController.text = selectedCreatorName!;
-                    GlobalClass.creator = selectedCreatorName!;
-                    GlobalClass.creatorId = selectedCreatorId!;
-                  });
-                }
-                Navigator.pop(context); // Close the dialog
-              },
-              child: Text('Select',style: TextStyle(color: Colors.white,)),
-            ),
-          ],
-        );
-      },
-    );
   }
-
 
 
   Future<void> punchInOut(BuildContext context) async {
@@ -897,7 +782,7 @@ class _ProfileState extends State<Profile> {
         builder: (context) => AlertDialog(
           title: Text("Location Error"),
           content: Text(
-              "Please enable your location services or open location settings."),
+            AppLocalizations.of(context)!.locationerror),
           actions: [
             TextButton(
               onPressed: () {
@@ -982,8 +867,7 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> _cropImage(File imageFile) async {
-
-  if (imageFile != null) {
+    if (imageFile != null) {
       CroppedFile? cropped = await ImageCropper().cropImage(
         sourcePath: imageFile.path,
         compressQuality: 100,
@@ -1106,7 +990,7 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Morpho Recharge',
+            AppLocalizations.of(context)!.morpho,
             style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
           ),
           IconButton(
@@ -1129,7 +1013,7 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
                 controller: _deviceSirNoController,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                  hintText: "Enter Morpho S/N",
+                  hintText: AppLocalizations.of(context)!.entermorpho,
                   border: OutlineInputBorder(),
                   counterText: "",
                 ),
@@ -1155,7 +1039,7 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
             minimumSize: Size(80, 40),
           ),
           child: Text(
-            'Submit',
+            AppLocalizations.of(context)!.submit,
             style: TextStyle(color: Colors.white),
           ),
         ),
