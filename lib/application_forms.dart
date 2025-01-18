@@ -3524,14 +3524,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       GuarantorEditable, _lnameFocus, nameReg)),
             ],
           ),
-          _buildTextField2(
-              'Guardian Name',
-              _guardianController,
-              TextInputType.name,
-              GuarantorEditable,
-              _guardianFocus,
-              20,
-              nameReg),
+          _buildTextField2('Guardian Name', _guardianController, TextInputType.name, GuarantorEditable, _guardianFocus, 20, nameReg),
           Row(
             children: [
               Flexible(
