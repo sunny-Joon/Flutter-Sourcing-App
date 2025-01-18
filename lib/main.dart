@@ -131,7 +131,7 @@ void configLoading() {
     ..indicatorType = EasyLoadingIndicatorType.fadingCircle
     ..maskType = EasyLoadingMaskType.black
     ..userInteractions = false
-    ..dismissOnTap = true;
+    ..dismissOnTap = false;
 }
 
 void requestPermissions() async {
