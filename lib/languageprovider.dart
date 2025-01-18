@@ -12,10 +12,14 @@ class languageprovider extends ChangeNotifier{
       'locale' : 'hi',
     },
 
-  /*  {
+    {
+      'name': 'Marathi',
+      'locale' : 'mr',
+    },
+    {
       'name': 'Bangla',
       'locale' : 'bn',
-    },*/
+    },
 
   ];
 
