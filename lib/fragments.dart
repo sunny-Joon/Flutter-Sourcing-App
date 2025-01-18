@@ -239,15 +239,13 @@ class _FragmentsState extends State<Fragments> {
     final api2 = Provider.of<ApiService>(context, listen: false);
     final dbHelper = DatabaseHelper();
 
-    // Check if data already exists in the database
     bool dataExists = await dbHelper.isRangeCategoryDataExists();
 
-
-      // If data does not exist, make the API call
-      final response = await api2.RangeCategory(GlobalClass.token, GlobalClass.dbName);
+    if(!dataExists) {
+      final response = await api2.RangeCategory(
+          GlobalClass.token, GlobalClass.dbName);
 
       if (response.statuscode == 200) {
-
         RangeCategoryModel rangeCategoryModel = response;
 
         await dbHelper.clearRangeCategoryTable();
@@ -256,20 +254,31 @@ class _FragmentsState extends State<Fragments> {
         for (var datum in rangeCategoryModel.data) {
           await dbHelper.insertRangeCategory(datum);
         }
-        Fluttertoast.showToast(msg: "App is ready to use",toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,backgroundColor: Colors.black,
+        Fluttertoast.showToast(msg: "App is ready to use",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.black,
           textColor: Colors.white,
           fontSize: 16.0,);
         // Handle successful data update
 
         EasyLoading.dismiss();
-
       } else {
         // Handle failed data update
-       EasyLoading.dismiss();
+        EasyLoading.dismiss();
 
-        GlobalClass.showUnsuccessfulAlert(context,"Backend Data Not Saved",1);
+        GlobalClass.showUnsuccessfulAlert(context, "Backend Data Not Saved", 1);
       }
+    }else{
+      EasyLoading.dismiss();
+
+      Fluttertoast.showToast(msg: "App is ready to use",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0,);
+    }
 
   }
 
