@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/visit_report_page.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+import 'DATABASE/database_helper.dart';
+import 'Models/range_category_model.dart';
+import 'api_service.dart';
+import 'fragments.dart';
+import 'global_class.dart';
 import 'kyc.dart';
 import 'branch_list_page.dart';
 import 'notifications.dart';
@@ -44,10 +52,12 @@ class _OnboardingState extends State<OnBoarding>{
                       ),
                     ),
                   ),
-                  Container(
-                    height: 40,
-                    width: 40,
-                    alignment: Alignment.center,
+                  IconButton(
+                      onPressed: (){
+                        RangeCategory(context);
+
+                      },
+                      icon: Icon(Icons.refresh_rounded,color: Colors.white,)
                   ),
                 ],
               ),
@@ -153,4 +163,42 @@ class _OnboardingState extends State<OnBoarding>{
       ),
     );
   }
+
+  Future<void> RangeCategory(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...',);
+
+    final api2 = Provider.of<ApiService>(context, listen: false);
+    final dbHelper = DatabaseHelper();
+
+    bool dataExists = await dbHelper.isRangeCategoryDataExists();
+    
+      final response = await api2.RangeCategory(
+          GlobalClass.token, GlobalClass.dbName);
+
+      if (response.statuscode == 200) {
+        RangeCategoryModel rangeCategoryModel = response;
+
+        await dbHelper.clearRangeCategoryTable();
+
+        // Insert new data into SQLite
+        for (var datum in rangeCategoryModel.data) {
+          await dbHelper.insertRangeCategory(datum);
+        }
+        Fluttertoast.showToast(msg: "App is ready to use",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: 16.0,);
+        // Handle successful data update
+
+        EasyLoading.dismiss();
+      } else {
+        // Handle failed data update
+        EasyLoading.dismiss();
+
+        GlobalClass.showUnsuccessfulAlert(context, "Backend Data Not Saved", 1);
+      }
+  }
+
 }
