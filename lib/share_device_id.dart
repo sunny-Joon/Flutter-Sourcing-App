@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/global_class.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
@@ -200,7 +201,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
   Future<void> _fetchCreatorList() async {
     EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
+      status: "AppLocalizations.of(context)!.loading",
     );
 
     final api = Provider.of<ApiService>(context, listen: false);
@@ -217,7 +218,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   Future<void> _fetchBranchList(BuildContext context, String creators) async {
     final api = Provider.of<ApiService>(context, listen: false);
     final value = await api.getBranchList(
-        GlobalClass.token, GlobalClass.dbName, 22);
+        GlobalClass.token, GlobalClass.dbName, GlobalClass.creatorId as int);
     if (value.statuscode == 200) {
       setState(() {
         _branch_codes =
@@ -282,7 +283,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border:
-                              Border.all(width: 1, color: Colors.grey.shade300),
+                          Border.all(width: 1, color: Colors.grey.shade300),
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                         ),
                         height: 40,
@@ -313,202 +314,202 @@ class _SharedeviceidState extends State<Sharedeviceid> {
               ),
               _isLoading
                   ? Center(
-                      child: CircularProgressIndicator(),
-                    )
+                child: CircularProgressIndicator(),
+              )
                   : Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Container(
-                            padding: EdgeInsets.all(20),
-                            height: MediaQuery.of(context).size.height - 180,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black,
-                                  blurRadius: 7,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      height: MediaQuery.of(context).size.height - 180,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 7,
+                          ),
+                        ],
+                      ),
+                      child: SingleChildScrollView(
+                        child: Form(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Device Id:- ${_deviceIdController}',
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                'User Id:- ${_userIdController}',
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold),
+                              ),
+
+                              //SizedBox(height:2 ),
+                              SizedBox(height: 4),
+                              Text(
+                                AppLocalizations.of(context)!.requesttype,
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 13),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.symmetric(vertical: 4),
+                                padding: EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
-                              ],
-                            ),
-                            child: SingleChildScrollView(
-                              child: Form(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Device Id:- ${_deviceIdController}',
-                                      style: TextStyle(
-                                          fontFamily: "Poppins-Regular",
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      'User Id:- ${_userIdController}',
-                                      style: TextStyle(
-                                          fontFamily: "Poppins-Regular",
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                                child: DropdownButton<String>(
+                                  value: _selectedRequestType,
+                                  isExpanded: true,
+                                  iconSize: 24,
+                                  elevation: 16,
+                                  style: TextStyle(
+                                      fontFamily: "Poppins-Regular",
+                                      color: Colors.black,
+                                      fontSize: 13),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors
+                                        .transparent, // Set to transparent to remove default underline
+                                  ),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _selectedRequestType = newValue;
+                                      validateInputs();
+                                      _requestTypeError =
+                                      null; // Clear error when user selects a value
+                                    });
+                                  },
+                                  items:
+                                  _requestTypes.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                              // Display error for Request Type
+                              if (_requestTypeError != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 1, left: 15),
+                                  child: Text(
+                                    _requestTypeError!,
+                                    style: TextStyle(
+                                        color: Color(0xFFD42D3F),
+                                        fontSize: 12),
+                                  ),
+                                ),
 
-                                    //SizedBox(height:2 ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      AppLocalizations.of(context)!.requesttype,
-                                      style: TextStyle(
-                                          fontFamily: "Poppins-Regular",
-                                          fontSize: 13),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      margin: EdgeInsets.symmetric(vertical: 4),
-                                      padding: EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: DropdownButton<String>(
-                                        value: _selectedRequestType,
-                                        isExpanded: true,
-                                        iconSize: 24,
-                                        elevation: 16,
-                                        style: TextStyle(
-                                            fontFamily: "Poppins-Regular",
-                                            color: Colors.black,
-                                            fontSize: 13),
-                                        underline: Container(
-                                          height: 2,
-                                          color: Colors
-                                              .transparent, // Set to transparent to remove default underline
-                                        ),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            _selectedRequestType = newValue;
-                                            validateInputs();
-                                            _requestTypeError =
-                                                null; // Clear error when user selects a value
-                                          });
-                                        },
-                                        items:
-                                            _requestTypes.map((String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                    // Display error for Request Type
-                                    if (_requestTypeError != null)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 1, left: 15),
-                                        child: Text(
-                                          _requestTypeError!,
-                                          style: TextStyle(
-                                              color: Color(0xFFD42D3F),
-                                              fontSize: 12),
-                                        ),
-                                      ),
+                              SizedBox(height: 4),
 
-                                    SizedBox(height: 4),
+                              SizedBox(height: 4),
+                              Text(
+                                AppLocalizations.of(context)!.creater,
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 13),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.symmetric(vertical: 4),
+                                padding: EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: DropdownButton<String>(
+                                  value: _selectedCreator,
+                                  isExpanded: true,
+                                  iconSize: 24,
+                                  elevation: 16,
+                                  style: TextStyle(
+                                      fontFamily: "Poppins-Regular",
+                                      color: Colors.black,
+                                      fontSize: 13),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors
+                                        .transparent, // Set to transparent to remove default underline
+                                  ),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _selectedCreator = newValue;
+                                      _creatorError = null;
+                                      validateInputs(); // Clear error when user selects a value
+                                      _fetchBranchList(
+                                          context, _selectedCreator!);
+                                      _branchController.text = "";
+                                      _selectedBranches = [];
+                                    });
+                                  },
+                                  items: _creators
+                                      .map((CreatorListDataModel value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value.creator,
+                                      child: Text(value.creator),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                              // Display error for Creator
+                              if (_creatorError != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 1, left: 15),
+                                  child: Text(
+                                    _creatorError!,
+                                    style: TextStyle(
+                                        color: Color(0xFFD42D3F),
+                                        fontSize: 12),
+                                  ),
+                                ),
 
-                                    SizedBox(height: 4),
-                                    Text(
-                                      AppLocalizations.of(context)!.creater,
-                                      style: TextStyle(
-                                          fontFamily: "Poppins-Regular",
-                                          fontSize: 13),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      margin: EdgeInsets.symmetric(vertical: 4),
-                                      padding: EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: DropdownButton<String>(
-                                        value: _selectedCreator,
-                                        isExpanded: true,
-                                        iconSize: 24,
-                                        elevation: 16,
-                                        style: TextStyle(
-                                            fontFamily: "Poppins-Regular",
-                                            color: Colors.black,
-                                            fontSize: 13),
-                                        underline: Container(
-                                          height: 2,
-                                          color: Colors
-                                              .transparent, // Set to transparent to remove default underline
-                                        ),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            _selectedCreator = newValue;
-                                            _creatorError = null;
-                                            validateInputs(); // Clear error when user selects a value
-                                            _fetchBranchList(
-                                                context, _selectedCreator!);
-                                            _branchController.text = "";
-                                            _selectedBranches = [];
-                                          });
-                                        },
-                                        items: _creators
-                                            .map((CreatorListDataModel value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value.creator,
-                                            child: Text(value.creator),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                    // Display error for Creator
-                                    if (_creatorError != null)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 1, left: 15),
-                                        child: Text(
-                                          _creatorError!,
-                                          style: TextStyle(
-                                              color: Color(0xFFD42D3F),
-                                              fontSize: 12),
-                                        ),
-                                      ),
+                              Row(
+                                children: [
+                                  // Expanded widget makes the TextField take up the available space
+                                  Expanded(
+                                    // child: _buildTextField(
+                                    //     'Branch Codes',
+                                    //     _branchController,
+                                    //     TextInputType.name,
+                                    //     false,
+                                    //     _branchFocus,100
+                                    // ),
+                                    child: _buildTextField(
+                                        AppLocalizations.of(context)!.branchcode,
+                                        _branchController,
+                                        TextInputType.number,
+                                        false,
+                                        _branchFocus,
+                                        3,
+                                        true,
+                                        errorText: _branchError),
+                                  ),
+                                  // IconButton will be placed on the right of the TextField
+                                  IconButton(
+                                    onPressed: () {
+                                      _showMultiSelect(); // Define your action for the icon button
+                                    },
+                                    icon: Icon(Icons
+                                        .arrow_drop_down_circle_sharp),
+                                  ),
+                                ],
+                              ),
 
-                                    Row(
-                                      children: [
-                                        // Expanded widget makes the TextField take up the available space
-                                        Expanded(
-                                          // child: _buildTextField(
-                                          //     'Branch Codes',
-                                          //     _branchController,
-                                          //     TextInputType.name,
-                                          //     false,
-                                          //     _branchFocus,100
-                                          // ),
-                                          child: _buildTextField(
-                                              AppLocalizations.of(context)!.branchcode,
-                                              _branchController,
-                                              TextInputType.number,
-                                              false,
-                                              _branchFocus,
-                                              3,
-                                              true,
-                                              errorText: _branchError),
-                                        ),
-                                        // IconButton will be placed on the right of the TextField
-                                        IconButton(
-                                          onPressed: () {
-                                            _showMultiSelect(); // Define your action for the icon button
-                                          },
-                                          icon: Icon(Icons
-                                              .arrow_drop_down_circle_sharp),
-                                        ),
-                                      ],
-                                    ),
-
-                                    /*_buildLabeledDropdownField(
+                              /*_buildLabeledDropdownField(
                                 context,
                                 'Creator',
                                 'Creator',
@@ -533,128 +534,128 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                   });
                                 },
                                 BranchDataModel),*/
-                                    //SizedBox(height:2 ),
-                                    _buildTextField(
-                                        AppLocalizations.of(context)!.name,
-                                        _nameController,
-                                        TextInputType.name,
-                                        true,
-                                        _nameFocus,
-                                        40,
-                                        false,
-                                        errorText: _nameError),
-                                    _buildTextField(
-                                        AppLocalizations.of(context)!.mobile,
-                                        _mobileNoController,
-                                        TextInputType.number,
-                                        true,
-                                        _mobileNoFocus,
-                                        10,
-                                        false,
-                                        errorText: _mobileNoError),
-                                    _buildTextField(
-                                        AppLocalizations.of(context)!.imei1,
-                                        _imei1Controller,
-                                        TextInputType.number,
-                                        true,
-                                        _imei1Focus,
-                                        15,
-                                        false,
-                                        errorText: _imei1Error),
-                                    _buildTextField(
-                                        AppLocalizations.of(context)!.imei2,
-                                        _imei2Controller,
-                                        TextInputType.number,
-                                        true,
-                                        _imei2Focus,
-                                        15,
-                                        false,
-                                        errorText: _imei2Error),
+                              //SizedBox(height:2 ),
+                              _buildTextField(
+                                  AppLocalizations.of(context)!.name,
+                                  _nameController,
+                                  TextInputType.name,
+                                  true,
+                                  _nameFocus,
+                                  40,
+                                  false,
+                                  errorText: _nameError),
+                              _buildTextField(
+                                  AppLocalizations.of(context)!.mobile,
+                                  _mobileNoController,
+                                  TextInputType.number,
+                                  true,
+                                  _mobileNoFocus,
+                                  10,
+                                  false,
+                                  errorText: _mobileNoError),
+                              _buildTextField(
+                                  AppLocalizations.of(context)!.imei1,
+                                  _imei1Controller,
+                                  TextInputType.number,
+                                  true,
+                                  _imei1Focus,
+                                  15,
+                                  false,
+                                  errorText: _imei1Error),
+                              _buildTextField(
+                                  AppLocalizations.of(context)!.imei2,
+                                  _imei2Controller,
+                                  TextInputType.number,
+                                  true,
+                                  _imei2Focus,
+                                  15,
+                                  false,
+                                  errorText: _imei2Error),
 
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.location_on_outlined,
-                                              color: Color(0xFFD42D3F),
-                                            ),
-                                            Text(
-                                              "${_locationMessage}",
-                                              style: TextStyle(
-                                                  fontFamily: "Poppins-Regular",
-                                                  color: Color(0xFFD42D3F),
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            geolocator();
-                                          },
-                                          child: Card(
-                                            elevation: 5,
-                                            shape: CircleBorder(),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(3),
-                                              child: Icon(
-                                                Icons.refresh,
-                                                size: 30,
-                                                color: Color(0xFFD42D3F),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-
-                                    //SizedBox(height:2 ),
-                                    if (_errorText != null)
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.location_on_outlined,
+                                        color: Color(0xFFD42D3F),
+                                      ),
                                       Text(
-                                        _errorText!,
+                                        "${_locationMessage}",
                                         style: TextStyle(
                                             fontFamily: "Poppins-Regular",
                                             color: Color(0xFFD42D3F),
-                                            fontSize: 13),
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                    //SizedBox(height:2 ),
-                                    Center(
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          if (validate()) {
-                                            _saveMappingReq(context);
-                                          }
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Color(0xFFD42D3F),
-                                          minimumSize: Size(150, 36),
-                                          // Set the width to 150 and the height to 36 (or your preferred height)
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                0), // Rectangular shape
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                              vertical:
-                                                  12), // Adjust vertical padding as needed
-                                        ),
-                                        child: Text(
-                                          AppLocalizations.of(context)!.save,
-                                          style: TextStyle(
-                                              fontFamily: "Poppins-Regular",
-                                              color: Colors.white),
+                                    ],
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      geolocator();
+                                    },
+                                    child: Card(
+                                      elevation: 5,
+                                      shape: CircleBorder(),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(3),
+                                        child: Icon(
+                                          Icons.refresh,
+                                          size: 30,
+                                          color: Color(0xFFD42D3F),
                                         ),
                                       ),
                                     ),
-                                  ],
+                                  )
+                                ],
+                              ),
+
+                              //SizedBox(height:2 ),
+                              if (_errorText != null)
+                                Text(
+                                  _errorText!,
+                                  style: TextStyle(
+                                      fontFamily: "Poppins-Regular",
+                                      color: Color(0xFFD42D3F),
+                                      fontSize: 13),
+                                ),
+                              //SizedBox(height:2 ),
+                              Center(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    if (validate()) {
+                                      _saveMappingReq(context);
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFFD42D3F),
+                                    minimumSize: Size(150, 36),
+                                    // Set the width to 150 and the height to 36 (or your preferred height)
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          0), // Rectangular shape
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical:
+                                        12), // Adjust vertical padding as needed
+                                  ),
+                                  child: Text(
+                                    AppLocalizations.of(context)!.save,
+                                    style: TextStyle(
+                                        fontFamily: "Poppins-Regular",
+                                        color: Colors.white),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ) // _buildNextButton(context),
-                      ],
+                        ),
+                      ),
                     ),
+                  ) // _buildNextButton(context),
+                ],
+              ),
             ],
           ),
         ));
@@ -702,6 +703,9 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                     fontSize: 12, // Optional: Adjust the font size
                   ),
                 ),
+            inputFormatters: <TextInputFormatter>[
+              label =="Name"?FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")):FilteringTextInputFormatter.deny(RegExp("[#]")),
+            ],
                 enabled: YN,
               ),
             ),
@@ -848,7 +852,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                     // Set the width to 150 and the height to 36 (or your preferred height)
                     shape: RoundedRectangleBorder(
                       borderRadius:
-                          BorderRadius.circular(0), // Rectangular shape
+                      BorderRadius.circular(0), // Rectangular shape
                     ),
                     padding: EdgeInsets.symmetric(
                         vertical: 12), // Adjust vertical padding as needed
