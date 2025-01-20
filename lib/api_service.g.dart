@@ -1465,10 +1465,10 @@ class _ApiService implements ApiService {
   Future<BranchModel> getBranchList(
     String token,
     String dbname,
-    String Creator,
+    int CreatorID,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'Creator': Creator};
+    final queryParameters = <String, dynamic>{r'CreatorID': CreatorID};
     final _headers = <String, dynamic>{
       r'Authorization': token,
       r'dbname': dbname,
