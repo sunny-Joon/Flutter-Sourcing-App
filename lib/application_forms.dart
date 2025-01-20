@@ -25,8 +25,9 @@ import 'Models/kyc_scanning_model.dart';
 import 'Models/place_codes_model.dart';
 import 'Models/range_category_model.dart';
 import 'api_service.dart';
-import 'const/validators.dart';
 import 'global_class.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class ApplicationPage extends StatefulWidget {
   final BranchDataModel BranchData;
@@ -49,10 +50,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   late ApiService apiService_OCR;
   late ApiService apiService;
   List<ApplicationgetAllDataModel> BorrowerInfo = [];
-  final FocusNode _focusNodeAdhaarId = FocusNode();
-  String _errorMessageAadhaar="";
-  String temp = "";
-  bool verifyFlag = true;
 
   final picker = ImagePicker();
   late ApiService apiService_protean;
@@ -68,9 +65,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool GuarantorEditable = true;
   bool borrowerDocsUploded = false;
   bool UploadFiDocsEditable = true;
-  bool editButtonFunctionOn = false;
+  bool editButtonFunctionOn=false;
 
-  String pageTitle = "Application Form";
+  String pageTitle = "Personal Info";
 
   final _mobileFocusNode = FocusNode();
   final _pinFocusNodeP = FocusNode();
@@ -127,7 +124,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "Please search PAN card holder name for verification";
   String? dlCardHolderName;
   String? voterCardHolderName;
-  bool banknameverified = false;
 
   //fiextra
   List<String> onetonine = [
@@ -362,17 +358,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String initialDlValue = '';
   String initialVoterValue = '';
 
-  String nameReg = '[a-zA-Z. ]';
+  String nameReg ='[a-zA-Z. ]';
   String addReg = r'[a-zA-Z0-9. ()/,-]';
-  String amountReg = '[0-9]';
-  String cityReg = '[a-zA-Z ]';
-  String idsReg = '[a-zA-Z0-9/ ]';
-
+  String amountReg ='[0-9]';
+  String cityReg ='[a-zA-Z ]';
+  String idsReg ='[a-zA-Z0-9/ ]';
   @override
   void initState() {
     super.initState();
-    _imageFile2 =
-        GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
+    _imageFile2 =GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
     FIID = widget.selectedData.id;
     creator = widget.selectedData.creator;
     ficode = widget.selectedData.fiCode.toString();
@@ -406,6 +400,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     getAllDataApi(context);
+    print("getAllDataApi(context):> $getAllDataApi(context)");
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
 
     initializeData(); // Fetch initial data
@@ -417,7 +412,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     _pinFocusNodeC.addListener(() {
       _validatePincode("B");
     });
-    selectedIsHandicap = "No";
+    selectedIsHandicap="No";
   }
 
   Future<void> initializeData() async {
@@ -425,7 +420,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     fetchData();
     _calculateAge();
     selectedDependent = onetonine.isNotEmpty ? onetonine[0] : null;
-    // selectedResidingFor = onetonine.isNotEmpty ? onetonine[0] : null;
+   // selectedResidingFor = onetonine.isNotEmpty ? onetonine[0] : null;
     //selectedspecialAbility = trueFalse.isNotEmpty ? trueFalse[0] : null;
     selectedSpecialSocialCategory = trueFalse.isNotEmpty ? trueFalse[0] : null;
     selectedEarningMembers = trueFalse.isNotEmpty ? trueFalse[0] : null;
@@ -558,159 +553,158 @@ class _ApplicationPageState extends State<ApplicationPage> {
         onPopInvoked: (bool value) {
           _onWillPop();
         },
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Color(0xFFD42D3F),
-          body: SingleChildScrollView(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 24.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 8, bottom: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                    width: 1, color: Colors.grey.shade300),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                              ),
-                              height: 40,
-                              width: 40,
-                              alignment: Alignment.center,
-                              child: Icon(Icons.arrow_back_ios_sharp, size: 13),
-                            ),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                pageTitle,
-                                style: TextStyle(
-                                  fontFamily: "Poppins-Regular",
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 24,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 40,
-                            width: 40,
-                            alignment: Alignment.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                    _buildProgressIndicator(),
-                    SizedBox(height: 50),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height - 240,
-                      child: Stack(clipBehavior: Clip.none, children: [
-                        Container(
-                          //height: MediaQuery.of(context).size.height - 230,
-                          padding: EdgeInsets.all(20),
+        child:  Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Color(0xFFD42D3F),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding:
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 8, bottom: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(13),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.shade300,
-                                blurRadius: 10,
-                                //   spreadRadius: 5,
-                              ),
-                            ],
+                            border: Border.all(
+                                width: 1, color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
                           ),
-                          child: Form(
-                            key: _formKey,
-                            child: _getStepContent(),
+                          height: 40,
+                          width: 40,
+                          alignment: Alignment.center,
+                          child: Icon(Icons.arrow_back_ios_sharp, size: 13),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            pageTitle,
+                            style: TextStyle(
+                              fontFamily: "Poppins-Regular",
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
                           ),
                         ),
-                        Positioned(
-                            top: -50, // Adjust the position as needed
-                            left: 0,
-                            right: 0,
-                            child: Text(
-                              name,
-                              style: TextStyle(
-                                fontFamily: "Poppins-Regular",
-                                color: Colors.white,
-                                fontSize: 13,
-                              ),
-                            )),
-                        Positioned(
-                            top: -35, // Adjust the position as needed
-                            left: 0,
-                            right: 0,
-                            child: Text(
-                              ficode,
-                              style: TextStyle(
-                                fontFamily: "Poppins-Regular",
-                                color: Colors.white,
-                                fontSize: 13,
-                              ),
-                            )),
-                        Positioned(
-                            top: -20, // Adjust the position as needed
-                            left: 0,
-                            right: 0,
-                            child: Text(
-                              creator,
-                              style: TextStyle(
-                                fontFamily: "Poppins-Regular",
-                                color: Colors.white,
-                                fontSize: 13,
-                              ),
-                            )),
-                        Positioned(
-                            top: -35, // Adjust the position as needed
-                            left: 0,
-                            right: 0,
-                            child: Center(
-                              child: CircleAvatar(
-                                radius: 35,
-                                backgroundImage: NetworkImage(_imageFile2),
-                              ),
-                            )),
-                      ]),
-                    ),
-                    SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildPreviousButton(),
-                          SizedBox(width: 8),
-                          editButtonFunctionOn
-                              ? _buildEditButton()
-                              : SizedBox(),
-                          SizedBox(width: 8),
-                          _buildNextButton(),
+                      ),
+                      Container(
+                        height: 40,
+                        width: 40,
+                        alignment: Alignment.center,
+                      ),
+                    ],
+                  ),
+                ),
+                _buildProgressIndicator(),
+                SizedBox(height: 50),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height - 240,
+                  child: Stack(clipBehavior: Clip.none, children: [
+                    Container(
+                      //height: MediaQuery.of(context).size.height - 230,
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(13),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade300,
+                            blurRadius: 10,
+                            //   spreadRadius: 5,
+                          ),
                         ],
                       ),
-                    )
-                  ],
+                      child: Form(
+                        key: _formKey,
+                        child: _getStepContent(),
+                      ),
+                    ),
+                    Positioned(
+                        top: -50, // Adjust the position as needed
+                        left: 0,
+                        right: 0,
+                        child: Text(
+                          name,
+                          style: TextStyle(
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        )),
+                    Positioned(
+                        top: -35, // Adjust the position as needed
+                        left: 0,
+                        right: 0,
+                        child: Text(
+                          ficode,
+                          style: TextStyle(
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        )),
+                    Positioned(
+                        top: -20, // Adjust the position as needed
+                        left: 0,
+                        right: 0,
+                        child: Text(
+                          creator,
+                          style: TextStyle(
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        )),
+                    Positioned(
+                        top: -35, // Adjust the position as needed
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: CircleAvatar(
+                            radius: 35,
+                            backgroundImage: NetworkImage(_imageFile2),
+                          ),
+                        )),
+                  ]),
                 ),
-              ),
+                SizedBox(height: 10),
+                Padding(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildPreviousButton(),
+                      SizedBox(width: 8),
+                      editButtonFunctionOn?
+                      _buildEditButton():SizedBox(),
+                      SizedBox(width: 8),
+                      _buildNextButton(),
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
-        ));
+        ),
+      ),
+    )
+    );
   }
 
   Future<void> _onWillPop() async {
@@ -723,7 +717,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Are you sure?',
+            AppLocalizations.of(context)!.areyousure,
               style: TextStyle(
                   color: Color(0xFFD42D3F),
                   fontWeight: FontWeight.bold,
@@ -731,7 +725,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
             SizedBox(height: 10),
             Text(
-              'Do you want to close Application form?',
+              AppLocalizations.of(context)!.douwanyapplication,
               style: TextStyle(color: Colors.black),
             ),
             SizedBox(height: 20),
@@ -739,18 +733,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildShinyButton(
-                  'No',
-                  () {
+                  AppLocalizations.of(context)!.no,
+                      () {
                     EasyLoading.dismiss();
                     Navigator.of(context).pop(true);
                   },
                 ),
                 _buildShinyButton(
-                  'Yes',
-                  () {
+                  AppLocalizations.of(context)!.yes,
+                      () {
                     EasyLoading.dismiss();
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
+                   Navigator.of(context).pop();
+                   Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -765,13 +759,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Widget _buildShinyButton(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: Color(0xFFD42D3F), // foreground/text
+        foregroundColor: Colors.white, backgroundColor: Color(0xFFD42D3F), // foreground/text
       ),
       onPressed: onPressed,
       child: Text(text),
     );
   }
+
 
   Widget _getStepContent() {
     switch (_currentStep) {
@@ -846,6 +840,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
+
+
+
   Widget _lineIndicator() {
     return Container(
       width: 10,
@@ -861,7 +858,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       children: [
         // _buildTextField('Email ID', emailIdController, fixtraEditable),
         Text(
-          "Email Id",
+          AppLocalizations.of(context)!.email,
           style: TextStyle(
             fontFamily: "Poppins-Regular",
             fontSize: 13,
@@ -885,75 +882,75 @@ class _ApplicationPageState extends State<ApplicationPage> {
             )),
         SizedBox(height: 10),
 
-        _buildTextField('Place of Birth', placeOfBirthController,
-            personalInfoEditable, _placeOfBirthFocus, addReg),
+        _buildTextField( AppLocalizations.of(context)!.placeofbirth, placeOfBirthController,
+            personalInfoEditable, _placeOfBirthFocus,addReg),
         SizedBox(height: 10),
 
         // Control this flag to enable/disable fields
 
-        Padding(
-          padding: const EdgeInsets.only(right: 0.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Dependent Persons',
-                style: TextStyle(
-                  fontFamily: "Poppins-Regular",
-                  fontSize: 13, // Consistent font size
-                  color: Colors.black, // Optional for consistency
-                ),
-                textAlign: TextAlign.left,
-              ),
-              SizedBox(height: 16),
-              Container(
-                //height: 55,
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: DropdownButton<String>(
-                  value: selectedDependent,
-                  isExpanded: true,
-                  iconSize: 24,
-                  elevation: 16,
+         Padding(
+            padding: const EdgeInsets.only(right: 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.dependentpersons,
                   style: TextStyle(
                     fontFamily: "Poppins-Regular",
                     fontSize: 13, // Consistent font size
-                    color: Colors.black,
+                    color: Colors.black, // Optional for consistency
                   ),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.transparent,
-                  ),
-                  onChanged: personalInfoEditable
-                      ? (String? newValue) {
-                          setState(() {
-                            selectedDependent = newValue!;
-                          });
-                        }
-                      : null,
-                  items: onetonine.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          fontSize: 13, // Consistent font size
-                          color: Colors.black,
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                  textAlign: TextAlign.left,
                 ),
-              ),
-            ],
+                SizedBox(height: 16),
+                Container(
+                  //height: 55,
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: DropdownButton<String>(
+                    value: selectedDependent,
+                    isExpanded: true,
+                    iconSize: 24,
+                    elevation: 16,
+                    style: TextStyle(
+                      fontFamily: "Poppins-Regular",
+                      fontSize: 13, // Consistent font size
+                      color: Colors.black,
+                    ),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.transparent,
+                    ),
+                    onChanged: personalInfoEditable
+                        ? (String? newValue) {
+                      setState(() {
+                        selectedDependent = newValue!;
+                      });
+                    }
+                        : null,
+                    items: onetonine.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                            fontFamily: "Poppins-Regular",
+                            fontSize: 13, // Consistent font size
+                            color: Colors.black,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
 
-        /* Row(
+       /* Row(
           children: [
             // Dependent Persons Column
 
@@ -998,6 +995,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ],
         )*/
 
+
         SizedBox(height: 10),
 
         Row(
@@ -1012,7 +1010,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   // Align children to the start of the column
                   children: [
                     Text(
-                      'Religion',
+                      AppLocalizations.of(context)!.religion,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                       textAlign: TextAlign.left,
@@ -1072,7 +1070,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   // Align children to the start of the column
                   children: [
                     Text(
-                      'Cast',
+                      AppLocalizations.of(context)!.cast,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                       textAlign: TextAlign.left,
@@ -1129,7 +1127,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         SizedBox(height: 10),
 
         Text(
-          "Mobile No.",
+          AppLocalizations.of(context)!.mobile,
           style: TextStyle(
             fontFamily: "Poppins-Regular",
             fontSize: 13,
@@ -1171,7 +1169,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   // Align children to the start of the column
                   children: [
                     Text(
-                      'Is Handicap',
+                      AppLocalizations.of(context)!.ishandicap,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                       textAlign: TextAlign.left, // Align text to the left
@@ -1202,10 +1200,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             ? (String? newValue) {
                                 setState(() {
                                   selectedIsHandicap = newValue!;
-                                  if (newValue == "Yes") {
-                                    _isHandicapVisible = true;
-                                  } else {
-                                    _isHandicapVisible = false;
+                                  if(newValue=="Yes"){
+                                    _isHandicapVisible=true;
+                                  }else{
+                                    _isHandicapVisible=false;
+
                                   }
                                 });
                               }
@@ -1223,68 +1222,66 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ),
 
-            SizedBox(width: _isHandicapVisible ? 10 : 0),
-            // Gap of 10 between the two columns
+            SizedBox(width: _isHandicapVisible?10:0), // Gap of 10 between the two columns
             Visibility(
                 visible: _isHandicapVisible,
                 child: Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    // Gap of 5 to the left for the second column
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // Align children to the start of the column
-                      children: [
-                        Text(
-                          'Special Ability',
-                          style: TextStyle(
-                              fontFamily: "Poppins-Regular", fontSize: 13),
-                          textAlign: TextAlign.left, // Align text to the left
-                        ),
-                        SizedBox(height: 1),
-                        // Add some spacing between the Text and Container
-                        Container(
-                          //height: 45,
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: selectedspecialAbility,
-                            isExpanded: true,
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(
-                                fontFamily: "Poppins-Regular",
-                                color: Colors.black,
-                                fontSize: 13),
-                            underline: Container(
-                              height: 2,
-                              color: Colors.transparent,
-                            ),
-                            onChanged: personalInfoEditable
-                                ? (String? newValue) {
-                                    setState(() {
-                                      selectedspecialAbility = newValue!;
-                                      isSpecialSocialCategoryVisible =
-                                          (newValue ==
-                                              'Yes'); // Update visibility
-                                    });
-                                  }
-                                : null,
-                            items: handicapTypes.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                // Gap of 5 to the left for the second column
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // Align children to the start of the column
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.specialability,
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular", fontSize: 13),
+                      textAlign: TextAlign.left, // Align text to the left
                     ),
-                  ),
-                ))
+                    SizedBox(height: 1),
+                    // Add some spacing between the Text and Container
+                    Container(
+                      //height: 45,
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedspecialAbility,
+                        isExpanded: true,
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(
+                            fontFamily: "Poppins-Regular",
+                            color: Colors.black,
+                            fontSize: 13),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.transparent,
+                        ),
+                        onChanged: personalInfoEditable
+                            ? (String? newValue) {
+                          setState(() {
+                            selectedspecialAbility = newValue!;
+                            isSpecialSocialCategoryVisible =
+                            (newValue == 'Yes'); // Update visibility
+                          });
+                        }
+                            : null,
+                        items: handicapTypes.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ))
             // Special Ability Column
             ,
           ],
@@ -1295,7 +1292,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Special Social Category',
+              AppLocalizations.of(context)!.specialsocialability,
               style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
             ),
             SizedBox(height: 1),
@@ -1351,7 +1348,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           child: Center(
             // Center widget to center the text inside the container
             child: Text(
-              'PERMANENT',
+              AppLocalizations.of(context)!.permanent,
               style: TextStyle(
                 fontFamily: "Poppins-Regular",
                 color: Colors.white,
@@ -1362,19 +1359,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
         SizedBox(height: 10),
 
-        _buildTextField('Address1', address1ControllerP, personalInfoEditable,
-            _address1FocusP, addReg),
+        _buildTextField(AppLocalizations.of(context)!.address1,
+            address1ControllerP, personalInfoEditable,
+            _address1FocusP,addReg),
         SizedBox(height: 10),
 
-        _buildTextField('Address2', address2ControllerP, personalInfoEditable,
-            _address2FocusP, addReg),
+        _buildTextField(AppLocalizations.of(context)!.address2, address2ControllerP, personalInfoEditable,
+            _address2FocusP,addReg),
         SizedBox(height: 10),
 
-        _buildTextField('Address3', address3ControllerP, personalInfoEditable,
-            _address3FocusP, addReg),
+        _buildTextField(AppLocalizations.of(context)!.address3, address3ControllerP, personalInfoEditable,
+            _address3FocusP,addReg),
         SizedBox(height: 10),
         _buildLabeledDropdownField(
-          'Select State',
+          AppLocalizations.of(context)!.sstate,
           'State',
           states,
           selectedStateextraP,
@@ -1443,8 +1441,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             // City TextField
             Flexible(
-              child: _buildTextField('City', cityControllerP,
-                  personalInfoEditable, _cityFocusP, cityReg),
+              child: _buildTextField(
+                  AppLocalizations.of(context)!.city, cityControllerP, personalInfoEditable, _cityFocusP,cityReg),
             ),
             SizedBox(width: 10),
             // Add some space between the City TextField and Pin Code Text
@@ -1454,7 +1452,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Pin Code",
+                    AppLocalizations.of(context)!.pincode,
                     style: TextStyle(
                       fontFamily: "Poppins-Regular",
                       fontSize: 13,
@@ -1499,7 +1497,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           child: Center(
             // Center widget to center the text inside the container
             child: Text(
-              'CURRENT',
+              AppLocalizations.of(context)!.currunt,
               style: TextStyle(
                 fontFamily: "Poppins-Regular",
                 color: Colors.white,
@@ -1513,10 +1511,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             Checkbox(
               value: _isAddressChecked,
-              onChanged: personalInfoEditable ? _onCheckboxChanged : null,
+              onChanged: personalInfoEditable?_onCheckboxChanged:null,
             ),
             Text(
-              'Same as Permanent Address',
+              AppLocalizations.of(context)!.sameaspermanent,
               style: TextStyle(
                 fontFamily: "Poppins-Regular",
                 fontSize: 10.0,
@@ -1525,20 +1523,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
-        _buildTextField('Address1', address1ControllerC, personalInfoEditable,
-            _address1FocusC, addReg),
+        _buildTextField(AppLocalizations.of(context)!.address1, address1ControllerC, personalInfoEditable,
+            _address1FocusC,addReg),
         SizedBox(height: 10),
 
-        _buildTextField('Address2', address2ControllerC, personalInfoEditable,
-            _address2FocusC, addReg),
+        _buildTextField(AppLocalizations.of(context)!.address2, address2ControllerC, personalInfoEditable,
+            _address2FocusC,addReg),
         SizedBox(height: 10),
 
-        _buildTextField('Address3', address3ControllerC, personalInfoEditable,
-            _address3FocusC, addReg),
+        _buildTextField(AppLocalizations.of(context)!.address3, address3ControllerC, personalInfoEditable,
+            _address3FocusC,addReg),
         SizedBox(height: 10),
 
         _buildLabeledDropdownField(
-          'Select State',
+          AppLocalizations.of(context)!.sstate,
           'State',
           states,
           selectedStateextraC,
@@ -1557,8 +1555,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             // City TextField
             Flexible(
-              child: _buildTextField('City', cityControllerC,
-                  personalInfoEditable, _cityFocusC, cityReg),
+              child: _buildTextField(
+                  AppLocalizations.of(context)!.city, cityControllerC, personalInfoEditable, _cityFocusC,cityReg),
             ),
             SizedBox(width: 10),
             // Add some space between the City TextField and Pin Code Text
@@ -1568,7 +1566,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Pin Code",
+                    AppLocalizations.of(context)!.pincode,
                     style: TextStyle(
                       fontFamily: "Poppins-Regular",
                       fontSize: 13,
@@ -1648,60 +1646,60 @@ class _ApplicationPageState extends State<ApplicationPage> {
         Row(
           children: [
             Flexible(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 0.0),
-                // Gap of 5 to the left for the second column
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // Align children to the start of the column
-                  children: [
-                    Text(
-                      'Is House Rental',
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular", fontSize: 13),
-                      textAlign: TextAlign.left, // Align text to the left
-                    ),
-                    SizedBox(height: 1),
-                    // Add some spacing between the Text and Container
-                    Container(
-                      //height: 45,
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: DropdownButton<String>(
-                        value: selectedIsHouseRental,
-                        isExpanded: true,
-                        iconSize: 24,
-                        elevation: 16,
-                        style: TextStyle(
-                            fontFamily: "Poppins-Regular",
-                            color: Colors.black,
-                            fontSize: 13),
-                        underline: Container(
-                          height: 2,
-                          color: Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 0.0),
+                    // Gap of 5 to the left for the second column
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      // Align children to the start of the column
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.ishouserent,
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular", fontSize: 13),
+                          textAlign: TextAlign.left, // Align text to the left
                         ),
-                        onChanged: personalInfoEditable
-                            ? (String? newValue) {
-                                setState(() {
-                                  selectedIsHouseRental = newValue!;
-                                });
-                              }
-                            : null,
-                        items: trueFalse.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
+                        SizedBox(height: 1),
+                        // Add some spacing between the Text and Container
+                        Container(
+                          //height: 45,
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: selectedIsHouseRental,
+                            isExpanded: true,
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(
+                                fontFamily: "Poppins-Regular",
+                                color: Colors.black,
+                                fontSize: 13),
+                            underline: Container(
+                              height: 2,
+                              color: Colors.transparent,
+                            ),
+                            onChanged: personalInfoEditable
+                                ? (String? newValue) {
+                              setState(() {
+                                selectedIsHouseRental = newValue!;
+                              });
+                            }
+                                : null,
+                            items: trueFalse.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
             SizedBox(width: 16.0),
             // Optional spacing between the dropdown and the column
             Expanded(
@@ -1709,7 +1707,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Residing for (Years)',
+                    AppLocalizations.of(context)!.residingyear,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
@@ -1762,7 +1760,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Property (In Acres)',
+                    AppLocalizations.of(context)!.property,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
@@ -1815,7 +1813,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'House Owner',
+                      AppLocalizations.of(context)!.houseowner,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -1875,28 +1873,28 @@ class _ApplicationPageState extends State<ApplicationPage> {
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTextField('Mother name', _motherFController, FiFamilyEditable,
-            _motherFFocus, nameReg),
+        _buildTextField(
+            AppLocalizations.of(context)!.mothername, _motherFController, FiFamilyEditable, _motherFFocus,nameReg),
         SizedBox(
           height: 10,
         ),
         Row(
           children: [
             Flexible(
-                child: _buildTextField('Middle Name', _motherMController,
-                    FiFamilyEditable, _motherMFocus, nameReg)),
+                child: _buildTextField(AppLocalizations.of(context)!.mname, _motherMController,
+                    FiFamilyEditable, _motherMFocus,nameReg)),
             SizedBox(width: 13),
             // Add spacing between the text fields if needed
             Flexible(
-                child: _buildTextField('Last Name', _motherLController,
-                    FiFamilyEditable, _motherLFocus, nameReg)),
+                child: _buildTextField(AppLocalizations.of(context)!.lname, _motherLController,
+                    FiFamilyEditable, _motherLFocus,nameReg)),
           ],
         ),
         SizedBox(
           height: 10,
         ),
         Text(
-          'No. of Children',
+          AppLocalizations.of(context)!.noofchildren,
           style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
         ),
         SizedBox(
@@ -1945,7 +1943,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           height: 10,
         ),
         Text(
-          'School Going Children',
+          AppLocalizations.of(context)!.schoolgoingchildren,
           style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
         ),
         SizedBox(
@@ -1994,7 +1992,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           height: 10,
         ),
         Text(
-          'Other Dependents',
+          AppLocalizations.of(context)!.otherdependentis,
           style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
         ),
         Container(
@@ -2056,7 +2054,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Occupation',
+                    AppLocalizations.of(context)!.occupation,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
@@ -2109,7 +2107,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Business Detail',
+                    AppLocalizations.of(context)!.businessdetail,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
@@ -2164,13 +2162,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             Flexible(
               child: _buildTextField2(
-                  'Current EMI',
+                  AppLocalizations.of(context)!.currentemi,
                   _currentEMIController,
                   TextInputType.number,
                   FiIncomeEditable,
                   _currentEMIFocus,
-                  6,
-                  amountReg),
+                  6,amountReg),
             ),
             SizedBox(width: 10), // Spacing between the two columns
             Flexible(
@@ -2178,7 +2175,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Home Type',
+                    AppLocalizations.of(context)!.hometype,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2234,7 +2231,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Roof Type',
+                    AppLocalizations.of(context)!.rooftype,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2284,7 +2281,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Toilet Type',
+                    AppLocalizations.of(context)!.toilettype,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2340,7 +2337,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Leave With Spouse',
+                    AppLocalizations.of(context)!.leavewithspouse,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2389,7 +2386,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Earning Member',
+                    AppLocalizations.of(context)!.earningmember,
                     style:
                         TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
@@ -2438,7 +2435,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           height: 10,
         ),
         Text(
-          'Business Experience',
+          AppLocalizations.of(context)!.businessexperience,
           style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
           textAlign: TextAlign.left,
         ),
@@ -2488,7 +2485,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           child: Center(
             // Center widget to center the text inside the container
             child: Text(
-              'INCOMES',
+              AppLocalizations.of(context)!.income,
               style: TextStyle(
                 fontFamily: "Poppins-Regular",
                 color: Colors.white,
@@ -2503,23 +2500,21 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Future Income',
+                      AppLocalizations.of(context)!.futureincome,
                       _future_IncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
                       _future_IncomeFocus,
-                      6,
-                      amountReg),
+                      6,amountReg),
                 ),
                 Flexible(
                   child: _buildTextField2(
-                      'Agriculture Income',
+                      AppLocalizations.of(context)!.agricultureincome,
                       _agriculture_incomeController,
                       TextInputType.number,
                       FiIncomeEditable,
                       _agriculture_incomeFocus,
-                      6,
-                      amountReg),
+                      6,amountReg),
                 ),
               ],
             ),
@@ -2527,23 +2522,21 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Rental Income',
+                      AppLocalizations.of(context)!.rentalincome,
                       _any_RentalIncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
                       _any_RentalIncomeFocus,
-                      6,
-                      amountReg),
+                      6,amountReg),
                 ),
                 Flexible(
                   child: _buildTextField2(
-                      'Annual Income',
+                      AppLocalizations.of(context)!.annualincome,
                       _annuaL_INCOMEController,
                       TextInputType.number,
                       FiIncomeEditable,
                       _annuaL_INCOMEFocus,
-                      6,
-                      amountReg),
+                      6,amountReg),
                 ),
               ],
             ),
@@ -2551,23 +2544,21 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Other Income',
+                      AppLocalizations.of(context)!.otherincome,
                       _other_IncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
                       _other_IncomeFocus,
-                      6,
-                      amountReg),
+                      6,amountReg),
                 ),
                 Flexible(
                   child: _buildTextField2(
-                      'Pension Income',
+                      AppLocalizations.of(context)!.pensionincome,
                       _pensionIncomeController,
                       TextInputType.number,
                       FiIncomeEditable,
                       _pensionIncomeFocus,
-                      6,
-                      amountReg),
+                      6,amountReg),
                 ),
               ],
             ),
@@ -2575,13 +2566,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Other than Agricultural Income',
+                      AppLocalizations.of(context)!.otherthanagriculturalincome,
                       _otheR_THAN_AGRICULTURAL_INCOMEController,
                       TextInputType.number,
                       FiIncomeEditable,
                       _otheR_THAN_AGRICULTURAL_INCOMEFocus,
-                      6,
-                      amountReg),
+                      6,amountReg),
                 ),
               ],
             ),
@@ -2597,7 +2587,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           child: Center(
             // Center widget to center the text inside the container
             child: Text(
-              'EXPENSES ON',
+              AppLocalizations.of(context)!.expenseson,
               style: TextStyle(
                 fontFamily: "Poppins-Regular",
                 color: Colors.white,
@@ -2611,24 +2601,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
             Row(
               children: [
                 Flexible(
-                  child: _buildTextField2(
-                      'Rent',
-                      _rentController,
-                      TextInputType.number,
-                      FiIncomeEditable,
-                      _rentFocus,
-                      6,
-                      amountReg),
+                  child: _buildTextField2(AppLocalizations.of(context)!.rent, _rentController,
+                      TextInputType.number, FiIncomeEditable, _rentFocus, 6,amountReg),
                 ),
                 Flexible(
-                  child: _buildTextField2(
-                      'Food',
-                      _foodingController,
-                      TextInputType.number,
-                      FiIncomeEditable,
-                      _foodingFocus,
-                      6,
-                      amountReg),
+                  child: _buildTextField2(AppLocalizations.of(context)!.food, _foodingController,
+                      TextInputType.number, FiIncomeEditable, _foodingFocus, 6,amountReg),
                 ),
               ],
             ),
@@ -2636,23 +2614,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Education',
+                      AppLocalizations.of(context)!.eductation,
                       _educationController,
                       TextInputType.number,
                       FiIncomeEditable,
                       _educationFocus,
-                      6,
-                      addReg),
+                      6,addReg),
                 ),
                 Flexible(
-                  child: _buildTextField2(
-                      'Health',
-                      _healthController,
-                      TextInputType.number,
-                      FiIncomeEditable,
-                      _healthFocus,
-                      6,
-                      amountReg),
+                  child: _buildTextField2(AppLocalizations.of(context)!.health, _healthController,
+                      TextInputType.number, FiIncomeEditable, _healthFocus, 6,amountReg),
                 ),
               ],
             ),
@@ -2660,23 +2631,21 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Travelling',
+                      AppLocalizations.of(context)!.travelling,
                       _travellingController,
                       TextInputType.number,
                       FiIncomeEditable,
                       _travellingFocus,
-                      6,
-                      amountReg),
+                      6,amountReg),
                 ),
                 Flexible(
                   child: _buildTextField2(
-                      'Entertainment',
+                      AppLocalizations.of(context)!.entertainment,
                       _entertainmentController,
                       TextInputType.number,
                       FiIncomeEditable,
                       _entertainmentFocus,
-                      6,
-                      amountReg),
+                      6,amountReg),
                 ),
               ],
             ),
@@ -2684,23 +2653,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
               children: [
                 Flexible(
                   child: _buildTextField2(
-                      'Children',
+                      AppLocalizations.of(context)!.children,
                       _spendOnChildrenController,
                       TextInputType.number,
                       FiIncomeEditable,
                       _spendOnChildrenFocus,
-                      6,
-                      amountReg),
+                      6,amountReg),
                 ),
                 Flexible(
-                  child: _buildTextField2(
-                      'Others',
-                      _othersController,
-                      TextInputType.number,
-                      FiIncomeEditable,
-                      _othersFocus,
-                      6,
-                      amountReg),
+                  child: _buildTextField2(AppLocalizations.of(context)!.other, _othersController,
+                      TextInputType.number, FiIncomeEditable, _othersFocus, 6,amountReg),
                 ),
               ],
             ),
@@ -2716,7 +2678,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'ACCOUNT TYPE',
+            AppLocalizations.of(context)!.banktype,
             style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
             textAlign: TextAlign.left,
           ),
@@ -2772,15 +2734,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildTextField('IFSC', _bank_IFCSController,
-                      FinancialInfoEditable, _bank_IFCSFocus, '[a-zA-Z0-9]'),
+                      FinancialInfoEditable, _bank_IFCSFocus,'[a-zA-Z0-9]'),
                   _buildTextField2(
-                      'BANK ACCOUNT NO.',
+                      AppLocalizations.of(context)!.bankacc,
                       _bank_AcController,
                       TextInputType.number,
                       FinancialInfoEditable,
                       _bank_AcFocus,
-                      17,
-                      amountReg),
+                      17,amountReg),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
@@ -2799,27 +2760,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                   _bank_IFCSController.text.isEmpty) {
                                 showToast_Error(
                                     "Please Enter Bank Account number and IFSC code");
-                              } else if (_bank_IFCSController.text.length !=
-                                  11) {
+                              } else if(_bank_IFCSController.text.length!=11){
                                 showToast_Error(
                                     "Please Enter Correct IFSC code");
-                              } else if (_bank_AcController.text.length < 10) {
+                              }else if(_bank_AcController.text.length<10){
                                 showToast_Error(
                                     "Please Enter Correct Account Number");
-
-                              }else if(BorrowerInfo[0].bankAc != "" &&_bank_AcController.text == BorrowerInfo[0].bankAc){
-                                showToast_Error("Account Number already Verified");
-                              }else if(_bank_AcController.text==temp){
-                                showToast_Error("Account Number already Verified");
-
                               }else {
-
                                 ifscVerify(context, _bank_IFCSController.text);
                               }
                             }
                           : null,
                       child: Text(
-                        'Verify Details',
+                        AppLocalizations.of(context)!.verifydetails,
                         style: TextStyle(
                             fontFamily: "Poppins-Regular",
                             fontSize: 18), // Text size
@@ -2837,7 +2790,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: 'BORROWER NAME:',
+                        text: AppLocalizations.of(context)!.borrowername,
                         style: TextStyle(
                             fontFamily: "Poppins-Regular",
                             color: Colors.black,
@@ -2855,13 +2808,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ),
                 )
               : SizedBox(),
-          bankAccHolder != null ? Divider() : SizedBox(),
+          bankAccHolder != null? Divider():SizedBox(),
           bankAddress != null
               ? Text.rich(
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: 'BANK ADDRESS:',
+                        text: AppLocalizations.of(context)!.bankaddress,
                         style: TextStyle(
                             fontFamily: "Poppins-Regular",
                             color: Colors.black,
@@ -2879,11 +2832,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ),
                 )
               : SizedBox(),
-          bankAddress != null ? Divider() : SizedBox(),
+          bankAddress != null? Divider():SizedBox(),
           SizedBox(height: 10),
 
           Text(
-            'ACCOUNT OPENING DATE',
+            AppLocalizations.of(context)!.bankopeningdate,
             style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
           ),
           SizedBox(height: 10), // Adds space between the fields
@@ -2914,33 +2867,26 @@ class _ApplicationPageState extends State<ApplicationPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTextField('Name', _femNameController, femMemIncomeEditable,
-              _femNameFocus, nameReg),
+          _buildTextField(
+              AppLocalizations.of(context)!.name, _femNameController, femMemIncomeEditable, _femNameFocus,nameReg),
           SizedBox(
             height: 10,
           ),
           Row(
             children: [
               Flexible(
-                child: _buildTextField2(
-                    'Age',
-                    _AgeController,
-                    TextInputType.number,
-                    femMemIncomeEditable,
-                    _AgeFocus,
-                    2,
-                    amountReg),
+                child: _buildTextField2(AppLocalizations.of(context)!.age, _AgeController,
+                    TextInputType.number, femMemIncomeEditable, _AgeFocus, 2,amountReg),
               ),
               SizedBox(width: 10), // Adds space between the fields
               Flexible(
                 child: _buildTextField2(
-                    'Income',
+                    AppLocalizations.of(context)!.income,
                     _IncomeController,
                     TextInputType.number,
                     femMemIncomeEditable,
                     _IncomeFocus,
-                    6,
-                    amountReg),
+                    6,amountReg),
               ),
             ],
           ),
@@ -2954,7 +2900,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Gender',
+                      AppLocalizations.of(context)!.gender,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3005,7 +2951,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 child: Column(
                   children: [
                     Text(
-                      'Relation',
+                      AppLocalizations.of(context)!.relation,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3063,7 +3009,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Health',
+                      AppLocalizations.of(context)!.health,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3115,7 +3061,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Education',
+                      AppLocalizations.of(context)!.eductation,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3173,7 +3119,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'SchoolType',
+                      AppLocalizations.of(context)!.schooltype,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3225,7 +3171,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Business',
+                      AppLocalizations.of(context)!.business,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3283,7 +3229,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Business Type',
+                      AppLocalizations.of(context)!.businesstype,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3335,7 +3281,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'IncomeType',
+                      AppLocalizations.of(context)!.incometype,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3393,67 +3339,35 @@ class _ApplicationPageState extends State<ApplicationPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-        Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Aadhaar ID",
-                  style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13, height: 2),
-                ),
-                SizedBox(height: 8), // Adjust the spacing
-                Container(
-                  padding: EdgeInsets.zero,
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    maxLength: 12,
-                    style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                    focusNode: _focusNodeAdhaarId,
-                    controller: _aadharIdController,
-                    enabled: GuarantorEditable,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      errorText: _errorMessageAadhaar.isEmpty ? null : _errorMessageAadhaar,
-                      counterText: "",
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter Aadhaar ID';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      _validateOnFocusChange();
-                    },
+          Row(
+            children: [
+              Flexible(
+                  child: _buildTextField2(
+                      AppLocalizations.of(context)!.adhar,
+                      _aadharIdController,
+                      TextInputType.number,
+                      GuarantorEditable,
+                      _aadharIdFocus,
+                      12,amountReg)),
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                // Add 10px padding from above
+                child: GestureDetector(
+                  onTap: () => _showPopup(context, (String result) {
+                    setState(() {
+                      qrResult = result;
+                    });
+                  }), // Show popup on image click
+                  child: Icon(
+                    Icons.qr_code_2_sharp,
+                    size: 50.0, // Set the size of the icon
+                    color: Colors.grey, // Set the color of the icon
                   ),
                 ),
-              ],
-            ),
+              )
+            ],
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: GestureDetector(
-              onTap: () => _showPopup(context, (String result) {
-                setState(() {
-                  qrResult = result;
-                });
-              }),
-              child: Icon(
-                Icons.qr_code_2_sharp,
-                size: 50.0,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-        ],
-      ),
-
-      Row(
+          Row(
             children: [
               SizedBox(
                 width: 95, // Fixed width for the Title dropdown
@@ -3461,7 +3375,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Title',
+                      AppLocalizations.of(context)!.title,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3507,24 +3421,29 @@ class _ApplicationPageState extends State<ApplicationPage> {
               SizedBox(width: 10),
               // Add spacing between Title dropdown and Name field if needed
               Flexible(
-                child: _buildTextField('Name', _fnameController,
-                    GuarantorEditable, _fnameFocus, nameReg),
+                child: _buildTextField(
+                    AppLocalizations.of(context)!.name, _fnameController, GuarantorEditable, _fnameFocus,nameReg),
               ),
             ],
           ),
           Row(
             children: [
               Flexible(
-                  child: _buildTextField('Middle Name', _mnameController,
-                      GuarantorEditable, _mnameFocus, nameReg)),
+                  child: _buildTextField(
+                      AppLocalizations.of(context)!.mname,
+                _mnameController,
+                GuarantorEditable,
+                _mnameFocus,nameReg
+              )),
               SizedBox(width: 13),
               // Add spacing between the text fields if needed
               Flexible(
-                  child: _buildTextField('Last Name', _lnameController,
-                      GuarantorEditable, _lnameFocus, nameReg)),
+                  child: _buildTextField(AppLocalizations.of(context)!.lname, _lnameController,
+                      GuarantorEditable, _lnameFocus,nameReg)),
             ],
           ),
-          _buildTextField2('Guardian Name', _guardianController, TextInputType.name, GuarantorEditable, _guardianFocus, 20, nameReg),
+          _buildTextField2(AppLocalizations.of(context)!.gurname, _guardianController,
+              TextInputType.name, GuarantorEditable, _guardianFocus, 20,nameReg),
           Row(
             children: [
               Flexible(
@@ -3533,7 +3452,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Gender',
+                      AppLocalizations.of(context)!.gender,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3589,7 +3508,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Relationship',
+              AppLocalizations.of(context)!.relationship,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3641,7 +3560,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ],
           ),
           Text(
-            'Religion',
+          AppLocalizations.of(context)!.religion,
             style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
           ),
           Container(
@@ -3687,8 +3606,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               }).toList(),
             ),
           ),
-          _buildTextField2('Mobile no', _phoneController, TextInputType.number,
-              GuarantorEditable, _phoneFocus, 10, amountReg),
+          _buildTextField2(AppLocalizations.of(context)!.mobile, _phoneController, TextInputType.number,
+              GuarantorEditable, _phoneFocus, 10,amountReg),
           Row(
             children: [
               // Age Box
@@ -3698,7 +3617,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Age',
+    AppLocalizations.of(context)!.age,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3722,7 +3641,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Date of Birth',
+                      AppLocalizations.of(context)!.dob,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", fontSize: 13),
                     ),
@@ -3768,7 +3687,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'PAN No',
+                                AppLocalizations.of(context)!.panno,
                                 style: TextStyle(
                                   fontFamily: "Poppins-Regular",
                                   fontSize: 13,
@@ -3795,12 +3714,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                         return null;
                                       },
                                       inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp('[a-zA-Z0-9]')),
-                                        // Allow only alphanumeric characters // Optional: to deny spaces
+                                        FilteringTextInputFormatter.allow(RegExp(
+                                            '[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
                                         TextInputFormatter.withFunction(
-                                          (oldValue, newValue) =>
-                                              TextEditingValue(
+                                              (oldValue, newValue) => TextEditingValue(
                                             text: newValue.text.toUpperCase(),
                                             selection: newValue.selection,
                                           ),
@@ -3850,8 +3767,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   Row(
                     children: [
                       Flexible(
-                        child: _buildTextField('Driving License', _dlController,
-                            GuarantorEditable, _dlFocus, nameReg),
+                        child: _buildTextField(AppLocalizations.of(context)!.dl, _dlController,
+                            GuarantorEditable, _dlFocus,nameReg),
                       ),
                       SizedBox(width: 10),
                       Padding(
@@ -3899,7 +3816,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               fontSize: 14)),
                   SizedBox(height: 4),
                   Text(
-                    'OR',
+                    AppLocalizations.of(context)!.or,
                     style: TextStyle(
                       fontFamily: "Poppins-Regular",
                       fontSize: 13,
@@ -3910,8 +3827,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   Row(
                     children: [
                       Flexible(
-                        child: _buildTextField('Voter Id', _voterController,
-                            GuarantorEditable, _voterFocus, idsReg),
+                        child: _buildTextField(AppLocalizations.of(context)!.voter, _voterController,
+                            GuarantorEditable, _voterFocus,idsReg),
                       ),
                       SizedBox(width: 10),
                       Padding(
@@ -3961,14 +3878,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
             )),
           ),
           SizedBox(height: 10),
-          _buildTextField('Address 1', _p_Address1Controller, GuarantorEditable,
-              _p_Address1Focus, addReg),
+          _buildTextField(AppLocalizations.of(context)!.address1, _p_Address1Controller, GuarantorEditable,
+              _p_Address1Focus,addReg),
           SizedBox(height: 10),
-          _buildTextField('Address 2', _p_Address2Controller, GuarantorEditable,
-              _p_Address2Focus, addReg),
+          _buildTextField(AppLocalizations.of(context)!.address2, _p_Address2Controller, GuarantorEditable,
+              _p_Address2Focus,addReg),
           SizedBox(height: 10),
-          _buildTextField('Address 3', _p_Address3Controller, GuarantorEditable,
-              _p_Address3Focus, addReg),
+          _buildTextField(AppLocalizations.of(context)!.address3, _p_Address3Controller, GuarantorEditable,
+              _p_Address3Focus,addReg),
           SizedBox(height: 10),
           /*Text(
             'State Name',
@@ -4013,7 +3930,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ),*/
           _buildLabeledDropdownField(
-              'Select State', 'State', states, stateselected, true,
+              AppLocalizations.of(context)!.sstate, 'State', states, stateselected,
+              true,
               (RangeCategoryDataModel? newValue) {
             setState(() {
               stateselected = newValue;
@@ -4024,24 +3942,26 @@ class _ApplicationPageState extends State<ApplicationPage> {
             children: [
               Flexible(
                   child: _buildTextField('City', _p_CityController,
-                      GuarantorEditable, _p_CityFocus, cityReg)),
+                      GuarantorEditable, _p_CityFocus,cityReg)),
               SizedBox(width: 10),
               Flexible(
                   child: _buildTextField2(
-                      'Pincode',
+                      AppLocalizations.of(context)!.pincode,
                       _pincodeController,
                       TextInputType.number,
                       GuarantorEditable,
                       _pincodeFocus,
-                      6,
-                      amountReg)),
+                      6,amountReg)),
             ],
           ),
-          grPicFlag
-              ? Image.network(_imageFile1)
-              : (_imageFile == null
-                  ? Text('No image selected.')
-                  : Image.file(_imageFile!)),
+
+          grPicFlag?Image.network(_imageFile1):( _imageFile == null
+    ? Text(AppLocalizations.of(context)!.noimageselected)
+        :Image.file(_imageFile!)),
+
+
+
+
           ElevatedButton(
             onPressed: getImage,
             style: ElevatedButton.styleFrom(
@@ -4055,7 +3975,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 Icon(Icons.camera_alt),
                 SizedBox(width: 8),
                 // Optional: Adds space between the icon and text
-                Text('Click Guarantor Pic'),
+                Text(AppLocalizations.of(context)!.clickguarantorpic,),
               ],
             ),
           ),
@@ -4122,51 +4042,51 @@ class _ApplicationPageState extends State<ApplicationPage> {
         //  fixtraEditable,FiIncomeEditable,FinancialInfoEditable,GuarantorEditable,UploadFiDocsEditable,FiFamilyEditable,femMemIncomeEditable
         onPressed: () {
           setState(() {
-            editButtonFunctionOn = true;
+            editButtonFunctionOn=true;
           });
           if (_currentStep == 0) {
             setState(() {});
           } else if (_currentStep == 1) {
             setState(() {
-              pageTitle = "Personal Info";
+              pageTitle = AppLocalizations.of(context)!.personalinfo;
               _currentStep -= 1;
             });
           } else if (_currentStep == 2) {
             setState(() {
-              pageTitle = "Family Details";
+              pageTitle = AppLocalizations.of(context)!.familydetails;
               _currentStep -= 1;
             });
           } else if (_currentStep == 3) {
             setState(() {
-              pageTitle = "Income & Expense";
+              pageTitle = AppLocalizations.of(context)!.incomeexpense;
               _currentStep -= 1;
             });
           } else if (_currentStep == 4) {
             setState(() {
-              pageTitle = "Financial Info.";
+              pageTitle = AppLocalizations.of(context)!.financialinfo;
               _currentStep -= 1;
             });
           } else if (_currentStep == 5) {
             setState(() {
               _currentStep -= 1;
-              pageTitle = "Family Income";
+              pageTitle = AppLocalizations.of(context)!.familyincome;
             });
           } else if (_currentStep == 6) {
             setState(() {
-              pageTitle = "Guarantor Form";
+              pageTitle = AppLocalizations.of(context)!.guarantorform;
               _currentStep -= 1;
             });
           } else if (_currentStep == 7) {
             setState(() {
-              editButtonFunctionOn = false;
-              pageTitle = "Upload Docs";
+              editButtonFunctionOn=false;
+              pageTitle = AppLocalizations.of(context)!.uploaddocs;
               _currentStep -= 1;
             });
           }
         },
 
         child: Text(
-          "PREVIOUS",
+            AppLocalizations.of(context)!.previous,
           style: TextStyle(
               fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 13),
         ),
@@ -4218,7 +4138,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           }
         },
         child: Text(
-          "EDIT",
+          AppLocalizations.of(context)!.edit,
           style: TextStyle(
               fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 13),
         ),
@@ -4250,7 +4170,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Family Details";
+                pageTitle = AppLocalizations.of(context)!.familydetails;
               });
             }
           } else if (_currentStep == 1) {
@@ -4261,7 +4181,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Income & Expense";
+                pageTitle = AppLocalizations.of(context)!.incomeexpense;
               });
             }
           } else if (_currentStep == 2) {
@@ -4272,11 +4192,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Financial Info.";
+                pageTitle = AppLocalizations.of(context)!.financialinfo;
               });
             }
           } else if (_currentStep == 3) {
-
             if (FinancialInfoEditable) {
               if (_stepFourValidations()) {
                 AddFinancialInfo(context);
@@ -4284,7 +4203,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Family Income";
+                pageTitle = AppLocalizations.of(context)!.familyincome;
               });
             }
           } else if (_currentStep == 4) {
@@ -4295,7 +4214,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Guarantor Form";
+                pageTitle = AppLocalizations.of(context)!.guarantorform;
               });
             }
           } else if (_currentStep == 5) {
@@ -4306,8 +4225,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Upload Docs";
-                editButtonFunctionOn = false;
+                pageTitle =AppLocalizations.of(context)!.uploaddocs;
+                editButtonFunctionOn=false;
               });
             }
           } else if (_currentStep == 6) {
@@ -4316,8 +4235,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
             } else {
               setState(() {
                 _currentStep++;
-                pageTitle = "Upload Gr Docs";
-                editButtonFunctionOn = false;
+                pageTitle =AppLocalizations.of(context)!.uploadgrdocs;
+                editButtonFunctionOn=false;
               });
             }
           } else if (_currentStep == 7) {
@@ -4325,7 +4244,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           }
         },
         child: Text(
-          _currentStep == 7 ? "SUBMIT" : "NEXT",
+          _currentStep == 7 ? AppLocalizations.of(context)!.submit : AppLocalizations.of(context)!.next,
           style: TextStyle(
               fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 13),
         ),
@@ -4334,7 +4253,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Widget _buildTextField(String label, TextEditingController controller,
-      bool saved, FocusNode FN, String regex) {
+      bool saved, FocusNode FN,String regex) {
     return Container(
       //margin: EdgeInsets.symmetric(vertical: 4),
       // padding: EdgeInsets.all(4),
@@ -4368,10 +4287,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     return null;
                   },
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(regex)),
-                    // Allow only alphanumeric characters // Optional: to deny spaces
+                    FilteringTextInputFormatter.allow(RegExp(
+                        regex)),
+                     // Allow only alphanumeric characters // Optional: to deny spaces
                     TextInputFormatter.withFunction(
-                      (oldValue, newValue) => TextEditingValue(
+                          (oldValue, newValue) => TextEditingValue(
                         text: newValue.text.toUpperCase(),
                         selection: newValue.selection,
                       ),
@@ -4384,14 +4304,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-  Widget _buildTextField2(
-      String label,
-      TextEditingController controller,
-      TextInputType inputType,
-      bool saved,
-      FocusNode FN,
-      int maxlength,
-      String regex) {
+  Widget _buildTextField2(String label, TextEditingController controller,
+      TextInputType inputType, bool saved, FocusNode FN, int maxlength, String regex) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 0),
@@ -4427,17 +4341,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     return 'Please enter $label';
                   }
                   return null;
-                },
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(regex)),
-                  // Allow only alphanumeric characters // Optional: to deny spaces
-                  TextInputFormatter.withFunction(
-                    (oldValue, newValue) => TextEditingValue(
-                      text: newValue.text.toUpperCase(),
-                      selection: newValue.selection,
-                    ),
+                },inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(
+                    regex)),
+                // Allow only alphanumeric characters // Optional: to deny spaces
+                TextInputFormatter.withFunction(
+                      (oldValue, newValue) => TextEditingValue(
+                    text: newValue.text.toUpperCase(),
+                    selection: newValue.selection,
                   ),
-                ],
+                ),
+              ],
+
               ),
             ),
           ),
@@ -4452,8 +4367,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
     int? id,
     String? GrNo,
     required String subType,
+
     required Function(File) onImagePicked,
-  }) {
+  })
+  {
     String baseUrl = 'https://predeptest.paisalo.in:8084';
     String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
     String finalUrl = '$baseUrl/$modifiedPath';
@@ -4463,6 +4380,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
         return GestureDetector(
+
           onTap: () async {
             pickedImage = await GlobalClass().pickImage();
             print("pickedImage $pickedImage");
@@ -4472,8 +4390,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               print("_selectedImage $_selectedImage");
               switch (id) {
                 case 1:
-                  OSVVerified = await OcrDocsScanning("aadharfront",
-                      BorrowerInfo[0].aadharNo, "borrower", context);
+                  OSVVerified = await OcrDocsScanning(
+                      "aadharfront", BorrowerInfo[0].aadharNo, "borrower", context);
                   if (OSVVerified) {
                     adhaarFront = pickedImage;
                   }
@@ -4494,7 +4412,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   break;
                 case 26:
                   OSVVerified = await OcrDocsScanning('voterback',
-                      "1", "borrower", context);
+                      BorrowerInfo[0].voterId, "borrower", context);
                   if (OSVVerified) {
                     voterback = pickedImage;
                   }
@@ -4514,8 +4432,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   }
                   break;
                 case 2:
-                  OSVVerified = await OcrDocsScanning(
-                      'passbook', "1", "borrower", context);
+                  OSVVerified = await OcrDocsScanning('passbook',
+                      "1", "borrower", context);
                   if (OSVVerified) {
                     passbook = pickedImage;
                   }
@@ -4650,7 +4568,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-  List<Widget> _buildKycDocumentList({required bool isStepSeven}) {
+  List<Widget> _buildKycDocumentList({required bool isStepSeven})
+  {
     List<Widget> listItems = [];
     if (_isPageLoading) {
       if (isStepSeven) {
@@ -4660,7 +4579,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "Borrower Docs",
+              AppLocalizations.of(context)!.borrowerdocs,
               style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
             ),
           ),
@@ -4668,7 +4587,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (doc.addharExists == true) {
           listItems.add(_buildListItem(
-            title: "Aadhar Front",
+            title: AppLocalizations.of(context)!.aadharfront,
             path: doc.aadharPath,
             id: 1,
             GrNo: "0",
@@ -4676,11 +4595,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 adhaarFront = file;
               });
-            },
-            subType: 'borrower',
+            }, subType: 'borrower',
           ));
           listItems.add(_buildListItem(
-            title: "Aadhar Back",
+            title: AppLocalizations.of(context)!.aadharback,
             path: doc.aadharBPath,
             id: 27,
             GrNo: '0',
@@ -4688,14 +4606,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 adhaarBack = file;
               });
-            },
-            subType: 'borrower',
+            },subType: 'borrower',
           ));
         }
 
         if (doc.voterExists == true) {
           listItems.add(_buildListItem(
-            title: "Voter Front",
+            title: AppLocalizations.of(context)!.voterfront,
             path: doc.voterPath,
             id: 3,
             GrNo: '0',
@@ -4703,11 +4620,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 voterFront = file;
               });
-            },
-            subType: 'borrower',
+            },subType: 'borrower',
           ));
           listItems.add(_buildListItem(
-            title: "Voter Back",
+            title: AppLocalizations.of(context)!.voterback,
             path: doc.voterBPath,
             id: 26,
             GrNo: '0',
@@ -4715,14 +4631,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 voterFront = file;
               });
-            },
-            subType: 'borrower',
+            },subType: 'borrower',
           ));
         }
 
         if (doc.panExists == true) {
           listItems.add(_buildListItem(
-            title: "Pan Front",
+            title: AppLocalizations.of(context)!.panfront,
             path: doc.panPath,
             id: 4,
             GrNo: '0',
@@ -4730,14 +4645,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 panFront = file;
               });
-            },
-            subType: 'borrower',
+            },subType: 'borrower',
           ));
         }
 
         if (doc.drivingExists == true) {
           listItems.add(_buildListItem(
-            title: "DL Front",
+            title: AppLocalizations.of(context)!.dlfront,
             path: doc.drivingPath,
             id: 15,
             GrNo: '0',
@@ -4745,14 +4659,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 dlFront = file;
               });
-            },
-            subType: 'borrower',
+            },subType: 'borrower',
           ));
         }
 
         if (doc.passportExists == true) {
           listItems.add(_buildListItem(
-            title: "Passport",
+            title: AppLocalizations.of(context)!.passport,
             path: doc.passportPath,
             id: 30,
             GrNo: '0',
@@ -4760,13 +4673,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
               setState(() {
                 passport = file;
               });
-            },
-            subType: 'borrower',
+            },subType: 'borrower',
           ));
         }
 
         listItems.add(_buildListItem(
-          title: "Passbook Front",
+          title: AppLocalizations.of(context)!.passbookfront,
           path: doc.passBookPath,
           id: 2,
           GrNo: '0',
@@ -4774,8 +4686,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               passbook = file;
             });
-          },
-          subType: 'borrower',
+          },subType: 'borrower',
         ));
       }
     }
@@ -4786,110 +4697,94 @@ class _ApplicationPageState extends State<ApplicationPage> {
     List<Widget> listItems1 = [];
     if (_isPageLoading) {
       if (isStepEight) {
-        if(getData.data.grDocs.isNotEmpty) {
-          GrDoc grDoc = getData.data.grDocs[0];
+        GrDoc grDoc = getData.data.grDocs[0];
 
-          listItems1.add(
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Co Borrower Docs",
-                style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-              ),
+        listItems1.add(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              AppLocalizations.of(context)!.uploadgrdocs,
+              style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
             ),
-          );
+          ),
+        );
 
-          if (grDoc.addharExists == true) {
-            listItems1.add(_buildListItem(
-              title: "Aadhar Front",
-              path: grDoc.aadharPath,
-              id: 7,
-              GrNo: '1',
-              onImagePicked: (File file) {
-                setState(() {
-                  adhaarFront_coborrower = file;
-                });
-              },
-              subType: 'guarantor',
-            ));
-            listItems1.add(_buildListItem(
-              title: "Aadhar Back",
-              path: grDoc.aadharBPath,
-              id: 29,
-              GrNo: '1',
-              onImagePicked: (File file) {
-                setState(() {
-                  adhaarBack_coborrower = file;
-                });
-              },
-              subType: 'guarantor',
-            ));
-          }
+        if (grDoc.addharExists == true) {
+          listItems1.add(_buildListItem(
+            title: AppLocalizations.of(context)!.aadharfront,
+            path: grDoc.aadharPath,
+            id: 7,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+                adhaarFront_coborrower = file;
+              });
+            },subType: 'guarantor',
+          ));
+          listItems1.add(_buildListItem(
+            title: AppLocalizations.of(context)!.aadharback,
+            path: grDoc.aadharBPath,
+            id: 29,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+                adhaarBack_coborrower = file;
+              });
+            },subType: 'guarantor',
+          ));
+        }
 
-          if (grDoc.voterExists == true) {
-            listItems1.add(_buildListItem(
-              title: "Voter Front",
-              path: grDoc.voterPath,
-              id: 5,
-              GrNo: '1',
-              onImagePicked: (File file) {
-                setState(() {
-                  voterFront_coborrower = file;
-                });
-              },
-              subType: 'guarantor',
-            ));
-            listItems1.add(_buildListItem(
-              title: "Voter Back",
-              path: grDoc.voterBPath,
-              id: 28,
-              GrNo: '1',
-              onImagePicked: (File file) {
-                setState(() {
-                  voterFront_coborrower = file;
-                });
-              },
-              subType: 'guarantor',
-            ));
-          }
+        if (grDoc.voterExists == true) {
+          listItems1.add(_buildListItem(
+            title: AppLocalizations.of(context)!.voterfront,
+            path: grDoc.voterPath,
+            id: 5,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+                voterFront_coborrower = file;
+              });
+            },subType: 'guarantor',
+          ));
+          listItems1.add(_buildListItem(
+            title: AppLocalizations.of(context)!.voterback,
+            path: grDoc.voterBPath,
+            id: 28,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+                voterFront_coborrower = file;
+              });
+            },subType: 'guarantor',
+          ));
+        }
 
-          if (grDoc.panExists == true) {
-            listItems1.add(_buildListItem(
-              title: "Pan Front",
-              path: grDoc.panPath,
-              id: 8,
-              GrNo: '1',
-              onImagePicked: (File file) {
-                setState(() {
-                  panFront_coborrower = file;
-                });
-              },
-              subType: 'guarantor',
-            ));
-          }
+        if (grDoc.panExists == true) {
+          listItems1.add(_buildListItem(
+            title: AppLocalizations.of(context)!.panfront,
+            path: grDoc.panPath,
+            id: 8,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+                panFront_coborrower = file;
+              });
+            },subType: 'guarantor',
+          ));
+        }
 
-          if (grDoc.drivingExists == true) {
-            listItems1.add(_buildListItem(
-              title: "DL Front",
-              path: grDoc.drivingPath,
-              id: 16,
-              GrNo: '1',
-              onImagePicked: (File file) {
-                setState(() {
-                  dlFront_coborrower = file;
-                });
-              },
-              subType: 'guarantor',
-            ));
-          }
-        }else{
-          listItems1.add(
-            Center(
-              child: CircularProgressIndicator(
-                color: Color(0xFFD42D3F),
-              ),
-            ),
-          );
+        if (grDoc.drivingExists == true) {
+          listItems1.add(_buildListItem(
+            title: AppLocalizations.of(context)!.dlfront,
+            path: grDoc.drivingPath,
+            id: 16,
+            GrNo: '1',
+            onImagePicked: (File file) {
+              setState(() {
+                dlFront_coborrower = file;
+              });
+            },subType: 'guarantor',
+          ));
         }
       }
     } else {
@@ -4931,6 +4826,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               width: double.infinity,
               // Ensure the dropdown takes the full width available
               child: DropdownButtonFormField<T>(
+
                 isExpanded: true,
                 // Ensure the dropdown expands to fit its content
                 decoration: InputDecoration(
@@ -4984,7 +4880,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     ), // Convert the value to string for display
                   );
                 }).toList(),
-                onChanged: readOnly ? onChanged : null,
+                onChanged: readOnly?onChanged:null,
               ),
             ),
           ],
@@ -5032,6 +4928,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         age--;
       }
       _ageController.text = age.toString();
+
     } else {
       _ageController.text = '';
     }
@@ -5269,7 +5166,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       getDataFromOCR("adharFront", context);
                     },
                     child: Text(
-                      'Adhaar Front',
+                        AppLocalizations.of(context)!.aadharfront,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", color: Colors.white),
                     ),
@@ -5291,7 +5188,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       getDataFromOCR("adharBack", context);
                     },
                     child: Text(
-                      'Adhaar Back',
+                        AppLocalizations.of(context)!.aadharback,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", color: Colors.white),
                     ),
@@ -5319,11 +5216,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       if (result != null) {
                         setQRData(result);
                       }
-                      print("result $result");
+                    print("result $result");
                       Navigator.of(context).pop();
                     },
                     child: Text(
-                      'Adhaar QR',
+                        AppLocalizations.of(context)!.adharqr,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", color: Colors.white),
                     ),
@@ -5365,13 +5262,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedCast!.toLowerCase() == "select") {
       showToast_Error("Please select cast");
       return false;
-    }
-    /*else if (resCatController.text.isEmpty) {
+    } /*else if (resCatController.text.isEmpty) {
       showToast_Error("Please enter Reservation Category");
       _resCatFocus.requestFocus();
       return false;
-    }*/
-    else if (mobileController.text.isEmpty ||
+    }*/ else if (mobileController.text.isEmpty ||
         mobileController.text.length != 10 ||
         !mobileController.text.contains(RegExp(r'^[0-9]{10}$'))) {
       showToast_Error("Please enter correct Mobile Number");
@@ -5381,9 +5276,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedIsHandicap!.toLowerCase() == "select") {
       showToast_Error("Please select Is Handicap");
       return false;
-    } else if (selectedIsHandicap == "Yes" &&
-        (selectedspecialAbility == null ||
-            selectedspecialAbility!.toLowerCase() == "select")) {
+    } else if (selectedIsHandicap=="Yes"&& (selectedspecialAbility == null ||
+        selectedspecialAbility!.toLowerCase() == "select")) {
       showToast_Error("Please select special ability");
       return false;
     } else if (selectedSpecialSocialCategory == null ||
@@ -5444,8 +5338,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please enter Pincode (Current)");
       _pincodeFocusC.requestFocus();
       return false;
-    }
-    /*else if (selectedDistrict == null) {
+    } /*else if (selectedDistrict == null) {
       showToast_Error("Please select District");
 
       return false;
@@ -5457,16 +5350,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please select village");
 
       return false;
-    }*/
-    else if (selectedResidingFor == null) {
+    }*/else if (selectedResidingFor == null) {
       showToast_Error("Please select years of residing");
 
       return false;
-    } else if (selectedProperty == null) {
+    }else if (selectedProperty == null) {
       showToast_Error("Please select property in acres");
 
       return false;
-    } else if (selectedPresentHouseOwner == null) {
+    }else if (selectedPresentHouseOwner == null) {
       showToast_Error("Please select house owner type");
 
       return false;
@@ -5508,7 +5400,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedBusiness!.toLowerCase() == 'select') {
       showToast_Error("Please Select Business");
       return false;
-    } else if (_currentEMIController.text.isEmpty) {
+    }else if (_currentEMIController.text.isEmpty) {
       showToast_Error("Please Enter Current EMIs Amount");
       return false;
     } else if (selectedHomeType == null ||
@@ -5541,7 +5433,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedBusinessExperience!.toLowerCase() == 'select') {
       showToast_Error("Please Select Business Experience");
       return false;
-    } else if (_future_IncomeController.text.isEmpty) {
+    }  else if (_future_IncomeController.text.isEmpty) {
       showToast_Error("Please Enter Future Income");
       return false;
     } else if (_agriculture_incomeController.text.isEmpty) {
@@ -5746,15 +5638,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please Enter Address Line 1");
       _p_Address1Focus.requestFocus();
       return false;
-    } else if (_panController.text.isNotEmpty && !panVerified) {
+    }else if(_panController.text.isNotEmpty &&   !panVerified){
       showToast_Error("Please Verify PAN No.");
       _panFocus.requestFocus();
       return false;
-    } else if (_dlController.text.isNotEmpty && !dlVerified) {
+    }else if(_dlController.text.isNotEmpty &&   !dlVerified){
       showToast_Error("Please Verify Driving License");
       _dlFocus.requestFocus();
       return false;
-    } else if (_voterController.text.isNotEmpty && !voterVerified) {
+    }else if(_voterController.text.isNotEmpty &&   !voterVerified){
       showToast_Error("Please Verify Voter No.");
       _panFocus.requestFocus();
       return false;
@@ -5805,7 +5697,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> AddFiExtraDetail(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     int A = selectedIsHandicap == 'Yes' ? 1 : 0;
@@ -5852,7 +5744,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
-          pageTitle = "Family Details";
+          pageTitle = AppLocalizations.of(context)!.familydetails;
           personalInfoEditable = false;
         });
         EasyLoading.dismiss();
@@ -5871,7 +5763,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> AddFiFamilyDetail(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     String Fi_ID = FIID.toString();
@@ -5902,7 +5794,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
-          pageTitle = "Income & Expense";
+          pageTitle = AppLocalizations.of(context)!.incomeexpense;
           FiFamilyEditable = false;
         });
         EasyLoading.dismiss();
@@ -5912,73 +5804,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }).catchError((error) {});
   }
 
-
-  Future<void> saveIDsMethod(BuildContext context) async {
-    EasyLoading.show(
-      status: 'Loading...',
-    );
-
-    print("object");
-    int isNameVerify = 1;
-    final _passportExpiryController = TextEditingController();
-    final _dlExpiryController = TextEditingController();
-    String? PassportExpireDate =
-    _passportExpiryController.text.toString().isEmpty
-        ? null
-        : _passportExpiryController.text;
-    String? DLExpireDate = _dlExpiryController.text.toString().isEmpty
-        ? null
-        : DateFormat('yyyy-MM-dd').format(
-        DateFormat('dd-MM-yyyy').parse(_dlExpiryController.text));
-    String fiid= FIID.toString();
-    print("fiidrps $FIID.toString()");
-    final api = Provider.of<ApiService>(context, listen: false);
-
-    Map<String, dynamic> requestBody = {
-      "Fi_ID": fiid,
-      "pan_no": "",
-      "dl": "",
-      "voter_id": "",
-      "passport": "",
-      "PassportExpireDate": PassportExpireDate,
-      "isAadharVerified": 0,
-      "is_phnno_verified": 0,
-      "isNameVerify": isNameVerify,
-      "Pan_Name": "",
-      "VoterId_Name": "",
-      "Aadhar_Name": "",
-      "DrivingLic_Name": "",
-      "VILLAGE_CODE": "",
-      "CITY_CODE": "",
-      "SUB_DIST_CODE": "",
-      "DIST_CODE": "",
-      "STATE_CODE":"",
-      "DLExpireDate": DLExpireDate,
-      "BankAcc_Name": bankAccHolder,
-    };
-
-    return await api
-        .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        /*setState(() {
-          _currentStep += 1;
-        });*/
-        EasyLoading.dismiss();
-
-      } else {
-        EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
-      }
-    }).catchError((onError){
-      EasyLoading.dismiss();
-      GlobalClass.showErrorAlert(context, onError, 1);
-    });
-  }
-
   Future<void> AddFinancialInfo(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     String Fi_ID = FIID.toString();
@@ -5995,7 +5823,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "Fi_ID": Fi_ID,
       "bankType": bankType,
       "bank_Ac": bank_Ac,
-        //    "bank_name": bank_name,
+      //    "bank_name": bank_name,
       "bank_IFCS": bank_IFCS,
       "bank_address": bank_address,
       "bankOpeningDate": bankOpeningDate,
@@ -6008,7 +5836,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         if (value.statuscode == 200) {
           setState(() {
             _currentStep += 1;
-            pageTitle = "Family Income";
+            pageTitle = AppLocalizations.of(context)!.familydetails;
             FinancialInfoEditable = false;
           });
           EasyLoading.dismiss();
@@ -6025,7 +5853,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> FiFemMemIncome(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     String Fi_ID = FIID.toString();
@@ -6064,7 +5892,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
-          pageTitle = "Guarantor Form";
+          pageTitle = AppLocalizations.of(context)!.guarantorform;
           femMemIncomeEditable = false;
         });
         EasyLoading.dismiss();
@@ -6080,7 +5908,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> AddFiIncomeAndExpense(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     String fi_ID = FIID.toString();
@@ -6153,9 +5981,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
-          pageTitle = "Financial Info.";
+          pageTitle = AppLocalizations.of(context)!.financialinfo;
           FiIncomeEditable = false;
-          verifyFlag = false;
         });
         EasyLoading.dismiss();
       } else {
@@ -6170,7 +5997,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> GetDocs(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     final api = Provider.of<ApiService>(context, listen: false);
@@ -6197,9 +6024,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> FiDocsUploadsApi(BuildContext context, String GurNum) async {
-    if (validateAllDocsForBorrower(context, GurNum)) {
-      saveKYCAllDocs(context, GurNum);
-    }
+
+
+
+       if(validateAllDocsForBorrower(context,GurNum)){
+         saveKYCAllDocs( context,  GurNum);
+       }
+
+
+
+
+
+
+
   }
 
 /*Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file,
@@ -6243,9 +6080,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
    // EasyLoading.dismiss();
   }*/
-  Future<void> verifyDocs(BuildContext context, String txnNumber, String type, String ifsc, String dob) async {
+  Future<void> verifyDocs(BuildContext context, String txnNumber, String type,
+      String ifsc, String dob)
+  async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
     try {
       Map<String, dynamic> requestBody = {
@@ -6268,7 +6107,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           setState(() {
             if (response["error"] == null) {
               panCardHolderName =
-                  "${responseData['name']} ";
+                  "${responseData['first_name']} ${responseData['last_name']}";
               panVerified = true;
             } else {
               panCardHolderName = "PAN no. is wrong please check";
@@ -6285,12 +6124,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
             voterCardHolderName = "${responseData['name']}";
             voterVerified = true;
           });
-        }else if (type == "bankaccount") {
-          setState(() {
-            bankAccHolder = "${responseData['full_name']}";
-            banknameverified = true;
-            saveIDsMethod(context);
-          });
         }
       } else {
         if (type == "pancard") {
@@ -6303,11 +6136,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
             dlCardHolderName = "Driving License is not verified";
             dlVerified = false;
           });
-        } else if (type == "bankaccount") {
+        } else if (type == "voterid") {
           setState(() {
-            bankAccHolder = "Bank Account is not verified";
-            banknameverified = false;
-            saveIDsMethod(context);
+            voterCardHolderName = "Voter no. is not verified";
+            voterVerified = false;
           });
         }
         showToast_Error("Unexpected Response: $response");
@@ -6333,25 +6165,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
           voterCardHolderName = "Voter no. is not verified";
           voterVerified = false;
         });
-      }else if (type == "bankaccount") {
-        setState(() {
-          bankAccHolder = "Bank Account is not verified";
-          banknameverified = false;
-          saveIDsMethod(context);
-        });
       }
       EasyLoading.dismiss();
     }
   }
 
-  void docVerifyIDC(String type, String txnNumber, String ifsc, String dob) async {
+  void docVerifyIDC(
+      String type, String txnNumber, String ifsc, String dob) async {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     setState(() {
-      bankAccHolder = null;
+      bankAccHolder=null;
     });
 
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     Map<String, dynamic> requestBody = {
@@ -6374,12 +6201,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           if (type == "bankaccount") {
             setState(() {
               if (response["error"] == null) {
-                temp =txnNumber;
-                verifyFlag ==true;
-
-                    bankAccHolder = "${responseData['full_name']}";
-                banknameverified=true;
-                saveIDsMethod(context);
+                bankAccHolder = "${responseData['full_name']}";
               } else {
                 bankAccHolder = "Account no. is Not Verified!!";
               }
@@ -6388,7 +6210,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               if (response["error"] == null) {
                 panCardHolderName =
-                    "${responseData['name']} ";
+                    "${responseData['first_name']} ${responseData['last_name']}";
                 panVerified = true;
               } else {
                 panCardHolderName = "PAN no. is wrong please check";
@@ -6458,7 +6280,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void dlVerifyByProtean(String userid, String dlNo, String dob) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
     try {
       // Initialize Dio
@@ -6473,7 +6295,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       final response =
           await apiService_protean.getDLDetailsProtean(requestBody);
       EasyLoading.show(
-        status: 'Loading...',
+        status: AppLocalizations.of(context)!.loading,
       );
       // Handle response
       if (response is Map<String, dynamic>) {
@@ -6502,7 +6324,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void voterVerifyByProtean(String userid, String voterNo) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
     try {
       // Initialize Dio
@@ -6536,56 +6358,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
       docVerifyIDC("voterid", _voterController.text, "", "");
     }
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
-  }
-
-  void bankVerifyByProtean(String userid, String dlNo, String dob) async {
-    EasyLoading.show(
-      status: 'Loading...',
-    );
-    try {
-      // Initialize Dio
-      // Create ApiService instance
-      // API body
-      Map<String, dynamic> requestBody = {
-        "userID": userid,
-        "accNo": _bank_AcController.text,
-        "ifsc": _bank_IFCSController.text
-      };
-      // Hit the API
-      final response =
-      await apiService_protean.getBankDetailsProtean(requestBody);
-      EasyLoading.show(
-        status: 'Loading...',
-      );
-      // Handle response
-      if (response is Map<String, dynamic>) {
-        Map<String, dynamic> responseData = response["data"];
-        // Parse JSON object if it’s a map
-        setState(() {
-          if (responseData['result']['accountName'] != null) {
-            bankAccHolder = "${responseData['result']['accountName']}";
-            banknameverified = true;
-            saveIDsMethod(context);
-          } else {
-            docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
-          }
-        });
-      } else {
-        docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
-      }
-    } catch (e) {
-      // Handle errors
-      docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
-    }
-    EasyLoading.dismiss();
   }
 
   Future<void> ifscVerify(BuildContext context, String ifsc) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
+
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl3);
 
     return await api.ifscVerify(ifsc).then((value) {
@@ -6593,11 +6374,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           bankAddress = value.address.toString();
         });
-        docVerifyIDC("bankaccount", _bank_AcController.text,
-            _bank_IFCSController.text, "");
+        docVerifyIDC(
+            "bankaccount",
+            _bank_AcController.text,
+            _bank_IFCSController.text,
+            "");
         EasyLoading.dismiss();
       } else {
-        showToast_Error("Please check IFSC code is not verified");
+        showToast_Error(
+            "Please check IFSC code is not verified");
         EasyLoading.dismiss();
       }
     }).catchError((error) {
@@ -6620,7 +6405,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
           if (type == "adharFront") {
             setState(() {
               _aadharIdController.text = response.data.adharId;
-              _validateOnFocusChange();
               List<String> nameParts = response.data.name.trim().split(" ");
               if (nameParts.length == 1) {
                 _fnameController.text = nameParts[0];
@@ -6636,8 +6420,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               _dobController.text = formatDate(response.data.dob, 'dd/MM/yyyy');
               genderselected = aadhar_gender
                   .firstWhere((item) =>
-                      item.descriptionEn.toLowerCase() ==
-                      response.data.gender.toLowerCase())
+              item.descriptionEn.toLowerCase() ==
+                  response.data.gender.toLowerCase())
                   .descriptionEn;
               if (genderselected == "Male") {
                 selectedTitle = "Mr.";
@@ -6650,12 +6434,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
             _pincodeController.text = response.data.pincode;
 
             String cleanAddress(String name) {
-              String cleanedAddrName =
-                  name.replaceAll(RegExp(r'[^a-zA-Z0-9\s\-\(\)\./\\]'), '');
+              String cleanedAddrName = name.replaceAll(RegExp(r'[^a-zA-Z0-9\s\-\(\)\./\\]'), '');
 
               cleanedAddrName = cleanedAddrName.replaceAllMapped(
                 RegExp(r'(\s\s+|\-\-+|\(\(+|\)\)+|\.{2,}|/{2,}|\\{2,})'),
-                (match) {
+                    (match) {
                   String matchedString = match.group(0)!;
                   if (matchedString.contains('-')) return '-';
                   if (matchedString.contains('(')) return '(';
@@ -6677,9 +6460,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
               if (addressParts.length >= 5) {
                 address1 = addressParts.take(3).join(" ");
-                address2 = addressParts[3] +
-                    " " +
-                    (addressParts.length > 4 ? addressParts[4] : '');
+                address2 = addressParts[3] + " " + (addressParts.length > 4 ? addressParts[4] : '');
                 address3 = addressParts.sublist(5).join(" ");
               } else if (addressParts.length == 4) {
                 address1 = addressParts.take(3).join(" ");
@@ -6705,9 +6486,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 relationselected = "Father";
               });
               _p_CityController.text = response.data.cityName;
-              stateselected = states.firstWhere((item) =>
-                  item.descriptionEn.toLowerCase() ==
-                  response.data.stateName.toLowerCase());
+              stateselected = states.firstWhere((item) => item.descriptionEn.toLowerCase() == response.data.stateName.toLowerCase());
 
               String cleanedAddName = cleanAddress(response.data.address1);
               print("Cleaned Address: $cleanedAddName");
@@ -6716,7 +6495,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
               // Uncomment and use if splitting guardian name is required:
               // splitAndSetGuardianName(response.data.guardianName, "Father");
-            } else if (response.data.relation.toLowerCase() == "husband") {
+            }
+            else if (response.data.relation.toLowerCase() == "husband") {
               _guardianController.text = response.data.guardianName;
               setState(() {
                 relationselected = "Husband";
@@ -6756,10 +6536,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
     if (dataList.length > 14) {
       if (dataList[0].toLowerCase().startsWith("v")) {
         _aadharIdController.text = dataList[2];
-        if (_aadharIdController.text.length != 12) {
-          GlobalClass.showErrorAlert(
-              context, "Please Re-Enter Aadhaar number", 1);
-          _aadharIdController.text = "";
+        if(_aadharIdController.text.length!=12){
+          GlobalClass.showErrorAlert(context, "Please Re-Enter Aadhaar number", 1);
+          _aadharIdController.text="";
         }
         _fnameController.text = dataList[3];
         List<String> nameParts = dataList[3].split(" ");
@@ -6865,10 +6644,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
         }
       } else {
         _aadharIdController.text = dataList[1];
-        if (_aadharIdController.text.length != 12) {
-          GlobalClass.showErrorAlert(
-              context, "Please Re-Enter Aadhaar number", 1);
-          _aadharIdController.text = "";
+        if(_aadharIdController.text.length!=12){
+          GlobalClass.showErrorAlert(context, "Please Re-Enter Aadhaar number", 1);
+          _aadharIdController.text="";
         }
 
         _fnameController.text = dataList[2];
@@ -6957,7 +6735,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> saveGuarantorMethod(BuildContext context) async {
     EasyLoading.show(
-      status: 'Loading...',
+      status: AppLocalizations.of(context)!.loading,
     );
 
     print("object");
@@ -7023,7 +6801,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.statuscode == 200) {
         setState(() {
           _currentStep += 1;
-          pageTitle = "Docs Upload";
+          pageTitle = AppLocalizations.of(context)!.uploaddocs;
           GuarantorEditable = false;
           GetDocs(context);
         });
@@ -7098,31 +6876,30 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> getAllDataApi(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...');
+    EasyLoading.show(status: AppLocalizations.of(context)!.loading);
 
     final api = Provider.of<ApiService>(context, listen: false);
-
+    print("getAllDataApi1");
     return await api
         .dataByFIID(GlobalClass.token, GlobalClass.dbName, FIID)
         .then((value) async {
       if (value.statuscode == 200) {
+        print("getAllDataApi2");
         EasyLoading.dismiss();
         BorrowerInfo = value.data;
         Future.delayed(
             Duration.zero, () => showIDCardDialog(context, BorrowerInfo[0]));
 
         if (!value.data[0].placeOfBirth.isEmpty) {
-          setState(() {
-            _currentStep = 1;
-            pageTitle = "Family Details";
-          });
+setState(() {
+  _currentStep =1;
+});
           personalInfo(value.data[0]);
         }
         if (!value.data[0].motheRFirstName.isEmpty) {
           familyDetails(value.data[0]);
           setState(() {
-            _currentStep = 2;
-            pageTitle = "Income & Expense";
+            _currentStep =2;
           });
         }
 
@@ -7130,31 +6907,27 @@ class _ApplicationPageState extends State<ApplicationPage> {
             value.data[0].fiIncomeExpenses[0].inExHomeType.isNotEmpty) {
           fiIncomeExpenses(value.data[0]);
           setState(() {
-            _currentStep = 3;
-            pageTitle = "Financial Info.";
+            _currentStep =3;
           });
         }
 
         if (!value.data[0].bankAc.isEmpty) {
           financialInfo(value.data[0]);
           setState(() {
-            _currentStep = 4;
-            pageTitle = "Family Income";
+            _currentStep =4;
           });
         }
 
         if (value.data[0].familyMembers.length != 0) {
           femMemIncome(value.data[0]);
           setState(() {
-            _currentStep = 5;
-            pageTitle = "Guarantor Form";
+            _currentStep =5;
           });
         }
         if (value.data[0].guarantors.length != 0) {
           guarrantors(value.data[0]);
           setState(() {
-            _currentStep = 6;
-            pageTitle = "Docs Upload";
+            _currentStep =6;
           });
         }
       } else {
@@ -7163,13 +6936,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }).catchError((err) {
       print("ERRORRRR$err");
       EasyLoading.dismiss();
-    //  GlobalClass.showErrorAlert(context, "Corrupt Case", 2);
+      GlobalClass.showErrorAlert(context, "Corrupt Case", 2);
     });
   }
 
   void personalInfo(ApplicationgetAllDataModel data) {
     setState(() {
-      editButtonFunctionOn = true;
+      editButtonFunctionOn=true;
       personalInfoEditable = false;
       // FIID,
       emailIdController.text = data.emailId;
@@ -7178,20 +6951,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
       // "gff"
       selectedReligionextra = data.religion;
       selectedCast = data.cast;
-      if (data.isHandicap) {
-        _isHandicapVisible = true;
+      if(data.isHandicap){
+        _isHandicapVisible=true;
       }
       if (handicapTypes.contains(data.handicapType.toString())) {
-        selectedspecialAbility = data.handicapType;
+        selectedspecialAbility=data.handicapType;
       } else {
         selectedspecialAbility = null; // Or set a default value
       }
 
       mobileController.text = data.pPhone;
       data.isHandicap ? selectedIsHandicap = "Yes" : selectedIsHandicap = "No";
-      data.special_Social_Category
-          ? selectedSpecialSocialCategory = "Yes"
-          : selectedSpecialSocialCategory = "No";
+      data.special_Social_Category ? selectedSpecialSocialCategory = "Yes" : selectedSpecialSocialCategory = "No";
 
       data.isHouseRental
           ? selectedIsHouseRental = "Yes"
@@ -7216,7 +6987,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       //  selectedDistrict,
       //  selectedSubDistrict,
       //  selectedVillage,
-      selectedResidingFor = data.liveInPresentPlace;
+      selectedResidingFor=data.liveInPresentPlace;
       selectedProperty = data.propertyArea.toString();
       selectedPresentHouseOwner = data.houseOwnerName;
       getPlace("district", selectedStateextraP!.code, "", "");
@@ -7225,7 +6996,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void familyDetails(ApplicationgetAllDataModel data) {
     setState(() {
-      editButtonFunctionOn = true;
+      editButtonFunctionOn=true;
       FiFamilyEditable = false;
       _motherFController.text = data.motheRFirstName;
       _motherMController.text = data.motheRMiddleName;
@@ -7243,9 +7014,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void fiIncomeExpenses(ApplicationgetAllDataModel data) {
     setState(() {
-      editButtonFunctionOn = true;
+      editButtonFunctionOn=true;
       FiIncomeEditable = false;
-      verifyFlag = false;
       selectedOccupation = data.fiIncomeExpenses[0].inExOccupation;
       selectedBusiness = data.fiIncomeExpenses[0].inExBusinessDetail;
       _currentEMIController.text =
@@ -7293,7 +7063,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void financialInfo(ApplicationgetAllDataModel data) {
     setState(() {
       FinancialInfoEditable = false;
-      editButtonFunctionOn = true;
+      editButtonFunctionOn=true;
       if (accType.contains(data.bankType)) {
         selectedAccountType = data.bankType;
       } else {
@@ -7301,22 +7071,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
       }
 
       //   selectedBankName = data.bankName;
-      bankAccHolder = data.bankAccName;
       _bank_AcController.text = data.bankAc;
       _bank_IFCSController.text = data.bankIfcs;
       bankAddress = data.bankAddress;
-
-      DateTime parsedDate = DateTime.parse(data.bankAcOpenDate);
-      String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
-      _bankOpeningDateController.text = formattedDate;
-    //  _bankOpeningDateController.text = data.bankAcOpenDate.split("T")[0];
+      _bankOpeningDateController.text = data.bankAcOpenDate.split("T")[0];
     });
   }
 
   void femMemIncome(ApplicationgetAllDataModel data) {
     setState(() {
       femMemIncomeEditable = false;
-      editButtonFunctionOn = true;
+      editButtonFunctionOn=true;
 
       _femNameController.text = data.familyMembers[0].famName;
       _AgeController.text = data.familyMembers[0].famAge.toString();
@@ -7336,9 +7101,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
   void guarrantors(ApplicationgetAllDataModel data) {
     setState(() {
       GuarantorEditable = false;
-      editButtonFunctionOn = true;
+      editButtonFunctionOn=true;
 
-      _fnameController.text = data.guarantors[0].grFname;
+       _fnameController.text = data.guarantors[0].grFname;
       _mnameController.text = data.guarantors[0].grMname;
       _lnameController.text = data.guarantors[0].grLname;
       _guardianController.text = data.guarantors[0].grGuardianName;
@@ -7347,7 +7112,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
       } else {
         selectedTitle = null; // Or set a default value
       }
-
 
       _p_Address1Controller.text = data.guarantors[0].grPAddress1;
       _p_Address2Controller.text = data.guarantors[0].grPAddress2;
@@ -7358,33 +7122,23 @@ class _ApplicationPageState extends State<ApplicationPage> {
           data.guarantors[0].grPState.toLowerCase());
       genderselected = data.guarantors[0].grGender;
       religionselected = data.guarantors[0].grReligion;
-      if (relation.any((item) =>
-          item.descriptionEn == data.guarantors[0].grRelationWithBorrower)) {
+      if (relation.any((item) => item.descriptionEn == data.guarantors[0].grRelationWithBorrower)) {
         relationselected = data.guarantors[0].grRelationWithBorrower;
       } else {
         relationselected = null; // Or set a default value
       }
 
       _pincodeController.text = data.guarantors[0].grPincode.toString();
-
-
-      DateTime parsedDate = DateTime.parse(data.guarantors[0].grDob);
-      String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
-      _dobController.text = formattedDate;
-      //_dobController.text = data.guarantors[0].grDob.toString();
-
-
-
+      _dobController.text = data.guarantors[0].grDob.toString();
       _ageController.text = data.guarantors[0].grAge.toString();
       _phoneController.text = data.guarantors[0].grPhone;
       _panController.text = data.guarantors[0].grPan;
       _dlController.text = data.guarantors[0].grDl;
       _voterController.text = data.guarantors[0].grVoter;
       _aadharIdController.text = data.guarantors[0].grAadharId;
-      //  _imageFile2 =GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
+    //  _imageFile2 =GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
 
-      _imageFile1 =
-          GlobalClass().transformFilePathToUrl(data.guarantors[0].grPicture);
+      _imageFile1 = GlobalClass().transformFilePathToUrl(data.guarantors[0].grPicture);
       grPicFlag = true;
       //  genderselected = data.guarantors[0].grGender;
       //  religionselected = data.guarantors[0].grReligion;
@@ -7395,7 +7149,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> DeleteGur(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...');
+    EasyLoading.show(status: AppLocalizations.of(context)!.loading);
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
         .deleteGurrantor(GlobalClass.token, GlobalClass.dbName, FIID.toString())
@@ -7497,8 +7251,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 */
 
-  Future<bool> OcrDocsScanning(
-      String type, String id, String subType, BuildContext context) async {
+  Future<bool> OcrDocsScanning(String type, String id, String subType, BuildContext context) async {
     EasyLoading.show(); // Show a loading indicator
 
     try {
@@ -7514,6 +7267,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         EasyLoading.dismiss();
         GlobalClass.showSuccessAlert(context, response.message, 1);
         return true;
+
 
         // switch (type) {
         //   case "aadharfront":
@@ -7540,43 +7294,40 @@ class _ApplicationPageState extends State<ApplicationPage> {
         //   default:
         //     showToast_Error("Unsupported document type.");
         //     break;
-        //
         // }
-        // return true;
+
+
+
       } else if (response.statusCode == 201) {
-        OcrDocsScanningResponse ocrDocsScanningResponse = response;
+        OcrDocsScanningResponse ocrDocsScanningResponse =
+            response;
 
         if (!ocrDocsScanningResponse.data.isOSV) {
           showDocumentMismatchError(context);
         } else if (!ocrDocsScanningResponse.data.isIdMatched) {
           showIDMismatchError(context);
         } else {
-          GlobalClass.showUnsuccessfulAlert(context,
-              "Unexpected response. Status Code: ${response.statusCode}.", 1);
+          GlobalClass.showUnsuccessfulAlert(context, "Unexpected response. Status Code: ${response.statusCode}.", 1);
+
         }
 
         EasyLoading.dismiss();
         return false;
       } else {
-        GlobalClass.showUnsuccessfulAlert(context,
-            "Failed to fetch data. Status Code: ${response.statusCode}.", 1);
+        GlobalClass.showUnsuccessfulAlert(context, "Failed to fetch data. Status Code: ${response.statusCode}.", 1);
 
         EasyLoading.dismiss();
         return false;
       }
     } catch (e, stackTrace) {
-      GlobalClass.showUnsuccessfulAlert(
-          context,
-          "An error occurred while processing the document. Please try again.",
-          1);
+      GlobalClass.showUnsuccessfulAlert(context, "An error occurred while processing the document. Please try again.", 1);
 
       EasyLoading.dismiss();
       return false;
     }
   }
 
-  void showIDCardDialog(
-      BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
+  void showIDCardDialog(BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
     final String name = [
       borrowerInfo.fName,
       borrowerInfo.mName,
@@ -7587,18 +7338,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final String dl = borrowerInfo.dl;
     final String voterId = borrowerInfo.voterId;
     final String dob = borrowerInfo.dob;
-    String formattedDOB =
-        '${dob.split('T')[0].split('-')[2]}-${dob.split('T')[0].split('-')[1]}-${dob.split('T')[0].split('-')[0]}';
+    String formattedDOB = '${dob.split('T')[0].split('-')[2]}-${dob.split('T')[0].split('-')[1]}-${dob.split('T')[0].split('-')[0]}';
 
     final String loanAmt = borrowerInfo.loanAmount.toString();
     final String imageUrl =
         GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
     // Replace with your image URL
 
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevent closing dialog when tapping outside
-      builder: (BuildContext context) {
+    showDialog(context: context, barrierDismissible: false, builder: (BuildContext context) {
         return WillPopScope(
             onWillPop: () async =>
                 false, // Prevent closing dialog with back button
@@ -7608,7 +7355,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 borderRadius: BorderRadius.circular(10),
               ),
               title: Center(
-                  child: Text('Borrower Details',
+                  child: Text(AppLocalizations.of(context)!.borrowerdetails,
                       style: TextStyle(
                         fontSize: 16,
                       ))),
@@ -7666,12 +7413,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       SizedBox(height: 5),
                       // DOB
 
-                      Text(
-                        'DOB: $formattedDOB',
-                        style: TextStyle(fontSize: 16),
-                      ),
+        Text(
+        'DOB: $formattedDOB',
+        style: TextStyle(fontSize: 16),
+        ),
 
-                      SizedBox(height: 5),
+        SizedBox(height: 5),
                       // Loan Amount
                       if (loanAmt.isNotEmpty)
                         Text('Loan Amt: $loanAmt',
@@ -7682,19 +7429,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
-                            onTap: () {
+                            onTap: (){
                               print('Verification Confirmed');
                               Navigator.of(context).pop();
                             },
                             child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 25),
+                              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
-                                  colors: [
-                                    Colors.greenAccent,
-                                    Color(0xFF0BDC15)
-                                  ],
+                                  colors: [Colors.greenAccent, Color(0xFF0BDC15)],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
@@ -7709,7 +7452,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               ),
                               child: Center(
                                 child: Text(
-                                  'Verify',
+        AppLocalizations.of(context)!.verify,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 13,
@@ -7727,14 +7470,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
+                            onTap: (){
                               print('Verification Rejected');
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();
                             },
                             child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 25),
+                              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [Colors.redAccent, Color(0xFFD42D3F)],
@@ -7752,7 +7494,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               ),
                               child: Center(
                                 child: Text(
-                                  'Reject',
+        AppLocalizations.of(context)!.reject,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 13,
@@ -7845,11 +7587,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
         : BorrowerInfo[0].guarantors[0].grVoter;
     if (response.data.adharId == expectedId) {
       if (response.data.isOSV == true && response.data.isIdMatched == true) {
-        // if (subType == "borrower") {
-        //   voterFront = pickedImage;
-        // } else if (subType == "guarantor") {
-        //   voterFront_coborrower = pickedImage;
-        // }
+        if (subType == "borrower") {
+          voterFront = pickedImage;
+        } else if (subType == "guarantor") {
+          voterFront_coborrower = pickedImage;
+        }
         EasyLoading.dismiss();
         GlobalClass.showSuccessAlert(
             context, "Voter front document verified successfully!", 1);
@@ -7935,22 +7677,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void showDocumentMismatchError(BuildContext context) {
     EasyLoading.dismiss();
-    GlobalClass.showUnsuccessfulAlert(
-        context,
-        "OSV Stamp not found or Not readable!!\nओएसवी स्टाम्प नहीं मिला या पढ़ने योग्य नहीं है!!",
-        1);
+    GlobalClass.showUnsuccessfulAlert(context, "OSV Stamp not found or Not readable!!\nओएसवी स्टाम्प नहीं मिला या पढ़ने योग्य नहीं है!!", 1);
+
   }
 
   void showIDMismatchError(BuildContext context) {
     EasyLoading.dismiss();
-    GlobalClass.showUnsuccessfulAlert(
-        context,
-        "Did not found Document Id\nPlease check document id properly clear or readable\nदस्तावेज़ आईडी नहीं मिला\n" +
-            "कृपया जाँचें कि दस्तावेज़ आईडी ठीक से स्पष्ट या पढ़ने योग्य है",
-        1);
+    GlobalClass.showUnsuccessfulAlert(context, "Did not found Document Id\nPlease check document id properly clear or readable\nदस्तावेज़ आईडी नहीं मिला\n" +
+        "कृपया जाँचें कि दस्तावेज़ आईडी ठीक से स्पष्ट या पढ़ने योग्य है", 1);
+
   }
 
   Future<void> saveKYCAllDocs(BuildContext context, String GurNum) async {
+
     try {
       EasyLoading.show(status: 'Loading...');
 
@@ -8005,121 +7744,104 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   bool validateAllDocsForBorrower(BuildContext context, String gurNum) {
-    KycScanningDataModel kycScanningDataModel = getData.data;
-    if (gurNum == "0") {
-      if (kycScanningDataModel.addharExists) {
-        if (adhaarFront == null) {
+    KycScanningDataModel kycScanningDataModel=getData.data;
+    if(gurNum=="0"){
+      if(kycScanningDataModel.addharExists){
+        if(adhaarFront==null){
           GlobalClass.showToast_Error("Please upload Aadhaar Front");
           return false;
         }
 
-        if (adhaarBack == null) {
+        if(adhaarBack==null){
           GlobalClass.showToast_Error("Please upload Aadhaar Back");
           return false;
         }
       }
 
-      if (kycScanningDataModel.drivingExists) {
-        if (dlFront == null) {
+      if(kycScanningDataModel.drivingExists){
+        if(dlFront==null){
           GlobalClass.showToast_Error("Please upload Driving License");
           return false;
         }
       }
 
-      if (kycScanningDataModel.voterExists) {
-        if (voterFront == null) {
+      if(kycScanningDataModel.voterExists){
+        if(voterFront==null){
           GlobalClass.showToast_Error("Please upload Voter Card Front");
           return false;
         }
 
-        if (voterback == null) {
+        if(voterback==null){
           GlobalClass.showToast_Error("Please upload Voter Card Back");
           return false;
         }
       }
-      if (kycScanningDataModel.panExists) {
-        if (panFront == null) {
+      if(kycScanningDataModel.panExists){
+        if(panFront==null){
           GlobalClass.showToast_Error("Please upload PAN Card");
           return false;
         }
       }
 
-      if (kycScanningDataModel.passportExists) {
-        if (passport == null) {
+      if(kycScanningDataModel.passportExists){
+        if(passport==null){
           GlobalClass.showToast_Error("Please upload Passport");
           return false;
         }
       }
 
-      if (passbook == null) {
+      if(passbook==null){
         GlobalClass.showToast_Error("Please upload Passbook");
         return false;
       }
 
       return true;
-    } else {
-      if (kycScanningDataModel.grDocs[0].addharExists) {
-        if (adhaarFront_coborrower == null) {
-          GlobalClass.showToast_Error(
-              "Please upload CO-Borrower Aadhaar Front");
+    }else{
+
+      if(kycScanningDataModel.grDocs[0].addharExists){
+        if(adhaarFront_coborrower==null){
+          GlobalClass.showToast_Error("Please upload CO-Borrower Aadhaar Front");
           return false;
         }
 
-        if (adhaarBack_coborrower == null) {
+        if(adhaarBack_coborrower==null){
           GlobalClass.showToast_Error("Please upload CO-Borrower Aadhaar Back");
           return false;
         }
       }
 
-      if (kycScanningDataModel.grDocs[0].drivingExists) {
-        if (dlFront_coborrower == null) {
-          GlobalClass.showToast_Error(
-              "Please upload CO-Borrower Driving License");
+      if(kycScanningDataModel.grDocs[0].drivingExists){
+        if(dlFront_coborrower==null){
+          GlobalClass.showToast_Error("Please upload CO-Borrower Driving License");
           return false;
         }
       }
 
-      if (kycScanningDataModel.grDocs[0].voterExists) {
-        if (voterFront_coborrower == null) {
-          GlobalClass.showToast_Error(
-              "Please upload CO-Borrower Voter Card Front");
+      if(kycScanningDataModel.grDocs[0].voterExists){
+        if(voterFront_coborrower==null){
+          GlobalClass.showToast_Error("Please upload CO-Borrower Voter Card Front");
           return false;
         }
 
-        if (voterback_coborrower == null) {
-          GlobalClass.showToast_Error(
-              "Please upload CO-Borrower Voter Card Back");
+        if(voterback_coborrower==null){
+          GlobalClass.showToast_Error("Please upload CO-Borrower Voter Card Back");
           return false;
         }
       }
-      if (kycScanningDataModel.grDocs[0].panExists) {
-        if (panFront_coborrower == null) {
+      if(kycScanningDataModel.grDocs[0].panExists){
+        if(panFront_coborrower==null){
           GlobalClass.showToast_Error("Please upload CO-Borrower PAN Card");
           return false;
         }
       }
 
+
+
+
+
       return true;
     }
-  }
 
-  void _validateOnFocusChange() {
-    setState(() {
-      if (_aadharIdController.text.isEmpty) {
-        _errorMessageAadhaar = 'Aadhaar Id field cannot be empty!';
-      } else if (_aadharIdController.text.length != 12) {
-        _errorMessageAadhaar = 'Aadhaar must be 12 characters long.';
-      } else if (!Validators.validateVerhoeff(_aadharIdController.text)) {
-        _errorMessageAadhaar = 'Aadhaar id is not valid';
-      } else if (_aadharIdController.text.length == 12&& _aadharIdController.text == widget.selectedData.aadharNo) {
-          _errorMessageAadhaar = 'Borrower can`t be Co-Borrower';
-
-         // adhaarAllData(context);
-        }else{
-      _errorMessageAadhaar = "";
-      }
-    });
 
   }
-
 }
