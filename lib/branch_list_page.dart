@@ -38,9 +38,11 @@ class _BranchListPageState extends State<BranchListPage> {
   Future<void> _fetchBranchList() async {
  //   EasyLoading.show(status: 'Loading...');
 
+
+
     final apiService = Provider.of<ApiService>(context, listen: false);
     try {
-      await apiService.getBranchList(GlobalClass.token, GlobalClass.dbName, 22).then((response) {
+      await apiService.getBranchList(GlobalClass.token, GlobalClass.dbName, GlobalClass.creatorId as int).then((response) {
         if (response.statuscode == 200) {
           setState(() {
             _items = response.data; // Store the response data

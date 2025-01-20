@@ -217,7 +217,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   Future<void> _fetchBranchList(BuildContext context, String creators) async {
     final api = Provider.of<ApiService>(context, listen: false);
     final value = await api.getBranchList(
-        GlobalClass.token, GlobalClass.dbName, 22);
+        GlobalClass.token, GlobalClass.dbName, GlobalClass.creatorId as int);
     if (value.statuscode == 200) {
       setState(() {
         _branch_codes =

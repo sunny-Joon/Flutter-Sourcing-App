@@ -66,9 +66,9 @@ class _LoginPageState extends State<LoginPage> {
                   // Asset image with PopupMenuButton for the dropdown
                   PopupMenuButton<String>(
                     icon: Image.asset(
-                      'assets/Images/language.png', // Path to your asset image
-                      height: 48.0, // Adjust the size as needed
-                      width: 48.0,
+                      'assets/Images/languages.png', // Path to your asset image
+                      height: 30.0, // Adjust the size as needed
+                      width: 30.0,
                     ),
                     onSelected: (value) {
                       context.read<languageprovider>().changelanguage(value);
@@ -485,8 +485,7 @@ class _LoginPageState extends State<LoginPage> {
       "GsmId":  prefs.getString("GSMID")!
     };
     // String? DeviceID = await generateDeviceId(userName) as String?;
-    return await api
-        .getLogins("0646498585477244", GlobalClass.dbName, requestBody)
+    return await api.getLogins("0646498585477244", GlobalClass.dbName, requestBody)
         .then((value) async {
           try{
             if (value.statuscode == 200 ) {
@@ -513,7 +512,25 @@ class _LoginPageState extends State<LoginPage> {
                   GlobalClass.mobile=value.data.foImei[0].mobNo;
                   GlobalClass.userName=value.data.foImei[0].name;
                   GlobalClass.designation=value.data.foImei[0].designation;
-                  GlobalClass.creator = value.data.foImei[0].creator;
+                //  GlobalClass.creator = value.data.foImei[0].creator;
+
+                  for (var foImeiItem in value.data.foImei) {
+                    if (foImeiItem.creator != null) {
+                      try {
+                        var matchedCreator = value.data.getCreatorList.firstWhere(
+                              (creatorItem) => creatorItem.creatorName == foImeiItem.creator,
+                        );
+
+                        GlobalClass.creatorId = matchedCreator.creatorId.toString();
+                        GlobalClass.creator = matchedCreator.creatorName;
+                        print("Matched creatorID: ${GlobalClass.creatorId}");
+                        print("Matched creatorName: ${GlobalClass.creator}");
+
+                      } catch (e) {
+                        print("No matching creator found for ${foImeiItem.creator}");
+                      }
+                    }
+                  }
 
                   EasyLoading.dismiss();
                   getBannersAndFlashMessage();
@@ -531,8 +548,15 @@ class _LoginPageState extends State<LoginPage> {
                       context, value.statuscode.toString() + ","+ value.message,1);
                 }
 
-                if(value.data.getCreatorList.isNotEmpty){
+                if (value.data.getCreatorList.isNotEmpty) {
                   GlobalClass.creatorlist = value.data.getCreatorList;
+
+                  // for (var creatorItem in value.data.getCreatorList) {
+                  //   if (creatorItem.creatorId != null) {
+                  //     GlobalClass.creatorId = creatorItem.creatorId.toString();
+                  //     break;
+                  //   }
+                  // }
                 }else{
                   GlobalClass.showUnsuccessfulAlert(context,value.message, 1);
                 }
@@ -633,7 +657,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Icon(Icons.link, color: Color(0xFFD42D3F), size: 20),
               SizedBox(width: 10),
-              Text('App Link'),
+              Text(AppLocalizations.of(context)!.applink),
             ],
           ),
         ),
@@ -646,7 +670,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Icon(Icons.build, color: Color(0xFFD42D3F), size: 20),
               SizedBox(width: 10),
-              Text('RD Service Link'),
+              Text(AppLocalizations.of(context)!.rdservice),
             ],
           ),
         ),
@@ -659,7 +683,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Icon(Icons.business, color: Color(0xFFD42D3F), size: 20),
               SizedBox(width: 10),
-              Text('NSDL Link'),
+              Text(AppLocalizations.of(context)!.nsdl),
             ],
           ),
         ),
