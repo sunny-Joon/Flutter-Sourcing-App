@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           // Align all text to the left
           children: [
-            SizedBox(height: 50,),
+            SizedBox(height: 30,),
 
             Padding(
               padding: const EdgeInsets.all(8.0),
