@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'api_service.dart';
 import 'fragments.dart';
 import 'global_class.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class TargetSetPage extends StatefulWidget {
@@ -73,7 +74,12 @@ class _TargetSetPageState extends State<TargetSetPage> {
                       ),
                       SizedBox(height: 15),
                       Text(
-                        "Set your monthly\ncommission target",
+                        AppLocalizations.of(context)!.setmonthlytargetf,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 30, color: Colors.black54),
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.setmonthlytargets,
                         textAlign: TextAlign.center,
                         style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 30, color: Colors.black54),
                       ),
@@ -150,7 +156,7 @@ class _TargetSetPageState extends State<TargetSetPage> {
                           ),
                           child: Center(
                             child: Text(
-                              "Submit",
+                                AppLocalizations.of(context)!.submit,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -193,9 +199,9 @@ class _TargetSetPageState extends State<TargetSetPage> {
                     });
                   },
                   children: [
-                    _buildPage(Color(0xFFD42D3F), 'Welcome',
+                    _buildPage(Color(0xFFD42D3F),  AppLocalizations.of(context)!.welcome,
                         "${GlobalClass.userName}",
-                        'swipe left to start earning', Icons.arrow_forward),
+                        AppLocalizations.of(context)!.swipeleft, Icons.arrow_forward),
                     _buildPage1(),
                   ],
                 ),
@@ -234,7 +240,7 @@ class _TargetSetPageState extends State<TargetSetPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Welcome', style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,
+                Text( AppLocalizations.of(context)!.welcome, style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,
                   fontSize: 30,
                  ),)
                 , Text(

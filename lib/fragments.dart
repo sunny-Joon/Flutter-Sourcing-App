@@ -250,7 +250,6 @@ class _FragmentsState extends State<Fragments> {
 
         await dbHelper.clearRangeCategoryTable();
 
-        // Insert new data into SQLite
         for (var datum in rangeCategoryModel.data) {
           await dbHelper.insertRangeCategory(datum);
         }

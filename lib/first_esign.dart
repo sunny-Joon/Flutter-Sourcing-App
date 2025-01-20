@@ -22,6 +22,8 @@ import 'MasterAPIs/live_track_repository.dart';
 import 'Models/group_model.dart';
 import 'Models/branch_model.dart';
 import 'crif.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class FirstEsign extends StatefulWidget {
 
@@ -168,7 +170,7 @@ class _FirstEsignState extends State<FirstEsign> {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Creator: '.toUpperCase(),
+                          text:   AppLocalizations.of(context)!.creator.toUpperCase(),
                           style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11,color: Colors.white),
                         ),
                         TextSpan(
@@ -182,7 +184,7 @@ class _FirstEsignState extends State<FirstEsign> {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Name: '.toUpperCase(),
+                          text:   AppLocalizations.of(context)!.name.toUpperCase(),
                           style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11,color: Colors.white),
                         ),
                         TextSpan(
@@ -195,7 +197,7 @@ class _FirstEsignState extends State<FirstEsign> {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Address: '.toUpperCase(),
+                          text:   AppLocalizations.of(context)!.address.toUpperCase(),
                           style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11,color: Colors.white),
                         ),
                         TextSpan(
@@ -227,7 +229,7 @@ class _FirstEsignState extends State<FirstEsign> {
                  child: Container(
                    alignment: Alignment.center,
                    height: 45,
-                   child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 4),child: Text("Proceed",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black),),),
+                   child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 4),child: Text( AppLocalizations.of(context)!.proceed,style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black),),),
                  ),
                ),
              ))
@@ -352,7 +354,7 @@ class _DialogContentState extends State<DialogContent> {
                 ),
                 SizedBox(height: 5),
                 Text(
-                  "Please Read Below Consent before Proceed",
+                    AppLocalizations.of(context)!.readconsent,
                   style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 12, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5),
@@ -385,7 +387,7 @@ class _DialogContentState extends State<DialogContent> {
                     ),
 
                     SizedBox(width: 2),
-                    Flexible(child: Text("I have read all the consents properly")),
+                    Flexible(child: Text(  AppLocalizations.of(context)!.readallconsents,)),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -557,7 +559,7 @@ EasyLoading.dismiss();
 
   }
   Future<void> hitSaveAgreementsAPI(String authType) async {
-    EasyLoading.show(status: "Please wait....");
+    EasyLoading.show(status:   AppLocalizations.of(context)!.pleasewait,);
 
     try {
       // API call
@@ -633,33 +635,24 @@ EasyLoading.dismiss();
         style: TextStyle(fontSize: 10, color: Colors.black),
         children: [
           TextSpan(
-            text: 'I hereby authorize NSDL e-Gov on behalf of Paisalo Digital Limited to:\n\n',
+            text:   AppLocalizations.of(context)!.iherebynsdl ,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           TextSpan(
             text:
-            '1. Use my Aadhaar details for Loan Document eSignature and authenticate my identity through the Aadhaar '
-                'Authentication system (Aadhaar based e-KYC services of UIDAI) in accordance with the provisions of the '
-                'Aadhaar (Targeted Delivery of Financial and other Subsidies, Benefits and Services) Act, 2016 and the allied '
-                'rules and regulations notified thereunder and for no other purpose.\n\n',
+            AppLocalizations.of(context)!.esigntext1,
           ),
           TextSpan(
             text:
-            '2. Authenticate my Aadhaar through OTP or Biometric for authenticating my identity through the Aadhaar '
-                'Authentication system for obtaining my e-KYC through Aadhaar based e-KYC services of UIDAI and use my Photo '
-                'and Demographic details (Name, Gender, Date of Birth, and Address) for Loan Document eSignature.\n\n',
+            AppLocalizations.of(context)!.esigntext2,
           ),
           TextSpan(
             text:
-            '3. I understand that security and confidentiality of personal identity data provided, for the purpose of Aadhaar '
-                'based authentication is ensured by NSDL e-Gov and the data will be stored by NSDL e-Gov till such time as mentioned '
-                'in guidelines from UIDAI from time to time.\n\n',
+            AppLocalizations.of(context)!.esigntext3,
           ),
           TextSpan(
             text:
-            '4. I have understood that the system of downloading the copy of loan document for my record from the link '
-                'provided by the company through email or SMS post e-signing of the loan document. I shall download the copy of '
-                'loan documents as per my convenience at a later stage.\n\n',
+            AppLocalizations.of(context)!.esigntext4,
           ),
         ],
       ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class getrewardactivity extends StatelessWidget {
   final String referralCode;
@@ -106,7 +108,7 @@ class getrewardactivity extends StatelessWidget {
                       print("Error sharing message: $e");
                     }
                   },
-                  child: Text("REFER NOW"),
+                  child: Text(AppLocalizations.of(context)!.refernow),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Color(0xFFC01024), // Text color
                     elevation: 5, // Elevation

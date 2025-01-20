@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_sourcing_app/Models/global_model2.dart';
 import 'package:flutter_sourcing_app/collection.dart';
 import 'package:flutter_sourcing_app/stepper_ss.dart';
@@ -21,13 +22,18 @@ import 'api_service.dart';
 import 'crif.dart';
 import 'global_class.dart';
 import 'house_visit_form.dart';
+import 'languageprovider.dart';
 import 'login_page.dart';
 import 'Models/global_model.dart';
 import 'stepper_sd.dart';
 import 'package:http/http.dart'as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import 'dealer_homepage.dart';
+
+
 
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -112,7 +118,10 @@ Future<void> main() async {
     // DeviceOrientation.landscapeLeft, // Uncomment to allow landscape left
     // DeviceOrientation.landscapeRight, // Uncomment to allow landscape right
   ]).then((_) {
-    runApp(MyApp());
+    runApp(ChangeNotifierProvider(create: (context) => languageprovider(),
+      child: const MyApp(),
+    ));
+
   });
   configLoading();
 }
@@ -159,6 +168,24 @@ class MyApp extends StatelessWidget {
       create: (context) => ApiService.create(baseUrl:ApiConfig.baseUrl1),
 
       child: MaterialApp(
+
+
+        supportedLocales: const[
+          Locale('en'),
+          Locale('hi'),
+          Locale('mr'),
+          Locale('bn')
+        ],
+
+        locale:context.watch<languageprovider>().selectedLocale,
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+
+
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(

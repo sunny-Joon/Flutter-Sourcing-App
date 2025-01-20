@@ -8,6 +8,7 @@ import 'package:flutter_sourcing_app/global_class.dart';
 import 'package:flutter_sourcing_app/utils/camera_text_writing_process.dart';
 import 'package:flutter_sourcing_app/utils/current_location.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
  class VisitReportPage extends StatefulWidget {
    const VisitReportPage({super.key});
@@ -88,8 +89,8 @@ initializeCamera();
                  ],
                ),
                SizedBox(height: 20,),
-               const Text(
-                 "Meeting Type",
+                Text(
+                 AppLocalizations.of(context)!.meetingtype,
                  style: TextStyle(fontFamily: "Poppins-Regular",
                    fontSize: 15,
 
@@ -174,7 +175,7 @@ initializeCamera();
                          children: [
 
                            Text(
-                             "Sm Code",
+                             AppLocalizations.of(context)!.smcode,
                              style: TextStyle(
                                fontSize: 15,
                                fontFamily: "Poppins-Regular",
@@ -224,14 +225,15 @@ initializeCamera();
                              ],
                            ),
 
-                           _buildInputCard("Name", "",_nameController,true),
-                           _buildInputCard("Amount", "0",_amountController,false, inputType: TextInputType.number),
+                           _buildInputCard(AppLocalizations.of(context)!.name,
+                               "",_nameController,true),
+                           _buildInputCard(AppLocalizations.of(context)!.amount, "0",_amountController,false, inputType: TextInputType.number),
                          ],))
                    ,
                    const SizedBox(height: 8),
 
-                   const Text(
-                     "Comment",
+                    Text(
+                     AppLocalizations.of(context)!.comment,
                      style: TextStyle(
                        fontSize: 15,
                        fontFamily: "Poppins-Regular",
@@ -297,7 +299,7 @@ initializeCamera();
                              child: Row(
                                mainAxisAlignment: MainAxisAlignment.center,
                                children: [
-                                 Text("Click Image"),
+                                 Text(AppLocalizations.of(context)!.clickimage),
                                  Icon(Icons.camera)
                                ],
                              ),
@@ -353,9 +355,10 @@ initializeCamera();
                            child: Row(
                              mainAxisAlignment: MainAxisAlignment.center,
                              children: [
-                               Text("Submit data",style: TextStyle(color: Colors.white),),
+                               Text(AppLocalizations.of(context)!.submit,style: TextStyle(color: Colors.white),),
 
                              ],
+
                            ),
                          ),
                        ),

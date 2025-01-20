@@ -3,6 +3,8 @@ import 'package:flutter_sourcing_app/visit_report_page.dart';
 import 'kyc.dart';
 import 'branch_list_page.dart';
 import 'notifications.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class OnBoarding extends StatefulWidget {
 
@@ -35,7 +37,7 @@ class _OnboardingState extends State<OnBoarding>{
                   ),
                   Center(
                     child: Text(
-                      'ONBOARDING',
+                      AppLocalizations.of(context)!.onboarding,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontFamily: "Poppins-Regular",
                           color: Colors.white,
@@ -69,7 +71,7 @@ class _OnboardingState extends State<OnBoarding>{
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _buildCardItem(context, 'KYC', 'assets/Images/righ_arrow.png', () {
+                        _buildCardItem(context, AppLocalizations.of(context)!.kyc, 'assets/Images/righ_arrow.png', () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -78,7 +80,7 @@ class _OnboardingState extends State<OnBoarding>{
                           );
                         }),
                         Divider(color: Color(0xFFC0B8B8)),
-                        _buildCardItem(context, 'E SIGN', 'assets/Images/righ_arrow.png', () {
+                        _buildCardItem(context,AppLocalizations.of(context)!.esign, 'assets/Images/righ_arrow.png', () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -87,7 +89,7 @@ class _OnboardingState extends State<OnBoarding>{
                           );
                         }),
                         Divider(color: Color(0xFFC0B8B8)),
-                        _buildCardItem(context, 'APPLICATION FORM', 'assets/Images/righ_arrow.png', () {
+                        _buildCardItem(context, AppLocalizations.of(context)!.application, 'assets/Images/righ_arrow.png', () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -96,7 +98,7 @@ class _OnboardingState extends State<OnBoarding>{
                           );
                         }),
                         Divider(color: Color(0xFFC0B8B8)),
-                        _buildCardItem(context, 'HOUSE VISIT', 'assets/Images/righ_arrow.png', () {
+                        _buildCardItem(context,AppLocalizations.of(context)!.housevisit, 'assets/Images/righ_arrow.png', () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -105,7 +107,7 @@ class _OnboardingState extends State<OnBoarding>{
                           );
                         }),
                         Divider(color: Color(0xFFC0B8B8)),
-                        _buildCardItem(context, 'Visit Report', 'assets/Images/righ_arrow.png', () {
+                        _buildCardItem(context, AppLocalizations.of(context)!.visitreport, 'assets/Images/righ_arrow.png', () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
