@@ -671,7 +671,36 @@ class _ProfileState extends State<Profile> {
             Divider(thickness: 2, indent: 16, endIndent: 16),
             _buildDetailRow(Icons.work, AppLocalizations.of(context)!.designation , _designationController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailList(Icons.admin_panel_settings, AppLocalizations.of(context)!.creater , _creatorController,
+/*
+            _buildDetailList(Icons.admin_panel_settings, AppLocalizations.of(context)!.creater , _creatorController,),
+*/
+            Row(
+              children: [
+                Icon(Icons.admin_panel_settings, color: Color(0xFFD42D3F)),
+                Text(
+                  'Switch Creator ',
+                  style: TextStyle(
+                    fontFamily: "Poppins-Regular",
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    _creatorController.text,
+                    style: TextStyle(
+                      fontFamily: "Poppins-Regular",
+                      color: Color(0xFFD42D3F),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.edit, color: Color(0xFFD42D3F)),
+                  onPressed: () {
+                    _showCreatorDialog(context);
+                  },
+                )
+              ]
             ),
 
           ],
@@ -897,6 +926,93 @@ class _ProfileState extends State<Profile> {
         await _saveImage(_imageFile!);
       }
     }
+  }
+
+  void _showCreatorDialog(BuildContext context) {
+    String? selectedCreatorName = GlobalClass.creator;
+    String? selectedCreatorId = GlobalClass.creatorId;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Select Creator',
+            style: TextStyle(color: Color(0xFFD42D3F)),
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: GlobalClass.creatorlist.length,
+              itemBuilder: (BuildContext context, int index) {
+                final creator = GlobalClass.creatorlist[index];
+                return ListTile(
+                  title: Text(
+                    creator.creatorName,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFFD42D3F),
+                    ),
+                  ),
+                  leading: Radio<String>(
+                    value: creator.creatorId.toString(),
+                    groupValue: selectedCreatorId,
+                    onChanged: (String? value) {
+                      if (value != null) {
+                        selectedCreatorId = value;
+                        selectedCreatorName = creator.creatorName;
+                        (context as Element).markNeedsBuild();
+                      }
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFD42D3F),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                minimumSize: Size(80, 40),
+              ),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFD42D3F),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                minimumSize: Size(80, 40),
+              ),
+              onPressed: () {
+                if (selectedCreatorName != null && selectedCreatorId != null) {
+                  print('Selected Creator: $selectedCreatorName');
+                  setState(() {
+                    _creatorController.text = selectedCreatorName!;
+                    _creatorController.text = selectedCreatorName!;
+                    GlobalClass.creator = selectedCreatorName!;
+                    GlobalClass.creatorId = selectedCreatorId!;
+                  });
+                }
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('Select',style: TextStyle(color: Colors.white,)),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
