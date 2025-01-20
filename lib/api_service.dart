@@ -316,7 +316,7 @@ abstract class ApiService {
   Future<BranchModel> getBranchList(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Query("Creator") String Creator);
+      @Query("CreatorID") int CreatorID);
 
   @GET("FiSourcing/GetAllFiData")
   Future<ApplicationgetAllModel> dataByFIID(
