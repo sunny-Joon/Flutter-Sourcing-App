@@ -28,7 +28,6 @@ import 'global_class.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
-
 class KYCPage extends StatefulWidget {
   final BranchDataModel data;
   final GroupDataModel GroupData;

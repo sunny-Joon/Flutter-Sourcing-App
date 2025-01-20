@@ -199,9 +199,11 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   }
 
   Future<void> _fetchCreatorList() async {
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     final api = Provider.of<ApiService>(context, listen: false);
     final value = await api.getCreatorList(GlobalClass.dbName);
