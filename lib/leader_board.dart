@@ -72,14 +72,14 @@ class _LeaderBoardState extends State<LeaderBoard> {
           setState(() {
             leaderboardDataModel.clear();
             isDataAvailable = false;
-            errorMessage = 'No data available for $selectedPeriod.';
+            errorMessage = '${AppLocalizations.of(context)!.nodata} $selectedPeriod.';
           });
         }
       } else {
         setState(() {
           leaderboardDataModel.clear();
           isDataAvailable = false;
-          errorMessage = 'No data available for $selectedPeriod'; // Error if statuscode is not 200
+          errorMessage =  '${AppLocalizations.of(context)!.nodata} $selectedPeriod'; // Error if statuscode is not 200
         });
       }
     } catch (err) {
