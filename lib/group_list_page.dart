@@ -45,7 +45,7 @@ class _GroupListPageState extends State<GroupListPage> {
       final response = await apiService.getGroupList(
           GlobalClass.token,
           GlobalClass.dbName,
-          GlobalClass.creator,
+          GlobalClass.creatorId,
           // GlobalClass.creator,
           widget.Branchdata.branchCode
       );
@@ -57,8 +57,14 @@ class _GroupListPageState extends State<GroupListPage> {
 
         });
         print('Group List retrieved successfully');
-      }
-      else {
+      } else if(response.statuscode == 201) {
+        GlobalClass.showUnsuccessfulAlert(context, "Group List not found", 2);
+
+        setState(() {
+          _isLoading = false;
+          EasyLoading.dismiss();
+        });
+      }else {
         GlobalClass.showUnsuccessfulAlert(context, "Not able to fetch Group List", 2);
 
         setState(() {
@@ -231,8 +237,8 @@ class _GroupListPageState extends State<GroupListPage> {
                           MaterialPageRoute(
                             //builder: (context) => ApplicationPage(),
                             builder: (context) => DealerKYCPage(
-                                BranchData: widget.Branchdata,
-                                GroupData: selectedItem
+                                // BranchData: widget.Branchdata,
+                                // GroupData: selectedItem
                             ),
                           ),
                         );

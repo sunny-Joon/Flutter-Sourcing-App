@@ -53,7 +53,7 @@ class _BorrowerListState extends State<BorrowerList> {
       GlobalClass.dbName,
       widget.GroupData.groupCode,
       widget.BranchData.branchCode,
-      GlobalClass.creator.toString(),
+      GlobalClass.creatorId.toString(),
       type,
     ).then((response) {
       if (response.statuscode == 200 && response.data[0].errormsg.isEmpty) {

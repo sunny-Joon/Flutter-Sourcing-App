@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/global_class.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
@@ -219,7 +220,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   Future<void> _fetchBranchList(BuildContext context, String creators) async {
     final api = Provider.of<ApiService>(context, listen: false);
     final value = await api.getBranchList(
-        GlobalClass.token, GlobalClass.dbName, GlobalClass.creatorId as int);
+        GlobalClass.token, GlobalClass.dbName, GlobalClass.creatorId);
     if (value.statuscode == 200) {
       setState(() {
         _branch_codes =
@@ -704,6 +705,10 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                     fontSize: 12, // Optional: Adjust the font size
                   ),
                 ),
+                inputFormatters: [
+                  label ==AppLocalizations.of(context)!.name?
+                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")):FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                ],
                 enabled: YN,
               ),
             ),

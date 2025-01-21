@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 
 import 'DATABASE/database_helper.dart';
 import 'MasterAPIs/ckyc_repository.dart';
+import 'Models/adhaar_model.dart';
 import 'Models/bank_names_model.dart';
 import 'Models/group_model.dart';
 import 'Models/place_codes_model.dart';
@@ -26,7 +27,6 @@ import 'Models/range_category_model.dart';
 import 'api_service.dart';
 import 'global_class.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 
 class KYCPage extends StatefulWidget {
   final BranchDataModel data;
@@ -44,13 +44,15 @@ class _KYCPageState extends State<KYCPage> {
   late ApiService apiService_protean;
   late ApiService apiService_OCR;
 
-  String nameReg ='[a-zA-Z. ]';
-  String addReg = r'[a-zA-Z0-9. ()/,-]';
-  String amountReg ='[0-9]';
-  String cityReg ='[a-zA-Z ]';
-  String IdsReg ='[a-zA-Z0-9/ ]';
+  late AdhaarDataModel adhaardata;
 
-  String FiType ="NEW";
+  String nameReg = '[a-zA-Z. ]';
+  String addReg = r'[a-zA-Z0-9. ()/,-]';
+  String amountReg = '[0-9]';
+  String cityReg = '[a-zA-Z ]';
+  String IdsReg = '[a-zA-Z0-9/ ]';
+
+  String FiType = "NEW";
   int _timeLeft = 60; // Timer starting at 60 seconds
   Timer? _timer;
   int imageStartIndex = 0;
@@ -82,8 +84,8 @@ class _KYCPageState extends State<KYCPage> {
   PlaceData? selectedDistrictCode;
   PlaceData? selectedSubDistrictCode;
   PlaceData? selectedVillageCode;
-  bool isCKYCNumberFound=false;
-  List<String> loanDuration = ['Select','12', '24', '36', '48'];
+  bool isCKYCNumberFound = false;
+  List<String> loanDuration = ['Select', '12', '24', '36', '48'];
 
   List<String> titleList = ["Mr.", "Mrs.", "Miss"];
   String? selectedTitle;
@@ -103,11 +105,9 @@ class _KYCPageState extends State<KYCPage> {
   String? _locationMessage;
   Position? position;
   bool otpVerified = false;
-  bool _pageloading=true;
+  bool _pageloading = true;
 
-  bool verifyButtonClick=false;
-
-
+  bool verifyButtonClick = false;
 
   @override
   void initState() {
@@ -115,8 +115,8 @@ class _KYCPageState extends State<KYCPage> {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
-   // _focusNodeAdhaarId.addListener(_validateOnFocusChange);
- //    _mobileNoController.text="9910238307";
+    // _focusNodeAdhaarId.addListener(_validateOnFocusChange);
+    //    _mobileNoController.text="9910238307";
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
     _BabnkNamesAPI(context);
@@ -214,7 +214,7 @@ class _KYCPageState extends State<KYCPage> {
           ));
     }); // Refresh the UI
     setState(() {
-      _pageloading=false;
+      _pageloading = false;
     });
   }
 
@@ -278,21 +278,20 @@ class _KYCPageState extends State<KYCPage> {
   get isChecked => null;
   final FocusNode _focusNodeAdhaarId = FocusNode();
 
-   String _errorMessageAadhaar="";
-
+  String _errorMessageAadhaar = "";
 
   void _pickImage() async {
-
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedImage != null) {
       setState(() {
-     //   _imageFile = File(pickedImage.path);
+        //   _imageFile = File(pickedImage.path);
         _cropImage(File(pickedImage.path)!);
       });
     }
   }
+
   Future _cropImage(File imageFile) async {
     if (imageFile != null) {
       CroppedFile? cropped = await ImageCropper().cropImage(
@@ -301,10 +300,9 @@ class _KYCPageState extends State<KYCPage> {
           maxHeight: 700,
           maxWidth: 700,
           compressFormat: ImageCompressFormat.jpg,
-
           uiSettings: [
             AndroidUiSettings(
-              toolbarColor: Color(0xFFD42D3F),
+                toolbarColor: Color(0xFFD42D3F),
                 toolbarTitle: 'Crop',
                 toolbarWidgetColor: Colors.white,
                 cropGridColor: Colors.black,
@@ -318,12 +316,11 @@ class _KYCPageState extends State<KYCPage> {
       if (cropped != null) {
         setState(() {
           _imageFile = File(cropped.path);
-        //  filePicked=1;
+          //  filePicked=1;
         });
       }
     }
   }
-
 
   Widget _buildDatePickerField(BuildContext context, String labelText,
       TextEditingController controller, String type) {
@@ -343,30 +340,35 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   void _validateOnFocusChange() {
-      setState(() {
-        if (_aadharIdController.text.isEmpty) {
-          _errorMessageAadhaar = 'Aadhaar Id field cannot be empty!';
-        } else if (_aadharIdController.text.length != 12) {
-          _errorMessageAadhaar = 'Aadhaar must be 12 characters long.';
-        } else if (!Validators.validateVerhoeff(_aadharIdController.text)) {
-          _errorMessageAadhaar = 'Aadhaar id is not valid';
-        } else {
-          _errorMessageAadhaar = "";
-          if (_aadharIdController.text.length == 12) {
-            adhaarAllData(context);
-          }
+    setState(() {
+      if (_aadharIdController.text.isEmpty) {
+        _errorMessageAadhaar = 'Aadhaar Id field cannot be empty!';
+      } else if (_aadharIdController.text.length != 12) {
+        _errorMessageAadhaar = 'Aadhaar must be 12 characters long.';
+      } else if (!Validators.validateVerhoeff(_aadharIdController.text)) {
+        _errorMessageAadhaar = 'Aadhaar id is not valid';
+      } else {
+        _errorMessageAadhaar = "";
+        if (_aadharIdController.text.length == 12) {
+          adhaarAllData(context);
         }
-      });
-
+      }
+    });
   }
 
   void _selectDate(BuildContext context, TextEditingController controller,
       String type) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate:DateTime.now().isBefore(DateTime(DateTime.now().year - 21, DateTime.now().month, DateTime.now().day)) ? DateTime.now() : DateTime(DateTime.now().year - 21, DateTime.now().month, DateTime.now().day),
-      firstDate: DateTime(DateTime.now().year - 60, DateTime.now().month, DateTime.now().day), // You can set this to any reasonable past date
-      lastDate: DateTime(DateTime.now().year - 21, DateTime.now().month, DateTime.now().day),
+      initialDate: DateTime.now().isBefore(DateTime(DateTime.now().year - 21,
+              DateTime.now().month, DateTime.now().day))
+          ? DateTime.now()
+          : DateTime(DateTime.now().year - 21, DateTime.now().month,
+              DateTime.now().day),
+      firstDate: DateTime(DateTime.now().year - 60, DateTime.now().month,
+          DateTime.now().day), // You can set this to any reasonable past date
+      lastDate: DateTime(
+          DateTime.now().year - 21, DateTime.now().month, DateTime.now().day),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -493,11 +495,12 @@ class _KYCPageState extends State<KYCPage> {
           body: SingleChildScrollView(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0),
-                child:Column(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
                   children: [
-                    SizedBox(height: 50,),
+                    SizedBox(
+                      height: 50,
+                    ),
                     Padding(
                       padding: EdgeInsets.all(0),
                       child: Row(
@@ -511,14 +514,14 @@ class _KYCPageState extends State<KYCPage> {
                                 border: Border.all(
                                     width: 1, color: Colors.grey.shade300),
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(5)),
                               ),
                               height: 40,
                               width: 40,
                               alignment: Alignment.center,
                               child: Center(
                                 child:
-                                Icon(Icons.arrow_back_ios_sharp, size: 16),
+                                    Icon(Icons.arrow_back_ios_sharp, size: 16),
                               ),
                             ),
                             onTap: () {
@@ -550,137 +553,157 @@ class _KYCPageState extends State<KYCPage> {
                     ),
                     Column(
                       children: [
-
                         //  _buildProgressIndicator(),
                         SizedBox(height: 30),
-                        _pageloading?CircularProgressIndicator(color: Colors.white,):Column(children: [
-                        Container(
-                        height: MediaQuery.of(context).size.height - 244,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black,
-                            blurRadius: 7,
-                          ),
-                        ],
-                      ),
-                      child: Form(
-                        key: _formKey,
-                        child: _getStepContent(context),
-                      ),
-                    ),
-                    Positioned(
-                      top: -35, // Adjust the position as needed
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: InkWell(
-                          onTap: () async {
-                            if(_currentStep==0) {
-                              File? pickedFile = await GlobalClass()
-                                  .pickImage();
-                              setState(() {
-                                _imageFile = pickedFile;
-                              });
-                            }
-                          },
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              ClipOval(
-                                child: Container(
-                                  width: 70,
-                                  height: 70,
-                                  color: Colors.grey.shade300,
-                                  child: _imageFile == null
-                                      ? Icon(
-                                    Icons.person,
-                                    size: 50.0,
-                                    color: Colors.white,
-                                  )
-                                      : Image.file(
-                                    File(_imageFile!.path),
-                                    width: 70,
-                                    height: 70,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              (_currentStep==0)?Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  padding: EdgeInsets.all(5),
-                                  child: Icon(
-                                    Icons.edit,
-                                    size: 16,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ):SizedBox(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
+                        _pageloading
+                            ? CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : Column(
                                 children: [
-                                  Icon(
-                                    Icons.location_on_outlined,
-                                    color: Colors.white,
-                                  ),
-                                  Text(
-                                    "${_locationMessage}",
-                                    style: TextStyle(fontFamily: "Poppins-Regular",
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  geolocator(context);
-                                },
-                                child: Card(
-                                  elevation: 5,
-                                  shape: CircleBorder(),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(3),
-                                    child: Icon(
-                                      Icons.refresh,
-                                      size: 30,
-                                      color: Color(0xffb41d2d),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height -
+                                        244,
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(20),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black,
+                                                blurRadius: 7,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Form(
+                                            key: _formKey,
+                                            child: _getStepContent(context),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top:
+                                              -35, // Adjust the position as needed
+                                          left: 0,
+                                          right: 0,
+                                          child: Center(
+                                            child: InkWell(
+                                              onTap: () async {
+                                                if (_currentStep == 0) {
+                                                  File? pickedFile =
+                                                      await GlobalClass()
+                                                          .pickImage();
+                                                  setState(() {
+                                                    _imageFile = pickedFile;
+                                                  });
+                                                }
+                                              },
+                                              child: Stack(
+                                                alignment: Alignment.center,
+                                                children: [
+                                                  ClipOval(
+                                                    child: Container(
+                                                      width: 70,
+                                                      height: 70,
+                                                      color:
+                                                          Colors.grey.shade300,
+                                                      child: _imageFile == null
+                                                          ? Icon(
+                                                              Icons.person,
+                                                              size: 50.0,
+                                                              color:
+                                                                  Colors.white,
+                                                            )
+                                                          : Image.file(
+                                                              File(_imageFile!
+                                                                  .path),
+                                                              width: 70,
+                                                              height: 70,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                    ),
+                                                  ),
+                                                  (_currentStep == 0)
+                                                      ? Positioned(
+                                                          bottom: 0,
+                                                          right: 0,
+                                                          child: Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.blue,
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    5),
+                                                            child: Icon(
+                                                              Icons.edit,
+                                                              size: 16,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.location_on_outlined,
+                                            color: Colors.white,
+                                          ),
+                                          Text(
+                                            "${_locationMessage}",
+                                            style: TextStyle(
+                                                fontFamily: "Poppins-Regular",
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          geolocator(context);
+                                        },
+                                        child: Card(
+                                          elevation: 5,
+                                          shape: CircleBorder(),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(3),
+                                            child: Icon(
+                                              Icons.refresh,
+                                              size: 30,
+                                              color: Color(0xffb41d2d),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  _buildNextButton(context),
+                                ],
                               )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          _buildNextButton(context),
-                        ],)
-
                       ],
                     )
                   ],
@@ -748,7 +771,8 @@ class _KYCPageState extends State<KYCPage> {
         children: [
           Text(
             label,
-            style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, height: 2),
+            style: TextStyle(
+                fontFamily: "Poppins-Regular", fontSize: 13, height: 2),
           ),
           SizedBox(height: 1),
           Container(
@@ -756,7 +780,7 @@ class _KYCPageState extends State<KYCPage> {
               width: double.infinity, // Set the desired width
               child: Center(
                 child: TextFormField(
-                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                  style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   controller: controller,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -770,7 +794,7 @@ class _KYCPageState extends State<KYCPage> {
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(addReg)),
                     TextInputFormatter.withFunction(
-                          (oldValue, newValue) => TextEditingValue(
+                      (oldValue, newValue) => TextEditingValue(
                         text: newValue.text.toUpperCase(),
                         selection: newValue.selection,
                       ),
@@ -830,7 +854,6 @@ class _KYCPageState extends State<KYCPage> {
       String loan_Duration = selectedloanDuration!;
       String loan_amount = _loan_amountController.text.toString();
 
-
       final api = Provider.of<ApiService>(context, listen: false);
 
       await api
@@ -871,6 +894,7 @@ class _KYCPageState extends State<KYCPage> {
         loan_Duration,
         loan_amount,
         selectedLoanReason!,
+        GlobalClass.creatorId,
         _imageFile!,
       )
           .then((value) async {
@@ -917,8 +941,8 @@ class _KYCPageState extends State<KYCPage> {
     String dl = _drivingLicenseController.text.toString();
     String? DLExpireDate = _dlExpiryController.text.toString().isEmpty
         ? null
-        : DateFormat('yyyy-MM-dd').format(
-        DateFormat('dd-MM-yyyy').parse(_dlExpiryController.text));
+        : DateFormat('yyyy-MM-dd')
+            .format(DateFormat('dd-MM-yyyy').parse(_dlExpiryController.text));
     String voter_id = _voterIdController.text.toString();
     String passport = _passportController.text.toString();
     String? PassportExpireDate =
@@ -960,7 +984,8 @@ class _KYCPageState extends State<KYCPage> {
       "isNameVerify": isNameVerify,
       "Pan_Name": panCardHolderName,
       "VoterId_Name": voterCardHolderName,
-      "Aadhar_Name": "${_nameController.text} ${_nameMController.text} ${_nameLController.text}",
+      "Aadhar_Name":
+          "${_nameController.text} ${_nameMController.text} ${_nameLController.text}",
       "DrivingLic_Name": dlCardHolderName,
       "VILLAGE_CODE": selectedVillageCode!.villageCode,
       "CITY_CODE": selectedCityCode!.cityCode,
@@ -979,14 +1004,15 @@ class _KYCPageState extends State<KYCPage> {
         });*/
         EasyLoading.dismiss();
 
-        GlobalClass.showSuccessAlert(context, "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process", 2);
-
-
+        GlobalClass.showSuccessAlert(
+            context,
+            "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
+            2);
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
       }
-    }).catchError((onError){
+    }).catchError((onError) {
       EasyLoading.dismiss();
       GlobalClass.showErrorAlert(context, onError, 1);
     });
@@ -997,7 +1023,7 @@ class _KYCPageState extends State<KYCPage> {
   void saveDataMethod() {}
 
   Widget _buildTextField2(String label, TextEditingController controller,
-      TextInputType inputType, int maxlength,String regex) {
+      TextInputType inputType, int maxlength, String regex) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 3),
@@ -1007,13 +1033,14 @@ class _KYCPageState extends State<KYCPage> {
         children: [
           Text(
             label,
-              style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, height: 2),
+            style: TextStyle(
+                fontFamily: "Poppins-Regular", fontSize: 13, height: 2),
           ),
           Container(
             width: double.infinity, // Set the desired width
             child: Center(
               child: TextFormField(
-                style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
 
                 maxLength: maxlength,
                 controller: controller,
@@ -1035,20 +1062,18 @@ class _KYCPageState extends State<KYCPage> {
                     ),
                   ),
                 ],
-                onChanged: (value){
-                  if(label == "Voter Id") {
+                onChanged: (value) {
+                  if (label == "Voter Id") {
                     setState(() {
                       voterVerified = false;
                       voterCardHolderName = "";
                     });
-                  }else if( label == "Driving License"){
+                  } else if (label == "Driving License") {
                     print('DL');
                     setState(() {
-
-                    dlCardHolderName = "";
-                    dlVerified = false;
+                      dlCardHolderName = "";
+                      dlVerified = false;
                     });
-
                   }
                 },
               ),
@@ -1079,7 +1104,8 @@ class _KYCPageState extends State<KYCPage> {
                     },
                     child: Text(
                       'Adhaar Front',
-                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular", color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
                       backgroundColor: Color(0xFFD42D3F),
@@ -1100,7 +1126,8 @@ class _KYCPageState extends State<KYCPage> {
                     },
                     child: Text(
                       'Adhaar Back',
-                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular", color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
                       backgroundColor: Color(0xFFD42D3F),
@@ -1139,11 +1166,11 @@ class _KYCPageState extends State<KYCPage> {
                         setQRData(result);
                         //   onResult(qrResult);
                       }
-
                     },
                     child: Text(
                       'Adhaar QR',
-                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular", color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
                       backgroundColor: Color(0xFFD42D3F),
@@ -1179,8 +1206,7 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  Future<void>getDataFromOCR(String type, BuildContext context) async {
-
+  Future<void> getDataFromOCR(String type, BuildContext context) async {
     File? pickedImage = await GlobalClass().pickImage();
 
     if (pickedImage != null) {
@@ -1226,10 +1252,13 @@ class _KYCPageState extends State<KYCPage> {
               _cityController.text = response.data.cityName;
               String cleanAddress(String name) {
                 // Remove unwanted characters
-                String cleanedAddrName = name.replaceAll(RegExp(r'[^a-zA-Z0-9\s\-\(\)\./\\]'), '');
+                String cleanedAddrName =
+                    name.replaceAll(RegExp(r'[^a-zA-Z0-9\s\-\(\)\./\\]'), '');
 
                 // Replace multiple consecutive special characters with a single instance
-                cleanedAddrName = cleanedAddrName.replaceAllMapped(RegExp(r'(\s\s+|\-\-+|\(\(+|\)\)+|\.{2,}|/{2,}|\\{2,})'), (match) {
+                cleanedAddrName = cleanedAddrName.replaceAllMapped(
+                    RegExp(r'(\s\s+|\-\-+|\(\(+|\)\)+|\.{2,}|/{2,}|\\{2,})'),
+                    (match) {
                   // Get the matched string and determine the appropriate replacement
                   String matchedString = match.group(0)!;
                   if (matchedString.contains('-')) return '-';
@@ -1276,19 +1305,19 @@ class _KYCPageState extends State<KYCPage> {
               print("Address2: $address2");
               print("Address3: $address3");
 
-
               if (response.data.relation.toLowerCase() == "father") {
-
                 String cleanGuardianName(String name) {
                   return name.replaceAll(RegExp(r'[^a-zA-Z0-9.\s]'), '');
                 }
-                String cleanedGuardianName = cleanGuardianName(response.data.guardianName);
-               // print(cleanedGuardianName $cleanedGuardianName);
-                  _gurNameController.text = cleanedGuardianName;
-                  relationwithBorrowerselected = "Father";
+
+                String cleanedGuardianName =
+                    cleanGuardianName(response.data.guardianName);
+                // print(cleanedGuardianName $cleanedGuardianName);
+                _gurNameController.text = cleanedGuardianName;
+                relationwithBorrowerselected = "Father";
 
                 List<String> guarNameParts =
-                _gurNameController.text.trim().split(" ");
+                    _gurNameController.text.trim().split(" ");
                 if (guarNameParts.length == 1) {
                   _fatherFirstNameController.text = guarNameParts[0];
                 } else if (guarNameParts.length == 2) {
@@ -1302,19 +1331,21 @@ class _KYCPageState extends State<KYCPage> {
                       .join(' ');
                 }
               } else if (response.data.relation.toLowerCase() == "husband") {
-
-                  relationwithBorrowerselected = "Husband";
-                  selectedMarritalStatus = "Married";
-                 // selectedMarritalStatus = true;
+                relationwithBorrowerselected = "Husband";
+                selectedMarritalStatus = "Married";
+                // selectedMarritalStatus = true;
 
                 String cleanGuardianName(String name) {
                   return name.replaceAll(RegExp(r'[^a-zA-Z0-9.\s]'), '');
                 }
-                String cleanedGuardianName = cleanGuardianName(response.data.guardianName);
+
+                String cleanedGuardianName =
+                    cleanGuardianName(response.data.guardianName);
 
                 _gurNameController.text = cleanedGuardianName;
 
-                List<String> guarNameParts = cleanedGuardianName.trim().split(" ");
+                List<String> guarNameParts =
+                    cleanedGuardianName.trim().split(" ");
 
                 if (guarNameParts.length == 1) {
                   _spouseFirstNameController.text = guarNameParts[0];
@@ -1328,11 +1359,9 @@ class _KYCPageState extends State<KYCPage> {
                       .sublist(1, guarNameParts.length - 1)
                       .join(' ');
                 }
-
               }
             });
             Navigator.of(context).pop();
-
 
             EasyLoading.dismiss();
           }
@@ -1576,7 +1605,8 @@ class _KYCPageState extends State<KYCPage> {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.adhar,
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, height: 2),
+                    style: TextStyle(
+                        fontFamily: "Poppins-Regular", fontSize: 13, height: 2),
                   ),
                   SizedBox(height: 1),
                   Container(
@@ -1586,7 +1616,8 @@ class _KYCPageState extends State<KYCPage> {
                         child: TextFormField(
                           keyboardType: TextInputType.number,
                           maxLength: 12,
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular", fontSize: 13),
                           focusNode: _focusNodeAdhaarId,
                           controller: _aadharIdController,
                           decoration: InputDecoration(
@@ -1601,9 +1632,8 @@ class _KYCPageState extends State<KYCPage> {
                             }
                             return null;
                           },
-                          onChanged: (value){
+                          onChanged: (value) {
                             _validateOnFocusChange();
-
                           },
                         ),
                       )),
@@ -1641,8 +1671,8 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                   Text(
                     AppLocalizations.of(context)!.title,
-
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                    style:
+                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
                   SizedBox(
                     height: 2,
@@ -1663,7 +1693,10 @@ class _KYCPageState extends State<KYCPage> {
                       iconSize: 24,
                       hint: Text("Select"),
                       elevation: 16,
-                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.black,
+                          fontSize: 13),
                       underline: Container(
                         height: 2,
                         color: Colors
@@ -1688,26 +1721,22 @@ class _KYCPageState extends State<KYCPage> {
             SizedBox(width: 10),
             // Add spacing between Title dropdown and Name field if needed
             Expanded(
-              child: _buildTextField2(
-                  AppLocalizations.of(context)!.name,
-                  _nameController, TextInputType.text, 30,nameReg),
+              child: _buildTextField2(AppLocalizations.of(context)!.name,
+                  _nameController, TextInputType.text, 30, nameReg),
             ),
           ],
         ),
 
-
         Row(
           children: [
             Expanded(
-                child: _buildTextField2(
-                    AppLocalizations.of(context)!.mname,
-                    _nameMController, TextInputType.text, 30,nameReg)),
+                child: _buildTextField2(AppLocalizations.of(context)!.mname,
+                    _nameMController, TextInputType.text, 30, nameReg)),
             SizedBox(width: 10),
             // Add spacing between the text fields if needed
             Expanded(
-                child: _buildTextField2(
-                    AppLocalizations.of(context)!.lname,
-                    _nameLController, TextInputType.text, 30,nameReg)),
+                child: _buildTextField2(AppLocalizations.of(context)!.lname,
+                    _nameLController, TextInputType.text, 30, nameReg)),
           ],
         ),
 
@@ -1720,8 +1749,7 @@ class _KYCPageState extends State<KYCPage> {
             children: [
               Text(
                 AppLocalizations.of(context)!.gurname,
-
-                style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
               ),
               SizedBox(height: 1),
               Container(
@@ -1729,38 +1757,36 @@ class _KYCPageState extends State<KYCPage> {
                   width: double.infinity, // Set the desired width
                   child: Center(
                     child: TextFormField(
-                        style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
-
+                        style: TextStyle(
+                            fontFamily: "Poppins-Regular", fontSize: 13),
                         maxLength: 50,
-                      controller: _gurNameController,
-                      decoration: InputDecoration(
-                        counterText: "",
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter Guardian Name';
-                        }
-                        return null;
-                      },
+                        controller: _gurNameController,
+                        decoration: InputDecoration(
+                          counterText: "",
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter Guardian Name';
+                          }
+                          return null;
+                        },
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(
-                          nameReg)), // Allow only alphanumeric characters // Optional: to deny spaces
+                              nameReg)), // Allow only alphanumeric characters // Optional: to deny spaces
                           TextInputFormatter.withFunction(
-                                (oldValue, newValue) => TextEditingValue(
+                            (oldValue, newValue) => TextEditingValue(
                               text: newValue.text.toUpperCase(),
                               selection: newValue.selection,
                             ),
                           ),
-                        ]
-                    ),
+                        ]),
                   )),
             ],
           ),
         ),
 
         Row(
-
           children: [
             Expanded(
                 child: Column(
@@ -1771,8 +1797,7 @@ class _KYCPageState extends State<KYCPage> {
                 ),
                 Text(
                   AppLocalizations.of(context)!.gender,
-
-                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                  style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                 ),
                 SizedBox(
                   height: 4,
@@ -1794,7 +1819,10 @@ class _KYCPageState extends State<KYCPage> {
                     isExpanded: true,
                     iconSize: 24,
                     elevation: 16,
-                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
+                    style: TextStyle(
+                        fontFamily: "Poppins-Regular",
+                        color: Colors.black,
+                        fontSize: 13),
                     underline: Container(
                       height: 2,
                       color: Colors
@@ -1830,8 +1858,7 @@ class _KYCPageState extends State<KYCPage> {
                 ),
                 Text(
                   AppLocalizations.of(context)!.relationship,
-
-                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                  style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                 ),
                 SizedBox(
                   height: 4,
@@ -1853,7 +1880,10 @@ class _KYCPageState extends State<KYCPage> {
                     isExpanded: true,
                     iconSize: 24,
                     elevation: 16,
-                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
+                    style: TextStyle(
+                        fontFamily: "Poppins-Regular",
+                        color: Colors.black,
+                        fontSize: 13),
                     underline: Container(
                       height: 2,
                       color: Colors
@@ -1884,7 +1914,7 @@ class _KYCPageState extends State<KYCPage> {
         Row(
           children: [
             Expanded(
-              child:  Container(
+              child: Container(
                 color: Colors.white,
                 margin: EdgeInsets.symmetric(vertical: 3),
                 padding: EdgeInsets.all(1),
@@ -1893,18 +1923,22 @@ class _KYCPageState extends State<KYCPage> {
                   children: [
                     Text(
                       AppLocalizations.of(context)!.mno,
-
-                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, height: 2),
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          fontSize: 13,
+                          height: 2),
                     ),
                     Container(
                       width: double.infinity, // Set the desired width
                       child: Center(
                         child: TextFormField(
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular", fontSize: 13),
 
                           maxLength: 10,
                           controller: _mobileNoController,
-                          keyboardType: TextInputType.number, // Set the input type
+                          keyboardType:
+                              TextInputType.number, // Set the input type
                           decoration: InputDecoration(
                               border: OutlineInputBorder(), counterText: ""),
                           validator: (value) {
@@ -1917,18 +1951,17 @@ class _KYCPageState extends State<KYCPage> {
                             FilteringTextInputFormatter.allow(RegExp(
                                 '[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
                             TextInputFormatter.withFunction(
-                                  (oldValue, newValue) => TextEditingValue(
+                              (oldValue, newValue) => TextEditingValue(
                                 text: newValue.text.toUpperCase(),
                                 selection: newValue.selection,
                               ),
                             ),
                           ],
-                          onChanged: (value){
+                          onChanged: (value) {
                             setState(() {
-                              verifyButtonClick=false;
-                              otpVerified=false;
+                              verifyButtonClick = false;
+                              otpVerified = false;
                             });
-
                           },
                         ),
                       ),
@@ -1945,13 +1978,13 @@ class _KYCPageState extends State<KYCPage> {
                 child: InkWell(
                   onTap: () {
                     {
-                      if(verifyButtonClick==false){
+                      if (verifyButtonClick == false) {
                         if (_mobileNoController.text.isEmpty) {
                           showToast_Error("Please enter mobile number");
-                        }else  if (_mobileNoController.text.length!=10) {
+                        } else if (_mobileNoController.text.length != 10) {
                           showToast_Error("Please enter correct mobile number");
                         } else {
-                          verifyButtonClick=true;
+                          verifyButtonClick = true;
                           //getOTPByMobileNo(_mobileNoController.text);
                           mobileOtp(context, _mobileNoController.text);
                         }
@@ -1988,15 +2021,15 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                   Text(
                     AppLocalizations.of(context)!.age,
-
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                    style:
+                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
                   SizedBox(height: 3),
                   Container(
                     color: Colors.white,
                     child: TextField(
-                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
-
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular", fontSize: 13),
                       controller: _ageController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
@@ -2018,8 +2051,8 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                   Text(
                     AppLocalizations.of(context)!.dob,
-
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                    style:
+                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
                   SizedBox(height: 3),
                   Container(
@@ -2043,23 +2076,24 @@ class _KYCPageState extends State<KYCPage> {
           ],
         ),
 
-        _buildTextField2(  AppLocalizations.of(context)!.ffnane,
-            _fatherFirstNameController,
-            TextInputType.text, 30,nameReg),
+        _buildTextField2(AppLocalizations.of(context)!.ffnane,
+            _fatherFirstNameController, TextInputType.text, 30, nameReg),
 
         Row(
           children: [
             Expanded(
-              child: _buildTextField2(  AppLocalizations.of(context)!.mname,
-
-                  _fatherMiddleNameController, TextInputType.text, 30,nameReg),
+              child: _buildTextField2(AppLocalizations.of(context)!.mname,
+                  _fatherMiddleNameController, TextInputType.text, 30, nameReg),
             ),
             SizedBox(width: 8),
             // Add spacing between the text fields if needed
             Expanded(
-                child: _buildTextField2( AppLocalizations.of(context)!.lname,
+                child: _buildTextField2(
+                    AppLocalizations.of(context)!.lname,
                     _fatherLastNameController,
-                    TextInputType.text, 30,nameReg)),
+                    TextInputType.text,
+                    30,
+                    nameReg)),
           ],
         ),
 
@@ -2069,8 +2103,7 @@ class _KYCPageState extends State<KYCPage> {
 
         Text(
           AppLocalizations.of(context)!.marital,
-
-          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+          style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
         ),
 
         SizedBox(
@@ -2094,7 +2127,10 @@ class _KYCPageState extends State<KYCPage> {
             isExpanded: true,
             iconSize: 24,
             elevation: 16,
-            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
+            style: TextStyle(
+                fontFamily: "Poppins-Regular",
+                color: Colors.black,
+                fontSize: 13),
             underline: Container(
               height: 2,
               color: Colors
@@ -2107,7 +2143,6 @@ class _KYCPageState extends State<KYCPage> {
                 });
               }
             },
-
             items: marrital_status
                 .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
               return DropdownMenuItem<String>(
@@ -2122,19 +2157,25 @@ class _KYCPageState extends State<KYCPage> {
           Column(
             children: [
               _buildTextField2(AppLocalizations.of(context)!.sfname,
-                  _spouseFirstNameController,
-                  TextInputType.text, 30,nameReg),
+                  _spouseFirstNameController, TextInputType.text, 30, nameReg),
               Row(
                 children: [
                   Expanded(
-                    child: _buildTextField2(AppLocalizations.of(context)!.mname,
-
-                        _spouseMiddleNameController, TextInputType.text, 30,nameReg),
+                    child: _buildTextField2(
+                        AppLocalizations.of(context)!.mname,
+                        _spouseMiddleNameController,
+                        TextInputType.text,
+                        30,
+                        nameReg),
                   ),
                   SizedBox(width: 8),
                   Expanded(
-                    child: _buildTextField2(AppLocalizations.of(context)!.lname,
-                        _spouseLastNameController, TextInputType.text, 30,nameReg),
+                    child: _buildTextField2(
+                        AppLocalizations.of(context)!.lname,
+                        _spouseLastNameController,
+                        TextInputType.text,
+                        30,
+                        nameReg),
                   ),
                 ],
               ),
@@ -2143,30 +2184,41 @@ class _KYCPageState extends State<KYCPage> {
         Row(
           children: [
             Expanded(
-              child: _buildTextField2(AppLocalizations.of(context)!.monthlyincome, _incomeController,
-                  TextInputType.number, 7,amountReg),
+              child: _buildTextField2(
+                  AppLocalizations.of(context)!.monthlyincome,
+                  _incomeController,
+                  TextInputType.number,
+                  7,
+                  amountReg),
             ),
             SizedBox(width: 8),
             // Add spacing between the text fields if needed
             Expanded(
-              child: _buildTextField2(AppLocalizations.of(context)!.monthlyexpence, _expenseController,
-                  TextInputType.number, 7,amountReg),
+              child: _buildTextField2(
+                  AppLocalizations.of(context)!.monthlyexpence,
+                  _expenseController,
+                  TextInputType.number,
+                  7,
+                  amountReg),
             ),
           ],
         ),
-        _buildTextField(AppLocalizations.of(context)!.address1, _address1Controller),
-        _buildTextField(AppLocalizations.of(context)!.address2, _address2Controller),
-        _buildTextField(AppLocalizations.of(context)!.address3, _address3Controller),
+        _buildTextField(
+            AppLocalizations.of(context)!.address1, _address1Controller),
+        _buildTextField(
+            AppLocalizations.of(context)!.address2, _address2Controller),
+        _buildTextField(
+            AppLocalizations.of(context)!.address3, _address3Controller),
         Row(
           children: [
             Expanded(
-              child: _buildTextField2(
-                  AppLocalizations.of(context)!.city, _cityController, TextInputType.text, 30,cityReg),
+              child: _buildTextField2(AppLocalizations.of(context)!.city,
+                  _cityController, TextInputType.text, 30, cityReg),
             ),
             SizedBox(width: 16),
             Expanded(
-              child: _buildTextField2(
-                  AppLocalizations.of(context)!.pincode, _pincodeController, TextInputType.number, 6,amountReg),
+              child: _buildTextField2(AppLocalizations.of(context)!.pincode,
+                  _pincodeController, TextInputType.number, 6, amountReg),
             ),
           ],
         ),
@@ -2174,22 +2226,21 @@ class _KYCPageState extends State<KYCPage> {
           height: 4,
         ),
 
-        _buildLabeledDropdownField(
-            AppLocalizations.of(context)!.sstate, 'State', states, stateselected,
-            (RangeCategoryDataModel? newValue) {
+        _buildLabeledDropdownField(AppLocalizations.of(context)!.sstate,
+            'State', states, stateselected, (RangeCategoryDataModel? newValue) {
           setState(() {
             stateselected = newValue;
           });
         }, String),
-        _buildTextField2(
-            AppLocalizations.of(context)!.loanamount, _loan_amountController, TextInputType.number, 7,amountReg),
+        _buildTextField2(AppLocalizations.of(context)!.loanamount,
+            _loan_amountController, TextInputType.number, 7, amountReg),
 
         SizedBox(
           height: 6,
         ),
         Text(
           AppLocalizations.of(context)!.loanreason,
-          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+          style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
         ),
         SizedBox(
           height: 4,
@@ -2213,7 +2264,10 @@ class _KYCPageState extends State<KYCPage> {
             hint: Text("Select Loan Reason"),
             iconSize: 24,
             elevation: 16,
-            style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
+            style: TextStyle(
+                fontFamily: "Poppins-Regular",
+                color: Colors.black,
+                fontSize: 13),
             underline: Container(
               height: 2,
               color: Colors
@@ -2248,7 +2302,8 @@ class _KYCPageState extends State<KYCPage> {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.loanduration,
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                    style:
+                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
                   SizedBox(height: 3),
                   Container(
@@ -2267,7 +2322,10 @@ class _KYCPageState extends State<KYCPage> {
                       isExpanded: true,
                       iconSize: 24,
                       elevation: 16,
-                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.black,
+                          fontSize: 13),
                       underline: Container(
                         height: 2,
                         color: Colors
@@ -2297,7 +2355,8 @@ class _KYCPageState extends State<KYCPage> {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.bankname,
-                    style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13),
+                    style:
+                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                   ),
                   SizedBox(height: 3),
                   Container(
@@ -2314,7 +2373,10 @@ class _KYCPageState extends State<KYCPage> {
                       hint: Text('Select Bank'),
                       iconSize: 24,
                       elevation: 16,
-                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black, fontSize: 13),
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.black,
+                          fontSize: 13),
                       underline: Container(
                         height: 2,
                         color: Colors.transparent,
@@ -2412,101 +2474,108 @@ class _KYCPageState extends State<KYCPage> {
       context: context,
       barrierDismissible: false, // Prevent dismissal by tapping outside
       builder: (BuildContext context) {
-        return WillPopScope(child: StatefulBuilder(
-          builder: (context, setState) {
-            // Start timer once the dialog opens
-            if (countdownTimer == null) startCountdown(setState);
+        return WillPopScope(
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                // Start timer once the dialog opens
+                if (countdownTimer == null) startCountdown(setState);
 
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Row(
-                children: [
-                  Text(
-                    'Please Enter OTP Here',
-                    style: TextStyle(fontFamily: "Poppins-Regular",
-                      color: Colors.black,
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Pinput(
-                    length: 6, // Number of PIN digits
-                    onCompleted: (pin) {
-                      pinCode = pin;
-                    },
-                    defaultPinTheme: PinTheme(
-                      width: 40,
-                      height: 40,
-                      textStyle: const TextStyle(fontFamily: "Poppins-Regular",
-                        fontSize: 15,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
+                return AlertDialog(
+                  backgroundColor: Colors.white,
+                  title: Row(
+                    children: [
+                      Text(
+                        'Please Enter OTP Here',
+                        style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                    ),
+                    ],
                   ),
-                  SizedBox(height: 5),
-                  Visibility(
-                      visible: !cancelButtonVisible,
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Pinput(
+                        length: 6, // Number of PIN digits
+                        onCompleted: (pin) {
+                          pinCode = pin;
+                        },
+                        defaultPinTheme: PinTheme(
+                          width: 40,
+                          height: 40,
+                          textStyle: const TextStyle(
+                            fontFamily: "Poppins-Regular",
+                            fontSize: 15,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Visibility(
+                          visible: !cancelButtonVisible,
+                          child: Text(
+                            'Resend OTP in $remainingTime seconds',
+                            style: TextStyle(
+                                fontFamily: "Poppins-Regular",
+                                color: Colors.red),
+                          )),
+                    ],
+                  ),
+                  actions: [
+                    ElevatedButton(
+                      onPressed: () {
+                        verifyButtonClick = false;
+                        countdownTimer?.cancel(); // Stop timer when submitting
+
+                        if (pinCode.isEmpty || pinCode.length != 6) {
+                          showToast_Error("Please Enter OTP Properly");
+                        } else {
+                          submitOtp(pinCode, context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green, // Button color
+                      ),
                       child: Text(
-                        'Resend OTP in $remainingTime seconds',
-                        style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.red),
-                      )),
-                ],
-              ),
-              actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    verifyButtonClick=false;
-                    countdownTimer?.cancel(); // Stop timer when submitting
-
-                    if (pinCode.isEmpty || pinCode.length != 6) {
-                      showToast_Error("Please Enter OTP Properly");
-                    } else {
-                      submitOtp(pinCode, context);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Button color
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.submit,
-                    style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
-                  ),
-                ),
-                Visibility(
-                  visible: cancelButtonVisible,
-                  child: ElevatedButton(
-                    onPressed: () {
-
-
-                      setState(() {
-                        verifyButtonClick=false;
-                      });
-                      countdownTimer?.cancel(); // Stop timer when closing
-                      Navigator.of(context).pop(); // Close the dialog
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Button color
+                        AppLocalizations.of(context)!.submit,
+                        style: TextStyle(
+                            fontFamily: "Poppins-Regular", color: Colors.white),
+                      ),
                     ),
-                    child: Text(
-                      AppLocalizations.of(context)!.close,
-                      style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
+                    Visibility(
+                      visible: cancelButtonVisible,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            verifyButtonClick = false;
+                          });
+                          countdownTimer?.cancel(); // Stop timer when closing
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red, // Button color
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.close,
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular",
+                              color: Colors.white),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ), onWillPop: () async => false);
+                  ],
+                );
+              },
+            ),
+            onWillPop: () async => false);
       },
     ).then((_) {
       countdownTimer?.cancel(); // Cleanup when dialog is closed
@@ -2522,7 +2591,6 @@ class _KYCPageState extends State<KYCPage> {
             children: [
               Flexible(
                 flex: 2,
-
                 child: Container(
                   color: Colors.white,
                   margin: EdgeInsets.symmetric(vertical: 4),
@@ -2532,7 +2600,8 @@ class _KYCPageState extends State<KYCPage> {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.panno,
-                        style: TextStyle(fontFamily: "Poppins-Regular",
+                        style: TextStyle(
+                          fontFamily: "Poppins-Regular",
                           fontSize: 13,
                         ),
                       ),
@@ -2541,13 +2610,12 @@ class _KYCPageState extends State<KYCPage> {
                         width: double.infinity, // Set the desired width
                         child: Center(
                           child: TextFormField(
-                             maxLength: 10,
+                            maxLength: 10,
                             controller: _panNoController,
-                            keyboardType: TextInputType.text, // Set the input type
+                            keyboardType:
+                                TextInputType.text, // Set the input type
                             decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                counterText: ""
-                            ),
+                                border: OutlineInputBorder(), counterText: ""),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please Enter PAN Number';
@@ -2555,20 +2623,20 @@ class _KYCPageState extends State<KYCPage> {
                               return null;
                             },
                             inputFormatters: [
-                              FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
+                              FilteringTextInputFormatter.allow(RegExp(
+                                  '[a-zA-Z0-9]')), // Allow only alphanumeric characters // Optional: to deny spaces
                               TextInputFormatter.withFunction(
-                                    (oldValue, newValue) => TextEditingValue(
+                                (oldValue, newValue) => TextEditingValue(
                                   text: newValue.text.toUpperCase(),
                                   selection: newValue.selection,
                                 ),
                               ),
                             ],
-                            onChanged: (value){
+                            onChanged: (value) {
                               setState(() {
                                 panVerified = false;
                                 panCardHolderName = "";
                               });
-
                             },
                           ),
                         ),
@@ -2576,7 +2644,6 @@ class _KYCPageState extends State<KYCPage> {
                     ],
                   ),
                 ),
-
               ),
               SizedBox(width: 10),
               Padding(
@@ -2607,7 +2674,8 @@ class _KYCPageState extends State<KYCPage> {
             ],
           ),
           Text(panCardHolderName,
-              style: TextStyle(fontFamily: "Poppins-Regular",
+              style: TextStyle(
+                  fontFamily: "Poppins-Regular",
                   color: !panVerified ? Colors.grey.shade400 : Colors.green,
                   fontSize: !panVerified ? 11 : 14)),
           Row(
@@ -2615,7 +2683,7 @@ class _KYCPageState extends State<KYCPage> {
               Flexible(
                 flex: 2,
                 child: _buildTextField2(AppLocalizations.of(context)!.dl,
-                    _drivingLicenseController, TextInputType.text, 18,IdsReg),
+                    _drivingLicenseController, TextInputType.text, 18, IdsReg),
               ),
               SizedBox(width: 10),
               Padding(
@@ -2648,18 +2716,24 @@ class _KYCPageState extends State<KYCPage> {
           dlCardHolderName == null
               ? Text(
                   "Please search driving license holder name for verification",
-                  style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.grey.shade400, fontSize: 11),
+                  style: TextStyle(
+                      fontFamily: "Poppins-Regular",
+                      color: Colors.grey.shade400,
+                      fontSize: 11),
                 )
               : Text(dlCardHolderName!,
-                  style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.green, fontSize: 14)),
+                  style: TextStyle(
+                      fontFamily: "Poppins-Regular",
+                      color: Colors.green,
+                      fontSize: 14)),
           _buildDatePickerField(context, AppLocalizations.of(context)!.dlexpiry,
               _dlExpiryController, "dlExp"),
           Row(
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField2(
-                    AppLocalizations.of(context)!.voter, _voterIdController, TextInputType.text, 17,IdsReg),
+                child: _buildTextField2(AppLocalizations.of(context)!.voter,
+                    _voterIdController, TextInputType.text, 17, IdsReg),
               ),
               SizedBox(width: 10),
               Padding(
@@ -2688,43 +2762,53 @@ class _KYCPageState extends State<KYCPage> {
               ),
             ],
           ),
-
           voterCardHolderName == null
               ? Text(
                   "Please search voter card holder name for verification",
-                  style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.grey.shade400, fontSize: 11),
+                  style: TextStyle(
+                      fontFamily: "Poppins-Regular",
+                      color: Colors.grey.shade400,
+                      fontSize: 11),
                 )
               : Text(voterCardHolderName!,
-                  style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.green, fontSize: 14)),
+                  style: TextStyle(
+                      fontFamily: "Poppins-Regular",
+                      color: Colors.green,
+                      fontSize: 14)),
           Row(
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField(AppLocalizations.of(context)!.passport, _passportController),
+                child: _buildTextField(AppLocalizations.of(context)!.passport,
+                    _passportController),
               ),
             ],
           ),
-
-          _buildDatePickerField(context, AppLocalizations.of(context)!.passportexpiry,
-              _passportExpiryController, "passExp"),
-          _buildLabeledDropdownField(
-              AppLocalizations.of(context)!.selectcity, 'Cities', listCityCodes, selectedCityCode,
-              (PlaceData? newValue) {
+          _buildDatePickerField(
+              context,
+              AppLocalizations.of(context)!.passportexpiry,
+              _passportExpiryController,
+              "passExp"),
+          _buildLabeledDropdownField(AppLocalizations.of(context)!.selectcity,
+              'Cities', listCityCodes, selectedCityCode, (PlaceData? newValue) {
             setState(() {
               selectedCityCode = newValue;
-              selectedDistrictCode=null;
-              selectedSubDistrictCode=null;
-              selectedVillageCode=null;
+              selectedDistrictCode = null;
+              selectedSubDistrictCode = null;
+              selectedVillageCode = null;
               // getPlace("city",stateselected!.code,"","");
               // getPlace("district",stateselected!.code,"","");
             });
           }, String),
-          _buildLabeledDropdownField(AppLocalizations.of(context)!.selectdistric, 'Districts',
-              listDistrictCodes, selectedDistrictCode, (PlaceData? newValue) {
+          _buildLabeledDropdownField(
+              AppLocalizations.of(context)!.selectdistric,
+              'Districts',
+              listDistrictCodes,
+              selectedDistrictCode, (PlaceData? newValue) {
             setState(() {
               selectedDistrictCode = newValue;
-              selectedSubDistrictCode=null;
-              selectedVillageCode=null;
+              selectedSubDistrictCode = null;
+              selectedVillageCode = null;
               getPlace("subdistrict", stateselected!.code,
                   selectedDistrictCode!.distCode!, "");
               // getPlace("district",stateselected!.code,"","");
@@ -2737,16 +2821,20 @@ class _KYCPageState extends State<KYCPage> {
               selectedSubDistrictCode, (PlaceData? newValue) {
             setState(() {
               selectedSubDistrictCode = newValue;
-              selectedVillageCode=null;
-              getPlace("village",
+              selectedVillageCode = null;
+              getPlace(
+                  "village",
                   stateselected!.code,
                   selectedDistrictCode!.distCode!,
                   selectedSubDistrictCode!.subDistCode!);
               // getPlace("district",stateselected!.code,"","");
             });
           }, String),
-          _buildLabeledDropdownField(AppLocalizations.of(context)!.selectvillage, 'Village',
-              listVillagesCodes, selectedVillageCode, (PlaceData? newValue) {
+          _buildLabeledDropdownField(
+              AppLocalizations.of(context)!.selectvillage,
+              'Village',
+              listVillagesCodes,
+              selectedVillageCode, (PlaceData? newValue) {
             setState(() {
               selectedVillageCode = newValue;
               // getPlace("city",stateselected!.code,"","");
@@ -2773,15 +2861,18 @@ class _KYCPageState extends State<KYCPage> {
           children: [
             Text(
               labelText,
-              style: TextStyle(fontFamily: "Poppins-Regular",
+              style: TextStyle(
+                fontFamily: "Poppins-Regular",
                 fontSize: 13,
               ),
             ),
             SizedBox(height: 8),
             SizedBox(
-              width: double.infinity, // Ensure the dropdown takes the full width available
+              width: double
+                  .infinity, // Ensure the dropdown takes the full width available
               child: DropdownButtonFormField<T>(
-                isExpanded: true, // Ensure the dropdown expands to fit its content
+                isExpanded:
+                    true, // Ensure the dropdown expands to fit its content
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
@@ -2826,7 +2917,10 @@ class _KYCPageState extends State<KYCPage> {
                     value: value,
                     child: Text(
                       setdata,
-                      style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, fontWeight: FontWeight.normal),
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          fontSize: 13,
+                          fontWeight: FontWeight.normal),
                     ), // Convert the value to string for display
                   );
                 }).toList(),
@@ -2842,7 +2936,7 @@ class _KYCPageState extends State<KYCPage> {
   void docVerifyIDC(
       String type, String txnNumber, String ifsc, String dob) async {
     EasyLoading.show(
-      status:AppLocalizations.of(context)!.loading,
+      status: AppLocalizations.of(context)!.loading,
     );
     try {
       Map<String, dynamic> requestBody = {
@@ -2861,58 +2955,73 @@ class _KYCPageState extends State<KYCPage> {
         Map<String, dynamic> responseData = response["data"];
         // Parse JSON object if it’s a map
         if (type == "pancard") {
-          if ((responseData['name'] == null ||responseData['name'] == "")) {
+          if ((responseData['name'] == null || responseData['name'] == "")) {
             setState(() {
               panCardHolderName = "Data not Verified";
               panVerified = false;
             });
-          }else if ((responseData['name'] != null ||responseData['name'] != "")) {
+          } else if ((responseData['name'] != null ||
+              responseData['name'] != "")) {
             setState(() {
-
-              panCardHolderName ="${responseData['name']} ";
+              panCardHolderName = "${responseData['name']} ";
               panVerified = true;
             });
-
-          }else if (responseData['name'] != null ||responseData['name'] != ""){
+          } else if (responseData['name'] != null ||
+              responseData['name'] != "") {
             setState(() {
-
-
-              panCardHolderName ="${responseData['name']}";
+              panCardHolderName = "${responseData['name']}";
               panVerified = true;
             });
-
           }
-          if(!isCKYCNumberFound){
-            isCKYCNumberFound= await CkycRepository().searchCkyc(_aadharIdController.text, _panNoController.text, _voterIdController.text, _dobController.text, genderselected, _nameController.text + " " + _nameMController.text + " " + _nameLController.text);
-
+          if (!isCKYCNumberFound) {
+            isCKYCNumberFound = await CkycRepository().searchCkyc(
+                _aadharIdController.text,
+                _panNoController.text,
+                _voterIdController.text,
+                _dobController.text,
+                genderselected,
+                _nameController.text +
+                    " " +
+                    _nameMController.text +
+                    " " +
+                    _nameLController.text);
           }
         } else if (type == "drivinglicense") {
-          if(responseData['name'] == null || responseData['name'] == ""){
+          if (responseData['name'] == null || responseData['name'] == "") {
             setState(() {
               dlCardHolderName = "Data not Verified with DOB:$dob";
               dlVerified = false;
             });
-          }else {
+          } else {
             setState(() {
               dlCardHolderName = "${responseData['name']}";
               dlVerified = true;
             });
           }
         } else if (type == "voterid") {
-          if(responseData['name'] == null || responseData['name'] == "") {
+          if (responseData['name'] == null || responseData['name'] == "") {
             setState(() {
               voterCardHolderName = "Data not Verified";
               voterVerified = false;
             });
-          }else {
+          } else {
             setState(() {
               voterCardHolderName = "${responseData['name']}";
               voterVerified = true;
             });
           }
-          if(!isCKYCNumberFound){
-            isCKYCNumberFound= await CkycRepository().searchCkyc(_aadharIdController.text, _panNoController.text, _voterIdController.text, _dobController.text, genderselected, _nameController.text + " " + _nameMController.text + " " + _nameLController.text);
-
+          if (!isCKYCNumberFound) {
+            isCKYCNumberFound = await CkycRepository().searchCkyc(
+                _aadharIdController.text,
+                _panNoController.text,
+                _voterIdController.text,
+                _dobController.text,
+                genderselected,
+                _nameController.text +
+                    " " +
+                    _nameMController.text +
+                    " " +
+                    _nameLController.text);
           }
         }
       } else {
@@ -2969,7 +3078,7 @@ class _KYCPageState extends State<KYCPage> {
       Map<String, dynamic> requestBody = {
         "userID": userid,
         "dlno": dlNo,
-       // "dob": dob
+        // "dob": dob
         "dob": "02-10-2000"
       };
 
@@ -2991,7 +3100,6 @@ class _KYCPageState extends State<KYCPage> {
           }
         });
         EasyLoading.dismiss();
-
       } else {
         EasyLoading.dismiss();
 
@@ -3003,7 +3111,6 @@ class _KYCPageState extends State<KYCPage> {
       docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
           _dobController.text);
       EasyLoading.dismiss();
-
     }
     EasyLoading.dismiss();
   }
@@ -3079,11 +3186,11 @@ class _KYCPageState extends State<KYCPage> {
         },*/
         onPressed: () {
           if (_currentStep == 0) {
-            if(FiType == "NEW") {
-            if (firstPageFieldValidate()) {
+            if (FiType == "NEW") {
+              if (firstPageFieldValidate()) {
                 saveFiMethod(context);
               }
-            }else{
+            } else {
               getPlace("city", stateselected!.code, "", "");
               getPlace("district", stateselected!.code, "", "");
               setState(() {
@@ -3114,7 +3221,8 @@ class _KYCPageState extends State<KYCPage> {
         },
         child: Text(
           AppLocalizations.of(context)!.submit,
-          style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white, fontSize: 16),
+          style: TextStyle(
+              fontFamily: "Poppins-Regular", color: Colors.white, fontSize: 16),
         ),
       ),
     );
@@ -3129,7 +3237,9 @@ class _KYCPageState extends State<KYCPage> {
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context)!.ok,),
+              child: Text(
+                AppLocalizations.of(context)!.ok,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -3208,11 +3318,9 @@ class _KYCPageState extends State<KYCPage> {
     return true;
   }
 
-
-bool checkIdMendate(){
-  print("voterCardHolderName $voterCardHolderName");
-    if(voterVerified || voterCardHolderName!=null){
-
+  bool checkIdMendate() {
+    print("voterCardHolderName $voterCardHolderName");
+    if (voterVerified || voterCardHolderName != null) {
       return true;
     } else if (panVerified && dlVerified) {
       return true;
@@ -3236,10 +3344,11 @@ bool checkIdMendate(){
     } else if (_nameController.text.isEmpty) {
       showToast_Error("Please enter borrower first name");
       return false;
-    }/* else if (_nameLController.text.isEmpty) {
+    } /* else if (_nameLController.text.isEmpty) {
       showToast_Error("Please enter borrower last name");
       return false;
-    }*/ else if (_gurNameController.text.isEmpty) {
+    }*/
+    else if (_gurNameController.text.isEmpty) {
       showToast_Error("Please enter guardian name");
       return false;
     } else if (genderselected.toLowerCase() == "select") {
@@ -3249,7 +3358,8 @@ bool checkIdMendate(){
       showToast_Error("Please select borrower's relation with guardian");
       return false;
     } else if (_mobileNoController.text.isEmpty ||
-        _mobileNoController.text.length != 10||  !_mobileNoController.text.contains(RegExp(r'^[0-9]{10}$'))) {
+        _mobileNoController.text.length != 10 ||
+        !_mobileNoController.text.contains(RegExp(r'^[0-9]{10}$'))) {
       showToast_Error("Please enter correct mobile number");
       return false;
     } else if (_dobController.text.isEmpty) {
@@ -3261,28 +3371,36 @@ bool checkIdMendate(){
     } /*else if (_fatherLastNameController.text.isEmpty) {
       showToast_Error("Please enter father last name");
       return false;
-    }*/ else if (selectedMarritalStatus == null) {
+    }*/
+    else if (selectedMarritalStatus == null) {
       showToast_Error("Please select marital status");
       return false;
-    } else if (_expenseController.text.isEmpty ) {
+    } else if (_expenseController.text.isEmpty) {
       showToast_Error("Please Enter Monthly Expenses");
       return false;
     } else if (_incomeController.text.isEmpty) {
       showToast_Error("Please Enter Monthly Income");
       return false;
-    }else if ((!GlobalClass.creator.startsWith('VH') || !GlobalClass.creator.startsWith('vh')) && !(int.parse(_incomeController.text)<=25000 && int.parse(_incomeController.text)>=10000)) {
-        showToast_Error("Income should be greater than 10,000 and less than 25,000");
+    } else if ((!GlobalClass.creator.startsWith('VH') ||
+            !GlobalClass.creator.startsWith('vh')) &&
+        !(int.parse(_incomeController.text) <= 25000 &&
+            int.parse(_incomeController.text) >= 10000)) {
+      showToast_Error(
+          "Income should be greater than 10,000 and less than 25,000");
       return false;
-    }/*else if (!(int.parse(_incomeController.text)<=25000 && int.parse(_incomeController.text)>=10000)) {
+    } /*else if (!(int.parse(_incomeController.text)<=25000 && int.parse(_incomeController.text)>=10000)) {
       showToast_Error("Income should be greater than 10,000 and less than 25,000");
       return false;
-    }*/else if ((int.parse(_expenseController.text)<=((int.parse(_incomeController.text))*0.5))) {
+    }*/
+    else if ((int.parse(_expenseController.text) <=
+        ((int.parse(_incomeController.text)) * 0.5))) {
       showToast_Error("Expense should be greater than 50 % of Income");
       return false;
-    } else if (selectedMarritalStatus!.toLowerCase() == "married" && _spouseFirstNameController.text.isEmpty) {
-        showToast_Error("Please enter spouse first name");
-        return false;
-       /*else if (_spouseLastNameController.text.isEmpty) {
+    } else if (selectedMarritalStatus!.toLowerCase() == "married" &&
+        _spouseFirstNameController.text.isEmpty) {
+      showToast_Error("Please enter spouse first name");
+      return false;
+      /*else if (_spouseLastNameController.text.isEmpty) {
         showToast_Error("Please enter spouse last name");
         return false;
       }*/
@@ -3296,34 +3414,37 @@ bool checkIdMendate(){
         _pincodeController.text.length != 6) {
       showToast_Error("Please enter correct Pin code");
       return false;
-    } else if (stateselected == null || stateselected!.descriptionEn.toLowerCase() == "select") {
+    } else if (stateselected == null ||
+        stateselected!.descriptionEn.toLowerCase() == "select") {
       showToast_Error("Please select state");
       return false;
-    }
-    else if (_loan_amountController.text.isEmpty) {
+    } else if (_loan_amountController.text.isEmpty) {
       showToast_Error("Please enter correct loan amount");
       return false;
-    } else if (!((int.parse(_loan_amountController.text))>=5000 && (int.parse(_loan_amountController.text))<=300000)) {
-      showToast_Error("Loan Amount should be Less than three Lakhs and Greater than 5 thousand");
+    } else if (!((int.parse(_loan_amountController.text)) >= 5000 &&
+        (int.parse(_loan_amountController.text)) <= 300000)) {
+      showToast_Error(
+          "Loan Amount should be Less than three Lakhs and Greater than 5 thousand");
       return false;
     } else if (selectedLoanReason == null) {
       showToast_Error("Please select loan reason");
       return false;
-    } else if (selectedloanDuration == null ||selectedloanDuration!.toLowerCase() == "select") {
+    } else if (selectedloanDuration == null ||
+        selectedloanDuration!.toLowerCase() == "select") {
       showToast_Error("Please select loan duration");
       return false;
-    } else if (bankselected == null ||bankselected!.toLowerCase() == "select"  ) {
+    } else if (bankselected == null ||
+        bankselected!.toLowerCase() == "select") {
       showToast_Error("Please select bank");
       return false;
     } else if (_latitudeController.text.isEmpty ||
         _longitudeController.text.isEmpty) {
       showToast_Error("Please turn on location service of mobile");
       return false;
-    } else if (_imageFile==null) {
+    } else if (_imageFile == null) {
       showToast_Error("Please capture borrower profile picture");
       return false;
-    }
-    else if (!otpVerified) {
+    } else if (!otpVerified) {
       showToast_Error("Please Verify Mobile number with OTP!!");
       return false;
     }
@@ -3382,29 +3503,27 @@ bool checkIdMendate(){
         stateCode, // StateCode
       );
 
-       if (response.statuscode == 200 && response.data.isNotEmpty) {
-      setState(() {
-        if (type == "city") {
-          listCityCodes = response.data;
-          print("Cities ${listCityCodes.length}");
-        } else if (type == 'district') {
-          listDistrictCodes = response.data;
-        } else if (type == "subdistrict") {
-          listSubDistrictCodes = response.data;
-        } else if (type == "village") {
-          listVillagesCodes = response.data;
-        }
-      });
-
+      if (response.statuscode == 200 && response.data.isNotEmpty) {
+        setState(() {
+          if (type == "city") {
+            listCityCodes = response.data;
+            print("Cities ${listCityCodes.length}");
+          } else if (type == 'district') {
+            listDistrictCodes = response.data;
+          } else if (type == "subdistrict") {
+            listSubDistrictCodes = response.data;
+          } else if (type == "village") {
+            listVillagesCodes = response.data;
+          }
+        });
       } else {
-         GlobalClass.showUnsuccessfulAlert(context, "Message", 1);
-       }
+        GlobalClass.showUnsuccessfulAlert(context, "Message", 1);
+      }
 
       EasyLoading.dismiss();
     } catch (e) {
       print("Error: $e");
       EasyLoading.dismiss();
-
     }
   }
 
@@ -3418,29 +3537,31 @@ bool checkIdMendate(){
     };
 
     return await api
-        .mobileOtpSend(GlobalClass.token,GlobalClass.dbName, requestBody)
+        .mobileOtpSend(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
         _showOTPDialog(context);
-      }else{
+      } else {
         EasyLoading.dismiss();
-        GlobalClass.showErrorAlert(context, "Issue occurs in OTP sending...\n\nContact to administrator", 1);
+        GlobalClass.showErrorAlert(context,
+            "Issue occurs in OTP sending...\n\nContact to administrator", 1);
       }
-    }).catchError((onError){
+    }).catchError((onError) {
       EasyLoading.dismiss();
-      GlobalClass.showErrorAlert(context, "Issue occurs in OTP sending...\n\n$onError", 1);
+      GlobalClass.showErrorAlert(
+          context, "Issue occurs in OTP sending...\n\n$onError", 1);
     });
   }
 
   void setQRData(result) {
     List<String> dataList = result.split(",");
     if (dataList.length > 14) {
-      if(dataList[0].toLowerCase().startsWith("v")){
+      if (dataList[0].toLowerCase().startsWith("v")) {
         _aadharIdController.text = dataList[2];
-        if(_aadharIdController.text.length!=12){
+        if (_aadharIdController.text.length != 12) {
           GlobalClass.showErrorAlert(context, "Please Enter Aadhaar number", 1);
-          _aadharIdController.text="";
+          _aadharIdController.text = "";
         }
         List<String> nameParts = dataList[3].split(" ");
         if (nameParts.length == 1) {
@@ -3470,7 +3591,7 @@ bool checkIdMendate(){
           setState(() {
             relationwithBorrowerselected = "Father";
             List<String> guarNameParts =
-            replaceCharFromName(dataList[6]).split(" ");
+                replaceCharFromName(dataList[6]).split(" ");
             if (guarNameParts.length == 1) {
               _fatherFirstNameController.text = guarNameParts[0];
             } else if (guarNameParts.length == 2) {
@@ -3487,7 +3608,7 @@ bool checkIdMendate(){
           setState(() {
             relationwithBorrowerselected = "Husband";
             List<String> guarNameParts =
-            replaceCharFromName(dataList[6]).split(" ");
+                replaceCharFromName(dataList[6]).split(" ");
             if (guarNameParts.length == 1) {
               _spouseFirstNameController.text = guarNameParts[0];
             } else if (guarNameParts.length == 2) {
@@ -3507,7 +3628,7 @@ bool checkIdMendate(){
         if (dataList[0].toLowerCase() == 'v2') {
           _pincodeController.text = dataList[11];
           stateselected = states.firstWhere((item) =>
-          item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+              item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
           String address =
               "${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
           List<String> addressParts = address.trim().split(",");
@@ -3524,7 +3645,7 @@ bool checkIdMendate(){
           }
         } else if (dataList[0].toLowerCase() == 'v4') {
           stateselected = states.firstWhere((item) =>
-          item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
+              item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
           _pincodeController.text = dataList[12];
           String address =
               "${dataList[10]},${dataList[11]},${dataList[13]},${dataList[15]},${dataList[16]}";
@@ -3542,14 +3663,11 @@ bool checkIdMendate(){
                 addressParts.sublist(1, addressParts.length - 1).join(' ');
           }
         }
-      }
-      else{
-
+      } else {
         _aadharIdController.text = dataList[1];
-        if(_aadharIdController.text.length!=12){
+        if (_aadharIdController.text.length != 12) {
           GlobalClass.showErrorAlert(context, "Please Enter Aadhaar number", 1);
-          _aadharIdController.text="";
-
+          _aadharIdController.text = "";
         }
         List<String> nameParts = dataList[2].split(" ");
         if (nameParts.length == 1) {
@@ -3579,7 +3697,7 @@ bool checkIdMendate(){
           setState(() {
             relationwithBorrowerselected = "Father";
             List<String> guarNameParts =
-            replaceCharFromName(dataList[5]).split(" ");
+                replaceCharFromName(dataList[5]).split(" ");
             if (guarNameParts.length == 1) {
               _fatherFirstNameController.text = guarNameParts[0];
             } else if (guarNameParts.length == 2) {
@@ -3596,7 +3714,7 @@ bool checkIdMendate(){
           setState(() {
             relationwithBorrowerselected = "Husband";
             List<String> guarNameParts =
-            replaceCharFromName(dataList[5]).split(" ");
+                replaceCharFromName(dataList[5]).split(" ");
             if (guarNameParts.length == 1) {
               _spouseFirstNameController.text = guarNameParts[0];
             } else if (guarNameParts.length == 2) {
@@ -3613,29 +3731,27 @@ bool checkIdMendate(){
         _cityController.text = dataList[6];
         _gurNameController.text = replaceCharFromName(dataList[5]);
 
-
-          _pincodeController.text = dataList[10];
-          stateselected = states.firstWhere((item) =>
-          item.descriptionEn.toLowerCase() == dataList[12].toLowerCase());
-          String address =
-              "${dataList[8]},${dataList[9]},${dataList[11]},${dataList[13]},${dataList[14]}";
-          List<String> addressParts = address.trim().split(",");
-          if (addressParts.length == 1) {
-            _address1Controller.text = addressParts[0];
-          } else if (addressParts.length == 2) {
-            _address1Controller.text = addressParts[0];
-            _address2Controller.text = addressParts[1];
-          } else {
-            _address1Controller.text = addressParts.first;
-            _address2Controller.text = addressParts.last;
-            _address3Controller.text =
-                addressParts.sublist(1, addressParts.length - 1).join(' ');
-          }
-
+        _pincodeController.text = dataList[10];
+        stateselected = states.firstWhere((item) =>
+            item.descriptionEn.toLowerCase() == dataList[12].toLowerCase());
+        String address =
+            "${dataList[8]},${dataList[9]},${dataList[11]},${dataList[13]},${dataList[14]}";
+        List<String> addressParts = address.trim().split(",");
+        if (addressParts.length == 1) {
+          _address1Controller.text = addressParts[0];
+        } else if (addressParts.length == 2) {
+          _address1Controller.text = addressParts[0];
+          _address2Controller.text = addressParts[1];
+        } else {
+          _address1Controller.text = addressParts.first;
+          _address2Controller.text = addressParts.last;
+          _address3Controller.text =
+              addressParts.sublist(1, addressParts.length - 1).join(' ');
+        }
       }
-
     }
   }
+
   Future<void> _BabnkNamesAPI(BuildContext context) async {
     EasyLoading.show(status: 'Loading...');
 
@@ -3657,6 +3773,7 @@ bool checkIdMendate(){
       }
     });
   }
+
   String replaceCharFromName(String gurName) {
     return gurName
         .replaceAll("S/O ", "")
@@ -3680,7 +3797,7 @@ bool checkIdMendate(){
         showToast_Error("OTP Verified...");
         setState(() {
           otpVerified = true;
-          verifyButtonClick=true;
+          verifyButtonClick = true;
         });
         Navigator.of(contextDialog).pop();
       } else {
@@ -3727,14 +3844,14 @@ bool checkIdMendate(){
               children: [
                 _buildShinyButton(
                   'No',
-                      () {
+                  () {
                     EasyLoading.dismiss();
                     Navigator.of(context).pop(true);
                   },
                 ),
                 _buildShinyButton(
                   'Yes',
-                      () {
+                  () {
                     EasyLoading.dismiss();
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
@@ -3748,15 +3865,18 @@ bool checkIdMendate(){
     );
     // return shouldClose ?? false; // Default to false if dismissed
   }
+
   Widget _buildShinyButton(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white, backgroundColor: Color(0xFFD42D3F), // foreground/text
+        foregroundColor: Colors.white,
+        backgroundColor: Color(0xFFD42D3F), // foreground/text
       ),
       onPressed: onPressed,
       child: Text(text),
     );
   }
+
   Future<void> adhaarAllData(BuildContext contextDialog) async {
     EasyLoading.show(status: "Aadhaar History...");
     print("object112211");
@@ -3771,14 +3891,18 @@ bool checkIdMendate(){
     )
         .then((value) {
       if (value.statuscode == 200) {
-
         if (value.data[0].errormsg.isEmpty) {
           print("object112222");
-
+          adhaardata = value.data[0];
           if (value.data[0].panNo.isEmpty &&
               value.data[0].dl.isEmpty &&
               value.data[0].voterId.isEmpty) {
-            setState(() {
+            EasyLoading.dismiss();
+
+            Future.delayed(
+                Duration.zero, () => showIDCardDialog(context, adhaardata, 2));
+
+            /* setState(() {
               FiType = "OLD";
               Fi_Code=value.data[0].fiCode.toString();
               Fi_Id = value.data[0].fiId.toString();
@@ -3822,8 +3946,8 @@ bool checkIdMendate(){
               _address3Controller.text =value.data[0].pAddress3;
               _cityController.text =value.data[0].pCity;
               _pincodeController.text =value.data[0].pPincode;
-              /*stateselected = states.firstWhere((item) =>
-              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/
+              */ /*stateselected = states.firstWhere((item) =>
+              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/ /*
               _loan_amountController.text =value.data[0].loanAmount.toString();
              EasyLoading.dismiss();
 
@@ -3834,16 +3958,23 @@ bool checkIdMendate(){
               "Ficode: ${Fi_Code}\nCreator: ${GlobalClass.creator}\nBorrower Name: ${value.data[0].fName } ${value.data[0].mName } ${value.data[0].lName} ",
               Colors.red,
               1,
-            );
-          } else {
-            EasyLoading.dismiss();
-
-            String ficode = value.data[0].fiCode.toString();
-            GlobalClass.showErrorAlert(context,
-                "Kyc is Already Done on this Adhaar Id(FiCode is $ficode)", 2);
+            );*/
           }
+          else {
+            EasyLoading.dismiss();
+            Future.delayed(
+                Duration.zero, () => showIDCardDialog(context, adhaardata, 1));
+
+            /*String ficode = value.data[0].fiCode.toString();
+            GlobalClass.showErrorAlert(context,
+                "Kyc is Already Done on this Adhaar Id(FiCode is $ficode)", 2);*/
+          }
+        }else {
+          EasyLoading.dismiss();
         }
       } else {
+        EasyLoading.dismiss();
+
         setState(() {});
       }
     }).catchError((err) {
@@ -3852,4 +3983,244 @@ bool checkIdMendate(){
     });
   }
 
+  void showIDCardDialog(
+      BuildContext context, AdhaarDataModel borrowerInfo, int page) {
+    final String name = [
+      borrowerInfo.fName,
+      borrowerInfo.mName,
+      borrowerInfo.lName
+    ].where((part) => part != null && part.isNotEmpty).join(" ");
+    final String aadhaarNo = borrowerInfo.aadharNo;
+    final String panNo = borrowerInfo.panNo;
+    final String dl = borrowerInfo.dl;
+    final String voterId = borrowerInfo.voterId;
+    final String dob = borrowerInfo.dob;
+    String formattedDOB =
+        '${dob.split('T')[0].split('-')[2]}-${dob.split('T')[0].split('-')[1]}-${dob.split('T')[0].split('-')[0]}';
+
+    final String loanAmt = borrowerInfo.loanAmount.toString();
+    // final String imageUrl =GlobalClass().transformFilePathToUrl(borrowerInfo.profilepic);
+    // final String imageUrl =GlobalClass().transformFilePathToUrl(borrowerInfo.profilepic);
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent closing dialog when tapping outside
+      builder: (BuildContext context) {
+        return WillPopScope(
+            onWillPop: () async =>
+                false, // Prevent closing dialog with back button
+            child: AlertDialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              title: Center(
+                  child: Text('Borrower Details',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ))),
+              content: SingleChildScrollView(
+                child: Container(
+                  color: Colors.white,
+                  width: 300,
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      /*Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.grey,
+                              width: 2), // Border around image
+                          borderRadius:
+                          BorderRadius.circular(50), // Circle border
+                        ),
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(imageUrl),
+                        ),
+                      ),*/
+                      SizedBox(height: 10),
+                      // Name
+                      Text(
+                        name,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 5),
+                      // Adhaar No.
+                      Text(
+                        'UID: $aadhaarNo',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 5),
+                      // PAN, DL, Voter No. (showing all if they exist)
+                      Column(
+                        children: [
+                          if (voterId.isNotEmpty)
+                            Text('Voter: $voterId',
+                                style: TextStyle(fontSize: 16)),
+                          if (panNo.isNotEmpty)
+                            Text('Pan: $panNo', style: TextStyle(fontSize: 16)),
+                          if (dl.isNotEmpty)
+                            Text('DL: $dl', style: TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      // DOB
+
+                      Text(
+                        'DOB: $formattedDOB',
+                        style: TextStyle(fontSize: 16),
+                      ),
+
+                      SizedBox(height: 5),
+                      // Loan Amount
+                      if (loanAmt.isNotEmpty)
+                        Text('Loan Amt: $loanAmt',
+                            style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 20),
+                      // Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          page == 2
+                              ? GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _currentStep += 1;
+                                      Fi_Id = borrowerInfo.fiId.toString();
+                                      Fi_Code = borrowerInfo.fiCode.toString();
+                                      dlDob = borrowerInfo.dob.toString();
+                                      _dobController.text =
+                                          borrowerInfo.dob.toString();
+
+                                      if (borrowerInfo.pState.isNotEmpty) {
+                                        stateselected = states.firstWhere(
+                                            (item) =>
+                                                item.code.toLowerCase() ==
+                                                borrowerInfo.pState
+                                                    .toLowerCase());
+                                      }
+                                      //String statecode = borrowerInfo.pState.toString();
+                                      _dobController.text = borrowerInfo.dob
+                                          .toString()
+                                          .split("T")[0];
+                                      dlDob = borrowerInfo.dob
+                                          .toString()
+                                          .split("T")[0];
+
+                                      print("sssssssss" + stateselected!.code);
+                                      getPlace(
+                                          "city", stateselected!.code, "", "");
+                                      getPlace("district", stateselected!.code,
+                                          "", "");
+                                    });
+                                    print('Verification Confirmed');
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 25),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.greenAccent,
+                                          Color(0xFF0BDC15)
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.4),
+                                          blurRadius: 10,
+                                          offset: Offset(5, 5),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'Submit Ids',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 10.0,
+                                              color:
+                                                  Colors.black.withOpacity(0.5),
+                                              offset: Offset(2.0, 2.0),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : SizedBox(),
+                          page == 1
+                              ? GestureDetector(
+                                  onTap: () {
+                                    print('Verification Rejected');
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 25),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.redAccent,
+                                          Color(0xFFD42D3F)
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.4),
+                                          blurRadius: 10,
+                                          offset: Offset(5, 5),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'Close(Already done)',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 10.0,
+                                              color:
+                                                  Colors.black.withOpacity(0.5),
+                                              offset: Offset(2.0, 2.0),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : SizedBox(),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ));
+      },
+    );
+  }
 }

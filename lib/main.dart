@@ -193,8 +193,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: SplashScreen(),
-         // home: LoanEligibilityPage( ficode: 101009,),
-         builder: EasyLoading.init(),
+        //  home: DealerHomePage(),
+          builder: EasyLoading.init(),
       ),
     );
   }
