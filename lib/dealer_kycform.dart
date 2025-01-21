@@ -27,10 +27,10 @@ import 'api_service.dart';
 import 'global_class.dart';
 
 class DealerKYCPage extends StatefulWidget {
-  final BranchDataModel BranchData;
+  /*final BranchDataModel BranchData;
   final GroupDataModel GroupData;
 
-  DealerKYCPage({required this.BranchData, required this.GroupData});
+  DealerKYCPage({required this.BranchData, required this.GroupData});*/
 
   @override
   _DealerKYCPageState createState() => _DealerKYCPageState();
@@ -1461,7 +1461,7 @@ class _DealerKYCPageState extends State<DealerKYCPage> {
           if (_currentStep == 0) {
             if (FiType == "NEW") {
               if (firstPageFieldVelidate()) {
-                saveFiMethod(context);
+              //  saveFiMethod(context);
               }
             } else {
               getPlace("city", stateselected!.code, "", "");
@@ -2981,7 +2981,7 @@ class _DealerKYCPageState extends State<DealerKYCPage> {
     return true;
   }
 
-  Future<void> saveFiMethod(BuildContext context) async {
+  /*Future<void> saveFiMethod(BuildContext context) async {
     try {
       EasyLoading.show(status: 'Loading...');
 
@@ -3019,8 +3019,8 @@ class _DealerKYCPageState extends State<DealerKYCPage> {
       String pin = _pincodeController.text.toString();
       String state = stateselected!.code.toString();
       bool ismarried = selectedMarritalStatus.toString() == 'Married';
-      String gCode = widget.GroupData.groupCode;
-      String bCode = widget.BranchData.branchCode.toString();
+    //  String gCode = widget.GroupData.groupCode;
+    //  String bCode = widget.BranchData.branchCode.toString();
 
       String relation_with_Borrower = relationwithBorrowerselected;
       String bank_name = bankselected;
@@ -3076,11 +3076,11 @@ class _DealerKYCPageState extends State<DealerKYCPage> {
         loan_Duration,
         loan_amount,
         selectedLoanReason!,
-        /*ExShowroomPrice,
+        *//*ExShowroomPrice,
         RTOPrice,
         InsurancePrice,
         InvoiceValue,
-        MSP,*/
+        MSP,*//*
         _imageFile!,
       )
           .then((value) async {
@@ -3114,7 +3114,7 @@ class _DealerKYCPageState extends State<DealerKYCPage> {
           context, "An unexpected error occurred: ${e.toString()}");
       EasyLoading.dismiss();
     }
-  }
+  }*/
 
   Future<void> saveIDsMethod(BuildContext context) async {
     EasyLoading.show(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/SecondEsignModel.dart';
+import 'package:flutter_sourcing_app/generated/l10n.dart';
 import 'package:flutter_sourcing_app/group_list_page.dart';
 import 'package:flutter_sourcing_app/MasterAPIs/live_track_repository.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +34,7 @@ class _BranchListPageState extends State<BranchListPage> {
   void initState() {
     super.initState();
     _fetchBranchList();
+    print('Sunny');
   }
 
   Future<void> _fetchBranchList() async {
@@ -42,7 +44,7 @@ class _BranchListPageState extends State<BranchListPage> {
 
     final apiService = Provider.of<ApiService>(context, listen: false);
     try {
-      await apiService.getBranchList(GlobalClass.token, GlobalClass.dbName, GlobalClass.creatorId as int).then((response) {
+      await apiService.getBranchList(GlobalClass.token, GlobalClass.dbName, GlobalClass.creatorId).then((response) {
         if (response.statuscode == 200) {
           setState(() {
             _items = response.data; // Store the response data
@@ -51,7 +53,14 @@ class _BranchListPageState extends State<BranchListPage> {
     //      EasyLoading.dismiss();
 
           print('Branch List retrieved successfully');
-        } else {
+        } else if(response.statuscode == 201) {
+          GlobalClass.showUnsuccessfulAlert(
+              context, "Group List Not Found", 1);
+          setState(() {
+            _isLoading = false;
+  //          EasyLoading.dismiss();
+          });
+        }else {
           GlobalClass.showUnsuccessfulAlert(
               context, "Not able to fetch Group List", 1);
           setState(() {
@@ -246,7 +255,7 @@ class _BranchListPageState extends State<BranchListPage> {
                       );*/
                     },
                     child: Text(
-                        AppLocalizations.of(context)!.sesign,
+                       AppLocalizations.of(context)!.sesign,
                       style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),
                     ),
                     style: TextButton.styleFrom(
@@ -275,7 +284,7 @@ class _BranchListPageState extends State<BranchListPage> {
     await apiService.BorrowerList2(
         GlobalClass.token,
         GlobalClass.dbName,
-        GlobalClass.creator,
+        GlobalClass.creatorId,
         selectedItem.branchCode,
         GlobalClass.imei
 

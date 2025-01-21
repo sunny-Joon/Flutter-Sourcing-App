@@ -537,6 +537,7 @@ class _ApiService implements ApiService {
     String loan_Duration,
     String loan_amount,
     String loan_Reason,
+    String CreatorId,
     File Picture,
   ) async {
     final _extra = <String, dynamic>{};
@@ -682,6 +683,10 @@ class _ApiService implements ApiService {
     _data.fields.add(MapEntry(
       'Loan_Reason',
       loan_Reason,
+    ));
+    _data.fields.add(MapEntry(
+      'CreatorId',
+      CreatorId,
     ));
     _data.files.add(MapEntry(
       'Picture',
@@ -1465,7 +1470,7 @@ class _ApiService implements ApiService {
   Future<BranchModel> getBranchList(
     String token,
     String dbname,
-    int CreatorID,
+    String CreatorID,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'CreatorID': CreatorID};
@@ -1547,12 +1552,12 @@ class _ApiService implements ApiService {
   Future<GroupModel> getGroupList(
     String token,
     String dbname,
-    String Creator,
+    String CreatorID,
     String BranchCode,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
-      r'Creator': Creator,
+      r'CreatorID': CreatorID,
       r'BranchCode': BranchCode,
     };
     final _headers = <String, dynamic>{
@@ -2326,14 +2331,14 @@ class _ApiService implements ApiService {
     String dbName,
     String Group_code,
     String Branch_code,
-    String Creator,
+    String CreatorId,
     int Type,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'Group_code': Group_code,
       r'Branch_code': Branch_code,
-      r'Creator': Creator,
+      r'CreatorId': CreatorId,
       r'Type': Type,
     };
     final _headers = <String, dynamic>{

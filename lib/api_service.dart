@@ -199,6 +199,7 @@ abstract class ApiService {
       @Part( name:"Loan_Duration") String loan_Duration,
       @Part( name:"Loan_amount") String loan_amount,
       @Part( name:"Loan_Reason") String loan_Reason,
+      @Part( name:"CreatorId") String CreatorId,
       @Part( name: "Picture") File Picture);
 
   @POST("FiSourcing/FiDocsUploads")
@@ -316,7 +317,7 @@ abstract class ApiService {
   Future<BranchModel> getBranchList(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Query("CreatorID") int CreatorID);
+      @Query("CreatorID") String CreatorID);
 
   @GET("FiSourcing/GetAllFiData")
   Future<ApplicationgetAllModel> dataByFIID(
@@ -328,7 +329,7 @@ abstract class ApiService {
   Future<GroupModel> getGroupList(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Query("Creator") String Creator,
+      @Query("CreatorID") String CreatorID,
       @Query("BranchCode") String BranchCode);
 
   @GET("Collection/GetQrPaymentsBySmcode")
@@ -467,7 +468,7 @@ abstract class ApiService {
       @Header("dbname") String dbName,
       @Query("Group_code") String Group_code,
       @Query("Branch_code") String Branch_code,
-      @Query("Creator") String Creator,
+      @Query("CreatorId") String CreatorId,
       @Query("Type") int Type,
       );
 
@@ -475,7 +476,7 @@ abstract class ApiService {
   Future<SecondEsignModel> BorrowerList2(
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
-      @Query("Creator") String Creator,
+      @Query("CreatorId") String CreatorId,
       @Query("Banchcode") String Banchcode,
       @Query("IMEINO") String IMEINO,
       );
