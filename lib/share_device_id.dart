@@ -419,7 +419,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
                                     SizedBox(height: 4),
                                     Text(
-                                      AppLocalizations.of(context)!.creater,
+                                      AppLocalizations.of(context)!.creator,
                                       style: TextStyle(
                                           fontFamily: "Poppins-Regular",
                                           fontSize: 13),

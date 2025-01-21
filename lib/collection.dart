@@ -11,6 +11,8 @@ import 'Models/getCollectionModel.dart';
 import 'Models/qrresponse_model.dart';
 import 'api_service.dart';
 import 'global_class.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class Collection extends StatefulWidget {
   final CollectionBorrowerListDataModel selectedData;
@@ -37,7 +39,7 @@ class _CollectionState extends State<Collection>
   late String casecode = "", borrower = "";
   late String qrCodeUrl = "";
   late GetCollectionDataModel collectionDataModel;
-  String buttonName = "Submit";
+  late String buttonName ;
   bool flagLS = false;
 
   double showingTotalAmout = 0;
@@ -49,6 +51,8 @@ class _CollectionState extends State<Collection>
     super.initState();
     setValues();
     getQr(context);
+    buttonName = AppLocalizations.of(context)!.submit;
+
     emiAmounts = widget.selectedData.instData
         .map((inst) => int.parse(inst.amount))
         .toList();
@@ -60,12 +64,12 @@ class _CollectionState extends State<Collection>
     _tabController.addListener(() {
       if (_tabController.index == 1) {
         setState(() {
-          buttonName = "Check Payment Status";
+          buttonName = AppLocalizations.of(context)!.checkpaymentstatus;
         });
 
       } else if (_tabController.index == 2) {
         setState(() {
-          buttonName = "Submit Lump Sum";
+          buttonName = AppLocalizations.of(context)!.submitlumpsum;
           showingTotalAmout = int.parse(_controllerLumpSum.text.isEmpty
                   ? "0"
                   : _controllerLumpSum.text.replaceAll(",", "")) +
@@ -76,7 +80,7 @@ class _CollectionState extends State<Collection>
 
         setState(() {
           updateTotalAmount();
-          buttonName = "Submit";
+          buttonName = AppLocalizations.of(context)!.submit;
         });
       }
     });
@@ -173,17 +177,17 @@ class _CollectionState extends State<Collection>
                         ),
                         tabs: [
                           Tab(
-                            text: 'Cash',
+                            text: AppLocalizations.of(context)!.cash,
                           ),
-                          Tab(text: 'QR'),
-                          Tab(text: 'Lump sum'),
+                          Tab(text: AppLocalizations.of(context)!.qr),
+                          Tab(text: AppLocalizations.of(context)!.lumpsum),
                         ],
                       ),
                       Text.rich(
                         TextSpan(
                           children: [
                             TextSpan(
-                                text: 'Case Code: ',
+                                text: AppLocalizations.of(context)!.casecode,
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight:
@@ -230,7 +234,7 @@ class _CollectionState extends State<Collection>
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                            text: 'Borrower: ',
+                                            text: AppLocalizations.of(context)!.borrower,
                                             style: TextStyle(
                                                 color: Colors
                                                     .black)), // Static text color
@@ -256,7 +260,7 @@ class _CollectionState extends State<Collection>
                                   TextSpan(
                                     children: [
                                       TextSpan(
-                                          text: 'Interest Amount: ₹',
+                                          text: AppLocalizations.of(context)!.interestamount,
                                           style: TextStyle(
                                               color: Colors
                                                   .black)), // Static text color
@@ -272,7 +276,7 @@ class _CollectionState extends State<Collection>
                                   TextSpan(
                                     children: [
                                       TextSpan(
-                                          text: 'Late Fee: ₹',
+                                          text: AppLocalizations.of(context)!.latefee,
                                           style: TextStyle(
                                               color: Colors
                                                   .black)), // Static text color
@@ -290,7 +294,7 @@ class _CollectionState extends State<Collection>
                               TextSpan(
                                 children: [
                                   TextSpan(
-                                      text: 'Amount to be pay: ₹',
+                                      text: AppLocalizations.of(context)!.amounttobepay,
                                       style: TextStyle(
                                           color:
                                           Colors.black)), // Static text color
@@ -308,7 +312,7 @@ class _CollectionState extends State<Collection>
                               TextSpan(
                                 children: [
                                   TextSpan(
-                                      text: 'Amount you are paying: ₹',
+                                      text: AppLocalizations.of(context)!.amountyouarepaying,
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight
@@ -327,7 +331,7 @@ class _CollectionState extends State<Collection>
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: 'Lump Sum Amount: ₹',
+                                      text: AppLocalizations.of(context)!.lumpsumamount,
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold,
@@ -347,11 +351,11 @@ class _CollectionState extends State<Collection>
                               ),
                             ElevatedButton(
                               onPressed: () {
-                                if (buttonName == "Submit") {
+                                if (buttonName ==AppLocalizations.of(context)!.submit) {
                                   saveReceipt(context, 0);
-                                } else if (buttonName == "Check Payment Status") {
+                                } else if (buttonName == AppLocalizations.of(context)!.checkpaymentstatus) {
                                   responsecheck(context,widget.selectedData.caseCode);
-                                } else if (buttonName == "Submit Lump Sum") {
+                                } else if (buttonName == AppLocalizations.of(context)!.submitlumpsum) {
                                   saveReceipt(context, 1);
                                 }
                               },
@@ -444,9 +448,9 @@ class _CollectionState extends State<Collection>
                   });
                 },
               ),
-              title: Text('EMI Amount: ₹${emiAmounts[index]}'),
+              title: Text('${AppLocalizations.of(context)!.emiamount} ${emiAmounts[index]}'),
               subtitle: Text(
-                  'Due Date: ${widget.selectedData.instData[index].dueDate}'),
+                  '${AppLocalizations.of(context)!.duedate} ${widget.selectedData.instData[index].dueDate}'),
             ),
           ),
         );
@@ -499,7 +503,7 @@ class _CollectionState extends State<Collection>
               ],
               decoration: InputDecoration(
                 counterText: "",
-                labelText: 'Lump sum Amount',
+                labelText: AppLocalizations.of(context)!.lumpsumamount,
                 border: OutlineInputBorder(),
               ),
               onChanged: (value) {
@@ -805,11 +809,11 @@ class _CollectionState extends State<Collection>
                                 padding: EdgeInsets.all(16.0),
                                 child: Column(
                                   children: [
-                                    _buildDetailRow('SM Code', smCode),
-                                    _buildDetailRow('Name', name),
-                                    _buildDetailRow('UPI Txn ID', upiTxnId),
-                                    _buildDetailRow('Amount', amount),
-                                    _buildDetailRow('Txn DateTime', txnDateTime),
+                                    _buildDetailRow(AppLocalizations.of(context)!.smcode, smCode),
+                                    _buildDetailRow(AppLocalizations.of(context)!.name, name),
+                                    _buildDetailRow(AppLocalizations.of(context)!.upitxnid, upiTxnId),
+                                    _buildDetailRow(AppLocalizations.of(context)!.amount, amount),
+                                    _buildDetailRow(AppLocalizations.of(context)!.txndatetime, txnDateTime),
                                   ],
                                 ),
                               ),
@@ -907,17 +911,17 @@ class _CountdownDialogState extends State<CountdownDialog> {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
       backgroundColor: Colors.white,
-      title: const Text('Payment Details not found',style: TextStyle(fontSize: 18),),
+      title:  Text(AppLocalizations.of(context)!.paymentdetailsnotfound,style: TextStyle(fontSize: 18),),
       // content: Text('Please upload payment receipt. If you have already done any payment.\n\n Redirecting in $_seconds seconds...'),
       content:   Text.rich(
         TextSpan(
           children: [
             TextSpan(
-                text: 'Please upload payment receipt. If you have already done any payment.',
+                text: AppLocalizations.of(context)!.pleaseuploadpaymentreceipt,
                 style: TextStyle(
                     color: Colors.black, )), // Static text color
             TextSpan(
-                text: "\nRedirecting in",
+                text: AppLocalizations.of(context)!.redirectingin,
                 style: TextStyle(
                     color: Colors.black, )),
 
@@ -928,7 +932,7 @@ class _CountdownDialogState extends State<CountdownDialog> {
                     fontWeight:
                     FontWeight.bold)),
             TextSpan(
-                text: "seconds...",
+                text: AppLocalizations.of(context)!.seconds,
                 style: TextStyle(
                     color: Colors.black, )), // Dynamic text color
           ],

@@ -147,11 +147,11 @@ void requestPermissions() async {
   // Check each permission status
   statuses.forEach((permission, status) {
     if (status.isGranted) {
-      print('$permission is granted');
+
     } else if (status.isDenied) {
-      print('$permission is denied');
+
     } else if (status.isPermanentlyDenied) {
-      print('$permission is permanently denied');
+
       // You can show a dialog to the user explaining why the permission is needed
     }
   });
