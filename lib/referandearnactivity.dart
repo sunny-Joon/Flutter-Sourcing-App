@@ -1,34 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
+import 'api_service.dart';
 import 'getrewardactivity.dart';
+import 'global_class.dart';
 import 'howtoreferactivity.dart';
 
 class referandearnactivity extends StatefulWidget {
   @override
+
   _referandearnactivitystate createState() => _referandearnactivitystate();
 }
 
 class _referandearnactivitystate extends State<referandearnactivity> {
   final TextEditingController referralCodeController = TextEditingController();
-
+  late String fetchedReferralCode;
   @override
   void initState() {
     super.initState();
-    fetchReferralCode();
+    fetchReferralCode(context);
   }
 
-  void fetchReferralCode() async {
+  Future<void> fetchReferralCode(BuildContext context) async {
+    EasyLoading.show(status: 'Loading...');
+    final api = Provider.of<ApiService>(context, listen: false);
+    try {
+      final value = await api.getReferalCode(GlobalClass.token, GlobalClass.dbName, GlobalClass.id);
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        setState(() {
+          fetchedReferralCode = value.data;
+          referralCodeController.text = fetchedReferralCode;
+        });
+      } else {
+        EasyLoading.dismiss();
+        GlobalClass.showErrorAlert(context, value.message, 1);
+     //    setState(() {
+     //      fetchedReferralCode = value.data;
+     //      referralCodeController.text = fetchedReferralCode;
+     //    });
+      }
+    } catch (e) {
+      print('Error: $e');
+      EasyLoading.dismiss();
+      GlobalClass.showErrorAlert(context, "Server Side Error", 2);
+    }
+  }
+
+
+/*  void fetchReferralCode() async {
     await Future.delayed(Duration(seconds: 2));
 
     String fetchedReferralCode = "ZAXM2345D";
     setState(() {
       referralCodeController.text = fetchedReferralCode;
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {

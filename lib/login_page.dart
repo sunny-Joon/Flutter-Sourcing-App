@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_sourcing_app/Models/banner_post_model.dart';
 import 'package:flutter_sourcing_app/global_class.dart';
 import 'package:flutter_sourcing_app/popup_dialog.dart';
@@ -63,13 +64,21 @@ class _LoginPageState extends State<LoginPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Asset image with PopupMenuButton for the dropdown
                   PopupMenuButton<String>(
-                    icon: Image.asset(
-                      'assets/Images/languages.png', // Path to your asset image
-                      height: 30.0, // Adjust the size as needed
-                      width: 30.0,
-                    ),
+                    icon: Container(
+                      padding: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Image.asset(
+                          'assets/Images/languages.png',
+                          height: 30.0,
+                          width: 30.0,
+                        ),
+                      ),),
                     onSelected: (value) {
                       context.read<languageprovider>().changelanguage(value);
                     },
@@ -77,7 +86,20 @@ class _LoginPageState extends State<LoginPage> {
                       return languageprovider.language.map((language) {
                         return PopupMenuItem<String>(
                           value: language['locale'],
-                          child: Text(language['name']),
+                          child: Container(
+                            color: Colors.white,
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  language['icon'],
+                                  height: 24,
+                                  width: 24,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(language['name']),
+                              ],
+                            ),
+                          ),
                         );
                       }).toList();
                     },
@@ -87,8 +109,6 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
