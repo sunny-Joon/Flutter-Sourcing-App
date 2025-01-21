@@ -20,7 +20,7 @@ class CommonStringModel {
   });
 
   factory CommonStringModel.fromJson(Map<String, dynamic> json) => CommonStringModel(
-    statuscode: json["code"]??0,
+    statuscode: json["statuscode"]??0,
     message: json["message"]??"",
     data: json["data"]??"",
   );

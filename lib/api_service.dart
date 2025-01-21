@@ -671,5 +671,12 @@ abstract class ApiService {
       @Header("dbname") String dbname,
       @Query("SmCode") String SmCode,
       );
+
+
+  @GET("Tracklocations/GetCSOReferralCode")
+  Future<CommonStringModel> getReferalCode(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbname,
+      @Query("username") String username);
 }
 
