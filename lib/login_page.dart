@@ -65,6 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   PopupMenuButton<String>(
+                    color: Colors.blueGrey,
                     icon: Container(
                       padding: EdgeInsets.all(2),
                       decoration: BoxDecoration(
@@ -87,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                         return PopupMenuItem<String>(
                           value: language['locale'],
                           child: Container(
-                            color: Colors.white,
+                            color: Colors.yellow,
                             child: Row(
                               children: [
                                 Image.asset(
