@@ -2811,14 +2811,25 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                   _bank_IFCSController.text.isEmpty) {
                                 showToast_Error(
                                     "Please Enter Bank Account number and IFSC code");
-                              } else if (_bank_IFCSController.text.length !=
+
+                              }
+
+                              else if (_bank_IFCSController.text.length !=
                                   11) {
                                 showToast_Error(
                                     "Please Enter Correct IFSC code");
                               } else if (_bank_AcController.text.length < 10) {
                                 showToast_Error(
                                     "Please Enter Correct Account Number");
-                              } else {
+                              } else if (BorrowerInfo[0].bankAc != "" &&
+                                  _bank_AcController.text ==
+                                      BorrowerInfo[0].bankAc) {
+                                showToast_Error(
+                                    "Account Number already Verified");
+                              } else if (_bank_AcController.text == temp) {
+                                showToast_Error(
+                                    "Account Number already Verified");
+                              }else {
                                 ifscVerify(context, _bank_IFCSController.text);
                               }
                             }
