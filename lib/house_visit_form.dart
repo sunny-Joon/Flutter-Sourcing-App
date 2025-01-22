@@ -329,9 +329,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero, // Makes the corners square
-                          ),
+                          foregroundColor: Colors.white, backgroundColor: Color(0xFFD42D3F), // foreground/text
                         ),
                         child: Text(AppLocalizations.of(context)!.submit),
                       ),
