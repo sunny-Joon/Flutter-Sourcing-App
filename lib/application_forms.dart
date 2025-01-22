@@ -5830,9 +5830,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> AddFiExtraDetail(BuildContext context) async {
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     int A = selectedIsHandicap == 'Yes' ? 1 : 0;
     print("objectrent $selectedIsHouseRental");
@@ -5896,9 +5898,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> AddFiFamilyDetail(BuildContext context) async {
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     String Fi_ID = FIID.toString();
     String motheR_FIRST_NAME = _motherFController.text.toString();
@@ -5939,9 +5943,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> saveIDsMethod(BuildContext context) async {
-    EasyLoading.show(
-      status: 'Loading...',
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     print("object");
     int isNameVerify = 1;
@@ -6003,9 +6009,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
 
   Future<void> AddFinancialInfo(BuildContext context) async {
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     String Fi_ID = FIID.toString();
     String bankType = selectedAccountType.toString();
@@ -6050,10 +6058,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> FiFemMemIncome(BuildContext context) async {
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
-
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     String Fi_ID = FIID.toString();
     String Age = _AgeController.text;
     String Name = _femNameController.text;
@@ -6105,9 +6114,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> AddFiIncomeAndExpense(BuildContext context) async {
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     String fi_ID = FIID.toString();
     String occupation = selectedOccupation.toString();
@@ -6196,9 +6207,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> GetDocs(BuildContext context) async {
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     final api = Provider.of<ApiService>(context, listen: false);
 
@@ -6485,9 +6498,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
 
   void dlVerifyByProtean(String userid, String dlNo, String dob) async {
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     try {
       // Initialize Dio
       // Create ApiService instance
@@ -6500,9 +6515,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
       // Hit the API
       final response =
           await apiService_protean.getDLDetailsProtean(requestBody);
-      EasyLoading.show(
-        status: AppLocalizations.of(context)!.loading,
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        EasyLoading.show(
+          status: AppLocalizations.of(context)!.loading,
+        );
+      });
       // Handle response
       if (response is Map<String, dynamic>) {
         Map<String, dynamic> responseData = response["data"];
@@ -6529,9 +6546,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   void voterVerifyByProtean(String userid, String voterNo) async {
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     try {
       // Initialize Dio
       // Create ApiService instance
@@ -6563,9 +6582,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
       // Handle errors
       docVerifyIDC("voterid", _voterController.text, "", "");
     }
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
   }
 
 
@@ -6612,9 +6633,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> ifscVerify(BuildContext context, String ifsc) async {
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl3);
 
@@ -6985,9 +7008,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> saveGuarantorMethod(BuildContext context) async {
-    EasyLoading.show(
-      status: AppLocalizations.of(context)!.loading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     print("object");
     String fi_ID = FIID.toString();
@@ -7093,8 +7118,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         .replaceAll("W/O: ", "");
   }
 
-  void getPlace(String type, String stateCode, String districtCode,
-      String subDistrictCode) async {
+  void getPlace(String type, String stateCode, String districtCode, String subDistrictCode) async {
     print(GlobalClass.token);
     try {
       PlaceCodesModel response = await apiService.getVillageStateDistrict(
@@ -7410,7 +7434,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Future<void> DeleteGur(BuildContext context) async {
-    EasyLoading.show(status: AppLocalizations.of(context)!.loading);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
         .deleteGurrantor(GlobalClass.token, GlobalClass.dbName, FIID.toString())
@@ -7512,8 +7540,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 */
 
-  Future<bool> OcrDocsScanning(
-      String type, String id, String subType, BuildContext context) async {
+  Future<bool> OcrDocsScanning(String type, String id, String subType, BuildContext context) async {
     EasyLoading.show(); // Show a loading indicator
 
     try {
@@ -7804,8 +7831,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-  void handleAadharFront(
-      response, String subType, String idType, BuildContext context) {
+  void handleAadharFront(response, String subType, String idType, BuildContext context) {
     String expectedId = subType == "borrower"
         ? BorrowerInfo[0].aadharNo
         : BorrowerInfo[0].guarantors[0].grAadharId;
