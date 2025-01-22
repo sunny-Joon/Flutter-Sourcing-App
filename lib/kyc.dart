@@ -4014,7 +4014,7 @@ class _KYCPageState extends State<KYCPage> {
                 borderRadius: BorderRadius.circular(10),
               ),
               title: Center(
-                  child: Text('Borrower Details',
+                  child: Text( AppLocalizations.of(context)!.borrowerdetails,
                       style: TextStyle(
                         fontSize: 16,
                       ))),
@@ -4022,7 +4022,7 @@ class _KYCPageState extends State<KYCPage> {
                 child: Container(
                   color: Colors.white,
                   width: 300,
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(2),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -4053,7 +4053,7 @@ class _KYCPageState extends State<KYCPage> {
                       SizedBox(height: 5),
                       // Adhaar No.
                       Text(
-                        'UID: $aadhaarNo',
+                        '${AppLocalizations.of(context)!.adharid} $aadhaarNo',
                         style: TextStyle(fontSize: 16),
                       ),
                       SizedBox(height: 5),
@@ -4061,26 +4061,26 @@ class _KYCPageState extends State<KYCPage> {
                       Column(
                         children: [
                           if (voterId.isNotEmpty)
-                            Text('Voter: $voterId',
+                            Text('${AppLocalizations.of(context)!.voterid} $voterId',
                                 style: TextStyle(fontSize: 16)),
                           if (panNo.isNotEmpty)
-                            Text('Pan: $panNo', style: TextStyle(fontSize: 16)),
+                            Text('${AppLocalizations.of(context)!.pannoid} $panNo', style: TextStyle(fontSize: 16)),
                           if (dl.isNotEmpty)
-                            Text('DL: $dl', style: TextStyle(fontSize: 16)),
+                            Text('${AppLocalizations.of(context)!.dlid} $dl', style: TextStyle(fontSize: 16)),
                         ],
                       ),
                       SizedBox(height: 5),
                       // DOB
 
                       Text(
-                        'DOB: $formattedDOB',
+                        '${AppLocalizations.of(context)!.dobid} $formattedDOB',
                         style: TextStyle(fontSize: 16),
                       ),
 
                       SizedBox(height: 5),
                       // Loan Amount
                       if (loanAmt.isNotEmpty)
-                        Text('Loan Amt: $loanAmt',
+                        Text('${AppLocalizations.of(context)!.lmt} $loanAmt',
                             style: TextStyle(fontSize: 16)),
                       SizedBox(height: 20),
                       // Buttons
@@ -4124,7 +4124,7 @@ class _KYCPageState extends State<KYCPage> {
                                   },
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 25),
+                                        vertical: 15, horizontal: 15),
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
@@ -4145,7 +4145,7 @@ class _KYCPageState extends State<KYCPage> {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        'Submit Ids',
+                                        AppLocalizations.of(context)!.submit,
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 13,

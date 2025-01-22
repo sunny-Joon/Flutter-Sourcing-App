@@ -2378,13 +2378,13 @@ class _ApiService implements ApiService {
   Future<SecondEsignModel> BorrowerList2(
     String token,
     String dbName,
-    String Creator,
+    String CreatorId,
     String Banchcode,
     String IMEINO,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
-      r'Creator': Creator,
+      r'CreatorId': CreatorId,
       r'Banchcode': Banchcode,
       r'IMEINO': IMEINO,
     };

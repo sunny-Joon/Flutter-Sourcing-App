@@ -5718,6 +5718,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error("Please Enter Aadhar ID");
       _aadharIdFocus.requestFocus();
       return false;
+    }else if (_aadharIdController.text == widget.selectedData.aadharNo) {
+      showToast_Error("Borrower can't be Coborrower");
+      _aadharIdFocus.requestFocus();
+      return false;
     } else if (selectedTitle == null ||
         selectedTitle!.isEmpty ||
         selectedTitle!.toLowerCase() == 'select') {
