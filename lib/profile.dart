@@ -318,7 +318,7 @@ class _ProfileState extends State<Profile> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height / 6,
                         child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(5),
                           child: GridView.builder(
 
                             padding: EdgeInsets.zero,
@@ -662,14 +662,13 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow(Icons.credit_card, AppLocalizations.of(context)!.id
-                , _idController),
+            _buildDetailRow(Icons.credit_card, AppLocalizations.of(context)!.id, _idController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.person, AppLocalizations.of(context)!.name , _nameController),
+            _buildDetailRow(Icons.person, AppLocalizations.of(context)!.nameid, _nameController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.phone, AppLocalizations.of(context)!.mno , _mobileNoController),
+            _buildDetailRow(Icons.phone, AppLocalizations.of(context)!.mnoid, _mobileNoController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.work, AppLocalizations.of(context)!.designation , _designationController),
+            _buildDetailRow(Icons.work, AppLocalizations.of(context)!.designation, _designationController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
 /*
             _buildDetailList(Icons.admin_panel_settings, AppLocalizations.of(context)!.creater , _creatorController,),
@@ -709,8 +708,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildDetailRow(
-      IconData icon, String label, TextEditingController controller) {
+  Widget _buildDetailRow(IconData icon, String label, TextEditingController controller) {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
@@ -730,8 +728,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildDetailList(
-      IconData icon, String label, TextEditingController controller) {
+  Widget _buildDetailList(IconData icon, String label, TextEditingController controller) {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),

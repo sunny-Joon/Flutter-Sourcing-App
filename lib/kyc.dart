@@ -1316,6 +1316,7 @@ class _KYCPageState extends State<KYCPage> {
                 _gurNameController.text = cleanedGuardianName;
                 relationwithBorrowerselected = "Father";
 
+
                 List<String> guarNameParts =
                     _gurNameController.text.trim().split(" ");
                 if (guarNameParts.length == 1) {
@@ -1330,7 +1331,8 @@ class _KYCPageState extends State<KYCPage> {
                       .sublist(1, guarNameParts.length - 1)
                       .join(' ');
                 }
-              } else if (response.data.relation.toLowerCase() == "husband") {
+              }
+              else if (response.data.relation.toLowerCase() == "husband") {
                 relationwithBorrowerselected = "Husband";
                 selectedMarritalStatus = "Married";
                 // selectedMarritalStatus = true;
@@ -1359,7 +1361,13 @@ class _KYCPageState extends State<KYCPage> {
                       .sublist(1, guarNameParts.length - 1)
                       .join(' ');
                 }
+
+
               }
+              stateselected = states
+                  .firstWhere((item) =>
+              item.descriptionEn.toLowerCase() ==
+                  response.data.stateName.toLowerCase());
             });
             Navigator.of(context).pop();
 

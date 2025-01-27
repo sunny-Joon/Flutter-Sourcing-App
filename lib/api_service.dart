@@ -32,6 +32,7 @@ import 'Models/banner_post_model.dart';
 import 'Models/collectionbranchlistmodel.dart';
 import 'Models/borrower_list_model.dart';
 import 'Models/common_bool_model.dart';
+import 'Models/common_string_model2.dart';
 import 'Models/creator_list_model.dart';
 import 'Models/crifmodel.dart';
 import 'Models/csorankmodel.dart';
@@ -675,7 +676,7 @@ abstract class ApiService {
 
 
   @GET("Tracklocations/GetCSOReferralCode")
-  Future<CommonStringModel> getReferalCode(
+  Future<CommonStringModel2> getReferalCode(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Query("username") String username);

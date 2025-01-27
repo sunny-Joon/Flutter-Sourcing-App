@@ -4526,7 +4526,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   break;
                 case 26:
                   OSVVerified = await OcrDocsScanning('voterback',
-                      BorrowerInfo[0].voterId, "borrower", context);
+                      "1", "borrower", context);
                   if (OSVVerified) {
                     voterback = pickedImage;
                   }
@@ -4822,7 +4822,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         listItems1.add(
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: Text(
               AppLocalizations.of(context)!.uploadgrdocs,
               style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
@@ -7655,7 +7655,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 child: Container(
                   color: Colors.white,
                   width: 300,
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(2),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -7686,7 +7686,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       SizedBox(height: 5),
                       // Adhaar No.
                       Text(
-                        'UID: $aadhaarNo',
+                        '${AppLocalizations.of(context)!.adharid} $aadhaarNo',
                         style: TextStyle(fontSize: 16),
                       ),
                       SizedBox(height: 5),
@@ -7694,26 +7694,26 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       Column(
                         children: [
                           if (voterId.isNotEmpty)
-                            Text('Voter: $voterId',
+                            Text('${AppLocalizations.of(context)!.voterid} $voterId',
                                 style: TextStyle(fontSize: 16)),
                           if (panNo.isNotEmpty)
-                            Text('Pan: $panNo', style: TextStyle(fontSize: 16)),
+                            Text('${AppLocalizations.of(context)!.pannoid} $panNo', style: TextStyle(fontSize: 16)),
                           if (dl.isNotEmpty)
-                            Text('DL: $dl', style: TextStyle(fontSize: 16)),
+                            Text('${AppLocalizations.of(context)!.dlid} $dl', style: TextStyle(fontSize: 16)),
                         ],
                       ),
                       SizedBox(height: 5),
                       // DOB
 
                       Text(
-                        'DOB: $formattedDOB',
+                        '${AppLocalizations.of(context)!.dobid} $formattedDOB',
                         style: TextStyle(fontSize: 16),
                       ),
 
                       SizedBox(height: 5),
                       // Loan Amount
                       if (loanAmt.isNotEmpty)
-                        Text('Loan Amt: $loanAmt',
+                        Text('${AppLocalizations.of(context)!.lmt} $loanAmt',
                             style: TextStyle(fontSize: 16)),
                       SizedBox(height: 20),
                       // Buttons

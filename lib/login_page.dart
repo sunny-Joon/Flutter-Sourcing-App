@@ -830,10 +830,10 @@ class _LoginPageState extends State<LoginPage> {
 
   bool validateIdPassword(BuildContext context, String? id, String? password) {
     if (id == null || id.isEmpty || password == null || password.isEmpty) {
-      GlobalClass.showErrorAlert(context, "Please enter ID and Password", 1);
+      GlobalClass.showErrorAlert(context, AppLocalizations.of(context)!.pleaseidandpass, 1);
       return false;
     } else if (password.length < 5 || id.length < 10 || id.length > 11) {
-      GlobalClass.showErrorAlert(context, "Invalid ID or Password. Please check and try again.", 1);
+      GlobalClass.showErrorAlert(context, AppLocalizations.of(context)!.invalididandpass, 1);
       return false;
     } else {
       return true;
