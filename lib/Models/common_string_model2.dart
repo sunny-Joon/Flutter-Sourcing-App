@@ -4,23 +4,23 @@
 
 import 'dart:convert';
 
-CommonStringModel commonStringModelFromJson(String str) => CommonStringModel.fromJson(json.decode(str));
+CommonStringModel2 commonStringModelFromJson(String str) => CommonStringModel2.fromJson(json.decode(str));
 
-String commonStringModelToJson(CommonStringModel data) => json.encode(data.toJson());
+String commonStringModelToJson(CommonStringModel2 data) => json.encode(data.toJson());
 
-class CommonStringModel {
+class CommonStringModel2 {
   int statuscode;
   String message;
   String data;
 
-  CommonStringModel({
+  CommonStringModel2({
     required this.statuscode,
     required this.message,
     required this.data,
   });
 
-  factory CommonStringModel.fromJson(Map<String, dynamic> json) => CommonStringModel(
-    statuscode: json["code"]??0,
+  factory CommonStringModel2.fromJson(Map<String, dynamic> json) => CommonStringModel2(
+    statuscode: json["statuscode"]??0,
     message: json["message"]??"",
     data: json["data"]??"",
   );

@@ -341,14 +341,14 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Device Id:- ${_deviceIdController}',
+                                      '${AppLocalizations.of(context)!.deviceid} ${_deviceIdController}',
                                       style: TextStyle(
                                           fontFamily: "Poppins-Regular",
                                           fontSize: 13,
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      'User Id:- ${_userIdController}',
+                                      '${AppLocalizations.of(context)!.userid} ${_userIdController}',
                                       style: TextStyle(
                                           fontFamily: "Poppins-Regular",
                                           fontSize: 13,

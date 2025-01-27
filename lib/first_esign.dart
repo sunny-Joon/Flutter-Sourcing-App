@@ -306,6 +306,7 @@ class _DialogContentState extends State<DialogContent> {
   bool _isChecked = false;
   late ApiService _apiServiceForESign;
   List<String> authModeTypeList = ["Biometric"];
+ // List<String> authModeTypeList = ["Biometric","OTP"];
 
   String authModeType="Biometric";
 
@@ -404,7 +405,7 @@ class _DialogContentState extends State<DialogContent> {
                         child: Container(
                           alignment: Alignment.center,
                           height: 45,
-                          child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text("Cancel",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black),),),
+                          child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text(AppLocalizations.of(context)!.cancel,style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black),),),
                         ),
                       ),
                     ),
@@ -422,7 +423,7 @@ class _DialogContentState extends State<DialogContent> {
                           child: Container(
                             alignment: Alignment.center,
                             height: 45,
-                            child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text("Proceed",style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),),),
+                            child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text(AppLocalizations.of(context)!.proceed,style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),),),
                           ),
                         ),
                       ),

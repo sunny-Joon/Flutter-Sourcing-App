@@ -3517,7 +3517,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<CommonStringModel> getReferalCode(
+  Future<CommonStringModel2> getReferalCode(
     String token,
     String dbname,
     String username,
@@ -3530,7 +3530,7 @@ class _ApiService implements ApiService {
     };
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CommonStringModel>(Options(
+    final _options = _setStreamType<CommonStringModel2>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -3547,9 +3547,9 @@ class _ApiService implements ApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late CommonStringModel _value;
+    late CommonStringModel2 _value;
     try {
-      _value = CommonStringModel.fromJson(_result.data!);
+      _value = CommonStringModel2.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

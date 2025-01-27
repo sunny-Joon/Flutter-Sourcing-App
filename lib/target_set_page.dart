@@ -240,7 +240,7 @@ class _TargetSetPageState extends State<TargetSetPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text( AppLocalizations.of(context)!.welcome, style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,
+                Text(AppLocalizations.of(context)!.welcome, style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white,
                   fontSize: 30,
                  ),)
                 , Text(
