@@ -1053,21 +1053,23 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
       "Long": longitude.toString()
     };
 
-    await api
-        .morphorecharge(GlobalClass.dbName, GlobalClass.token, requestBody)
-        .then((value) async {
+    await api.morphorecharge(GlobalClass.dbName, GlobalClass.token, requestBody).then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
         GlobalClass.showSuccessAlert(context, value.message, 2);
+
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(
             context, "Unsuccessful to send Request", 1);
+        Navigator.pop(context);
       }
     }).catchError((error) {
       EasyLoading.dismiss();
       GlobalClass.showUnsuccessfulAlert(context, "Server side Error", 1);
+      Navigator.pop(context);
     });
+
   }
 
   void _onSubmit() async {

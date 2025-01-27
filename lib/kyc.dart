@@ -3086,8 +3086,8 @@ class _KYCPageState extends State<KYCPage> {
       Map<String, dynamic> requestBody = {
         "userID": userid,
         "dlno": dlNo,
-        // "dob": dob
-        "dob": "02-10-2000"
+         "dob": dob
+        //"dob": "02-10-2000"
       };
 
       final response =

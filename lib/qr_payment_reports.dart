@@ -35,11 +35,12 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
           _qrPaymentsList =  response.data;
         });
       } else {
+        GlobalClass.showUnsuccessfulAlert(context, response.message, 1);
         EasyLoading.dismiss();
-        // Handle API error
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to fetch data')));
       }
     } catch (e) {
+      GlobalClass.showUnsuccessfulAlert(context, "Server Side error", 1);
       print('Error: $e');
       EasyLoading.dismiss();
     }

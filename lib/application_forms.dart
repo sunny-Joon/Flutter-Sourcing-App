@@ -5888,8 +5888,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         EasyLoading.dismiss();
 
         // Handle failure
-        GlobalClass.showUnsuccessfulAlert(
-            context, "Failed to update details. Please try again.", 1);
+        GlobalClass.showUnsuccessfulAlert(context, "Failed to update details. Please try again.", 1);
       }
     }).catchError((error) {
       EasyLoading.dismiss();
