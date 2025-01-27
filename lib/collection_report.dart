@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 
 import 'api_service.dart';
 import 'global_class.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class CollectionStatus extends StatefulWidget {
   @override
@@ -199,7 +201,7 @@ class _CollectionStatusState extends State<CollectionStatus> {
                       padding: EdgeInsets.symmetric(
                           vertical: 10, horizontal: 10),
                       child: Text(
-                        'Installment (${emis.length})',
+                        '${AppLocalizations.of(context)!.installment} (${emis.length})',
                         style: TextStyle(
                             color: Colors.grey.shade700,
                             fontWeight: FontWeight.bold),
@@ -328,7 +330,7 @@ class _CollectionStatusState extends State<CollectionStatus> {
                       padding: EdgeInsets.symmetric(
                           vertical: 10, horizontal: 10),
                       child: Text(
-                        'Paid Installment (${emiCollections.length})',
+                        '${AppLocalizations.of(context)!.pinstallment} (${emiCollections.length})',
                         style: TextStyle(
                             color: Colors.grey.shade700,
                             fontWeight: FontWeight.bold),
