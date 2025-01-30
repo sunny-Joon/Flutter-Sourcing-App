@@ -63,15 +63,16 @@ class GlobalClass {
   }
 
   // Method to show an unsuccessful alert
-  static void showUnsuccessfulAlert(BuildContext context,String Message,int a) {
-    showAlert(
-      context,
-      'Failure',
-      Message,
-      Colors.blue,
-      a
-    );
-  }
+    static void showUnsuccessfulAlert(BuildContext context,String Message,int a) {
+      showAlert(
+        context,
+        'Failure',
+        Message,
+        Colors.blue,
+        a
+      );
+    }
+
 
   static void showErrorAlert(BuildContext context,String Message,int a) {
     showAlert(

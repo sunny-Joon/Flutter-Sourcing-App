@@ -34,8 +34,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dealer_homepage.dart';
 
 
-
-
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print("Handling a background message: ${message.messageId}");
@@ -235,19 +233,24 @@ class _SplashScreenState extends State<SplashScreen> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        print("isvalid2");
+
         return AlertDialog(
           elevation: 0,
           backgroundColor: Colors.white,
+
           title: Text('Update Available'),
           content: Text('A new version of the app is available. Please update to the latest version.'),
           actions: <Widget>[
             TextButton(
+
               child: Text('Download App'),
               onPressed: () async {
                 _launchURLBrowser();
               },
             ),
             TextButton(
+
               child: Text('Close'),
               onPressed: () {
                exit(0);
@@ -268,6 +271,8 @@ class _SplashScreenState extends State<SplashScreen> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String appVersion = packageInfo.version;
     GlobalClass.appVersion=packageInfo.version;
+    print("GlobalClass.appVersion $GlobalClass.appVersion");
+    print("packageInfo.version $packageInfo.version");
 
 
        ApiService.create(baseUrl: ApiConfig.baseUrl1).VersionCheck(GlobalClass.dbName, appVersion,"S","1").then((response){
@@ -275,10 +280,12 @@ class _SplashScreenState extends State<SplashScreen> {
          if (response.statuscode == 200) {
 
 
-
            bool isvalid = response.data[0].isvalid;
+           print("isvalid $isvalid");
 
            if(!isvalid){
+             print("isvalid1 $isvalid");
+
              _showUpdateDialog(context,response.data[0].appLink);
            }else{
              Timer(Duration(seconds: 3), () {
