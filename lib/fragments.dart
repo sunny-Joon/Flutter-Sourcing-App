@@ -19,6 +19,8 @@ import 'global_class.dart';
 import 'home_page.dart';
 import 'leader_board.dart';
 import 'on_boarding.dart';
+ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class Fragments extends StatefulWidget {
 
@@ -186,7 +188,7 @@ class _FragmentsState extends State<Fragments> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Are you sure?',
+              AppLocalizations.of(context)!.areyousure,
               style: TextStyle(
                   color: Color(0xFFD42D3F),
                   fontWeight: FontWeight.bold,
@@ -194,7 +196,7 @@ class _FragmentsState extends State<Fragments> {
             ),
             SizedBox(height: 10),
             Text(
-              'Do you want to close app?',
+                AppLocalizations.of(context)!.doyouwanttocloseapp,
               style: TextStyle(color: Colors.black),
             ),
             SizedBox(height: 20),
@@ -202,14 +204,14 @@ class _FragmentsState extends State<Fragments> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildShinyButton(
-                  'No',
+                  AppLocalizations.of(context)!.no,
                       () {
                     EasyLoading.dismiss();
                     Navigator.of(context).pop(true);
                   },
                 ),
                 _buildShinyButton(
-                  'Yes',
+                  AppLocalizations.of(context)!.yes,
                       () {
                     EasyLoading.dismiss();
                     exit(0);

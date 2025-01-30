@@ -68,7 +68,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool banknameverified = false;
   bool verifyFlag = true;
 
-  String pageTitle = "Personal Info";
+  String pageTitle = "Application Form";
 
   final _mobileFocusNode = FocusNode();
   final _pinFocusNodeP = FocusNode();
@@ -6316,7 +6316,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             saveIDsMethod(context);
           });
         }
-        showToast_Error("Unexpected Response: $response");
+        showToast_Error('${AppLocalizations.of(context)!.thisidisnotverified} $response');
         print("Unexpected Response: $response");
         EasyLoading.dismiss();
       }
@@ -6429,7 +6429,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               voterVerified = false;
             });
           }
-          showToast_Error("Unexpected Response: $response");
+          showToast_Error('${AppLocalizations.of(context)!.thisidisnotverified} $response');
           print("Unexpected Response: $response");
           EasyLoading.dismiss();
         }
@@ -7323,7 +7323,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _bank_AcController.text = data.bankAc;
       _bank_IFCSController.text = data.bankIfcs;
       bankAddress = data.bankAddress;
-      _bankOpeningDateController.text = data.bankAcOpenDate.split("T")[0];
+      DateTime parsedDate = DateTime.parse(data.bankAcOpenDate);
+      String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
+      _bankOpeningDateController.text = formattedDate;
+
+      //_bankOpeningDateController.text = data.bankAcOpenDate.split("T")[0];
     });
   }
 
@@ -7379,7 +7383,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
       }
 
       _pincodeController.text = data.guarantors[0].grPincode.toString();
-      _dobController.text = data.guarantors[0].grDob.toString();
+      DateTime parsedDate = DateTime.parse(data.guarantors[0].grDob);
+      String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
+      _dobController.text = formattedDate;
+      //_dobController.text = data.guarantors[0].grDob.toString();
+
       _ageController.text = data.guarantors[0].grAge.toString();
       _phoneController.text = data.guarantors[0].grPhone;
       _panController.text = data.guarantors[0].grPan;

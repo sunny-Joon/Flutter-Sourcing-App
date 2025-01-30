@@ -429,6 +429,10 @@
 
   "sno": "क्र. क्र.",
   "transactionid": "व्यवहार आयडी",
-  "date": "तारीख"
+  "date": "तारीख",
+
+  "doyouwanttocloseapp": "तुम्हाला ॲप बंद करायचे आहे का?",
+  "thisidisnotverified": "या आयडीची पडताळणी झालेली नाही"
+
 
 }

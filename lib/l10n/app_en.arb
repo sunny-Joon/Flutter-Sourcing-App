@@ -432,7 +432,12 @@
 
   "sno": "S.No",
   "transactionid": "Transaction ID",
-  "date": "Date"
+  "date": "Date",
+
+  "doyouwanttocloseapp": "Do you want to close app?",
+  "thisidisnotverified": "This Id is not verified"
+
+
 
 
 }

@@ -439,7 +439,10 @@
 
   "sno": "নং",
   "transactionid": "লেনদেন আইডি ",
-  "date": "তারিখ"
+  "date": "তারিখ",
+
+  "doyouwanttocloseapp": "আপনি কি অ্যাপটি বন্ধ করতে চান?",
+  "thisidisnotverified": "এই আইডি যাচাই করা হয় না"
 
 
 }
