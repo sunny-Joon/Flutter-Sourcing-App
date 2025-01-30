@@ -66,6 +66,9 @@ android {
 
         // AndroidX Fragment library for fragment handling
         implementation 'androidx.fragment:fragment:1.6.0'  // Updated version
+        implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
+        implementation 'com.google.zxing:core:3.3.0'
+
     }
 
 }

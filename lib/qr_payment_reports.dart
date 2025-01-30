@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'dart:convert'; // For jsonDecode
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'api_service.dart';
 import 'global_class.dart';
@@ -18,7 +19,11 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
   List<QrPaymentsDataModel> _qrPaymentsList = [];
 
   Future<void> _qrPayments(String smcode) async {
-    EasyLoading.show(status: 'Loading...',);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     final apiService = Provider.of<ApiService>(context, listen: false);
 
@@ -40,7 +45,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to fetch data')));
       }
     } catch (e) {
-      GlobalClass.showUnsuccessfulAlert(context, "Server Side error", 1);
+      GlobalClass.showUnsuccessfulAlert(context, AppLocalizations.of(context)!.serversideerror, 1);
       print('Error: $e');
       EasyLoading.dismiss();
     }
@@ -114,7 +119,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                           child: TextField(
                             controller: _searchController,
                             decoration: InputDecoration(
-                              hintText: 'Enter Case code',
+                              hintText: AppLocalizations.of(context)!.pleaseentercorrectcasecode,
                               filled: true, // Set the background color of the TextField
                               fillColor: Colors.white, // Set the background color to white
                               contentPadding: EdgeInsets.all(10), // Padding inside the TextField
@@ -129,7 +134,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                                   if(_searchController.text.isNotEmpty && regex.hasMatch(_searchController.text)) {
                                     _qrPayments(_searchController.text); // Call your API function here
                                   } else {
-                                    GlobalClass.showErrorAlert(context, "Please Enter Correct Case code",1);
+                                    GlobalClass.showErrorAlert(context,AppLocalizations.of(context)!.pleaseentercorrectcasecode,1);
                                   }
                                 },
                               ),
@@ -147,7 +152,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
             SizedBox(height: 16.0),
             Expanded(
               child: _qrPaymentsList.isEmpty
-                  ? Center(child: Text('No data available'))
+                  ? Center(child: Text(AppLocalizations.of(context)!.nodata))
                   : SingleChildScrollView(
                 child: Table(
                   border: TableBorder.all(color: Colors.black, width: .6),
@@ -165,19 +170,19 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                       children: [
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('S.No', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
+                          child: Text(AppLocalizations.of(context)!.sno, style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
                         )),
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Transaction ID', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
+                          child: Text(AppLocalizations.of(context)!.transactionid, style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
                         )),
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Amount', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
+                          child: Text(AppLocalizations.of(context)!.amount, style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
                         )),
                         TableCell(child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Date', style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
+                          child: Text(AppLocalizations.of(context)!.date, style: TextStyle(fontFamily: "Poppins-Regular",fontWeight: FontWeight.bold,fontSize: 10)),
                         )),
                       ],
                     ),

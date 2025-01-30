@@ -401,10 +401,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
         });
       }
     });
-    GetDocs(context);
+
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
     apiService = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     getAllDataApi(context);
+    GetDocs(context);
     print("getAllDataApi(context):> $getAllDataApi(context)");
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
 
@@ -595,11 +596,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               Navigator.of(context).pop();
                             },
                           ),
+
                           Expanded(
+
                             child: Center(
+
                               child: Text(
+
                                 pageTitle,
                                 style: TextStyle(
+
                                   fontFamily: "Poppins-Regular",
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -957,50 +963,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
         ),
 
-        /* Row(
-          children: [
-            // Dependent Persons Column
 
-            SizedBox(width: 10), // Gap of 10 between the two columns
-
-            // Flexible(
-            //   child: Padding(
-            //     padding: const EdgeInsets.only(left: 5.0),
-            //     child: Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: [
-            //         Text(
-            //           'Reservation Category',
-            //           style: TextStyle(
-            //             fontFamily: "Poppins-Regular",
-            //             fontSize: 13, // Consistent font size
-            //             color: Colors.black, // Optional for consistency
-            //           ),
-            //           textAlign: TextAlign.left,
-            //         ),
-            //         SizedBox(height: 1),
-            //         TextField(
-            //           controller: resCatController,
-            //           focusNode: _resCatFocus,
-            //           enabled: personalInfoEditable,
-            //           style: TextStyle(
-            //             fontFamily: "Poppins-Regular",
-            //             fontSize: 13, // Consistent font size
-            //             color: Colors.black,
-            //           ),
-            //           decoration: InputDecoration(
-            //             border: OutlineInputBorder(
-            //               borderRadius: BorderRadius.circular(5),
-            //             ),
-            //             contentPadding: EdgeInsets.symmetric(horizontal: 12),
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-          ],
-        )*/
 
         SizedBox(height: 10),
 
@@ -3019,11 +2982,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
               SizedBox(width: 10), // Spacing between the two columns
               Flexible(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
                   children: [
                     Text(
                       AppLocalizations.of(context)!.relation,
                       style: TextStyle(
-                          fontFamily: "Poppins-Regular", fontSize: 13),
+                          fontFamily: "Poppins-Regular", fontSize: 13),textAlign: TextAlign.left,
                     ),
                     Container(
                       height: 60,
@@ -4690,7 +4655,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         listItems.add(
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 8.0,right: 8,top: 20),
             child: Text(
               AppLocalizations.of(context)!.borrowerdocs,
               style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
@@ -4822,7 +4787,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         listItems1.add(
           Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.only(left: 8.0,right: 8,top: 20),
             child: Text(
               AppLocalizations.of(context)!.uploadgrdocs,
               style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
@@ -6230,6 +6195,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           });
         }
       } else {
+        GlobalClass.showUnsuccessfulAlert(context, '${value.message} {Document Details}', 1);
+
         EasyLoading.dismiss();
       }
     });
@@ -8095,7 +8062,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
       return true;
     } else {
-      if (kycScanningDataModel.grDocs[0].addharExists) {
+
+      if (kycScanningDataModel.grDocs[1].addharExists) {
         if (adhaarFront_coborrower == null) {
           GlobalClass.showToast_Error(
               "Please upload CO-Borrower Aadhaar Front");
@@ -8108,7 +8076,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         }
       }
 
-      if (kycScanningDataModel.grDocs[0].drivingExists) {
+      if (kycScanningDataModel.grDocs[1].drivingExists) {
         if (dlFront_coborrower == null) {
           GlobalClass.showToast_Error(
               "Please upload CO-Borrower Driving License");
@@ -8116,7 +8084,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         }
       }
 
-      if (kycScanningDataModel.grDocs[0].voterExists) {
+      if (kycScanningDataModel.grDocs[1].voterExists) {
         if (voterFront_coborrower == null) {
           GlobalClass.showToast_Error(
               "Please upload CO-Borrower Voter Card Front");
@@ -8129,7 +8097,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           return false;
         }
       }
-      if (kycScanningDataModel.grDocs[0].panExists) {
+      if (kycScanningDataModel.grDocs[1].panExists) {
         if (panFront_coborrower == null) {
           GlobalClass.showToast_Error("Please upload CO-Borrower PAN Card");
           return false;

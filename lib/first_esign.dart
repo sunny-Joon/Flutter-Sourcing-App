@@ -301,7 +301,7 @@ class DialogContent extends StatefulWidget {
   _DialogContentState createState() => _DialogContentState();
 }
 
-class _DialogContentState extends State<DialogContent> {
+class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveClientMixin{
   TextEditingController _dialogAdharController = TextEditingController();
   bool _isChecked = false;
   late ApiService _apiServiceForESign;
@@ -515,6 +515,7 @@ class _DialogContentState extends State<DialogContent> {
       print("Failed to invoke Java function: ${e.message}");
     }
   }
+
   void parseResponse(XmlResponse xmlResponse) {
     final Content content = xmlResponse.responseMessage.content;
 
@@ -549,7 +550,7 @@ class _DialogContentState extends State<DialogContent> {
         print(onError);
         GlobalClass.showToast_Error(onError);
       });
-EasyLoading.dismiss();
+        EasyLoading.dismiss();
     }catch(err){
       print(err);
       GlobalClass.showUnsuccessfulAlert(context,err.toString(),1);
@@ -568,12 +569,14 @@ EasyLoading.dismiss();
 
         widget.selectedBorrower.fiCode.toString(), // Ficode
         widget.selectedBorrower.creator, // Creator
-        consentRawText,   // ConsentText
-        authType=="Biometric"?"2":"1",      // authMode
+        consentRawText,
+       // "1",// ConsentText
+        authType=="Biometric"?"2":"1",
+        //authType=="Biometric"?"2":"1",      // authMode
         widget.selectedBorrower.id.toString(),      // F_Id
         "1",      // SignType
       );
-    EasyLoading.dismiss();
+       EasyLoading.dismiss();
       if (xmlResponse is Map<String, dynamic>) {
         String responseData = xmlResponse["content"];
 
@@ -675,4 +678,7 @@ EasyLoading.dismiss();
       "4. I have understood that the system of downloading the copy of loan document for my record from the link "
       "provided by the company through email or SMS post e-signing of the loan document. I shall download the copy of "
       "loan documents as per my convenience at a later stage.";
+
+  @override
+  bool get wantKeepAlive => true;
 }
