@@ -442,7 +442,11 @@
 
   "sno": "क्र.सं",
   "transactionid": "लेन-देन आईडी",
-  "date": "तारीख"
+  "date": "तारीख",
+
+  "doyouwanttocloseapp": "क्या आप ऐप बंद करना चाहते हैं?",
+  "thisidisnotverified": "यह आईडी सत्यापित नहीं है"
+
 
 }
 

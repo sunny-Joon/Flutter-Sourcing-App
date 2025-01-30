@@ -3051,7 +3051,7 @@ class _KYCPageState extends State<KYCPage> {
             voterVerified = false;
           });
         }
-        showToast_Error("Unexpected Response: $response");
+        showToast_Error('${AppLocalizations.of(context)!.thisidisnotverified} $response');
         print("Unexpected Response: $response");
         EasyLoading.dismiss();
       }
