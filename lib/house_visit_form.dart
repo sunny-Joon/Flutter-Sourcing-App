@@ -8,12 +8,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'Models/global_model.dart';
 import 'api_service.dart';
 import 'MasterAPIs/live_track_repository.dart';
 import 'Models/borrower_list_model.dart';
 import 'Models/group_model.dart';
 import 'Models/branch_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'on_boarding.dart';
 
 
 class HouseVisitForm extends StatefulWidget {
@@ -547,6 +550,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         Image!).then((response) {
       if (response.statuscode == 200) {
         EasyLoading.dismiss();
+        _showSuccessAndRedirect(response);
         GlobalClass.showSuccessAlert(context,response.message,3);
         LiveTrackRepository().saveLivetrackData( "",   "House Visit",widget.selectedData.id);
       } else {
@@ -846,5 +850,30 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
 
     // When permissions are granted, get the position of the device.
     return await Geolocator.getCurrentPosition();
+  }
+
+  void _showSuccessAndRedirect(GlobalModel response) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Success'),
+          content: Text(
+              response.message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => OnBoarding()),
+                );
+              },
+            ),],
+        );
+      },
+    );
   }
 }
