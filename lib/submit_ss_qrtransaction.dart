@@ -115,7 +115,7 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                                   child: TextField(
                                     controller: _searchController,
                                     decoration: InputDecoration(
-                                      hintText: 'Enter Case code',
+                                      hintText:  AppLocalizations.of(context)!.pleaseentercasecode,
                                       filled: true, // Set the background color of the TextField
                                       fillColor: Colors.white,
                                       enabled: flag, // Set the background color to white
@@ -135,7 +135,7 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                                             // _qrPayments(_searchController.text); // Call your API function here
                                           } else {
                                             GlobalClass.showErrorAlert(
-                                                context, "Please Enter Correct Case code", 1);
+                                                context, AppLocalizations.of(context)!.pleaseentercasecode, 1);
                                           }
                                         },
                                       ),
@@ -229,9 +229,9 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                       ),
                       onPressed: () {
                         if(_searchController.text.isEmpty){
-                          GlobalClass.showUnsuccessfulAlert(context, "Please enter case code", 1);
+                          GlobalClass.showUnsuccessfulAlert(context,  AppLocalizations.of(context)!.pleaseentercasecode, 1);
                         }else if(_image==null){
-                          GlobalClass.showUnsuccessfulAlert(context, "Please upload image of receipt", 1);
+                          GlobalClass.showUnsuccessfulAlert(context,  AppLocalizations.of(context)!.pleaseuploadpaymentreceipt, 1);
                         }else{
                           print("smcode3 = $widget.smcode");
 
@@ -322,7 +322,11 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
   }
 
   Future<void> submitQR(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...');
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     String sm;
     if(!flag) {
        sm= widget.smcode;
@@ -352,12 +356,16 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
       }
     }).catchError((err) {
       EasyLoading.dismiss();
-      GlobalClass.showErrorAlert(context, "Server side Error", 1);
+      GlobalClass.showErrorAlert(context,  AppLocalizations.of(context)!.serversideerror, 1);
     });
   }
 
   void fetchDetailsBySmCode() {
-    EasyLoading.show(status: "Please wait...");
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     apiService.getBorrowerDetails(_searchController.text, GlobalClass.dbName, GlobalClass.token).then((value){
       if(value.statuscode==200){

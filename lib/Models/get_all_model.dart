@@ -139,6 +139,15 @@ class ApplicationgetAllDataModel {
   String fatheRFirstName;
   String fatheRMiddleName;
   String fatheRLastName;
+
+  String o_Address1;
+  String o_Address2;
+  String o_Address3;
+  String o_City;
+  String o_State;
+  String o_Pincode;
+
+
   int schoolingChildren;
   int otherDependents;
   bool isCkyCisDone;
@@ -199,6 +208,13 @@ class ApplicationgetAllDataModel {
     required this.bankName,
     required this.bankIfcs,
     required this.bankAccName,
+    required this.o_Address1,
+    required this.o_Address2,
+    required this.o_Address3,
+    required this.o_City,
+    required this.o_State,
+    required this.o_Pincode,
+
 
     required this.bankType,
     required this.bankAddress,
@@ -323,6 +339,12 @@ class ApplicationgetAllDataModel {
     bankName: json["bank_name"]??"",
     bankIfcs: json["bank_IFCS"]??"",
     bankAccName: json["bankAcc_Name"]??"",
+    o_Address1: json["o_Address1"]??"",
+    o_Address2: json["o_Address2"]??"",
+    o_Address3: json["o_Address3"]??"",
+    o_City: json["o_City"]??"",
+    o_State: json["o_State"]??"",
+    o_Pincode: json["o_Pincode"]??"",
 
     bankType: json["bankType"]??"",
     bankAddress: json["bank_address"]??"",
@@ -452,6 +474,13 @@ class ApplicationgetAllDataModel {
     "bank_name": bankName,
     "bank_IFCS": bankIfcs,
     "bankAcc_Name": bankAccName,
+
+    "o_Address1":o_Address1,
+    "o_Address2":o_Address2,
+    "o_Address3":o_Address3,
+    "o_City"    :o_City,
+    "o_State"   :o_State,
+    "o_Pincode" :o_Pincode,
 
     "bankType": bankType,
     "bank_address": bankAddress,

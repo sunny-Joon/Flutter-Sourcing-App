@@ -28,6 +28,9 @@ import 'Models/range_category_model.dart';
 import 'api_service.dart';
 import 'global_class.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_sourcing_app/Models/global_model.dart';
+
+import 'on_boarding.dart';
 
 class KYCPage extends StatefulWidget {
   final BranchDataModel data;
@@ -1011,10 +1014,12 @@ class _KYCPageState extends State<KYCPage> {
         });*/
         EasyLoading.dismiss();
 
-        GlobalClass.showSuccessAlert(
+        _showSuccessAndRedirect(value);
+
+       /* GlobalClass.showSuccessAlert(
             context,
             "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
-            2);
+            2);*/
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
@@ -1088,6 +1093,32 @@ class _KYCPageState extends State<KYCPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showSuccessAndRedirect(GlobalModel value) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Success'),
+          content: Text(
+              "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process"),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => OnBoarding()),
+                );
+              },
+            ),],
+        );
+      },
     );
   }
 
@@ -3678,6 +3709,25 @@ class _KYCPageState extends State<KYCPage> {
           _pincodeController.text = dataList[12];
           String address =
               "${dataList[10]},${dataList[11]},${dataList[13]},${dataList[15]},${dataList[16]}";
+
+          List<String> addressParts = address.trim().split(",");
+          if (addressParts.length == 1) {
+            _address1Controller.text = addressParts[0];
+          } else if (addressParts.length == 2) {
+            _address1Controller.text = addressParts[0];
+            _address2Controller.text = addressParts[1];
+          } else {
+            _address1Controller.text = addressParts.first;
+            _address2Controller.text = addressParts.last;
+            _address3Controller.text =
+                addressParts.sublist(1, addressParts.length - 1).join(' ');
+          }
+        } else if (dataList[0].toLowerCase() == 'v3') {
+          stateselected = states.firstWhere((item) =>
+              item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+          _pincodeController.text = dataList[11];
+          String address =
+              "${dataList[9]},${dataList[14]},${dataList[15]},${dataList[12]},${dataList[7]}";
 
           List<String> addressParts = address.trim().split(",");
           if (addressParts.length == 1) {
