@@ -5281,12 +5281,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 SizedBox(height: 10), // Space between buttons
                 // Adhaar QR Button
                 SizedBox(
-                  width: double.infinity, // Match the width of the dialog
+                  width: double.infinity,
                   child: TextButton(
                     onPressed: () async {
                       Navigator.of(context).pop();
                       try {
-                        final result = await callJavaMethodQr(); // Call the method directly
+                        final result = await callJavaMethodQr();
 
                         if (result != null) {
                           print("QR Data: $result");
@@ -7237,7 +7237,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       address3ControllerP.text = data.o_Address3;
       cityControllerP.text = data.o_City;
       selectedStateextraP =
-          states.firstWhere((item) => item.code == data.pState);
+          states.firstWhere((item) => item.code == data.o_State);
       // print("State from model ${states.firstWhere((item) =>item.code == data.pState)}");
       //selectedStateextraP=data.pState;
       pincodeControllerP.text = data.o_Pincode;
