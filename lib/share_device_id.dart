@@ -75,13 +75,13 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   void validateInputs() {
     setState(() {
       if (_selectedRequestType == null) {
-        _requestTypeError = 'Please select a Request Type';
+        _requestTypeError = AppLocalizations.of(context)!.pleaseselectarequesttype;
       } else {
         _requestTypeError = null;
       }
 
       if (_selectedCreator == null) {
-        _creatorError = 'Please select a Creator';
+        _creatorError = AppLocalizations.of(context)!.pleaseselectacreator;
       } else {
         _creatorError = null; // Clear error if valid
       }
@@ -92,7 +92,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
     bool isValid = true;
 
     if (_nameController.text.isEmpty) {
-      _nameError = "Please enter Name";
+      _nameError = AppLocalizations.of(context)!.pleaseentername;
       _nameFocus.requestFocus();
       isValid = false;
     } else {
@@ -100,11 +100,11 @@ class _SharedeviceidState extends State<Sharedeviceid> {
     }
 
     if (_imei1Controller.text.isEmpty) {
-      _imei1Error = "Please enter IMEI No. 1";
+      _imei1Error = AppLocalizations.of(context)!.pleaseenterimeino1;
       _imei1Focus.requestFocus();
       isValid = false;
     } else if (!RegExp(r'^\d{15}$').hasMatch(_imei1Controller.text)) {
-      _imei1Error = "IMEI No. 1 must be 15 digits";
+      _imei1Error = AppLocalizations.of(context)!.imeino1mustbe15digits;
       _imei1Focus.requestFocus();
       isValid = false;
     } else {
@@ -113,11 +113,11 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
     // Validate IMEI No. 2 (15 digits)
     if (_imei2Controller.text.isEmpty) {
-      _imei2Error = "Please enter IMEI No. 2";
+      _imei2Error = AppLocalizations.of(context)!.pleaseenterimeino2;
       _imei2Focus.requestFocus();
       isValid = false;
     } else if (!RegExp(r'^\d{15}$').hasMatch(_imei2Controller.text)) {
-      _imei2Error = "IMEI No. 2 must be 15 digits";
+      _imei2Error = AppLocalizations.of(context)!.imeino2mustbe15digits;
       _imei2Focus.requestFocus();
       isValid = false;
     } else {
@@ -126,7 +126,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
     // Validate User ID
     if (_userIdController == null) {
-      _userIdError = "User ID Not Found";
+      _userIdError = AppLocalizations.of(context)!.useridnotfound;
       isValid = false;
     } else {
       _userIdError = null;
@@ -134,11 +134,11 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
     // Validate Mobile No. (10 digits)
     if (_mobileNoController.text.isEmpty) {
-      _mobileNoError = "Please enter Mobile No.";
+      _mobileNoError = AppLocalizations.of(context)!.pleaseentermobileno;
       _mobileNoFocus.requestFocus();
       isValid = false;
     } else if (!RegExp(r'^\d{10}$').hasMatch(_mobileNoController.text)) {
-      _mobileNoError = "Mobile No. must be 10 digits";
+      _mobileNoError = AppLocalizations.of(context)!.mobilenomustbe10digits;
       _mobileNoFocus.requestFocus();
       isValid = false;
     } else {
@@ -147,10 +147,10 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
     // Validate Device ID (16 digits)
     if (_deviceIdController == null) {
-      _deviceIdError = "Device ID Not Found";
+      _deviceIdError =AppLocalizations.of(context)!.deviceidnotfound;
       isValid = false;
     } else if (!RegExp(r'^\d{16}$').hasMatch(_deviceIdController!)) {
-      _deviceIdError = "Device ID must be 16 digits";
+      _deviceIdError = AppLocalizations.of(context)!.deviceidmustbe16digits;
       isValid = false;
     } else {
       _deviceIdError = null;
@@ -158,7 +158,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
     // Validate Longitude
     if (_longitudeController == null) {
-      _longitudeError = "Longitude Not Found";
+      _longitudeError = AppLocalizations.of(context)!.longitudenotfound;
       isValid = false;
     } else {
       _longitudeError = null;
@@ -166,14 +166,14 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
     // Validate Latitude
     if (_latitudeController == null) {
-      _latitudeError = "Latitude Not Found";
+      _latitudeError = AppLocalizations.of(context)!.latitudenotfound;
       isValid = false;
     } else {
       _latitudeError = null;
     }
 
     if (_branchController == null || _branchController.text.isEmpty) {
-      _branchError = "Branch Not Found";
+      _branchError = AppLocalizations.of(context)!.branchnotfound;
       isValid = false;
     } else {
       _branchError = null;
@@ -765,9 +765,11 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   }
 
   Future<void> _saveMappingReq(BuildContext context) async {
-    EasyLoading.show(
-      status: 'Loading...',
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     final api = Provider.of<ApiService>(context, listen: false);
 
@@ -815,7 +817,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Select Branches',
+                    AppLocalizations.of(context)!.selectbranches,
                     style: TextStyle(
                         fontFamily: "Poppins-Regular",
                         fontSize: 18,
@@ -861,7 +863,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                         vertical: 12), // Adjust vertical padding as needed
                   ),
                   child: Text(
-                    'Add Branches',
+                    AppLocalizations.of(context)!.addbranches,
                     style: TextStyle(
                         fontFamily: "Poppins-Regular", color: Colors.white),
                   ),

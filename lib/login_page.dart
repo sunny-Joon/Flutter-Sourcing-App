@@ -498,7 +498,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _getLogin( String userName, String userPassword, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-     EasyLoading.show(status: 'Loading...',);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
       "userName": userName,

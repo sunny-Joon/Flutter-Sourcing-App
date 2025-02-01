@@ -298,7 +298,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
 
                       SizedBox(height: 20),
                       _image == null
-                          ? Text('No image selected.')
+                          ? Text(AppLocalizations.of(context)!.noimageselected)
                           : Image.file(_image!),
                       ElevatedButton(
                         onPressed: getImage,
@@ -374,7 +374,11 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         false; // Default to false if dialog is dismissed
   }
   Future<void> saveHouseVisitForm(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...',);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     String HouseType=housetype;
     String IsvalidLocation=isvalidlocation;
@@ -753,36 +757,36 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
 
   bool validate() {
     if (selected_relations == null || selected_relations!.isEmpty || selected_relations!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Relation");
+    showToast_Error(AppLocalizations.of(context)!.pleaseselectrelation);
     return false;
     } else if (selected_ratings == null || selected_ratings!.isEmpty || selected_ratings!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Feedback");
+    showToast_Error(AppLocalizations.of(context)!.pleaseselectfeedback);
     return false;
     } else if (selected_years2 == null || selected_years2!.isEmpty || selected_years2!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Business Experience");
+    showToast_Error(AppLocalizations.of(context)!.pleaseselectbusinessexperience);
     return false;
     } else if (selected_years == null || selected_years!.isEmpty || selected_years!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Residance Stability");
+    showToast_Error(AppLocalizations.of(context)!.pleaseselectresidancestability);
     return false;
     } else if (selected_residing_with == null || selected_residing_with!.isEmpty || selected_residing_with!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Residing with");
+    showToast_Error(AppLocalizations.of(context)!.pleaseselectresidingwith);
     return false;
     } else if (selected_residing_type == null || selected_residing_type!.isEmpty || selected_residing_type!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Resedence Type");
+    showToast_Error(AppLocalizations.of(context)!.pleaseselectresedencetype);
     return false;
     } else if (selected_relation == null || selected_relation!.isEmpty || selected_relation!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Relation");
+    showToast_Error(AppLocalizations.of(context)!.pleaseselectrelation);
     return false;
     }else if(_image ==null){
-      showToast_Error("Please Click House Picture");
+      showToast_Error(AppLocalizations.of(context)!.pleaseclickhousepicture);
       return false;
     }else if (_Mobilereferenceperson1Controller.text.length != 10 ||
         !_Mobilereferenceperson1Controller.text.contains(RegExp(r'^[0-9]{10}$'))) {
-      showToast_Error("Please enter a valid 10-digit mobile number");
+      showToast_Error(AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
       return false;
     } else if (_Mobilereferenceperson2Controller.text.length != 10 ||
         !_Mobilereferenceperson2Controller.text.contains(RegExp(r'^[0-9]{10}$'))) {
-      showToast_Error("Please enter a valid 10-digit mobile number");
+      showToast_Error(AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
       return false;
     }
     return true;

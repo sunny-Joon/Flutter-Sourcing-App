@@ -20,7 +20,11 @@ class _CollectionStatusState extends State<CollectionStatus> {
   List<EmiCollection> emiCollections = [];
 
   Future<void> collectionStatus(BuildContext context, String smcode) async {
-    EasyLoading.show(status: 'Loading...');
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
         .collectionStatus(GlobalClass.token, GlobalClass.dbName, smcode)
@@ -137,7 +141,7 @@ class _CollectionStatusState extends State<CollectionStatus> {
                             controller: _searchController,
                             decoration: InputDecoration(
                               counterText: "",
-                              hintText: 'Enter Case code',
+                              hintText:  AppLocalizations.of(context)!.pleaseentercasecode,
                               filled: true, // Set the background color of the TextField
                               fillColor: Colors.white, // Set the background color to white
                               contentPadding: EdgeInsets.all(10), // Padding inside the TextField
@@ -152,7 +156,7 @@ class _CollectionStatusState extends State<CollectionStatus> {
                                     if(_searchController.text.isNotEmpty && regex.hasMatch(_searchController.text)) {
                                       collectionStatus(context,_searchController.text); // Call your API function here
                                     } else {
-                                      GlobalClass.showErrorAlert(context, "Please Enter Correct Case code",1);
+                                      GlobalClass.showErrorAlert(context,   AppLocalizations.of(context)!.pleaseentercasecode,1);
                                     }
                                   }
 
