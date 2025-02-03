@@ -28,7 +28,6 @@ import 'Models/range_category_model.dart';
 import 'api_service.dart';
 import 'global_class.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'on_boarding.dart';
 
 class ApplicationPage extends StatefulWidget {
