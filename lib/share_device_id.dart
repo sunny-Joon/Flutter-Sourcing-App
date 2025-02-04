@@ -66,6 +66,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   String? _requestTypeError;
   String? _creatorError;
 
+
   final FocusNode _nameFocus = FocusNode();
   final FocusNode _imei1Focus = FocusNode();
   final FocusNode _imei2Focus = FocusNode();
@@ -211,23 +212,36 @@ class _SharedeviceidState extends State<Sharedeviceid> {
     if (value.statuscode == 200 && value.data.isNotEmpty) {
       setState(() {
         _creators = value.data;
+        _selectedCreator = _creators[0].creator;
+
+
         _isLoading = false;
         EasyLoading.dismiss();
+      });
+      _fetchBranchList(context, _creators[0].creatorId.toString());
+    }else{
+      setState(() {
+        _isLoading = false;
       });
     }
   }
 
-  Future<void> _fetchBranchList(BuildContext context, String creators) async {
+  Future<void> _fetchBranchList(BuildContext context, String creatorId) async {
+    print("object0");
     final api = Provider.of<ApiService>(context, listen: false);
-    final value = await api.getBranchList(
-        GlobalClass.token, GlobalClass.dbName, GlobalClass.creatorId);
+    final value = await api.getBranchList(GlobalClass.token, GlobalClass.dbName,creatorId);
+    print("object1$value");
     if (value.statuscode == 200) {
+
       setState(() {
-        _branch_codes =
-            value.data; // Assuming value.data is a list of BranchDataModel
+        _branch_codes = value.data;
+        print("object2${value.data}");
+
         _isLoading = false;
       });
     } else {
+      print("object3$value");
+
       _branch_codes = [];
     }
   }
@@ -446,19 +460,23 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                           color: Colors
                                               .transparent, // Set to transparent to remove default underline
                                         ),
+                                        hint: Text("selectCreator"),
                                         onChanged: (String? newValue) {
                                           setState(() {
                                             _selectedCreator = newValue;
                                             _creatorError = null;
                                             validateInputs(); // Clear error when user selects a value
-                                            _fetchBranchList(
-                                                context, _selectedCreator!);
+                                            // Find the selected creator's ID
+                                            String selectedCreatorId = _creators
+                                                .firstWhere((creator) => creator.creator == newValue)
+                                                .creatorId
+                                                .toString();
+                                            _fetchBranchList(context, selectedCreatorId);
                                             _branchController.text = "";
                                             _selectedBranches = [];
                                           });
                                         },
-                                        items: _creators
-                                            .map((CreatorListDataModel value) {
+                                        items: _creators.map((CreatorListDataModel value) {
                                           return DropdownMenuItem<String>(
                                             value: value.creator,
                                             child: Text(value.creator),

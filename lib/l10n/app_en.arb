@@ -462,7 +462,8 @@
   "pleaseentersomecomments": "Please enter some comments",
   "pleaseclickacurrentpicture": "Please click a current picture",
 
-
+  "relationshipwiththeapplicant": "Relationship with the applicant",
+  "chhooserelationtothepersoninterviewed": "chhoose relation to the person interviewed",
   "pleaseselectfeedback": "Please Select Feedback",
   "pleaseselectbusinessexperience": "Please Select Business Experience",
   "pleaseselectresidancestability": "Please Select Residance Stability",
@@ -571,15 +572,12 @@
   "pleaseuploadcoborrowerdrivinglicense": "Please upload CO-Borrower Driving License",
   "pleaseuploadcoborrowervotercardfront": "Please upload CO-Borrower Voter Card Front",
   "pleaseuploadcoborrowervotercardback": "Please upload CO-Borrower Voter Card Back",
-  "pleaseuploadcoborrowerpancard": "Please upload CO-Borrower PAN Card"
+  "pleaseuploadcoborrowerpancard": "Please upload CO-Borrower PAN Card",
 
 
-
-
-
-
-
-
+  "pleasesearchpancardholdernameforverification": "Please search PAN card holder name for verification",
+  "pleaseenter": "Please enter",
+  "recordnotfound": "Record Not Found!!"
 }
 
 

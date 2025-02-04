@@ -67,8 +67,8 @@ class _KYCPageState extends State<KYCPage> {
 
   int _currentStep = 0;
   final _formKey = GlobalKey<FormState>();
-  String panCardHolderName =
-      "Please search PAN card holder name for verification";
+  String? panCardHolderName ;
+     // "Please search PAN card holder name for verification";
   String? dlCardHolderName;
   String? voterCardHolderName;
   List<RangeCategoryDataModel> states = [];
@@ -1013,8 +1013,13 @@ class _KYCPageState extends State<KYCPage> {
           _currentStep += 1;
         });*/
         EasyLoading.dismiss();
-
-        _showSuccessAndRedirect(value);
+        GlobalClass.showSuccessAlertclose(
+          context,
+          "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
+          1,
+          destinationPage: OnBoarding(),
+        );
+      //  _showSuccessAndRedirect(value);
 
        /* GlobalClass.showSuccessAlert(
             context,
@@ -1096,7 +1101,7 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-  void _showSuccessAndRedirect(GlobalModel value) {
+ /* void _showSuccessAndRedirect(GlobalModel value) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -1121,7 +1126,7 @@ class _KYCPageState extends State<KYCPage> {
       },
     );
   }
-
+*/
   void _showPopup(BuildContext context, Function(String) onResult) {
     showDialog(
       context: context,
@@ -2714,7 +2719,16 @@ class _KYCPageState extends State<KYCPage> {
               ),
             ],
           ),
-          Text(panCardHolderName,
+          panCardHolderName==null
+          ? Text(
+          AppLocalizations.of(context)!.pleasesearchpancardholdernameforverification,
+          style: TextStyle(
+          fontFamily: "Poppins-Regular",
+          color: Colors.grey.shade400,
+          fontSize: 11),
+          )
+        : Text(panCardHolderName!,
+
               style: TextStyle(
                   fontFamily: "Poppins-Regular",
                   color: !panVerified ? Colors.grey.shade400 : Colors.green,
@@ -2882,6 +2896,7 @@ class _KYCPageState extends State<KYCPage> {
               // getPlace("district",stateselected!.code,"","");
             });
           }, String),
+
         ],
       ),
     );
@@ -2974,8 +2989,7 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-  void docVerifyIDC(
-      String type, String txnNumber, String ifsc, String dob) async {
+  void docVerifyIDC(String type, String txnNumber, String ifsc, String dob) async {
     EasyLoading.show(
       status: AppLocalizations.of(context)!.loading,
     );
@@ -3120,7 +3134,7 @@ class _KYCPageState extends State<KYCPage> {
         "userID": userid,
         "dlno": dlNo,
          "dob": dob
-        //"dob": "02-10-2000"
+
       };
 
       final response =

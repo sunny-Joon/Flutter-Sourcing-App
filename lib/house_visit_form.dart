@@ -60,7 +60,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   List<String> ratings = ['Select','good','bad','dontKnow'];
   List<String> relations = ['Select','spouse','parents','siblings'];
 
-  String? selected_relation= "";
+  String? selected_applicant= "";
   String? selected_residing_type= "";
   String? selected_residing_with= "";
   String? selected_years= "";
@@ -252,7 +252,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                       _buildTextField2(AppLocalizations.of(context)!.addresshouse, _AddressController, TextInputType.name,addReg),
 
 
-                      dropdowns(AppLocalizations.of(context)!.relationwithearningmember, relation, selected_relation!, (newValue) {setState(() {selected_relation = newValue;});}),
+                      dropdowns(AppLocalizations.of(context)!.relationwithearningmember, relation, selected_applicant!, (newValue) {setState(() {selected_applicant = newValue;});}),
                       dropdowns(AppLocalizations.of(context)!.residingtype, residing_type, selected_residing_type!, (newValue) {setState(() {selected_residing_type = newValue;});}),
                       dropdowns(AppLocalizations.of(context)!.residingwith, residing_with, selected_residing_with!, (newValue) {setState(() {selected_residing_with = newValue;});}),
                       dropdowns(AppLocalizations.of(context)!.residentialstability, years, selected_years!, (newValue) {setState(() {selected_years = newValue;});}),
@@ -421,7 +421,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     String StockVerification=stockverification;
     String LoanSufficientWithDebt=loansufficientwithdebt;
 
-    String Relationearningmember=selected_relation!;
+    String Relationearningmember=selected_applicant!;
     String Residence_Type=selected_residing_type!;
     String Residing_with=selected_residing_with!;
     String feedbacknearbyresident=selected_ratings!;
@@ -550,8 +550,14 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         Image!).then((response) {
       if (response.statuscode == 200) {
         EasyLoading.dismiss();
-        _showSuccessAndRedirect(response);
-        GlobalClass.showSuccessAlert(context,response.message,3);
+        GlobalClass.showSuccessAlertclose(
+          context,
+         response.message,
+          1,
+          destinationPage: OnBoarding(),
+        );
+      //  _showSuccessAndRedirect(response);
+     //   GlobalClass.showSuccessAlert(context,response.message,3);
         LiveTrackRepository().saveLivetrackData( "",   "House Visit",widget.selectedData.id);
       } else {
         EasyLoading.dismiss();
@@ -591,7 +597,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter $label';
+                    return '${AppLocalizations.of(context)!.pleaseenter} $label';
                   }
                   return null;
                 },
@@ -641,7 +647,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter $label';
+                    return '${AppLocalizations.of(context)!.pleaseenter} $label';
                   }
                   if (value.length > maxlength) {
                     return '$label cannot exceed $maxlength characters';
@@ -760,42 +766,76 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   }
 
   bool validate() {
-    if (selected_relations == null || selected_relations!.isEmpty || selected_relations!.toLowerCase() == 'select') {
-    showToast_Error(AppLocalizations.of(context)!.pleaseselectrelation);
-    return false;
-    } else if (selected_ratings == null || selected_ratings!.isEmpty || selected_ratings!.toLowerCase() == 'select') {
-    showToast_Error(AppLocalizations.of(context)!.pleaseselectfeedback);
-    return false;
-    } else if (selected_years2 == null || selected_years2!.isEmpty || selected_years2!.toLowerCase() == 'select') {
-    showToast_Error(AppLocalizations.of(context)!.pleaseselectbusinessexperience);
-    return false;
-    } else if (selected_years == null || selected_years!.isEmpty || selected_years!.toLowerCase() == 'select') {
-    showToast_Error(AppLocalizations.of(context)!.pleaseselectresidancestability);
-    return false;
-    } else if (selected_residing_with == null || selected_residing_with!.isEmpty || selected_residing_with!.toLowerCase() == 'select') {
-    showToast_Error(AppLocalizations.of(context)!.pleaseselectresidingwith);
-    return false;
-    } else if (selected_residing_type == null || selected_residing_type!.isEmpty || selected_residing_type!.toLowerCase() == 'select') {
-    showToast_Error(AppLocalizations.of(context)!.pleaseselectresedencetype);
-    return false;
-    } else if (selected_relation == null || selected_relation!.isEmpty || selected_relation!.toLowerCase() == 'select') {
-    showToast_Error(AppLocalizations.of(context)!.pleaseselectrelation);
-    return false;
-    }else if(_image ==null){
-      showToast_Error(AppLocalizations.of(context)!.pleaseclickhousepicture);
+
+    if (selected_applicant == null ||
+        selected_applicant!.isEmpty ||
+        selected_applicant!.toLowerCase() == 'select') {
+      showToast_Error(
+          AppLocalizations.of(context)!.relationshipwiththeapplicant);
       return false;
-    }else if (_Mobilereferenceperson1Controller.text.length != 10 ||
-        !_Mobilereferenceperson1Controller.text.contains(RegExp(r'^[0-9]{10}$'))) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
+    }
+
+    if (selected_residing_type == null ||
+        selected_residing_type!.isEmpty ||
+        selected_residing_type!.toLowerCase() == 'select') {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectresedencetype);
       return false;
-    } else if (_Mobilereferenceperson2Controller.text.length != 10 ||
-        !_Mobilereferenceperson2Controller.text.contains(RegExp(r'^[0-9]{10}$'))) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
+    }
+
+    if (selected_residing_with == null ||
+        selected_residing_with!.isEmpty ||
+        selected_residing_with!.toLowerCase() == 'select') {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectresidingwith);
+      return false;
+    }
+    if (selected_years == null ||
+        selected_years!.isEmpty ||
+        selected_years!.toLowerCase() == 'select') {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectresidancestability);
+      return false;
+    }
+    if (selected_years2 == null ||
+        selected_years2!.isEmpty ||
+        selected_years2!.toLowerCase() == 'select') {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectbusinessexperience);
+      return false;
+    }
+    if (selected_ratings == null ||
+        selected_ratings!.isEmpty ||
+        selected_ratings!.toLowerCase() == 'select') {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectfeedback);
+      return false;
+    }
+
+    if (selected_relations == null ||
+        selected_relations!.isEmpty ||
+        selected_relations!.toLowerCase() == 'select') {
+      showToast_Error(AppLocalizations.of(context)!.chhooserelationtothepersoninterviewed);
+      return false;
+    }
+
+
+    if (_image == null) {showToast_Error(AppLocalizations.of(context)!.pleaseclickhousepicture);
+    return false;
+    }
+    if (_Mobilereferenceperson1Controller.text.length != 10 ||
+        !RegExp(r'^[0-9]{10}$')
+            .hasMatch(_Mobilereferenceperson1Controller.text)) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
+      return false;
+    }
+    if (_Mobilereferenceperson2Controller.text.length != 10 ||
+        !RegExp(r'^[0-9]{10}$')
+            .hasMatch(_Mobilereferenceperson2Controller.text)) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
       return false;
     }
     return true;
   }
-
   void showToast_Error(String message) {
     Fluttertoast.showToast(
         msg: message,
@@ -852,7 +892,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     return await Geolocator.getCurrentPosition();
   }
 
-  void _showSuccessAndRedirect(GlobalModel response) {
+/*  void _showSuccessAndRedirect(GlobalModel response) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -875,5 +915,5 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         );
       },
     );
-  }
+  }*/
 }
