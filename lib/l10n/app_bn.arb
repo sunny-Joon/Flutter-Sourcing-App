@@ -469,6 +469,8 @@
   "pleaseentersomecomments": "অনুগ্রহ করে কিছু মন্তব্য লিখুন",
   "pleaseclickacurrentpicture": "অনুগ্রহ করে বর্তমান ছবি তুলুন",
 
+  "relationshipwiththeapplicant": "আবেদনকারীর সাথে সম্পর্ক",
+  "chhooserelationtothepersoninterviewed": "ইন্টারভিউয়ারের সাথে সম্পর্ক বেছে নিন",
   "pleaseselectrelation": "অনুগ্রহ করে সম্পর্ক নির্বাচন করুন",
   "pleaseselectfeedback": "অনুগ্রহ করে প্রতিক্রিয়া নির্বাচন করুন",
   "pleaseselectbusinessexperience": "অনুগ্রহ করে ব্যবসার অভিজ্ঞতা নির্বাচন করুন",
@@ -568,11 +570,13 @@
   "pleaseuploadcoborrowerdrivinglicense": "দয়া করে সহ-ঋণগ্রহীতার ড্রাইভিং লাইসেন্স আপলোড করুন",
   "pleaseuploadcoborrowervotercardfront": "দয়া করে সহ-ঋণগ্রহীতার ভোটার কার্ডের সামনের ছবি আপলোড করুন",
   "pleaseuploadcoborrowervotercardback": "দয়া করে সহ-ঋণগ্রহীতার ভোটার কার্ডের পেছনের ছবি আপলোড করুন",
-  "pleaseuploadcoborrowerpancard": "দয়া করে সহ-ঋণগ্রহীতার PAN কার্ড আপলোড করুন"
+  "pleaseuploadcoborrowerpancard": "দয়া করে সহ-ঋণগ্রহীতার PAN কার্ড আপলোড করুন",
 
 
+  "pleasesearchpancardholdernameforverification": "যাচাইকরণের জন্য অনুগ্রহ করে প্যান কার্ডধারীর নাম অনুসন্ধান করুন",
+  "pleaseenter": "অনুগ্রহ করে প্রবেশ করুন",
 
-
+  "recordnotfound": "রেকর্ড পাওয়া যায়নি!!"
 
 }
 

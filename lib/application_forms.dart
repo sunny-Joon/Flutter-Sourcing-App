@@ -598,16 +598,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               Navigator.of(context).pop();
                             },
                           ),
-
                           Expanded(
-
                             child: Center(
-
                               child: Text(
-
                                 pageTitle,
                                 style: TextStyle(
-
                                   fontFamily: "Poppins-Regular",
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -639,7 +634,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               BoxShadow(
                                 color: Colors.grey.shade300,
                                 blurRadius: 10,
-                                //   spreadRadius: 5,
+
                               ),
                             ],
                           ),
@@ -878,7 +873,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         SizedBox(height: 1),
         Container(
             width: double.infinity, // Set the desired width
-            //   //height: 45, // Set the desired height
+
             child: Center(
               child: TextFormField(
                 enabled: personalInfoEditable,
@@ -964,8 +959,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ],
           ),
         ),
-
-
 
         SizedBox(height: 10),
 
@@ -1107,7 +1100,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         SizedBox(height: 1),
         Container(
             width: double.infinity, // Set the desired width
-            //   //height: 45, // Set the desired height
+
             child: Center(
               child: TextFormField(
                 enabled: personalInfoEditable,
@@ -2217,7 +2210,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     textAlign: TextAlign.left,
                   ),
                   Container(
-                    //  //height: 45,
+
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -2267,7 +2260,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     textAlign: TextAlign.left,
                   ),
                   Container(
-                    //  //height: 45,
+
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -2323,7 +2316,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     textAlign: TextAlign.left,
                   ),
                   Container(
-                    //  //height: 45,
+
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -2372,7 +2365,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     textAlign: TextAlign.left,
                   ),
                   Container(
-                    //  //height: 45,
+
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -2420,7 +2413,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           textAlign: TextAlign.left,
         ),
         Container(
-          //  //height: 45,
+
           padding: EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
@@ -2698,7 +2691,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             textAlign: TextAlign.left,
           ),
           Container(
-            //  //height: 45,
+
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
@@ -2776,10 +2769,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                   _bank_IFCSController.text.isEmpty) {
                                 showToast_Error(
                                     "Please Enter Bank Account number and IFSC code");
-
-                              }
-
-                              else if (_bank_IFCSController.text.length !=
+                              } else if (_bank_IFCSController.text.length !=
                                   11) {
                                 showToast_Error(
                                     "Please Enter Correct IFSC code");
@@ -2794,7 +2784,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               } else if (_bank_AcController.text == temp) {
                                 showToast_Error(
                                     "Account Number already Verified");
-                              }else {
+                              } else {
                                 ifscVerify(context, _bank_IFCSController.text);
                               }
                             }
@@ -2985,12 +2975,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
               Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
                     Text(
                       AppLocalizations.of(context)!.relation,
                       style: TextStyle(
-                          fontFamily: "Poppins-Regular", fontSize: 13),textAlign: TextAlign.left,
+                          fontFamily: "Poppins-Regular", fontSize: 13),
+                      textAlign: TextAlign.left,
                     ),
                     Container(
                       height: 60,
@@ -3752,7 +3742,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                   width: double.infinity,
                                   color: Colors.white,
                                   // Set the desired width
-                                  //  //height: 45, // Set the desired height
+
                                   child: Center(
                                     child: TextFormField(
                                       enabled: GuarantorEditable,
@@ -4117,7 +4107,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
-        //  fixtraEditable,FiIncomeEditable,FinancialInfoEditable,GuarantorEditable,UploadFiDocsEditable,FiFamilyEditable,femMemIncomeEditable
+
         onPressed: () {
           setState(() {
             editButtonFunctionOn = true;
@@ -4236,8 +4226,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
         onPressed: () {
           // setState(() {
-          //   _currentStep = 6;
-          //   pageTitle = "Upload Docs";
+
+
           // });
 
           if (_currentStep == 0) {
@@ -4332,7 +4322,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller, bool saved, FocusNode FN, String regex) {
+  Widget _buildTextField(String label, TextEditingController controller,
+      bool saved, FocusNode FN, String regex) {
     return Container(
       //margin: EdgeInsets.symmetric(vertical: 4),
       // padding: EdgeInsets.all(4),
@@ -4350,7 +4341,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           Container(
               width: double.infinity,
               color: Colors.white, // Set the desired width
-              //  //height: 45, // Set the desired height
+
               child: Center(
                 child: TextFormField(
                   enabled: saved,
@@ -4382,7 +4373,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
-  Widget _buildTextField2(String label, TextEditingController controller, TextInputType inputType, bool saved, FocusNode FN, int maxlength, String regex) {
+  Widget _buildTextField2(
+      String label,
+      TextEditingController controller,
+      TextInputType inputType,
+      bool saved,
+      FocusNode FN,
+      int maxlength,
+      String regex) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 0),
@@ -4484,8 +4482,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   }
                   break;
                 case 26:
-                  OSVVerified = await OcrDocsScanning('voterback',
-                      "1", "borrower", context);
+                  OSVVerified = await OcrDocsScanning(
+                      'voterback', "1", "borrower", context);
                   if (OSVVerified) {
                     voterback = pickedImage;
                   }
@@ -4649,7 +4647,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         listItems.add(
           Padding(
-            padding: const EdgeInsets.only(left: 8.0,right: 8,top: 20),
+            padding: const EdgeInsets.only(left: 8.0, right: 8, top: 20),
             child: Text(
               AppLocalizations.of(context)!.borrowerdocs,
               style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
@@ -4781,7 +4779,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         listItems1.add(
           Padding(
-            padding: const EdgeInsets.only(left: 8.0,right: 8,top: 20),
+            padding: const EdgeInsets.only(left: 8.0, right: 8, top: 20),
             child: Text(
               AppLocalizations.of(context)!.uploadgrdocs,
               style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
@@ -4886,7 +4884,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
     return listItems1;
   }
 
-  Widget _buildLabeledDropdownField<T>(String labelText, String label, List<T> items, T? selectedValue, bool readOnly, ValueChanged<T?>? onChanged, Type objName) {
+  Widget _buildLabeledDropdownField<T>(
+      String labelText,
+      String label,
+      List<T> items,
+      T? selectedValue,
+      bool readOnly,
+      ValueChanged<T?>? onChanged,
+      Type objName) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: SingleChildScrollView(
@@ -5053,7 +5058,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  List<List<int>> separateData(List<int> source, int separatorByte, int vtcIndex) {
+  List<List<int>> separateData(
+      List<int> source, int separatorByte, int vtcIndex) {
     int imageStartIndex = 0;
 
     List<List<int>> separatedParts = [];
@@ -5101,7 +5107,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       setState(() {
         final email = emailIdController.text;
         if (email.isEmpty || !_isValidEmail(email)) {
-          _emailError = AppLocalizations.of(context)!.pleaseenteravalidemailaddress;
+          _emailError =
+              AppLocalizations.of(context)!.pleaseenteravalidemailaddress;
         } else {
           _emailError = null;
         }
@@ -5121,7 +5128,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       setState(() {
         final mobile = mobileController.text;
         if (mobile.isEmpty || !_isValidMobile(mobile)) {
-          _mobileError =  AppLocalizations.of(context)!.pleaseentercorrectmobilenumber;
+          _mobileError =
+              AppLocalizations.of(context)!.pleaseentercorrectmobilenumber;
         } else {
           _mobileError = null;
         }
@@ -5142,7 +5150,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           final pin = pincodeControllerP.text;
           if (pin.isEmpty || !_isValidPin(pin)) {
-            _pinErrorP =  AppLocalizations.of(context)!.pleaseentercorrectpincode;
+            _pinErrorP =
+                AppLocalizations.of(context)!.pleaseentercorrectpincode;
           } else {
             _pinErrorP = null;
           }
@@ -5154,7 +5163,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           final pin = pincodeControllerC.text;
           if (pin.isEmpty || !_isValidPin(pin)) {
-            _pinErrorC = AppLocalizations.of(context)!.pleaseentercorrectpincode;
+            _pinErrorC =
+                AppLocalizations.of(context)!.pleaseentercorrectpincode;
           } else {
             _pinErrorC = null;
           }
@@ -5290,7 +5300,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                         if (result != null) {
                           print("QR Data: $result");
 
-                          setQRData(result.replaceAll('[', "").replaceAll(']', "")); // Process the result as needed
+                          setQRData(result.replaceAll('[', "").replaceAll(
+                              ']', "")); // Process the result as needed
                         }
                       } catch (e) {
                         print("Error: $e");
@@ -5348,7 +5359,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     else if (mobileController.text.isEmpty ||
         mobileController.text.length != 10 ||
         !mobileController.text.contains(RegExp(r'^[0-9]{10}$'))) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseentercorrectmobilenumber);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseentercorrectmobilenumber);
       _mobileFocus.requestFocus();
       return false;
     } else if (selectedIsHandicap == null ||
@@ -5362,10 +5374,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
       return false;
     } else if (selectedSpecialSocialCategory == null ||
         selectedSpecialSocialCategory!.toLowerCase() == "select") {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectspecialsocialcategory);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectspecialsocialcategory);
       return false;
     } else if (address1ControllerP.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenteraddressline1permanent);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenteraddressline1permanent);
       _address1FocusP.requestFocus();
       return false;
     }
@@ -5384,7 +5398,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectpermanentstate);
       return false;
     } else if (address1ControllerC.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenteraddressline1current);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenteraddressline1current);
       _address1FocusC.requestFocus();
       return false;
     }
@@ -5407,7 +5422,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _cityFocusP.requestFocus();
       return false;
     } else if (pincodeControllerP.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenterpincodepermanent);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenterpincodepermanent);
       _pincodeFocusP.requestFocus();
       return false;
     } else if (cityControllerC.text.isEmpty) {
@@ -5433,11 +5449,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
       return false;
     }*/
     else if (selectedResidingFor == null) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectyearsofresiding);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectyearsofresiding);
 
       return false;
     } else if (selectedProperty == null) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectpropertyinacres);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectpropertyinacres);
 
       return false;
     } else if (selectedPresentHouseOwner == null) {
@@ -5455,17 +5473,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
       return false;
     } else if (selectednumOfChildren == null ||
         selectednumOfChildren!.toLowerCase() == 'select') {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectnumberofchildren);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectnumberofchildren);
       return false;
     } else if (selectedschoolingChildren == null ||
         selectedschoolingChildren!.isEmpty ||
         selectedschoolingChildren!.toLowerCase() == 'select') {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectschoolgoingchildren);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectschoolgoingchildren);
       return false;
     } else if (selectedotherDependents == null ||
         selectedotherDependents!.isEmpty ||
         selectedotherDependents!.toLowerCase() == 'select') {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectotherdependents);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectotherdependents);
       return false;
     }
     return true;
@@ -5483,7 +5504,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectbusiness);
       return false;
     } else if (_currentEMIController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseentercurrentemisamount);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseentercurrentemisamount);
       return false;
     } else if (selectedHomeType == null ||
         selectedHomeType!.isEmpty ||
@@ -5503,7 +5525,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     } else if (selectedLivingWithSpouse == null ||
         selectedLivingWithSpouse!.isEmpty ||
         selectedLivingWithSpouse!.toLowerCase() == 'select') {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectlivingwithspouse);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectlivingwithspouse);
       return false;
     } else if (selectedEarningMembers == null ||
         selectedEarningMembers!.isEmpty ||
@@ -5513,13 +5536,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
     } else if (selectedBusinessExperience == null ||
         selectedBusinessExperience!.isEmpty ||
         selectedBusinessExperience!.toLowerCase() == 'select') {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectbusinessexperience);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectbusinessexperience);
       return false;
     } else if (_future_IncomeController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterfutureincome);
       return false;
     } else if (_agriculture_incomeController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenteragricultureincome);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenteragricultureincome);
       return false;
     } else if (_other_IncomeController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterotherincome);
@@ -5528,7 +5553,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterannualincome);
       return false;
     } else if (_otheR_THAN_AGRICULTURAL_INCOMEController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenterotherthanagriculturalincome);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenterotherthanagriculturalincome);
       return false;
     } else if (_pensionIncomeController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterpensionincome);
@@ -5543,19 +5569,23 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterfoodingexpenses);
       return false;
     } else if (_educationController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseentereducationexpenses);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseentereducationexpenses);
       return false;
     } else if (_healthController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterhealthexpenses);
       return false;
     } else if (_travellingController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseentertravellingexpenses);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseentertravellingexpenses);
       return false;
     } else if (_entertainmentController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenterentertainmentexpenses);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenterentertainmentexpenses);
       return false;
     } else if (_spendOnChildrenController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenterspendingonchildren);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenterspendingonchildren);
       return false;
     } else if (_othersController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterotherexpenses);
@@ -5566,7 +5596,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   bool _stepFourValidations() {
     if (_bank_AcController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenterbankaccountnumber);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenterbankaccountnumber);
       _bank_AcFocus.requestFocus();
       return false;
     }
@@ -5581,7 +5612,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _bank_IFCSFocus.requestFocus();
       return false;
     } else if (_bankOpeningDateController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenterbankopeningdateplease);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenterbankopeningdateplease);
       _bankOpeningDateFocus.requestFocus();
       return false;
     } else if (selectedAccountType == null ||
@@ -5590,10 +5622,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectbank);
       return false;
     } else if (bankAddress == null || bankAddress!.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleasecheckbankaddressnotfoundwiththisifsc);
+      showToast_Error(AppLocalizations.of(context)!
+          .pleasecheckbankaddressnotfoundwiththisifsc);
       return false;
     } else if (bankAccHolder == null || bankAccHolder!.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.accountholdernameisnotfound);
+      showToast_Error(
+          AppLocalizations.of(context)!.accountholdernameisnotfound);
       return false;
     }
     return true;
@@ -5601,13 +5635,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   bool _stepFiveValidations() {
     if (_femNameController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenterfamilymembername);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenterfamilymembername);
       return false;
     } else if (_AgeController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterfamilymemberage);
       return false;
     } else if (_IncomeController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenterfamilymemberincome);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenterfamilymemberincome);
       return false;
     } else if (femselectedGender == null ||
         femselectedGender!.isEmpty ||
@@ -5617,7 +5653,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     } else if (femselectedRelationWithBorrower == null ||
         femselectedRelationWithBorrower!.isEmpty ||
         femselectedRelationWithBorrower!.toLowerCase() == 'select') {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectrelationwithborrower);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectrelationwithborrower);
       return false;
     } else if (femselectedHealth == null ||
         femselectedHealth!.isEmpty ||
@@ -5670,7 +5707,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error(AppLocalizations.of(context)!.pleaseenteraadhaarnumber);
       _aadharIdFocus.requestFocus();
       return false;
-    }else if (_aadharIdController.text == widget.selectedData.aadharNo) {
+    } else if (_aadharIdController.text == widget.selectedData.aadharNo) {
       showToast_Error(AppLocalizations.of(context)!.borrowercanbecoborrower);
       _aadharIdFocus.requestFocus();
       return false;
@@ -5708,18 +5745,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _ageFocus.requestFocus();
       return false;
     }
-    // if (_voterController.text.isEmpty) {
-    //   if (_panController.text.isEmpty) {
-    //     showToast_Error("Please Enter PAN");
-    //     _panFocus.requestFocus();
-    //     return false;
-    //   } else if (_dlController.text.isEmpty) {
-    //     showToast_Error("Please Enter Driving License");
-    //     _dlFocus.requestFocus();
-    //     return false;
-    //   }
-    //   return false;
-    // }
+
     else if (_p_Address1Controller.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenteraddress);
       _p_Address1Focus.requestFocus();
@@ -5775,7 +5801,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectreligion);
       return false;
     } else if (_imageFile == null) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseclickguarantorpicture);
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseclickguarantorpicture);
       return false;
     }
     return true;
@@ -5890,7 +5917,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
-
       }
     }).catchError((error) {});
   }
@@ -5907,14 +5933,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final _passportExpiryController = TextEditingController();
     final _dlExpiryController = TextEditingController();
     String? PassportExpireDate =
-    _passportExpiryController.text.toString().isEmpty
-        ? null
-        : _passportExpiryController.text;
+        _passportExpiryController.text.toString().isEmpty
+            ? null
+            : _passportExpiryController.text;
     String? DLExpireDate = _dlExpiryController.text.toString().isEmpty
         ? null
-        : DateFormat('yyyy-MM-dd').format(
-        DateFormat('dd-MM-yyyy').parse(_dlExpiryController.text));
-    String fiid= FIID.toString();
+        : DateFormat('yyyy-MM-dd')
+            .format(DateFormat('dd-MM-yyyy').parse(_dlExpiryController.text));
+    String fiid = FIID.toString();
     print("fiidrps $FIID.toString()");
     final api = Provider.of<ApiService>(context, listen: false);
 
@@ -5936,7 +5962,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "CITY_CODE": "",
       "SUB_DIST_CODE": "",
       "DIST_CODE": "",
-      "STATE_CODE":"",
+      "STATE_CODE": "",
       "DLExpireDate": DLExpireDate,
       "BankAcc_Name": bankAccHolder,
     };
@@ -5949,17 +5975,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
           _currentStep += 1;
         });*/
         EasyLoading.dismiss();
-
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
       }
-    }).catchError((onError){
+    }).catchError((onError) {
       EasyLoading.dismiss();
       GlobalClass.showErrorAlert(context, onError, 1);
     });
   }
-
 
   Future<void> AddFinancialInfo(BuildContext context) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -5970,7 +5994,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     String Fi_ID = FIID.toString();
     String bankType = selectedAccountType.toString();
-    //  String bank_name = selectedBankName.toString();
+
     String bank_Ac = _bank_AcController.text.toString();
     String bank_IFCS = _bank_IFCSController.text.toString();
     String bank_address = bankAddress!;
@@ -5982,7 +6006,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "Fi_ID": Fi_ID,
       "bankType": bankType,
       "bank_Ac": bank_Ac,
-      //    "bank_name": bank_name,
+
       "bank_IFCS": bank_IFCS,
       "bank_address": bank_address,
       "bankOpeningDate": bankOpeningDate,
@@ -6147,7 +6171,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
           pageTitle = AppLocalizations.of(context)!.financialinfo;
           FiIncomeEditable = false;
           verifyFlag = false;
-
         });
         EasyLoading.dismiss();
       } else {
@@ -6186,7 +6209,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           });
         }
       } else {
-        GlobalClass.showUnsuccessfulAlert(context, '${value.message} {Document Details}', 1);
+        GlobalClass.showUnsuccessfulAlert(
+            context, '${value.message} {Document Details}', 1);
 
         EasyLoading.dismiss();
       }
@@ -6240,7 +6264,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
    // EasyLoading.dismiss();
   }*/
-  Future<void> verifyDocs(BuildContext context, String txnNumber, String type, String ifsc, String dob) async {
+  Future<void> verifyDocs(BuildContext context, String txnNumber, String type,
+      String ifsc, String dob) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       EasyLoading.show(
         status: AppLocalizations.of(context)!.loading,
@@ -6252,7 +6277,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         "txtnumber": txnNumber,
         "ifsc": ifsc,
         "userdob": dob,
-       // "userdob": "2000-10-02",
+        // "userdob": "2000-10-02",
         "key": "1",
       };
 
@@ -6266,8 +6291,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         if (type == "pancard") {
           setState(() {
             if (response["error"] == null) {
-              panCardHolderName =
-              "${responseData['name']} ";
+              panCardHolderName = "${responseData['name']} ";
               panVerified = true;
             } else {
               panCardHolderName = "PAN no. is wrong please check";
@@ -6284,7 +6308,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             voterCardHolderName = "${responseData['name']}";
             voterVerified = true;
           });
-        }else if (type == "bankaccount") {
+        } else if (type == "bankaccount") {
           setState(() {
             bankAccHolder = "${responseData['full_name']}";
             banknameverified = true;
@@ -6309,7 +6333,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
             saveIDsMethod(context);
           });
         }
-        showToast_Error('${AppLocalizations.of(context)!.thisidisnotverified} $response');
+        showToast_Error(
+            '${AppLocalizations.of(context)!.thisidisnotverified} $response');
         print("Unexpected Response: $response");
         EasyLoading.dismiss();
       }
@@ -6332,7 +6357,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           voterCardHolderName = "Voter no. is not verified";
           voterVerified = false;
         });
-      }else if (type == "bankaccount") {
+      } else if (type == "bankaccount") {
         setState(() {
           bankAccHolder = "Bank Account is not verified";
           banknameverified = false;
@@ -6343,7 +6368,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  void docVerifyIDC(String type, String txnNumber, String ifsc, String dob) async {
+  void docVerifyIDC(
+      String type, String txnNumber, String ifsc, String dob) async {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     setState(() {
       bankAccHolder = null;
@@ -6373,11 +6399,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
           if (type == "bankaccount") {
             setState(() {
               if (response["error"] == null) {
-                temp =txnNumber;
-                verifyFlag ==true;
+                temp = txnNumber;
+                verifyFlag == true;
 
                 bankAccHolder = "${responseData['full_name']}";
-                banknameverified=true;
+                banknameverified = true;
                 saveIDsMethod(context);
               } else {
                 bankAccHolder = "Account no. is Not Verified!!";
@@ -6386,8 +6412,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           } else if (type == "pancard") {
             setState(() {
               if (response["error"] == null) {
-                panCardHolderName =
-                "${responseData['name']} ";
+                panCardHolderName = "${responseData['name']} ";
                 panVerified = true;
               } else {
                 panCardHolderName = "PAN no. is wrong please check";
@@ -6422,7 +6447,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
               voterVerified = false;
             });
           }
-          showToast_Error('${AppLocalizations.of(context)!.thisidisnotverified} $response');
+          showToast_Error(
+              '${AppLocalizations.of(context)!.thisidisnotverified} $response');
           print("Unexpected Response: $response");
           EasyLoading.dismiss();
         }
@@ -6430,7 +6456,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         showToast_Error(
             "Unexpected Response: ${response["error"]}\n${response["message"]}");
       }
-      //     showToast_Error("Unexpected Response: $response");
+
       print("Unexpected Response: $response");
       EasyLoading.dismiss();
     } catch (e) {
@@ -6454,7 +6480,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
       EasyLoading.dismiss();
     }
   }
-
 
   void dlVerifyByProtean(String userid, String dlNo, String dob) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -6548,7 +6573,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-
   void bankVerifyByProtean(String userid, String dlNo, String dob) async {
     EasyLoading.show(
       status: 'Loading...',
@@ -6564,7 +6588,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       };
       // Hit the API
       final response =
-      await apiService_protean.getBankDetailsProtean(requestBody);
+          await apiService_protean.getBankDetailsProtean(requestBody);
       EasyLoading.show(
         status: 'Loading...',
       );
@@ -6578,15 +6602,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
             banknameverified = true;
             saveIDsMethod(context);
           } else {
-            docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
+            docVerifyIDC("bankaccount", _bank_AcController.text,
+                _bank_IFCSController.text, "");
           }
         });
       } else {
-        docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
+        docVerifyIDC("bankaccount", _bank_AcController.text,
+            _bank_IFCSController.text, "");
       }
     } catch (e) {
       // Handle errors
-      docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
+      docVerifyIDC("bankaccount", _bank_AcController.text,
+          _bank_IFCSController.text, "");
     }
     EasyLoading.dismiss();
   }
@@ -6772,8 +6799,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (dataList[0].toLowerCase().startsWith("v")) {
         _aadharIdController.text = dataList[2];
         if (_aadharIdController.text.length != 12) {
-          GlobalClass.showErrorAlert(
-              context, AppLocalizations.of(context)!.pleaseenteraadhaarnumber, 1);
+          GlobalClass.showErrorAlert(context,
+              AppLocalizations.of(context)!.pleaseenteraadhaarnumber, 1);
           _aadharIdController.text = "";
         }
         _fnameController.text = dataList[3];
@@ -6860,7 +6887,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           }
         } else if (dataList[0].toLowerCase() == 'v3') {
           stateselected = states.firstWhere((item) =>
-          item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+              item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
           _pincodeController.text = dataList[11];
           String address =
               "${dataList[9]},${dataList[14]},${dataList[15]},${dataList[12]},${dataList[7]}";
@@ -6900,8 +6927,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       } else {
         _aadharIdController.text = dataList[1];
         if (_aadharIdController.text.length != 12) {
-          GlobalClass.showErrorAlert(
-              context, AppLocalizations.of(context)!.pleaseenteraadhaarnumber, 1);
+          GlobalClass.showErrorAlert(context,
+              AppLocalizations.of(context)!.pleaseenteraadhaarnumber, 1);
           _aadharIdController.text = "";
         }
 
@@ -7100,8 +7127,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
         .replaceAll("W/O: ", "");
   }
 
-  void getPlace(String type, String stateCode, String districtCode, String subDistrictCode) async {
-    print(GlobalClass.token);
+  void getPlace(String type, String stateCode, String districtCode,
+      String subDistrictCode) async {
+    print("stateCode$stateCode");
     try {
       PlaceCodesModel response = await apiService.getVillageStateDistrict(
         GlobalClass.token,
@@ -7152,12 +7180,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
             Duration.zero, () => showIDCardDialog(context, BorrowerInfo[0]));
 
         if (!value.data[0].placeOfBirth.isEmpty) {
+          print("getAllDataApi111");
+
           setState(() {
             _currentStep = 1;
           });
           personalInfo(value.data[0]);
         }
         if (!value.data[0].motheRFirstName.isEmpty) {
+          print("getAllDataApi222");
+
           familyDetails(value.data[0]);
           setState(() {
             _currentStep = 2;
@@ -7166,6 +7198,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         if (value.data[0].fiIncomeExpenses.length != 0 &&
             value.data[0].fiIncomeExpenses[0].inExHomeType.isNotEmpty) {
+          print("getAllDataApi333");
+
           fiIncomeExpenses(value.data[0]);
           setState(() {
             _currentStep = 3;
@@ -7173,6 +7207,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         }
 
         if (!value.data[0].bankAc.isEmpty) {
+          print("getAllDataApi444");
+
           financialInfo(value.data[0]);
           setState(() {
             _currentStep = 4;
@@ -7180,12 +7216,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
         }
 
         if (value.data[0].familyMembers.length != 0) {
+          print("getAllDataApi555");
+
           femMemIncome(value.data[0]);
           setState(() {
             _currentStep = 5;
           });
         }
         if (value.data[0].guarantors.length != 0) {
+          print("getAllDataApi666");
+
           guarrantors(value.data[0]);
           setState(() {
             _currentStep = 6;
@@ -7236,10 +7276,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
       address3ControllerP.text = data.o_Address3;
       cityControllerP.text = data.o_City;
       selectedStateextraP =
-          states.firstWhere((item) => item.code == data.o_State);
+          states.firstWhere((item) => item.descriptionEn == data.o_State);
       // print("State from model ${states.firstWhere((item) =>item.code == data.pState)}");
       //selectedStateextraP=data.pState;
       pincodeControllerP.text = data.o_Pincode;
+      print("o_Pincode ${data.o_Pincode}");
       address1ControllerC.text = data.currentAddress1;
       address2ControllerC.text = data.currentAddress2;
       address3ControllerC.text = data.currentAddress3;
@@ -7253,7 +7294,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       selectedResidingFor = data.liveInPresentPlace;
       selectedProperty = data.propertyArea.toString();
       selectedPresentHouseOwner = data.houseOwnerName;
-      getPlace("district", selectedStateextraP!.code, "", "");
+      // getPlace("district", selectedStateextraP!.code, "", "");
     });
   }
 
@@ -7446,7 +7487,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {});
       }
     }).catchError((err) {
-      GlobalClass.showErrorAlert(context, AppLocalizations.of(context)!.serversideerror, 2);
+      GlobalClass.showErrorAlert(
+          context, AppLocalizations.of(context)!.serversideerror, 2);
       EasyLoading.dismiss();
       Navigator.of(context).pop();
     });
@@ -7530,7 +7572,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 */
 
-  Future<bool> OcrDocsScanning(String type, String id, String subType, BuildContext context) async {
+  Future<bool> OcrDocsScanning(
+      String type, String id, String subType, BuildContext context) async {
     EasyLoading.show(); // Show a loading indicator
 
     try {
@@ -7605,7 +7648,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  void showIDCardDialog(BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
+  void showIDCardDialog(
+      BuildContext context, ApplicationgetAllDataModel borrowerInfo) {
     final String name = [
       borrowerInfo.fName,
       borrowerInfo.mName,
@@ -7684,12 +7728,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       Column(
                         children: [
                           if (voterId.isNotEmpty)
-                            Text('${AppLocalizations.of(context)!.voterid} $voterId',
+                            Text(
+                                '${AppLocalizations.of(context)!.voterid} $voterId',
                                 style: TextStyle(fontSize: 16)),
                           if (panNo.isNotEmpty)
-                            Text('${AppLocalizations.of(context)!.pannoid} $panNo', style: TextStyle(fontSize: 16)),
+                            Text(
+                                '${AppLocalizations.of(context)!.pannoid} $panNo',
+                                style: TextStyle(fontSize: 16)),
                           if (dl.isNotEmpty)
-                            Text('${AppLocalizations.of(context)!.dlid} $dl', style: TextStyle(fontSize: 16)),
+                            Text('${AppLocalizations.of(context)!.dlid} $dl',
+                                style: TextStyle(fontSize: 16)),
                         ],
                       ),
                       SizedBox(height: 5),
@@ -7821,7 +7869,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
   }
 
-  void handleAadharFront(response, String subType, String idType, BuildContext context) {
+  void handleAadharFront(
+      response, String subType, String idType, BuildContext context) {
     String expectedId = subType == "borrower"
         ? BorrowerInfo[0].aadharNo
         : BorrowerInfo[0].guarantors[0].grAadharId;
@@ -7843,7 +7892,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  void handleAadharBack(response, String subType, borrower, BuildContext context) {
+  void handleAadharBack(
+      response, String subType, borrower, BuildContext context) {
     String expectedId = subType == "borrower"
         ? BorrowerInfo[0].aadharNo
         : BorrowerInfo[0].guarantors[0].grAadharId;
@@ -7865,7 +7915,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  void handleVoterFront(response, String subType, borrower, BuildContext context) {
+  void handleVoterFront(
+      response, String subType, borrower, BuildContext context) {
     String expectedId = subType == "borrower"
         ? BorrowerInfo[0].voterId
         : BorrowerInfo[0].guarantors[0].grVoter;
@@ -7887,7 +7938,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  void handleVoterBack(response, String subType, borrower, BuildContext context) {
+  void handleVoterBack(
+      response, String subType, borrower, BuildContext context) {
     if (response.data.isOSV == true) {
       if (subType == "borrower") {
         voterback = pickedImage;
@@ -7960,18 +8012,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void showDocumentMismatchError(BuildContext context) {
     EasyLoading.dismiss();
-    GlobalClass.showUnsuccessfulAlert(
-        context,
-        AppLocalizations.of(context)!.osvstampnotfoundornotreadable,
-        1);
+    GlobalClass.showUnsuccessfulAlert(context,
+        AppLocalizations.of(context)!.osvstampnotfoundornotreadable, 1);
   }
 
   void showIDMismatchError(BuildContext context) {
     EasyLoading.dismiss();
     GlobalClass.showUnsuccessfulAlert(
-        context,
-        AppLocalizations.of(context)!.didnotfounddocumentid,
-        1);
+        context, AppLocalizations.of(context)!.didnotfounddocumentid, 1);
   }
 
   Future<void> saveKYCAllDocs(BuildContext context, String GurNum) async {
@@ -8005,17 +8053,21 @@ class _ApplicationPageState extends State<ApplicationPage> {
       ).then((value) async {
         if (value.statuscode == 200) {
           EasyLoading.dismiss();
-          if(GurNum!="0"){
-            _showSuccessAndRedirect(value);
-
-          }else{
+          if (GurNum != "0") {
+            GlobalClass.showSuccessAlertclose(
+              context,
+              value.message,
+              1,
+              destinationPage: OnBoarding(),
+            );
+            //    _showSuccessAndRedirect(value);
+          } else {
             GlobalClass.showSuccessAlert(
                 context, "${value.message} \n${value.data[0].errormsg}", 1);
             setState(() {
               _currentStep++;
             });
           }
-
         } else if (value.statuscode == 400) {
           EasyLoading.dismiss();
 
@@ -8043,56 +8095,63 @@ class _ApplicationPageState extends State<ApplicationPage> {
     if (gurNum == "0") {
       if (kycScanningDataModel.addharExists) {
         if (adhaarFront == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadaadhaarfront);
+          GlobalClass.showToast_Error(
+              AppLocalizations.of(context)!.pleaseuploadaadhaarfront);
           return false;
         }
 
         if (adhaarBack == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadaadhaarback);
+          GlobalClass.showToast_Error(
+              AppLocalizations.of(context)!.pleaseuploadaadhaarback);
           return false;
         }
       }
 
       if (kycScanningDataModel.drivingExists) {
         if (dlFront == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploaddrivinglicense);
+          GlobalClass.showToast_Error(
+              AppLocalizations.of(context)!.pleaseuploaddrivinglicense);
           return false;
         }
       }
 
       if (kycScanningDataModel.voterExists) {
         if (voterFront == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadvotercardfront);
+          GlobalClass.showToast_Error(
+              AppLocalizations.of(context)!.pleaseuploadvotercardfront);
           return false;
         }
 
         if (voterback == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadvotercardback);
+          GlobalClass.showToast_Error(
+              AppLocalizations.of(context)!.pleaseuploadvotercardback);
           return false;
         }
       }
       if (kycScanningDataModel.panExists) {
         if (panFront == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadpancard);
+          GlobalClass.showToast_Error(
+              AppLocalizations.of(context)!.pleaseuploadpancard);
           return false;
         }
       }
 
       if (kycScanningDataModel.passportExists) {
         if (passport == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadpassport);
+          GlobalClass.showToast_Error(
+              AppLocalizations.of(context)!.pleaseuploadpassport);
           return false;
         }
       }
 
       if (passbook == null) {
-        GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadPassbook);
+        GlobalClass.showToast_Error(
+            AppLocalizations.of(context)!.pleaseuploadPassbook);
         return false;
       }
 
       return true;
     } else {
-
       if (kycScanningDataModel.grDocs[0].addharExists) {
         if (adhaarFront_coborrower == null) {
           GlobalClass.showToast_Error(
@@ -8101,35 +8160,37 @@ class _ApplicationPageState extends State<ApplicationPage> {
         }
 
         if (adhaarBack_coborrower == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadcoborroweraadhaarback);
+          GlobalClass.showToast_Error(
+              AppLocalizations.of(context)!.pleaseuploadcoborroweraadhaarback);
           return false;
         }
       }
 
       if (kycScanningDataModel.grDocs[0].drivingExists) {
         if (dlFront_coborrower == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadcoborrowerdrivinglicense);
+          GlobalClass.showToast_Error(AppLocalizations.of(context)!
+              .pleaseuploadcoborrowerdrivinglicense);
           return false;
         }
       }
 
       if (kycScanningDataModel.grDocs[0].voterExists) {
         if (voterFront_coborrower == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadcoborrowervotercardfront);
+          GlobalClass.showToast_Error(AppLocalizations.of(context)!
+              .pleaseuploadcoborrowervotercardfront);
           return false;
         }
 
         if (voterback_coborrower == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadcoborrowervotercardback);
+          GlobalClass.showToast_Error(AppLocalizations.of(context)!
+              .pleaseuploadcoborrowervotercardback);
           return false;
         }
       }
       if (kycScanningDataModel.grDocs[0].panExists) {
         if (panFront_coborrower == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadcoborrowerpancard);
+          GlobalClass.showToast_Error(
+              AppLocalizations.of(context)!.pleaseuploadcoborrowerpancard);
           return false;
         }
       }
@@ -8138,7 +8199,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  void _showSuccessAndRedirect(GlobalModel value) {
+  /*void _showSuccessAndRedirect(GlobalModel value) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -8163,7 +8224,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       },
     );
   }
-
+*/
   Future<String?> callJavaMethodQr() async {
     const platform = MethodChannel('com.example.intent');
     try {

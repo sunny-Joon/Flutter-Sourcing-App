@@ -472,6 +472,8 @@
   "pleaseentersomecomments": "कृपया कुछ टिप्पणियाँ दर्ज करें",
   "pleaseclickacurrentpicture": "कृपया एक वर्तमान चित्र लें",
 
+  "relationshipwiththeapplicant": "आवेदक के साथ संबंध",
+  "chhooserelationtothepersoninterviewed": "साक्षात्कार लेने वाले व्यक्ति से संबंध चुनें",
   "pleaseselectrelation": "कृपया संबंध चुनें",
   "pleaseselectfeedback": "कृपया प्रतिक्रिया चुनें",
   "pleaseselectbusinessexperience": "कृपया व्यावसायिक अनुभव चुनें",
@@ -572,8 +574,11 @@
   "pleaseuploadcoborrowerdrivinglicense": "कृपया सह-उधारकर्ता का ड्राइविंग लाइसेंस अपलोड करें",
   "pleaseuploadcoborrowervotercardfront": "कृपया सह-उधारकर्ता का वोटर कार्ड सामने का भाग अपलोड करें",
   "pleaseuploadcoborrowervotercardback": "कृपया सह-उधारकर्ता का वोटर कार्ड पीछे का भाग अपलोड करें",
-  "pleaseuploadcoborrowerpancard": "कृपया सह-उधारकर्ता का पैन कार्ड अपलोड करें"
+  "pleaseuploadcoborrowerpancard": "कृपया सह-उधारकर्ता का पैन कार्ड अपलोड करें",
 
+  "pleasesearchpancardholdernameforverification": "कृपया सत्यापन के लिए पैन कार्ड धारक का नाम खोजें",
+  "pleaseenter": "कृपया दर्ज करें",
+  "recordnotfound": "रिकॉर्ड नहीं मिला!!"
 
 }
 

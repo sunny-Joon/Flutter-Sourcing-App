@@ -34,6 +34,12 @@ class _CollectionStatusState extends State<CollectionStatus> {
         setState(() {
           emis = value.data.emis;
           emiCollections = value.data.emiCollections;
+          if((emis.isEmpty || emis.length==0) &&(emiCollections.isEmpty || emiCollections.length==0)){
+            GlobalClass.showUnsuccessfulAlert(context, AppLocalizations.of(context)!.recordnotfound, 2);
+          }else{
+            EasyLoading.dismiss();
+          }
+
         });
       } else {
         EasyLoading.dismiss();
