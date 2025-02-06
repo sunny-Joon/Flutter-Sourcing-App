@@ -1039,8 +1039,7 @@ class _KYCPageState extends State<KYCPage> {
 
   void saveDataMethod() {}
 
-  Widget _buildTextField2(String label, TextEditingController controller,
-      TextInputType inputType, int maxlength, String regex) {
+  Widget _buildTextField2(String label, TextEditingController controller, TextInputType inputType, int maxlength, String regex) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 3),
@@ -1080,16 +1079,17 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ],
                 onChanged: (value) {
-                  if (label == "Voter Id") {
+                  if (label == AppLocalizations.of(context)!.voter) {
                     setState(() {
                       voterVerified = false;
                       voterCardHolderName = "";
                     });
-                  } else if (label == "Driving License") {
+                  } else if (label == AppLocalizations.of(context)!.dl) {
                     print('DL');
                     setState(() {
-                      dlCardHolderName = "";
                       dlVerified = false;
+                      dlCardHolderName = "";
+
                     });
                   }
                 },
@@ -2682,6 +2682,7 @@ class _KYCPageState extends State<KYCPage> {
                               setState(() {
                                 panVerified = false;
                                 panCardHolderName = "";
+
                               });
                             },
                           ),
@@ -2724,21 +2725,20 @@ class _KYCPageState extends State<KYCPage> {
           AppLocalizations.of(context)!.pleasesearchpancardholdernameforverification,
           style: TextStyle(
           fontFamily: "Poppins-Regular",
-          color: Colors.grey.shade400,
+              color: Colors.grey.shade400,
           fontSize: 11),
           )
         : Text(panCardHolderName!,
 
               style: TextStyle(
                   fontFamily: "Poppins-Regular",
-                  color: !panVerified ? Colors.grey.shade400 : Colors.green,
+                  color: Colors.green,
                   fontSize: !panVerified ? 11 : 14)),
           Row(
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField2(AppLocalizations.of(context)!.dl,
-                    _drivingLicenseController, TextInputType.text, 18, IdsReg),
+                child: _buildTextField2(AppLocalizations.of(context)!.dl, _drivingLicenseController, TextInputType.text, 18, IdsReg),
               ),
               SizedBox(width: 10),
               Padding(
@@ -2787,8 +2787,7 @@ class _KYCPageState extends State<KYCPage> {
             children: [
               Flexible(
                 flex: 2,
-                child: _buildTextField2(AppLocalizations.of(context)!.voter,
-                    _voterIdController, TextInputType.text, 17, IdsReg),
+                child: _buildTextField2(AppLocalizations.of(context)!.voter, _voterIdController, TextInputType.text, 17, IdsReg),
               ),
               SizedBox(width: 10),
               Padding(
@@ -2844,8 +2843,7 @@ class _KYCPageState extends State<KYCPage> {
               AppLocalizations.of(context)!.passportexpiry,
               _passportExpiryController,
               "passExp"),
-          _buildLabeledDropdownField(AppLocalizations.of(context)!.selectcity,
-              'Cities', listCityCodes, selectedCityCode, (PlaceData? newValue) {
+          _buildLabeledDropdownField(AppLocalizations.of(context)!.selectcity, 'Cities', listCityCodes, selectedCityCode, (PlaceData? newValue) {
             setState(() {
               selectedCityCode = newValue;
               selectedDistrictCode = null;
@@ -2855,11 +2853,7 @@ class _KYCPageState extends State<KYCPage> {
               // getPlace("district",stateselected!.code,"","");
             });
           }, String),
-          _buildLabeledDropdownField(
-              AppLocalizations.of(context)!.selectdistric,
-              'Districts',
-              listDistrictCodes,
-              selectedDistrictCode, (PlaceData? newValue) {
+          _buildLabeledDropdownField(AppLocalizations.of(context)!.selectdistric, 'Districts', listDistrictCodes, selectedDistrictCode, (PlaceData? newValue) {
             setState(() {
               selectedDistrictCode = newValue;
               selectedSubDistrictCode = null;
