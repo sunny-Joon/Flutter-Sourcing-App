@@ -15,6 +15,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'DATABASE/database_helper.dart';
 import 'Models/bank_names_model.dart';
@@ -69,8 +70,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool editButtonFunctionOn = false;
   bool banknameverified = false;
   bool verifyFlag = true;
+  bool isSubmitDisabled = false;
 
-  String pageTitle = "Application Form";
+  String pageTitle ="";
 
   final _mobileFocusNode = FocusNode();
   final _pinFocusNodeP = FocusNode();
@@ -372,6 +374,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   @override
   void initState() {
     super.initState();
+
     _imageFile2 =
         GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
     FIID = widget.selectedData.id;
@@ -601,7 +604,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           Expanded(
                             child: Center(
                               child: Text(
-                                pageTitle,
+                                pageTitle = AppLocalizations.of(context)!.application,
                                 style: TextStyle(
                                   fontFamily: "Poppins-Regular",
                                   color: Colors.white,
@@ -3769,6 +3772,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                                   ),
                                             ),
                                           ],
+
+                                          onChanged: (value) {
+                                            setState(() {
+                                              panVerified = false;
+                                              panCardHolderName = "";
+
+                                            });
+                                          },
                                         ),
                                       )),
                                 ],
@@ -4220,6 +4231,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 
+
   Widget _buildNextButton() {
     return Expanded(
       child: ElevatedButton(
@@ -4230,11 +4242,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
-        onPressed: () {
-          // setState(() {
-
-
-          // });
+        onPressed: (_currentStep == 7 && isSubmitDisabled == false) ||
+            ((_currentStep == 6 || _currentStep < 6) && borrowerDocsUploded)
+            ? () {
+          print("borrowerDocsUploded $borrowerDocsUploded");
 
           if (_currentStep == 0) {
             if (personalInfoEditable) {
@@ -4314,9 +4325,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             }
           } else if (_currentStep == 7) {
+            print("Current Step: $_currentStep");
             FiDocsUploadsApi(context, "1");
           }
-        },
+        }
+            : null, // Disable button if conditions are not met
         child: Text(
           _currentStep == 7
               ? AppLocalizations.of(context)!.submit
@@ -4372,6 +4385,21 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       ),
                     ),
                   ],
+
+                    onChanged: (value) {
+                      if (label == AppLocalizations.of(context)!.voter) {
+                        setState(() {
+                          voterVerified = false;
+                          voterCardHolderName = "";
+                        });
+                      } else if (label == AppLocalizations.of(context)!.dl) {
+                        print('DL');
+                        setState(() {
+                          dlVerified = false;
+                          dlCardHolderName = "";
+                        });
+                      }
+                    }
                 ),
               )),
         ],
@@ -6192,33 +6220,54 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   Future<void> GetDocs(BuildContext context) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      EasyLoading.show(
-        status: AppLocalizations.of(context)!.loading,
-      );
+      EasyLoading.show(status: AppLocalizations.of(context)!.loading);
     });
 
     final api = Provider.of<ApiService>(context, listen: false);
 
-    return await api.KycScanning(
-        GlobalClass.token, GlobalClass.dbName, FIID.toString())
-        .then((value) async {
+    return await api.KycScanning(GlobalClass.token, GlobalClass.dbName, FIID.toString()).then((value) async {
+      EasyLoading.dismiss();
+
       if (value.statuscode == 200) {
         setState(() {
           getData = value;
           _isPageLoading = true;
-          EasyLoading.dismiss();
         });
-        EasyLoading.dismiss();
-        if (value.data.aadharPath.isNotEmpty) {
-          setState(() {
-            borrowerDocsUploded = true;
-          });
-        }
-      } else {
-        GlobalClass.showUnsuccessfulAlert(
-            context, '${value.message} {Document Details}', 1);
 
-        EasyLoading.dismiss();
+        bool isSubmitEnabled = false; // Determines if submit button should be enabled
+        bool allDocsNotRequired = true;
+
+        bool checkDocumentCondition(bool exists, String? path, [String? pathB]) {
+          if (exists) {
+            allDocsNotRequired = false; // At least one required doc exists
+            if (path == null || path.isEmpty || (pathB != null && pathB.isEmpty)) {
+              isSubmitEnabled = true; // Enable submit if any required doc is missing its path
+            }
+            return false;
+          }
+          return false;
+        }
+
+        if (value.data.grDocs != null && value.data.grDocs.isNotEmpty) {
+          var coBorrowerDocs = value.data.grDocs[0];
+
+          checkDocumentCondition(coBorrowerDocs.addharExists, coBorrowerDocs.aadharPath, coBorrowerDocs.aadharBPath);
+          checkDocumentCondition(coBorrowerDocs.panExists, coBorrowerDocs.panPath);
+          checkDocumentCondition(coBorrowerDocs.voterExists, coBorrowerDocs.voterPath, coBorrowerDocs.voterBPath);
+          checkDocumentCondition(coBorrowerDocs.drivingExists, coBorrowerDocs.drivingPath);
+
+          print("Final isSubmitEnabled: $isSubmitEnabled");
+          print("Final allDocsNotRequired: $allDocsNotRequired");
+        }
+
+        setState(() {
+          isSubmitDisabled = !isSubmitEnabled && !allDocsNotRequired;
+          borrowerDocsUploded = value.data.aadharPath?.isNotEmpty ?? false;
+          print("Is Borrower Docs Uploaded: $borrowerDocsUploded");
+          print("Final isSubmitDisabled: $isSubmitDisabled");
+        });
+      } else {
+        GlobalClass.showUnsuccessfulAlert(context, '${value.message} {Document Details}', 1);
       }
     });
   }
@@ -6229,47 +6278,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-/*Future<void> UploadFiDocs(BuildContext context, String? tittle, File? file,
-      String? grNo, int? checklistid) async {
-    EasyLoading.show(
-      status: 'Loading...',
-    );
-
-    if (file == null) {
-      GlobalClass.showUnsuccessfulAlert(context, "Please upload $tittle", 1);
-    } else {
-      final api = Provider.of<ApiService>(context, listen: false);
-//https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//38//FiDocuments//VoterIDBorrower0711_2024_43_01.png
-
-
-   String baseUrl = 'https://predeptest.paisalo.in:8084';
-
-    // Replace the front part of the file path and ensure the path uses forward slashes
-    String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
-
-    // Join the base URL with the modified path
-    String finalUrl = '$baseUrl/$modifiedPath';
-    File file = File(finalUrl);
-
-      return await api
-          .uploadFiDocs(GlobalClass.token, GlobalClass.dbName, FIID.toString(),
-              int.parse(grNo!), checklistid!, tittle.toString(), file!)
-          .then((value) async {
-        if (value.statuscode == 200) {
-          GetDocs(context);
-
-  setState(() {
-          _currentStep += 1;
-          Fi_Id = value.data[0].fiId.toString();
-        });
-          EasyLoading.dismiss();
-        } else {
-          EasyLoading.dismiss();
-        }
-      });
-    }
-   // EasyLoading.dismiss();
-  }*/
   Future<void> verifyDocs(BuildContext context, String txnNumber, String type,
       String ifsc, String dob) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -7426,7 +7434,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (titleList.contains(data.guarantors[0].grTitle)) {
         selectedTitle = data.guarantors[0].grTitle;
       } else {
-        selectedTitle = null; // Or set a default value
+        selectedTitle = null;
       }
 
       _p_Address1Controller.text = data.guarantors[0].grPAddress1;
@@ -8028,6 +8036,74 @@ class _ApplicationPageState extends State<ApplicationPage> {
         context, AppLocalizations.of(context)!.didnotfounddocumentid, 1);
   }
 
+ /* Future<void> saveKYCAllDocs(BuildContext context, String GurNum) async {
+    try {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        EasyLoading.show(
+          status: AppLocalizations.of(context)!.loading,
+        );
+      });
+
+      String? Image;
+      if (_imageFile == null) {
+        Image = 'Null';
+      }
+
+      final api = Provider.of<ApiService>(context, listen: false);
+
+      await api.FiDocsUploads(GlobalClass.token, GlobalClass.dbName, widget.selectedData.id.toString(),
+        GurNum,
+        GurNum == "0" ? adhaarFront : adhaarFront_coborrower,
+        GurNum == "0" ? adhaarBack : adhaarBack_coborrower,
+        GurNum == "0" ? voterFront : voterFront_coborrower,
+        GurNum == "0" ? voterback : voterback_coborrower,
+        GurNum == "0" ? dlFront : dlFront_coborrower,
+        GurNum == "0" ? panFront : panFront_coborrower,
+        GurNum == "0" ? passport : null,
+        GurNum == "0" ? passbook : null,
+      ).then((value) async {
+        if (value.statuscode == 200) {
+
+          EasyLoading.dismiss();
+          if (GurNum != "0") {
+            GlobalClass.showSuccessAlertclose(
+              context,
+              value.message,
+              1,
+              destinationPage: OnBoarding(),
+            );
+            //    _showSuccessAndRedirect(value);
+          } else {
+            GlobalClass.showSuccessAlert(context, "${value.message} \n${value.data[0].errormsg}", 1);
+            setState(() {
+              _currentStep++;
+            });
+
+          }
+          return true;
+        } else if (value.statuscode == 400) {
+          EasyLoading.dismiss();
+
+          GlobalClass.showUnsuccessfulAlert(
+              context, "${value.message} \n${value.data[0].errormsg}", 1);
+        } else {
+          EasyLoading.dismiss();
+
+          GlobalClass.showUnsuccessfulAlert(
+              context, "${value.message} \n${value.data[0].errormsg}", 1);
+        }
+      }).catchError((error) {
+        GlobalClass.showSnackBar(context, "Error: ${error.toString()}");
+        EasyLoading.dismiss();
+      });
+    } catch (e) {
+      GlobalClass.showSnackBar(
+          context, "An unexpected error occurred: ${e.toString()}");
+      EasyLoading.dismiss();
+    }
+  }
+*/
+
   Future<void> saveKYCAllDocs(BuildContext context, String GurNum) async {
     try {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -8096,114 +8172,135 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
+
   bool validateAllDocsForBorrower(BuildContext context, String gurNum) {
     KycScanningDataModel kycScanningDataModel = getData.data;
+
     if (gurNum == "0") {
-      if (kycScanningDataModel.addharExists) {
-        if (adhaarFront == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadaadhaarfront);
-          return false;
-        }
+      if (kycScanningDataModel.addharExists == true) {
+        if (kycScanningDataModel.aadharPath == null || kycScanningDataModel.aadharPath!.isEmpty && adhaarFront == null) {
+            GlobalClass.showToast_Error(
+                AppLocalizations.of(context)!.pleaseuploadaadhaarfront);
+            return false;
 
-        if (adhaarBack == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadaadhaarback);
-          return false;
+        }
+        if (kycScanningDataModel.aadharBPath == null || kycScanningDataModel.aadharBPath!.isEmpty && adhaarBack == null) {
+            GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadaadhaarback);
+            return false;
+
         }
       }
 
-      if (kycScanningDataModel.drivingExists) {
-        if (dlFront == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploaddrivinglicense);
-          return false;
+
+      if (kycScanningDataModel.drivingExists == true) {
+        if (kycScanningDataModel.drivingPath != null || kycScanningDataModel.drivingPath!.isNotEmpty) {
+          if (dlFront == null) {
+            GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploaddrivinglicense);
+            return false;
+          }
         }
       }
 
-      if (kycScanningDataModel.voterExists) {
-        if (voterFront == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadvotercardfront);
-          return false;
-        }
+      if (kycScanningDataModel.voterExists == true) {
+        if (kycScanningDataModel.voterPath == null || kycScanningDataModel.voterPath!.isEmpty && voterFront == null) {
+            GlobalClass.showToast_Error(
+                AppLocalizations.of(context)!.pleaseuploadvotercardfront);
+            return false;
 
-        if (voterback == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadvotercardback);
-          return false;
         }
-      }
-      if (kycScanningDataModel.panExists) {
-        if (panFront == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadpancard);
-          return false;
+        if (kycScanningDataModel.voterBPath == null || kycScanningDataModel.voterBPath!.isEmpty && voterback == null){
+
+            GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadvotercardback);
+            return false;
+
         }
       }
 
-      if (kycScanningDataModel.passportExists) {
-        if (passport == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadpassport);
-          return false;
+      if (kycScanningDataModel.panExists == true) {
+        if (kycScanningDataModel.panPath == null || kycScanningDataModel.panPath!.isEmpty && panFront == null) {
+            GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadpancard);
+            return false;
+
         }
       }
 
-      if (passbook == null) {
-        GlobalClass.showToast_Error(
-            AppLocalizations.of(context)!.pleaseuploadPassbook);
-        return false;
+
+      if (kycScanningDataModel.passportExists == true) {
+        if (kycScanningDataModel.passportPath == null || kycScanningDataModel.passportPath!.isEmpty && passport == null) {
+            GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadpassport);
+            return false;
+
+        }
+      }
+
+      if (kycScanningDataModel.passportExists == true) {
+        if (kycScanningDataModel.passportPath == null || kycScanningDataModel.passportPath!.isEmpty && passbook == null) {
+
+            GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadPassbook);
+            return false;
+
+        }
+
       }
 
       return true;
+
     } else {
-      if (kycScanningDataModel.grDocs[0].addharExists) {
-        if (adhaarFront_coborrower == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadcoborroweraadhaarfront);
+      if (kycScanningDataModel.grDocs[0].addharExists == true) {
+        if (kycScanningDataModel.grDocs[0].aadharPath == null || kycScanningDataModel.grDocs[0].aadharPath!.isEmpty
+            && adhaarFront_coborrower != null) {
+          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadcoborroweraadhaarfront);
           return false;
         }
-
-        if (adhaarBack_coborrower == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadcoborroweraadhaarback);
-          return false;
-        }
-      }
-
-      if (kycScanningDataModel.grDocs[0].drivingExists) {
-        if (dlFront_coborrower == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!
-              .pleaseuploadcoborrowerdrivinglicense);
-          return false;
+        if (kycScanningDataModel.grDocs[0].aadharBPath == null || kycScanningDataModel.grDocs[0].aadharBPath!.isEmpty &&
+            adhaarBack_coborrower == null){
+            GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadcoborroweraadhaarback);
+            return false;
         }
       }
 
-      if (kycScanningDataModel.grDocs[0].voterExists) {
-        if (voterFront_coborrower == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!
-              .pleaseuploadcoborrowervotercardfront);
-          return false;
+      if (kycScanningDataModel.grDocs[0].drivingExists == true) {
+        if (kycScanningDataModel.grDocs[0].drivingPath == null || kycScanningDataModel.grDocs[0].drivingPath!.isEmpty &&
+            dlFront_coborrower == null ){
+            GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadcoborrowerdrivinglicense);
+            return false;
+
+        }
+      }
+
+      if (kycScanningDataModel.grDocs[0].voterExists == true) {
+        if (kycScanningDataModel.grDocs[0].voterPath == null || kycScanningDataModel.grDocs[0].voterPath!.isEmpty &&
+            voterFront_coborrower == null){
+            GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadcoborrowervotercardfront);
+            return false;
+
+        }
+        if (kycScanningDataModel.grDocs[0].voterBPath == null || kycScanningDataModel.grDocs[0].voterBPath!.isEmpty &&
+            voterback_coborrower == null) {
+            GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadcoborrowervotercardback);
+            return false;
+          }
+
+      }
+
+      if (kycScanningDataModel.grDocs[0].panExists == true) {
+        if( kycScanningDataModel.grDocs[0].panPath == null || kycScanningDataModel.grDocs[0].panPath!.isEmpty &&
+            panFront_coborrower == null){
+            GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadcoborrowerpancard);
+            return false;
         }
 
-        if (voterback_coborrower == null) {
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!
-              .pleaseuploadcoborrowervotercardback);
-          return false;
-        }
+
       }
-      if (kycScanningDataModel.grDocs[0].panExists) {
-        if (panFront_coborrower == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadcoborrowerpancard);
-          return false;
-        }
-      }
+
+
 
       return true;
     }
   }
+
+
+
 
   /*void _showSuccessAndRedirect(GlobalModel value) {
     showDialog(
@@ -8241,4 +8338,5 @@ class _ApplicationPageState extends State<ApplicationPage> {
       return null;
     }
   }
+
 }
