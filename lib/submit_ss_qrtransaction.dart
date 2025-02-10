@@ -231,7 +231,7 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                         if(_searchController.text.isEmpty){
                           GlobalClass.showUnsuccessfulAlert(context,  AppLocalizations.of(context)!.pleaseentercasecode, 1);
                         }else if(_image==null){
-                          GlobalClass.showUnsuccessfulAlert(context,  AppLocalizations.of(context)!.pleaseuploadpaymentreceipt, 1);
+                          GlobalClass.showErrorAlert(context,  AppLocalizations.of(context)!.pleaseuploadpaymentreceipt, 1);
                         }else{
                           print("smcode3 = $widget.smcode");
 
