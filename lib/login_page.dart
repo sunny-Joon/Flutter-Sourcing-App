@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     // Define your custom color
     const Color customColor = Color(0xFFD42D3F);
-    TextEditingController passwordControllerlogin = TextEditingController(text: '12345');
+    TextEditingController passwordControllerlogin = TextEditingController(text: 'Admin@12');
     final TextEditingController mobileControllerlogin = TextEditingController(text: 'GRST002064');
     String deviceId = '';
 
@@ -836,7 +836,7 @@ class _LoginPageState extends State<LoginPage> {
     if (id == null || id.isEmpty || password == null || password.isEmpty) {
       GlobalClass.showErrorAlert(context, AppLocalizations.of(context)!.pleaseidandpass, 1);
       return false;
-    } else if (password.length < 5 || id.length < 10 || id.length > 11) {
+    } else if (password.length < 8 || id.length < 10 || id.length > 11) {
       GlobalClass.showErrorAlert(context, AppLocalizations.of(context)!.invalididandpass, 1);
       return false;
     } else {

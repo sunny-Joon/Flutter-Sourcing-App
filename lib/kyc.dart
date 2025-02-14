@@ -1737,7 +1737,7 @@ class _KYCPageState extends State<KYCPage> {
                       value: selectedTitle,
                       isExpanded: true,
                       iconSize: 24,
-                      hint: Text(AppLocalizations.of(context)!.select),
+                      hint: Text('Select'),
                       elevation: 16,
                       style: TextStyle(
                           fontFamily: "Poppins-Regular",
