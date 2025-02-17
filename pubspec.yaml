@@ -84,6 +84,7 @@ dependencies:
   flutter_local_notifications: ^17.2.1+2
   flutter_cache_manager: ^3.3.1
   intl_translation: ^0.20.1
+  encrypt: ^5.0.3
   flutter_localizations:
     sdk: flutter
 
