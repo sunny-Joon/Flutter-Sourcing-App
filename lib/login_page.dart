@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'EncryptionUtils.dart';
 import 'api_service.dart';
 import 'chat_bot.dart';
 import 'device_id_generator.dart';
@@ -498,16 +499,21 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _getLogin( String userName, String userPassword, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       EasyLoading.show(
         status: AppLocalizations.of(context)!.loading,
       );
     });
     final api = Provider.of<ApiService>(context, listen: false);
+
+
     Map<String, dynamic> requestBody = {
       "userName": userName,
-      "password": userPassword,
+      "password": EncryptionUtils.encrypt(userPassword),
       "GsmId":  prefs.getString("GSMID")!
+
     };
     // String? DeviceID = await generateDeviceId(userName) as String?;
     return await api.getLogins("0646498585477244", GlobalClass.dbName, requestBody)
