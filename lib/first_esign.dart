@@ -306,7 +306,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
   bool _isChecked = false;
   late ApiService _apiServiceForESign;
   List<String> authModeTypeList = ["Biometric"];
- // List<String> authModeTypeList = ["Biometric","OTP"];
+ //List<String> authModeTypeList = ["Biometric","OTP"];
 
   String authModeType="Biometric";
 

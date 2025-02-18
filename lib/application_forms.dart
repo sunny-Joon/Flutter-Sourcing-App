@@ -4571,7 +4571,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String finalUrl = '$baseUrl/$modifiedPath';
 
     File? _selectedImage;
-    bool isPathCleared = false; // Track if the path has been cleared
+    bool isPathCleared = false;
 
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
@@ -4580,7 +4580,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             GestureDetector(
               onTap: () async {
 
-                if (isSubmitEnabled==false) {
+                if (!isSubmitEnabled) {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Document already uploaded!"))
                   );
@@ -6397,14 +6397,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
     bool checkDocumentCondition(bool exists, String? path, [String? pathB]) {
       if (!exists) {
         return false;
+      }else{
+        if(path == null || path.isEmpty || (pathB != null && pathB.isEmpty)) {
+          return true;
+        }else{
+          return false;
+        }
       }
-      if (path == null || path.isEmpty || (pathB != null && pathB.isEmpty)) {
-        return true;
-      }
-      return false;
+     // return false;
     }
 
-    bool isSubmitEnabled = false;
+
 
     if (GurNum == "0") {
       if (doc.grDocs != null && doc.grDocs.isNotEmpty) {
@@ -6419,7 +6422,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
         bool d = checkDocumentCondition(
             coBorrowerDocs.drivingExists, coBorrowerDocs.drivingPath);
 
-        isSubmitEnabled = a || b || c || d;
+        setState(() {
+          isSubmitEnabled = a || b || c || d;
+        });
+        borrowerDocsUploded = a && b && c && d;
 
         print('a = $a, b = $b, c = $c, d = $d');
       }
@@ -6436,7 +6442,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
         bool d = checkDocumentCondition(
             coBorrowerDocs.drivingExists, coBorrowerDocs.drivingPath);
 
-        isSubmitEnabled = a || b || c || d;
+        setState(() {
+          isSubmitEnabled = a || b || c || d;
+        });
 
         print("Final isSubmitEnabled: $isSubmitEnabled");
       }
