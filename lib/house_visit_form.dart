@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/global_class.dart';
+import 'package:flutter_sourcing_app/utils/current_location.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
@@ -46,6 +47,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   String _locationMessage = "";
   late double _latitude=0.0;
   late double _longitude=0.0;
+  String? _aadress;
 
   String nameReg ='[a-zA-Z. ]';
   String addReg = r'[a-zA-Z0-9. ()/,-]';
@@ -464,7 +466,23 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     String GroupCode=widget.GroupData.groupCode;
     String GroupName=widget.GroupData.groupCodeName;
 
+    currentLocation _locationService = currentLocation();
+    try {
+      Map<String, dynamic> locationData =
+      await _locationService.getCurrentLocation();
 
+      _latitude = locationData['latitude'];
+      _longitude = locationData['longitude'];
+      _aadress = locationData['address'];
+
+      print("_latitude $_latitude");
+      print("_longitude $_longitude");
+      print("_aadress $_aadress");
+
+    } catch (e) {
+      print("Error getting current location: $e");
+
+    }
 
 
     File? Image = _image;
@@ -545,6 +563,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         BusinessVerification,
         _latitude,
         _longitude,
+
+
         EmpCode,
         Address,
         Image!).then((response) {
@@ -846,51 +866,53 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         textColor: Colors.white,
         fontSize: 13.0);
   }
-  Future<void> geolocator() async {
-    try {
-      Position position = await _getCurrentPosition();
-      setState(() {
-        _locationMessage =
-        "${position.latitude},${position.longitude}";
-        print(
-            " geolocatttion: $_locationMessage");
-        _latitude = position.latitude;
-        _longitude =position.longitude;
-      });
-    } catch (e) {
-      setState(() {
-        _locationMessage = e.toString();
-      });
-      print(
-          " geolocatttion: $_locationMessage");
-    }
-  }
-  Future<Position> _getCurrentPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
 
-    // Check if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    // When permissions are granted, get the position of the device.
-    return await Geolocator.getCurrentPosition();
-  }
+  // Future<void> geolocator() async {
+  //   try {
+  //     Position position = await _getCurrentPosition();
+  //     setState(() {
+  //       _locationMessage =
+  //       "${position.latitude},${position.longitude}";
+  //       print(
+  //           " geolocatttion: $_locationMessage");
+  //       _latitude = position.latitude;
+  //       _longitude =position.longitude;
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       _locationMessage = e.toString();
+  //     });
+  //     print(
+  //         " geolocatttion: $_locationMessage");
+  //   }
+  // }
+  // Future<Position> _getCurrentPosition() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //
+  //   // Check if location services are enabled.
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     return Future.error('Location services are disabled.');
+  //   }
+  //
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       return Future.error('Location permissions are denied');
+  //     }
+  //   }
+  //
+  //   if (permission == LocationPermission.deniedForever) {
+  //     return Future.error(
+  //         'Location permissions are permanently denied, we cannot request permissions.');
+  //   }
+  //
+  //   // When permissions are granted, get the position of the device.
+  //   return await Geolocator.getCurrentPosition();
+  // }
 
 /*  void _showSuccessAndRedirect(GlobalModel response) {
     showDialog(

@@ -511,6 +511,7 @@ class _ApiService implements ApiService {
     String dob,
     String age,
     String gender,
+    String guardianName,
     String pPhone,
     String fatherFirstName,
     String fatherMiddleName,
@@ -579,6 +580,10 @@ class _ApiService implements ApiService {
     _data.fields.add(MapEntry(
       'gender',
       gender,
+    ));
+    _data.fields.add(MapEntry(
+      'Guardian_Name',
+      guardianName,
     ));
     _data.fields.add(MapEntry(
       'p_Phone',
