@@ -8,9 +8,9 @@ import 'package:flutter_sourcing_app/Models/qrcode_model.dart';
 import 'package:flutter_sourcing_app/Models/common_string_model.dart';
 
 import 'package:flutter_sourcing_app/Models/attendancestatusmodel.dart';
-import 'package:flutter_sourcing_app/collection_report.dart';
+import 'package:flutter_sourcing_app/sourcing/Collection/collection_report.dart';
 
-import 'package:flutter_sourcing_app/collectionborrowerlist.dart';
+import 'package:flutter_sourcing_app/sourcing/Collection/collectionborrowerlist.dart';
 import 'package:flutter_sourcing_app/Models/collectionborrowerlistmodel.dart';
 import 'package:flutter_sourcing_app/Models/bank_names_model.dart';
 
