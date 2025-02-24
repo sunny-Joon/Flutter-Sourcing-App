@@ -66,6 +66,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool femMemIncomeEditable = true;
   bool GuarantorEditable = true;
   bool borrowerDocsUploded = false;
+  bool coBorrowerDocsUploaded  = false;
   bool UploadFiDocsEditable = true;
   bool editButtonFunctionOn = false;
   bool banknameverified = false;
@@ -4579,11 +4580,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             GestureDetector(
               onTap: () async {
-
-                if (!isSubmitEnabled) {
+                if (isSubmitEnabled || (borrowerDocsUploded && subType == 'borrower') || (coBorrowerDocsUploaded && subType == 'guarantor')) {
+                 print("isSubmitEnabled $isSubmitEnabled");
+                 print("borrowerDocsUploded $borrowerDocsUploded");
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Document already uploaded!"))
-                  );
+                      SnackBar(content: Text("Document already uploaded!")));
                   return;
                 }
 
@@ -4971,7 +4972,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             },
             subType: 'guarantor',
-            onPathCleared: handlePathClearedGur,
+            onPathCleared: handlePathCleared,
           ));
           listItems1.add(_buildListItem(
             title: AppLocalizations.of(context)!.aadharback,
@@ -4984,7 +4985,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             },
             subType: 'guarantor',
-            onPathCleared: handlePathClearedGur,
+            onPathCleared: handlePathCleared,
           ));
         }
 
@@ -5000,7 +5001,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             },
             subType: 'guarantor',
-            onPathCleared: handlePathClearedGur,
+            onPathCleared: handlePathCleared,
           ));
           listItems1.add(_buildListItem(
             title: AppLocalizations.of(context)!.voterback,
@@ -5013,7 +5014,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             },
             subType: 'guarantor',
-            onPathCleared: handlePathClearedGur,
+            onPathCleared: handlePathCleared,
           ));
         }
 
@@ -5029,7 +5030,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             },
             subType: 'guarantor',
-            onPathCleared: handlePathClearedGur,
+            onPathCleared: handlePathCleared,
           ));
         }
 
@@ -5045,7 +5046,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             },
             subType: 'guarantor',
-            onPathCleared: handlePathClearedGur,
+            onPathCleared: handlePathCleared,
           ));
         }
       }
@@ -6366,8 +6367,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     final api = Provider.of<ApiService>(context, listen: false);
 
-    return await api.KycScanning(
-            GlobalClass.token, GlobalClass.dbName, FIID.toString())
+    return await api.KycScanning(GlobalClass.token, GlobalClass.dbName, FIID.toString())
         .then((value) async {
       EasyLoading.dismiss();
 
@@ -6375,103 +6375,72 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           getData = value;
           doc = getData.data;
-
           _isPageLoading = true;
         });
 
-        /*  setState(() {
-        //  isSubmitDisabled = !isSubmitEnabled && !allDocsNotRequired;
-          isSubmitDisabled = !isSubmitEnabled;
-          borrowerDocsUploded = doc.aadharPath?.isNotEmpty ?? false;
-          print("Is Borrower Docs Uploaded: $borrowerDocsUploded");
-          print("Final isSubmitDisabled: $isSubmitDisabled");
-        });*/
+        bool checkDocumentCondition(bool exists, String? path, [String? pathB]) {
+          return exists && (path?.isNotEmpty ?? false) && (pathB?.isNotEmpty ?? true);
+        }
+
+        bool borrowerDocCheckA = checkDocumentCondition(doc.addharExists, doc.aadharPath, doc.aadharBPath);
+        bool borrowerDocCheckB = checkDocumentCondition(doc.panExists, doc.panPath);
+        bool borrowerDocCheckC = checkDocumentCondition(doc.voterExists, doc.voterPath, doc.voterBPath);
+        bool borrowerDocCheckD = checkDocumentCondition(doc.drivingExists, doc.drivingPath);
+
+         borrowerDocsUploded = borrowerDocCheckA && borrowerDocCheckB && borrowerDocCheckC && borrowerDocCheckD;
+        setState(() {
+          isSubmitEnabled = borrowerDocsUploded;
+          print("isSubmitEnabled1 $isSubmitEnabled");
+        });
+
+        print('Borrower Document Checks: a = $borrowerDocCheckA, b = $borrowerDocCheckB, c = $borrowerDocCheckC, d = $borrowerDocCheckD');
+
+        if (doc.grDocs != null && doc.grDocs.isNotEmpty) {
+          var coBorrowerDocs = doc.grDocs[0];
+
+          bool coBorrowerDocCheckA = checkDocumentCondition(coBorrowerDocs.addharExists, coBorrowerDocs.aadharPath, coBorrowerDocs.aadharBPath);
+          bool coBorrowerDocCheckB = checkDocumentCondition(coBorrowerDocs.panExists, coBorrowerDocs.panPath);
+          bool coBorrowerDocCheckC = checkDocumentCondition(coBorrowerDocs.voterExists, coBorrowerDocs.voterPath, coBorrowerDocs.voterBPath);
+          bool coBorrowerDocCheckD = checkDocumentCondition(coBorrowerDocs.drivingExists, coBorrowerDocs.drivingPath);
+
+          coBorrowerDocsUploaded = coBorrowerDocCheckA && coBorrowerDocCheckB && coBorrowerDocCheckC && coBorrowerDocCheckD;
+
+          setState(() {
+            isSubmitEnabled = isSubmitEnabled || (coBorrowerDocCheckA && coBorrowerDocCheckB && coBorrowerDocCheckC && coBorrowerDocCheckD);
+            print("isSubmitEnabled2 $isSubmitEnabled");
+          });
+
+          print("Co-Borrower Document Checks: a = $coBorrowerDocCheckA, b = $coBorrowerDocCheckB, c = $coBorrowerDocCheckC, d = $coBorrowerDocCheckD");
+        }
+
       } else {
-        GlobalClass.showUnsuccessfulAlert(
-            context, '${getData.message} {Document Details}', 1);
+        GlobalClass.showUnsuccessfulAlert(context, '${getData.message} {Document Details}', 1);
       }
     });
   }
 
   Future<void> FiDocsUploadsApi(BuildContext context, String GurNum) async {
-    bool checkDocumentCondition(bool exists, String? path, [String? pathB]) {
-      if (!exists) {
-        return false;
-      }else{
-        if(path == null || path.isEmpty || (pathB != null && pathB.isEmpty)) {
-          return true;
-        }else{
-          return false;
-        }
-      }
-     // return false;
-    }
-
-
-
-    if (GurNum == "0") {
-      if (doc.grDocs != null && doc.grDocs.isNotEmpty) {
-        var coBorrowerDocs = doc;
-
-        bool a = checkDocumentCondition(coBorrowerDocs.addharExists,
-            coBorrowerDocs.aadharPath, coBorrowerDocs.aadharBPath);
-        bool b = checkDocumentCondition(
-            coBorrowerDocs.panExists, coBorrowerDocs.panPath);
-        bool c = checkDocumentCondition(coBorrowerDocs.voterExists,
-            coBorrowerDocs.voterPath, coBorrowerDocs.voterBPath);
-        bool d = checkDocumentCondition(
-            coBorrowerDocs.drivingExists, coBorrowerDocs.drivingPath);
-
-        setState(() {
-          isSubmitEnabled = a || b || c || d;
-        });
-        borrowerDocsUploded = a && b && c && d;
-
-        print('a = $a, b = $b, c = $c, d = $d');
-      }
-    } else {
-      if (doc.grDocs != null && doc.grDocs.isNotEmpty) {
-        var coBorrowerDocs = doc.grDocs[0];
-
-        bool a = checkDocumentCondition(coBorrowerDocs.addharExists,
-            coBorrowerDocs.aadharPath, coBorrowerDocs.aadharBPath);
-        bool b = checkDocumentCondition(
-            coBorrowerDocs.panExists, coBorrowerDocs.panPath);
-        bool c = checkDocumentCondition(coBorrowerDocs.voterExists,
-            coBorrowerDocs.voterPath, coBorrowerDocs.voterBPath);
-        bool d = checkDocumentCondition(
-            coBorrowerDocs.drivingExists, coBorrowerDocs.drivingPath);
-
-        setState(() {
-          isSubmitEnabled = a || b || c || d;
-        });
-
-        print("Final isSubmitEnabled: $isSubmitEnabled");
-      }
-    }
-
-    if (isSubmitEnabled) {
+    if (!isSubmitEnabled) {
       if (validateAllDocsForBorrower(context, GurNum)) {
         saveKYCAllDocs(context, GurNum);
       }
     } else {
-
-      GurNum == "0"?{
-        setState(() {
-          _currentStep = _currentStep+1;
-        })
-      }:{
-        GlobalClass.showSuccessAlertclose(
-          context,
-          "Application process Completed !!",
-          1,
-          destinationPage: OnBoarding(),
-        )
-      };
-
+      GurNum == "0"
+          ? {
+              setState(() {
+                _currentStep = _currentStep + 1;
+              })
+            }
+          : {
+              GlobalClass.showSuccessAlertclose(
+                context,
+                "Application process Completed !!",
+                1,
+                destinationPage: OnBoarding(),
+              )
+            };
     }
   }
-
 
   Future<void> verifyDocs(BuildContext context, String txnNumber, String type,
       String ifsc, String dob) async {
@@ -8372,11 +8341,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     if (gurNum == "0") {
       if (kycScanningDataModel.addharExists == true) {
-        if ((kycScanningDataModel.aadharPath == null ||
-                kycScanningDataModel.aadharPath.isEmpty) &&
-            adhaarFront == null) {
-          GlobalClass.showToast_Error(
-              AppLocalizations.of(context)!.pleaseuploadaadhaarfront);
+        if ((kycScanningDataModel.aadharPath == null || kycScanningDataModel.aadharPath.isEmpty) && adhaarFront == null) {
+          print("kycScanningDataModel.addharExists ${doc.addharExists.toString()}");
+          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadaadhaarfront);
           return false;
         }
         if ((kycScanningDataModel.aadharBPath == null ||
@@ -8606,19 +8573,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
             });
             break;
 
-          default:
-            break;
-        }
-      }
-    });
-  }
-
-  void handlePathClearedGur(int? id, String? subType) {
-    setState(() {
-      if (id != null && subType != null) {
-        isSubmitEnabled = true;
-
-        switch (id) {
           case 7:
             setState(() {
               doc.grDocs[0].aadharPath = "";

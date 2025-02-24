@@ -274,10 +274,10 @@ class _KYCPageState extends State<KYCPage> {
   String? Fi_Code;
   String qrResult = "";
   File? _imageFile;
-  bool isPanVerified = false,
-      isDrivingLicenseVerified = false,
-      isVoterIdVerified = false,
-      isPassportVerified = false;
+  // bool isPanVerified = false,
+  //     isDrivingLicenseVerified = false,
+  //     isVoterIdVerified = false,
+  //     isPassportVerified = false;
 
   get isChecked => null;
   final FocusNode _focusNodeAdhaarId = FocusNode();
@@ -827,7 +827,10 @@ class _KYCPageState extends State<KYCPage> {
       String lastname = _nameLController.text.toString();
       String dob = _dobController.text.toString();
       String age = _ageController.text.toString();
-      String gendre = genderselected;
+      String gender = genderselected.toString();
+      String guardianName  = _gurNameController.text.toString();
+      print("gender13 $gender");
+      print("Guardian_Name $guardianName");
       String mobile = _mobileNoController.text.toString();
       String fatherF = _fatherFirstNameController.text.toString();
       String fatherM = _fatherMiddleNameController.text.toString();
@@ -854,11 +857,13 @@ class _KYCPageState extends State<KYCPage> {
       String pin = _pincodeController.text.toString();
       String state = stateselected!.code.toString();
       bool ismarried = selectedMarritalStatus.toString() == 'Married';
+      print("married $ismarried");
       String gCode = widget.GroupData.groupCode;
       String bCode = widget.data.branchCode.toString();
 
       String relation_with_Borrower = relationwithBorrowerselected;
-      String bank_name = bankselected!;
+      String bank_name = bankselected!.toString();
+      print("bank $bank_name");
       String loan_Duration = selectedloanDuration!;
       String loan_amount = _loan_amountController.text.toString();
 
@@ -875,7 +880,8 @@ class _KYCPageState extends State<KYCPage> {
         lastname,
         dob,
         age,
-        gendre,
+        gender,
+        guardianName,
         mobile,
         fatherF,
         fatherM,
@@ -1268,8 +1274,10 @@ class _KYCPageState extends State<KYCPage> {
                     nameParts.sublist(1, nameParts.length - 1).join(' ');
               }
               _dobController.text = formatDate(response.data.dob, 'dd/MM/yyyy');
-              genderselected = aadhar_gender
-                  .firstWhere((item) =>
+
+
+
+              genderselected = aadhar_gender.firstWhere((item) =>
                       item.descriptionEn.toLowerCase() ==
                       response.data.gender.toLowerCase())
                   .descriptionEn;
