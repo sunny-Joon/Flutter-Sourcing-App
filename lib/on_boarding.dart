@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_sourcing_app/RegisterDealer/adddealer.dart';
 import 'package:flutter_sourcing_app/visit_report_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +58,6 @@ class _OnboardingState extends State<OnBoarding>{
                   IconButton(
                       onPressed: (){
                         RangeCategory(context);
-
                       },
                       icon: Icon(Icons.refresh_rounded,color: Colors.white,)
                   ),
@@ -66,15 +66,19 @@ class _OnboardingState extends State<OnBoarding>{
             ),
             SizedBox(height: 70),
             Padding(
+
               padding: const EdgeInsets.only(left: 20.0,right: 20,top: 10,bottom: 50),
               child: Stack(
+
                 alignment: Alignment.topCenter,
                 children: [
+
                   Image.asset(
                     'assets/Images/curvedBackground.png',
                     fit: BoxFit.fill,
                     width: double.infinity,
-                    height: MediaQuery.of(context).size.height/1.8, // Adjust the height as needed
+                    height: 500,
+                   // height: MediaQuery.of(context).size.height/1.8, // Adjust the height as needed
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0,right: 10,top: 10,bottom: 20),
@@ -122,6 +126,17 @@ class _OnboardingState extends State<OnBoarding>{
                             context,
                             MaterialPageRoute(
                               builder: (context) => VisitReportPage(),
+                             // builder: (context) => DealerForm(),
+                            ),
+                          );
+                        }),
+                        Divider(color: Color(0xFFC0B8B8)),
+                        _buildCardItem(context, 'Dealer Form', 'assets/Images/righ_arrow.png', () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                            //  builder: (context) => VisitReportPage(),
+                              builder: (context) => DealerForm(),
                             ),
                           );
                         }),
