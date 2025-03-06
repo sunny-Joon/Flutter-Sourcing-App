@@ -74,7 +74,8 @@ dependencies:
   dropdown_search: ^6.0.1
   shared_preferences: ^2.3.3
   flutter_svg: ^2.0.16
-
+  expandable: ^5.0.1
+  file_picker: ^9.0.2
   share_plus: ^7.2.2
 
   shimmer: ^3.0.0
