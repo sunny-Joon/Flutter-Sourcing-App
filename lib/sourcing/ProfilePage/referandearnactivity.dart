@@ -4,11 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-
-import 'api_service.dart';
-import 'getrewardactivity.dart';
-import 'global_class.dart';
+import '../../api_service.dart';
+import '../HomePage/getrewardactivity.dart';
+import '../global_class.dart';
 import 'howtoreferactivity.dart';
 
 class referandearnactivity extends StatefulWidget {

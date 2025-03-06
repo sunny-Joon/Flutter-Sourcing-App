@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'api_service.dart';
-import 'global_class.dart';
-import 'Models/qr_payments_model.dart'; // For making API calls
+import '../../Models/qr_payments_model.dart';
+import '../../api_service.dart';
+import '../global_class.dart'; // For making API calls
 
 class QrPaymentReports extends StatefulWidget {
   @override

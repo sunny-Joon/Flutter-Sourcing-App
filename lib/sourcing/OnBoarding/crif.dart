@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/on_boarding.dart';
 import 'dart:math';
 import '../../Models/bank_names_model.dart';
 import '../../api_service.dart';
 import '../global_class.dart';
+import 'on_boarding.dart';
 
 class LoanEligibilityPage extends StatefulWidget {
   final int ficode;

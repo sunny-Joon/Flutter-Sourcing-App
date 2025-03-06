@@ -3,20 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/global_class.dart';
 import 'package:flutter_sourcing_app/utils/current_location.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'Models/global_model.dart';
-import 'api_service.dart';
-import 'MasterAPIs/live_track_repository.dart';
-import 'Models/borrower_list_model.dart';
-import 'Models/group_model.dart';
-import 'Models/branch_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import '../../MasterAPIs/live_track_repository.dart';
+import '../../Models/borrower_list_model.dart';
+import '../../Models/branch_model.dart';
+import '../../Models/group_model.dart';
+import '../../api_service.dart';
+import '../global_class.dart';
 import 'on_boarding.dart';
 
 

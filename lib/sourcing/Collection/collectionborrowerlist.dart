@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -8,14 +5,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-import 'DATABASE/database_helper.dart';
-import 'Models/collectionborrowerlistmodel.dart';
-import 'Models/collectionbranchlistmodel.dart';
-import 'Models/range_category_model.dart';
-import 'api_service.dart';
+import '../../DATABASE/database_helper.dart';
+import '../../Models/collectionborrowerlistmodel.dart';
+import '../../Models/collectionbranchlistmodel.dart';
+import '../../Models/range_category_model.dart';
+import '../../api_service.dart';
+import '../global_class.dart';
 import 'collection.dart';
-import 'global_class.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 

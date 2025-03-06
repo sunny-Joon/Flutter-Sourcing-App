@@ -8,27 +8,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/global_model.dart';
 import 'package:flutter_sourcing_app/Models/ocrdocscanningresponce.dart';
-import 'package:flutter_sourcing_app/qr_scan_page.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'DATABASE/database_helper.dart';
-import 'Models/bank_names_model.dart';
-import 'Models/borrower_list_model.dart';
-import 'Models/branch_model.dart';
-import 'Models/get_all_model.dart';
-import 'Models/group_model.dart';
-import 'Models/kyc_scanning_model.dart';
-import 'Models/place_codes_model.dart';
-import 'Models/range_category_model.dart';
-import 'api_service.dart';
-import 'global_class.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../DATABASE/database_helper.dart';
+import '../../Models/borrower_list_model.dart';
+import '../../Models/branch_model.dart';
+import '../../Models/get_all_model.dart';
+import '../../Models/group_model.dart';
+import '../../Models/kyc_scanning_model.dart';
+import '../../Models/place_codes_model.dart';
+import '../../Models/range_category_model.dart';
+import '../../api_service.dart';
+import '../global_class.dart';
 import 'on_boarding.dart';
 
 class ApplicationPage extends StatefulWidget {

@@ -1,17 +1,17 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/collectionborrowerlistmodel.dart';
-import 'package:flutter_sourcing_app/submit_ss_qrtransaction.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'Models/getCollectionModel.dart';
-import 'Models/qrresponse_model.dart';
-import 'api_service.dart';
-import 'global_class.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../Models/getCollectionModel.dart';
+import '../../Models/qrresponse_model.dart';
+import '../../api_service.dart';
+import '../ProfilePage/submit_ss_qrtransaction.dart';
+import '../global_class.dart';
 
 
 class Collection extends StatefulWidget {

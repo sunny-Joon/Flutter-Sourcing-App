@@ -10,28 +10,24 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_sourcing_app/Models/global_model2.dart';
-import 'package:flutter_sourcing_app/collection.dart';
-import 'package:flutter_sourcing_app/stepper_ss.dart';
-import 'package:flutter_sourcing_app/submit_ss_qrtransaction.dart';
+
 import 'package:flutter_sourcing_app/utils/localnotificationservice.dart';
  import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'api_service.dart';
-import 'crif.dart';
+
+import '../api_service.dart';
+import 'LoginPage/languageprovider.dart';
+import 'LoginPage/login_page.dart';
 import 'global_class.dart';
-import 'house_visit_form.dart';
-import 'languageprovider.dart';
-import 'login_page.dart';
-import 'Models/global_model.dart';
+
 import 'stepper_sd.dart';
 import 'package:http/http.dart'as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
-import 'dealer_homepage.dart';
 
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {

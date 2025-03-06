@@ -5,10 +5,8 @@ import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:flutter_sourcing_app/const/validators.dart';
-import 'package:flutter_sourcing_app/qr_scan_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -17,19 +15,17 @@ import 'package:intl/intl.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:xml/xml.dart';
-
-import 'DATABASE/database_helper.dart';
-import 'MasterAPIs/ckyc_repository.dart';
-import 'Models/adhaar_model.dart';
-import 'Models/bank_names_model.dart';
-import 'Models/group_model.dart';
-import 'Models/place_codes_model.dart';
-import 'Models/range_category_model.dart';
-import 'api_service.dart';
-import 'global_class.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_sourcing_app/Models/global_model.dart';
-
+import '../../DATABASE/database_helper.dart';
+import '../../MasterAPIs/ckyc_repository.dart';
+import '../../Models/adhaar_model.dart';
+import '../../Models/bank_names_model.dart';
+import '../../Models/group_model.dart';
+import '../../Models/place_codes_model.dart';
+import '../../Models/range_category_model.dart';
+import '../../api_service.dart';
+import '../global_class.dart';
 import 'on_boarding.dart';
 
 class KYCPage extends StatefulWidget {

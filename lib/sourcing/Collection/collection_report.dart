@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/collectionstatus_model.dart';
 import 'package:provider/provider.dart';
-
-import 'api_service.dart';
-import 'global_class.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../api_service.dart';
+import '../global_class.dart';
 
 
 class CollectionStatus extends StatefulWidget {
