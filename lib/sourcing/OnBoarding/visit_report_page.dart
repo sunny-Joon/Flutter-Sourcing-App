@@ -198,8 +198,8 @@ initializeCamera();
                                      child: TextField(
                                        controller: _smCodeController,
                                        maxLength: 10,
-                                       decoration: const InputDecoration(
-                                         hintText: "Enter Case Code (SM CODE)",
+                                       decoration:  InputDecoration(
+                                         hintText: AppLocalizations.of(context)!.pleaseentercasecode,
                                          border: InputBorder.none,
                                          counterText: "",
                                          contentPadding: EdgeInsets.all(10),
@@ -216,7 +216,7 @@ initializeCamera();
                                     if(_smCodeController.text.isNotEmpty && regex.hasMatch(_smCodeController.text)) {
                                       fetchDetailsBySmCode();
                                     }else{
-                                      GlobalClass.showSnackBar(context, "Please Enter Correct Case code");
+                                      GlobalClass.showSnackBar(context, AppLocalizations.of(context)!.pleaseentercasecode);
                                     }
                                    },
                                    icon: const Icon(Icons.search,size: 40,color: Colors.white,),
@@ -250,8 +250,8 @@ initializeCamera();
                      child: TextField(
                        controller: _commentController,
                        maxLines: 4,
-                       decoration: const InputDecoration(
-                         hintText: "Enter your comment",
+                       decoration:  InputDecoration(
+                         hintText: AppLocalizations.of(context)!.pleaseentersomecomments,
                          border: InputBorder.none,
                          contentPadding: EdgeInsets.all(10),
                        ),
@@ -412,7 +412,11 @@ initializeCamera();
    }
 
   void fetchDetailsBySmCode() {
-      EasyLoading.show(status: "Please wait...");
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
       apiService.getBorrowerDetails(_smCodeController.text, GlobalClass.dbName, GlobalClass.token).then((value){
         if(value.statuscode==200){
@@ -421,7 +425,7 @@ initializeCamera();
             EasyLoading.dismiss();
           });
         }else{
-          GlobalClass.showSnackBar(context, "Details not found for this case code. \nPlease check");
+          GlobalClass.showSnackBar(context, value.message);
           EasyLoading.dismiss();
         }
       });
@@ -431,26 +435,30 @@ initializeCamera();
 
   bool validateAllInputs() {
       if(meetingType==null || meetingType=="Select"){
-        GlobalClass.showSnackBar(context, "Please select meeting type");
+        GlobalClass.showSnackBar(context, AppLocalizations.of(context)!.pleaseselectmeetingtype);
         return false;
       }else if(_layoutVisibility && _smCodeController.text.isEmpty){
-        GlobalClass.showSnackBar(context, "Please enter case code");
+        GlobalClass.showSnackBar(context, AppLocalizations.of(context)!.pleaseentercasecode);
         return false;
       }else if(_layoutVisibility &&  _nameController.text.isEmpty){
-        GlobalClass.showSnackBar(context, "Please search borrower's name by case code");
+        GlobalClass.showSnackBar(context, AppLocalizations.of(context)!.pleasesearchborrowernamebycasecode);
         return false;
       }else if(_commentController.text.isEmpty){
-        GlobalClass.showSnackBar(context, "Please enter some comments");
+        GlobalClass.showSnackBar(context, AppLocalizations.of(context)!.pleaseentersomecomments);
         return false;
       }else if(imageFile==null){
-        GlobalClass.showSnackBar(context, "Please click a current picture");
+        GlobalClass.showSnackBar(context, AppLocalizations.of(context)!.pleaseclickacurrentpicture);
         return false;
       }
       return true;
   }
 
   Future<void> SaveAllData() async {
-      EasyLoading.show(status: "Please wait...");
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
       currentLocation _locationService = currentLocation();
       try {
@@ -469,9 +477,9 @@ initializeCamera();
 
   apiService.insertBranchVisit(GlobalClass.dbName, GlobalClass.token, meetingType!, _smCodeController.text, _amountController.text.isEmpty?"0":_amountController.text, _lat!.toString(), _long!.toString(), GlobalClass.userName, _commentController.text, _aadress!, imageFile!).then((value){
     if(value.statuscode==200){
-        GlobalClass.showSuccessAlert(context, "Record saved Successfully", 2);
+        GlobalClass.showSuccessAlert(context,value.message, 2);
     }else{
-      GlobalClass.showUnsuccessfulAlert(context, "Record not saved please try again", 1);
+      GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
     }
     EasyLoading.dismiss();
   });

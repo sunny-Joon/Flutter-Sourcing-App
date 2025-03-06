@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -8,19 +9,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_sourcing_app/Models/global_model2.dart';
+import 'package:flutter_sourcing_app/collection.dart';
+import 'package:flutter_sourcing_app/stepper_ss.dart';
+import 'package:flutter_sourcing_app/submit_ss_qrtransaction.dart';
 import 'package:flutter_sourcing_app/utils/localnotificationservice.dart';
  import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Dealer/dealer_homepage.dart';
-import '../api_service.dart';
+import 'api_service.dart';
+import 'crif.dart';
+import 'global_class.dart';
+import 'house_visit_form.dart';
+import 'languageprovider.dart';
+import 'login_page.dart';
+import 'Models/global_model.dart';
+import 'stepper_sd.dart';
 import 'package:http/http.dart'as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'LoginPage/languageprovider.dart';
-import 'LoginPage/login_page.dart';
-import 'global_class.dart';
+
+
+import 'dealer_homepage.dart';
+
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -133,11 +145,11 @@ void requestPermissions() async {
   // Check each permission status
   statuses.forEach((permission, status) {
     if (status.isGranted) {
-      print('$permission is granted');
+
     } else if (status.isDenied) {
-      print('$permission is denied');
+
     } else if (status.isPermanentlyDenied) {
-      print('$permission is permanently denied');
+
       // You can show a dialog to the user explaining why the permission is needed
     }
   });
@@ -180,7 +192,6 @@ class MyApp extends StatelessWidget {
         ),
         home: SplashScreen(),
         //  home: DealerHomePage(),
-         // home: CarouselWithIndicatorDemo(),
           builder: EasyLoading.init(),
       ),
     );
@@ -222,19 +233,24 @@ class _SplashScreenState extends State<SplashScreen> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        print("isvalid2");
+
         return AlertDialog(
           elevation: 0,
           backgroundColor: Colors.white,
+
           title: Text('Update Available'),
           content: Text('A new version of the app is available. Please update to the latest version.'),
           actions: <Widget>[
             TextButton(
+
               child: Text('Download App'),
               onPressed: () async {
                 _launchURLBrowser();
               },
             ),
             TextButton(
+
               child: Text('Close'),
               onPressed: () {
                exit(0);
@@ -255,6 +271,8 @@ class _SplashScreenState extends State<SplashScreen> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String appVersion = packageInfo.version;
     GlobalClass.appVersion=packageInfo.version;
+    print("GlobalClass.appVersion $GlobalClass.appVersion");
+    print("packageInfo.version $packageInfo.version");
 
 
        ApiService.create(baseUrl: ApiConfig.baseUrl1).VersionCheck(GlobalClass.dbName, appVersion,"S","1").then((response){
@@ -262,10 +280,12 @@ class _SplashScreenState extends State<SplashScreen> {
          if (response.statuscode == 200) {
 
 
-
            bool isvalid = response.data[0].isvalid;
+           print("isvalid $isvalid");
 
            if(!isvalid){
+             print("isvalid1 $isvalid");
+
              _showUpdateDialog(context,response.data[0].appLink);
            }else{
              Timer(Duration(seconds: 3), () {

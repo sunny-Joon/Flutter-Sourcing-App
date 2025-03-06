@@ -3,18 +3,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_sourcing_app/global_class.dart';
+import 'package:flutter_sourcing_app/utils/current_location.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../api_service.dart';
-import '../../MasterAPIs/live_track_repository.dart';
-import '../../Models/borrower_list_model.dart';
-import '../../Models/group_model.dart';
-import '../../Models/branch_model.dart';
+import 'Models/global_model.dart';
+import 'api_service.dart';
+import 'MasterAPIs/live_track_repository.dart';
+import 'Models/borrower_list_model.dart';
+import 'Models/group_model.dart';
+import 'Models/branch_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../global_class.dart';
+import 'on_boarding.dart';
 
 
 class HouseVisitForm extends StatefulWidget {
@@ -44,6 +47,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   String _locationMessage = "";
   late double _latitude=0.0;
   late double _longitude=0.0;
+  String? _aadress;
 
   String nameReg ='[a-zA-Z. ]';
   String addReg = r'[a-zA-Z0-9. ()/,-]';
@@ -58,7 +62,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   List<String> ratings = ['Select','good','bad','dontKnow'];
   List<String> relations = ['Select','spouse','parents','siblings'];
 
-  String? selected_relation= "";
+  String? selected_applicant= "";
   String? selected_residing_type= "";
   String? selected_residing_with= "";
   String? selected_years= "";
@@ -250,7 +254,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                       _buildTextField2(AppLocalizations.of(context)!.addresshouse, _AddressController, TextInputType.name,addReg),
 
 
-                      dropdowns(AppLocalizations.of(context)!.relationwithearningmember, relation, selected_relation!, (newValue) {setState(() {selected_relation = newValue;});}),
+                      dropdowns(AppLocalizations.of(context)!.relationwithearningmember, relation, selected_applicant!, (newValue) {setState(() {selected_applicant = newValue;});}),
                       dropdowns(AppLocalizations.of(context)!.residingtype, residing_type, selected_residing_type!, (newValue) {setState(() {selected_residing_type = newValue;});}),
                       dropdowns(AppLocalizations.of(context)!.residingwith, residing_with, selected_residing_with!, (newValue) {setState(() {selected_residing_with = newValue;});}),
                       dropdowns(AppLocalizations.of(context)!.residentialstability, years, selected_years!, (newValue) {setState(() {selected_years = newValue;});}),
@@ -299,7 +303,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
 
                       SizedBox(height: 20),
                       _image == null
-                          ? Text('No image selected.')
+                          ? Text(AppLocalizations.of(context)!.noimageselected)
                           : Image.file(_image!),
                       ElevatedButton(
                         onPressed: getImage,
@@ -330,7 +334,9 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white, backgroundColor: Color(0xFFD42D3F), // foreground/text
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero, // Makes the corners square
+                          ),
                         ),
                         child: Text(AppLocalizations.of(context)!.submit),
                       ),
@@ -373,7 +379,11 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         false; // Default to false if dialog is dismissed
   }
   Future<void> saveHouseVisitForm(BuildContext context) async {
-    EasyLoading.show(status: 'Loading...',);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     String HouseType=housetype;
     String IsvalidLocation=isvalidlocation;
@@ -413,7 +423,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     String StockVerification=stockverification;
     String LoanSufficientWithDebt=loansufficientwithdebt;
 
-    String Relationearningmember=selected_relation!;
+    String Relationearningmember=selected_applicant!;
     String Residence_Type=selected_residing_type!;
     String Residing_with=selected_residing_with!;
     String feedbacknearbyresident=selected_ratings!;
@@ -456,7 +466,23 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     String GroupCode=widget.GroupData.groupCode;
     String GroupName=widget.GroupData.groupCodeName;
 
+    currentLocation _locationService = currentLocation();
+    try {
+      Map<String, dynamic> locationData =
+      await _locationService.getCurrentLocation();
 
+      _latitude = locationData['latitude'];
+      _longitude = locationData['longitude'];
+      _aadress = locationData['address'];
+
+      print("_latitude $_latitude");
+      print("_longitude $_longitude");
+      print("_aadress $_aadress");
+
+    } catch (e) {
+      print("Error getting current location: $e");
+
+    }
 
 
     File? Image = _image;
@@ -537,12 +563,21 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         BusinessVerification,
         _latitude,
         _longitude,
+
+
         EmpCode,
         Address,
         Image!).then((response) {
       if (response.statuscode == 200) {
         EasyLoading.dismiss();
-        GlobalClass.showSuccessAlert(context,response.message,3);
+        GlobalClass.showSuccessAlertclose(
+          context,
+         response.message,
+          1,
+          destinationPage: OnBoarding(),
+        );
+      //  _showSuccessAndRedirect(response);
+     //   GlobalClass.showSuccessAlert(context,response.message,3);
         LiveTrackRepository().saveLivetrackData( "",   "House Visit",widget.selectedData.id);
       } else {
         EasyLoading.dismiss();
@@ -582,7 +617,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter $label';
+                    return '${AppLocalizations.of(context)!.pleaseenter} $label';
                   }
                   return null;
                 },
@@ -632,7 +667,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter $label';
+                    return '${AppLocalizations.of(context)!.pleaseenter} $label';
                   }
                   if (value.length > maxlength) {
                     return '$label cannot exceed $maxlength characters';
@@ -751,42 +786,76 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   }
 
   bool validate() {
-    if (selected_relations == null || selected_relations!.isEmpty || selected_relations!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Relation");
-    return false;
-    } else if (selected_ratings == null || selected_ratings!.isEmpty || selected_ratings!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Feedback");
-    return false;
-    } else if (selected_years2 == null || selected_years2!.isEmpty || selected_years2!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Business Experience");
-    return false;
-    } else if (selected_years == null || selected_years!.isEmpty || selected_years!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Residance Stability");
-    return false;
-    } else if (selected_residing_with == null || selected_residing_with!.isEmpty || selected_residing_with!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Residing with");
-    return false;
-    } else if (selected_residing_type == null || selected_residing_type!.isEmpty || selected_residing_type!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Resedence Type");
-    return false;
-    } else if (selected_relation == null || selected_relation!.isEmpty || selected_relation!.toLowerCase() == 'select') {
-    showToast_Error("Please Select Relation");
-    return false;
-    }else if(_image ==null){
-      showToast_Error("Please Click House Picture");
+
+    if (selected_applicant == null ||
+        selected_applicant!.isEmpty ||
+        selected_applicant!.toLowerCase() == 'select') {
+      showToast_Error(
+          AppLocalizations.of(context)!.relationshipwiththeapplicant);
       return false;
-    }else if (_Mobilereferenceperson1Controller.text.length != 10 ||
-        !_Mobilereferenceperson1Controller.text.contains(RegExp(r'^[0-9]{10}$'))) {
-      showToast_Error("Please enter a valid 10-digit mobile number");
+    }
+
+    if (selected_residing_type == null ||
+        selected_residing_type!.isEmpty ||
+        selected_residing_type!.toLowerCase() == 'select') {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectresedencetype);
       return false;
-    } else if (_Mobilereferenceperson2Controller.text.length != 10 ||
-        !_Mobilereferenceperson2Controller.text.contains(RegExp(r'^[0-9]{10}$'))) {
-      showToast_Error("Please enter a valid 10-digit mobile number");
+    }
+
+    if (selected_residing_with == null ||
+        selected_residing_with!.isEmpty ||
+        selected_residing_with!.toLowerCase() == 'select') {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectresidingwith);
+      return false;
+    }
+    if (selected_years == null ||
+        selected_years!.isEmpty ||
+        selected_years!.toLowerCase() == 'select') {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectresidancestability);
+      return false;
+    }
+    if (selected_years2 == null ||
+        selected_years2!.isEmpty ||
+        selected_years2!.toLowerCase() == 'select') {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectbusinessexperience);
+      return false;
+    }
+    if (selected_ratings == null ||
+        selected_ratings!.isEmpty ||
+        selected_ratings!.toLowerCase() == 'select') {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectfeedback);
+      return false;
+    }
+
+    if (selected_relations == null ||
+        selected_relations!.isEmpty ||
+        selected_relations!.toLowerCase() == 'select') {
+      showToast_Error(AppLocalizations.of(context)!.chhooserelationtothepersoninterviewed);
+      return false;
+    }
+
+
+    if (_image == null) {showToast_Error(AppLocalizations.of(context)!.pleaseclickhousepicture);
+    return false;
+    }
+    if (_Mobilereferenceperson1Controller.text.length != 10 ||
+        !RegExp(r'^[0-9]{10}$')
+            .hasMatch(_Mobilereferenceperson1Controller.text)) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
+      return false;
+    }
+    if (_Mobilereferenceperson2Controller.text.length != 10 ||
+        !RegExp(r'^[0-9]{10}$')
+            .hasMatch(_Mobilereferenceperson2Controller.text)) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
       return false;
     }
     return true;
   }
-
   void showToast_Error(String message) {
     Fluttertoast.showToast(
         msg: message,
@@ -797,49 +866,76 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         textColor: Colors.white,
         fontSize: 13.0);
   }
-  Future<void> geolocator() async {
-    try {
-      Position position = await _getCurrentPosition();
-      setState(() {
-        _locationMessage =
-        "${position.latitude},${position.longitude}";
-        print(
-            " geolocatttion: $_locationMessage");
-        _latitude = position.latitude;
-        _longitude =position.longitude;
-      });
-    } catch (e) {
-      setState(() {
-        _locationMessage = e.toString();
-      });
-      print(
-          " geolocatttion: $_locationMessage");
-    }
-  }
-  Future<Position> _getCurrentPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
 
-    // Check if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
+  // Future<void> geolocator() async {
+  //   try {
+  //     Position position = await _getCurrentPosition();
+  //     setState(() {
+  //       _locationMessage =
+  //       "${position.latitude},${position.longitude}";
+  //       print(
+  //           " geolocatttion: $_locationMessage");
+  //       _latitude = position.latitude;
+  //       _longitude =position.longitude;
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       _locationMessage = e.toString();
+  //     });
+  //     print(
+  //         " geolocatttion: $_locationMessage");
+  //   }
+  // }
+  // Future<Position> _getCurrentPosition() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //
+  //   // Check if location services are enabled.
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     return Future.error('Location services are disabled.');
+  //   }
+  //
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       return Future.error('Location permissions are denied');
+  //     }
+  //   }
+  //
+  //   if (permission == LocationPermission.deniedForever) {
+  //     return Future.error(
+  //         'Location permissions are permanently denied, we cannot request permissions.');
+  //   }
+  //
+  //   // When permissions are granted, get the position of the device.
+  //   return await Geolocator.getCurrentPosition();
+  // }
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    // When permissions are granted, get the position of the device.
-    return await Geolocator.getCurrentPosition();
-  }
+/*  void _showSuccessAndRedirect(GlobalModel response) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Success'),
+          content: Text(
+              response.message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => OnBoarding()),
+                );
+              },
+            ),],
+        );
+      },
+    );
+  }*/
 }

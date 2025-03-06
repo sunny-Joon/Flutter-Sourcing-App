@@ -1,3 +1,6 @@
+
+
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -6,13 +9,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../DATABASE/database_helper.dart';
-import '../../Models/collectionborrowerlistmodel.dart';
-import '../../Models/collectionbranchlistmodel.dart';
-import '../../Models/range_category_model.dart';
-import '../../api_service.dart';
-import '../global_class.dart';
+import 'DATABASE/database_helper.dart';
+import 'Models/collectionborrowerlistmodel.dart';
+import 'Models/collectionbranchlistmodel.dart';
+import 'Models/range_category_model.dart';
+import 'api_service.dart';
 import 'collection.dart';
+import 'global_class.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class CollectionBorrowerList extends StatefulWidget {
   final CollectionBranchListDataModel Branchdata;
@@ -215,7 +220,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildShinyButton(
-                'EMI Paying',
+                AppLocalizations.of(context)!.emipaying,
                     () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -229,13 +234,13 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
               ),
               SizedBox(height: 5),
               Text(
-                'OR',
+                AppLocalizations.of(context)!.or,
                 style: TextStyle(
                     color: Color(0xFFD42D3F), fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 5),
               _buildShinyButton(
-                'EMI Not Paying',
+                AppLocalizations.of(context)!.eminotpaying,
                     () {
                   _showNotPayeeDialog(context);
                 },
@@ -322,7 +327,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Promise To Pay',
+                    AppLocalizations.of(context)!.promisetopay,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -354,7 +359,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Reason Of Delay',
+                        AppLocalizations.of(context)!.reasonofdelay,
                         style: TextStyle(
                           fontFamily: "Poppins-Regular",
                           fontSize: 13,
@@ -399,7 +404,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
                       ),
                       SizedBox(height: 20),
                       Text(
-                        'Date of Payment',
+                        AppLocalizations.of(context)!.dateofpayment,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 13,
@@ -496,7 +501,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 8, right: 8),
                 child: _buildShinyButton(
-                  'Submit',
+                  AppLocalizations.of(context)!.submit,
                       () {
                     if (selectedDropdownValue == null) {
                       showToast('Please select a reason');
@@ -665,7 +670,7 @@ class CollectionBorrowerListItem extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Case Code: $fiCode',
+                    '${AppLocalizations.of(context)!.casecode} $fiCode',
                     style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.white70,
                       fontSize: 14,
@@ -673,7 +678,7 @@ class CollectionBorrowerListItem extends StatelessWidget {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    'Creator: $creator',
+                    '${AppLocalizations.of(context)!.creator} $creator',
                     style: TextStyle(fontFamily: "Poppins-Regular",
                       color: Colors.white70,
                       fontSize: 14,

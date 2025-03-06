@@ -33,11 +33,11 @@ class QrPaymentsModel {
 }
 
 class QrPaymentsDataModel {
-  double amount;
+  int amount;
   String txnId;
   String creationDate;
   String errormsg;
-  String isvalid;
+  bool isvalid;
 
   QrPaymentsDataModel({
     required this.amount,

@@ -21,6 +21,7 @@ class GlobalClass {
   static String id = "";
   static List<GetCreatorList> creatorlist = [];
   static String creatorId = "";
+
   static int rank = 0;
   static String creator = "";
   static String address = "";
@@ -60,17 +61,24 @@ class GlobalClass {
       a
     );
   }
+  static void showSuccessAlertclose(
+      BuildContext context, String message, int a,
+      {Widget? destinationPage}) {
+    showAlert1(context, 'Successful', message, Colors.green, a,
+        destinationPage: destinationPage);
+  }
 
   // Method to show an unsuccessful alert
-  static void showUnsuccessfulAlert(BuildContext context,String Message,int a) {
-    showAlert(
-      context,
-      'Failure',
-      Message,
-      Colors.blue,
-      a
-    );
-  }
+    static void showUnsuccessfulAlert(BuildContext context,String Message,int a) {
+      showAlert(
+        context,
+        'Failure',
+        Message,
+        Colors.blue,
+        a
+      );
+    }
+
 
   static void showErrorAlert(BuildContext context,String Message,int a) {
     showAlert(
@@ -154,6 +162,91 @@ class GlobalClass {
       },
     );
   }
+
+
+  static void showAlert1(BuildContext context, String title, String message,
+      Color color, int a,
+      {Widget? destinationPage}) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+      return WillPopScope(
+          onWillPop: () async {
+            // Prevent the dialog from closing when back button is pressed
+            return false;
+          },
+          child: AlertDialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15),
+            ),
+            title: Row(
+              children: [
+                Icon(Icons.info, color: color, size: 28),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: "Poppins-Regular",
+                      color: color,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            content: Text(
+              message,
+              style: TextStyle(
+                  fontFamily: "Poppins-Regular",
+                  fontSize: 16,
+                  color: Colors.black87),
+            ),
+            actions: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: color, // Button background color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () {
+                  if (destinationPage != null) {
+                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => destinationPage),
+                    );
+                  } else {
+                    if (a == 1) {
+                      Navigator.of(context).pop(); // Close the dialog
+                    } else if (a == 2) {
+                      Navigator.of(context).pop(); // Close the dialog
+                      Navigator.of(context).pop(); // Close the dialog
+                    } else {
+                      Navigator.of(context).pop(); // Close the dialog
+                      Navigator.of(context).pop(); // Close the page
+                      Navigator.of(context).pop(); // Close the page
+                      Navigator.of(context).pop(); // Close the page
+                    }
+                  }
+                },
+                child: Text(
+                  'OK',
+                  style: TextStyle(
+                      fontFamily: "Poppins-Regular", color: Colors.white),
+                ),
+              ),
+            ],
+          ));
+        },
+    );
+  }
+
+
   int calculateAge(DateTime birthDate) {
     DateTime today = DateTime.now();
     int age = today.year - birthDate.year;

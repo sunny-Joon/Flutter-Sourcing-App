@@ -139,6 +139,15 @@ class ApplicationgetAllDataModel {
   String fatheRFirstName;
   String fatheRMiddleName;
   String fatheRLastName;
+
+  String o_Address1;
+  String o_Address2;
+  String o_Address3;
+  String o_City;
+  String o_State;
+  String o_Pincode;
+
+
   int schoolingChildren;
   int otherDependents;
   bool isCkyCisDone;
@@ -199,6 +208,13 @@ class ApplicationgetAllDataModel {
     required this.bankName,
     required this.bankIfcs,
     required this.bankAccName,
+    required this.o_Address1,
+    required this.o_Address2,
+    required this.o_Address3,
+    required this.o_City,
+    required this.o_State,
+    required this.o_Pincode,
+
 
     required this.bankType,
     required this.bankAddress,
@@ -278,8 +294,8 @@ class ApplicationgetAllDataModel {
   });
 
   factory ApplicationgetAllDataModel.fromJson(Map<String, dynamic> json) => ApplicationgetAllDataModel(
-    fiId: json["fi_Id"]??"",
-    fiCode: json["fiCode"]??"",
+    fiId: json["fi_Id"]??0,
+    fiCode: json["fiCode"]??0,
     creator: json["creator"]??"",
     dob: json["dob"]??"",
     age: json["age"]??"",
@@ -308,14 +324,14 @@ class ApplicationgetAllDataModel {
     subDistrict: json["sub_District"]??"",
     village: json["village"]??"",
     aadharNo: json["aadhar_no"]??"",
-    isAadharVerified: json["isAadharVerified"],
+    isAadharVerified: json["isAadharVerified"]??false,
     panNo: json["pan_no"]??"",
-    isPanVerified: json["isPanVerified"],
+    isPanVerified: json["isPanVerified"]??false,
     dl: json["dl"]??"",
     dLExpiry: json["dL_Expiry"]??"",
-    isDlVerified: json["isDlVerified"],
+    isDlVerified: json["isDlVerified"]??"",
     voterId: json["voter_id"]??"",
-    isVoterVerified: json["isVoterVerified"] ,
+    isVoterVerified: json["isVoterVerified"]??false ,
     passbook: json["passbook"]??"",
     passport: json["passport"]??"",
     passportExpiry: json["passport_expiry"]??"",
@@ -323,11 +339,17 @@ class ApplicationgetAllDataModel {
     bankName: json["bank_name"]??"",
     bankIfcs: json["bank_IFCS"]??"",
     bankAccName: json["bankAcc_Name"]??"",
+    o_Address1: json["o_Address1"]??"",
+    o_Address2: json["o_Address2"]??"",
+    o_Address3: json["o_Address3"]??"",
+    o_City: json["o_City"]??"",
+    o_State: json["o_State"]??"",
+    o_Pincode: json["o_Pincode"]??"",
 
     bankType: json["bankType"]??"",
     bankAddress: json["bank_address"]??"",
-    isHouseRental: json["is_house_rental"],
-    loanAmount: json["loan_amount"],
+    isHouseRental: json["is_house_rental"]??false,
+    loanAmount: json["loan_amount"]??0,
     loanDuration: json["loan_Duration"]??"",
     emi: json["emi"]??0,
     vehicleType: json["vehicle_type"]??"",
@@ -336,18 +358,18 @@ class ApplicationgetAllDataModel {
     branchCode: json["branch_code"]??"",
     religion: json["religion"]??"Hindu",
     smCode: json["smCode"]??"",
-    isPhnnoVerified: json["is_phnno_verified"],
-    userId: json["user_Id"],
-    propertyArea: json["property_area"]==0?1:json["property_area"],
-    isExserviceman: json["is_exserviceman"],
+    isPhnnoVerified: json["is_phnno_verified"]??false,
+    userId: json["user_Id"]??"",
+    propertyArea: json["property_area"]=="0"?"1":json["property_area"],
+    isExserviceman: json["is_exserviceman"]??false,
     latitude: json["latitude"]??0.0,
     longitude: json["longitude"]??0.0,
     geoDateTime: json["geoDateTime"]??"",
     eSignUuid: json["eSignUUID"]??"",
-    isNameVerify: json["isNameVerify"],
+    isNameVerify: json["isNameVerify"]??false,
     noOfChildren: json["no_of_children"]==0?1:json["no_of_children"],
     emailId: json["email_Id"]??"",
-    isHandicap: json["isHandicap"],
+    isHandicap: json["isHandicap"]??false,
     handicapType: json["handicap_type"]??"",
     placeOfBirth: json["place_Of_Birth"]??"",
     forM60TnxDt: json["forM60_TNX_DT"]??"",
@@ -355,7 +377,7 @@ class ApplicationgetAllDataModel {
     maritaLStatus: json["maritaL_STATUS"]??"",
     reservatioNCategory: json["reservatioN_CATEGORY"]??"",
     encProperty: json["enc_Property"]??"",
-    isActive: json["isActive"],
+    isActive: json["isActive"]??false,
     createdOn: json["createdOn"]??"",
     createdBy: json["createdBy"]??"",
     modifiedOn: json["modifiedOn"]??"",
@@ -387,9 +409,9 @@ class ApplicationgetAllDataModel {
     fatheRLastName: json["fatheR_LAST_NAME"]??"",
     schoolingChildren: json["schoolingChildren"]==0?1:json["schoolingChildren"],
     otherDependents: json["otherDependents"]==0?1:json["otherDependents"] ,
-    isCkyCisDone: json["isCKYCisDone"],
+    isCkyCisDone: json["isCKYCisDone"]??false,
     errormsg: json["errormsg"]??"",
-    isvalid: json["isvalid"],
+    isvalid: json["isvalid"]??false,
     financialStatus: json["financialStatus"]??"",
     relationWithBorrower: json["relation_With_Borrower"]??"",
     loanReason: json["loan_Reason"]??"",
@@ -452,6 +474,13 @@ class ApplicationgetAllDataModel {
     "bank_name": bankName,
     "bank_IFCS": bankIfcs,
     "bankAcc_Name": bankAccName,
+
+    "o_Address1":o_Address1,
+    "o_Address2":o_Address2,
+    "o_Address3":o_Address3,
+    "o_City"    :o_City,
+    "o_State"   :o_State,
+    "o_Pincode" :o_Pincode,
 
     "bankType": bankType,
     "bank_address": bankAddress,

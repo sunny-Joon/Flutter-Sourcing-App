@@ -145,7 +145,7 @@ class _ProfileState extends State<Profile> {
       File imageFile = File(pickedFile.path);
       await _cropImage(imageFile);
     } else {
-      print('No image selected.');
+      print(AppLocalizations.of(context)!.noimageselected);
     }
   }
 
@@ -319,7 +319,7 @@ class _ProfileState extends State<Profile> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height / 6,
                         child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(5),
                           child: GridView.builder(
 
                             padding: EdgeInsets.zero,
@@ -663,14 +663,13 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow(Icons.credit_card, AppLocalizations.of(context)!.id
-                , _idController),
+            _buildDetailRow(Icons.credit_card, AppLocalizations.of(context)!.id, _idController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.person, AppLocalizations.of(context)!.name , _nameController),
+            _buildDetailRow(Icons.person, AppLocalizations.of(context)!.nameid, _nameController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.phone, AppLocalizations.of(context)!.mno , _mobileNoController),
+            _buildDetailRow(Icons.phone, AppLocalizations.of(context)!.mnoid, _mobileNoController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.work, AppLocalizations.of(context)!.designation , _designationController),
+            _buildDetailRow(Icons.work, AppLocalizations.of(context)!.designation, _designationController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
 /*
             _buildDetailList(Icons.admin_panel_settings, AppLocalizations.of(context)!.creater , _creatorController,),
@@ -679,7 +678,7 @@ class _ProfileState extends State<Profile> {
               children: [
                 Icon(Icons.admin_panel_settings, color: Color(0xFFD42D3F)),
                 Text(
-                  'Switch Creator ',
+                  AppLocalizations.of(context)!.selectcreator,
                   style: TextStyle(
                     fontFamily: "Poppins-Regular",
                     fontSize: 11,
@@ -710,8 +709,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildDetailRow(
-      IconData icon, String label, TextEditingController controller) {
+  Widget _buildDetailRow(IconData icon, String label, TextEditingController controller) {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
@@ -731,8 +729,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildDetailList(
-      IconData icon, String label, TextEditingController controller) {
+  Widget _buildDetailList(IconData icon, String label, TextEditingController controller) {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
@@ -793,7 +790,11 @@ class _ProfileState extends State<Profile> {
 
 
   Future<void> punchInOut(BuildContext context) async {
-    EasyLoading.show(status: "Please wait...");
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     var _latitude = 0.0;
     var _longitude = 0.0;
     currentLocation _locationService = currentLocation();
@@ -818,7 +819,7 @@ class _ProfileState extends State<Profile> {
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text("OK"),
+              child: Text(AppLocalizations.of(context)!.ok),
             ),
           ],
         ),
@@ -827,9 +828,11 @@ class _ProfileState extends State<Profile> {
       return;
     }
 
-    EasyLoading.show(
-      status: 'Loading...',
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
     Map<String, dynamic> requestBody = {
       "location": "$_latitude,$_longitude",
@@ -858,9 +861,11 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> attendanceStatus(BuildContext context) async {
-    EasyLoading.show(
-      status: 'Loading...',
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     final api = Provider.of<ApiService>(context, listen: false);
 
@@ -888,7 +893,7 @@ class _ProfileState extends State<Profile> {
         EasyLoading.dismiss();
       } else {
         EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(context, "Attendance Status Fail", 1);
+        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
       }
     }).catchError((error) {
       EasyLoading.dismiss();
@@ -938,7 +943,7 @@ class _ProfileState extends State<Profile> {
         return AlertDialog(
           backgroundColor: Colors.white,
           title: Text(
-            'Select Creator',
+            AppLocalizations.of(context)!.selectcreator,
             style: TextStyle(color: Color(0xFFD42D3F)),
           ),
           content: SizedBox(
@@ -984,7 +989,7 @@ class _ProfileState extends State<Profile> {
                 minimumSize: Size(80, 40),
               ),
               child: Text(
-                'Cancel',
+        AppLocalizations.of(context)!.cancel,
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -1008,7 +1013,7 @@ class _ProfileState extends State<Profile> {
                 }
                 Navigator.pop(context); // Close the dialog
               },
-              child: Text('Select',style: TextStyle(color: Colors.white,)),
+              child: Text(AppLocalizations.of(context)!.select,style: TextStyle(color: Colors.white,)),
             ),
           ],
         );
@@ -1045,7 +1050,11 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
   // API call function
   Future<void> _MorphoRechargeApi(
       BuildContext context, double latitude, double longitude) async {
-    EasyLoading.show(status: 'Loading...');
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
@@ -1057,31 +1066,33 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
       "Long": longitude.toString()
     };
 
-    await api
-        .morphorecharge(GlobalClass.dbName, GlobalClass.token, requestBody)
-        .then((value) async {
+    await api.morphorecharge(GlobalClass.dbName, GlobalClass.token, requestBody).then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
         GlobalClass.showSuccessAlert(context, value.message, 2);
+
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(
-            context, "Unsuccessful to send Request", 1);
+            context, value.message, 1);
+        Navigator.pop(context);
       }
     }).catchError((error) {
       EasyLoading.dismiss();
-      GlobalClass.showUnsuccessfulAlert(context, "Server side Error", 1);
+      GlobalClass.showUnsuccessfulAlert(context, AppLocalizations.of(context)!.serversideerror, 1);
+      Navigator.pop(context);
     });
+
   }
 
   void _onSubmit() async {
     if (_deviceSirNoController.text.isEmpty) {
-      GlobalClass.showErrorAlert(context, "Please enter Your Morpho S/N.", 1);
+      GlobalClass.showErrorAlert(context, AppLocalizations.of(context)!.pleaseenteryourmorpho, 1);
       return;
     }
 
     if (_deviceSirNoController.text.length != 11) {
-      GlobalClass.showErrorAlert(context, "Invalid Morpho S/N. Please check and try again.", 1);
+      GlobalClass.showErrorAlert(context, AppLocalizations.of(context)!.invalidmorpho, 1);
       return;
     }
 
@@ -1136,7 +1147,7 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter Device S/N';
+                    return AppLocalizations.of(context)!.pleaseenteryourmorpho;
                   }
                   return null;
                 },

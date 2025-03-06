@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_sourcing_app/on_boarding.dart';
 import 'dart:math';
 import '../../Models/bank_names_model.dart';
 import '../../api_service.dart';
@@ -132,10 +133,20 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
             // Try Again Button
             GestureDetector(
               onTap: () {
-                GlobalClass.showSuccessAlert(context, "Crif Generated", 3);
+                // Navigate to the next page
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => OnBoarding()
+
+
+                  ),
+
+                );
               },
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                padding:
+                EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Colors.redAccent, Color(0xFFD42D3F)],
@@ -176,7 +187,6 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
       ),
     );
   }
-
   Future<void> initializeCrif(BuildContext context) async {
     EasyLoading.show(status: "Please wait...");
 

@@ -3,8 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/collectionstatus_model.dart';
 import 'package:provider/provider.dart';
-import '../../api_service.dart';
-import '../global_class.dart';
+
+import 'api_service.dart';
+import 'global_class.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class CollectionStatus extends StatefulWidget {
   @override
@@ -17,7 +20,11 @@ class _CollectionStatusState extends State<CollectionStatus> {
   List<EmiCollection> emiCollections = [];
 
   Future<void> collectionStatus(BuildContext context, String smcode) async {
-    EasyLoading.show(status: 'Loading...');
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     final api = Provider.of<ApiService>(context, listen: false);
     return await api
         .collectionStatus(GlobalClass.token, GlobalClass.dbName, smcode)
@@ -27,6 +34,12 @@ class _CollectionStatusState extends State<CollectionStatus> {
         setState(() {
           emis = value.data.emis;
           emiCollections = value.data.emiCollections;
+          if((emis.isEmpty || emis.length==0) &&(emiCollections.isEmpty || emiCollections.length==0)){
+            GlobalClass.showUnsuccessfulAlert(context, AppLocalizations.of(context)!.recordnotfound, 2);
+          }else{
+            EasyLoading.dismiss();
+          }
+
         });
       } else {
         EasyLoading.dismiss();
@@ -134,7 +147,7 @@ class _CollectionStatusState extends State<CollectionStatus> {
                             controller: _searchController,
                             decoration: InputDecoration(
                               counterText: "",
-                              hintText: 'Enter Case code',
+                              hintText:  AppLocalizations.of(context)!.pleaseentercasecode,
                               filled: true, // Set the background color of the TextField
                               fillColor: Colors.white, // Set the background color to white
                               contentPadding: EdgeInsets.all(10), // Padding inside the TextField
@@ -149,7 +162,7 @@ class _CollectionStatusState extends State<CollectionStatus> {
                                     if(_searchController.text.isNotEmpty && regex.hasMatch(_searchController.text)) {
                                       collectionStatus(context,_searchController.text); // Call your API function here
                                     } else {
-                                      GlobalClass.showErrorAlert(context, "Please Enter Correct Case code",1);
+                                      GlobalClass.showErrorAlert(context,   AppLocalizations.of(context)!.pleaseentercasecode,1);
                                     }
                                   }
 
@@ -198,7 +211,7 @@ class _CollectionStatusState extends State<CollectionStatus> {
                       padding: EdgeInsets.symmetric(
                           vertical: 10, horizontal: 10),
                       child: Text(
-                        'Installment (${emis.length})',
+                        '${AppLocalizations.of(context)!.installment} (${emis.length})',
                         style: TextStyle(
                             color: Colors.grey.shade700,
                             fontWeight: FontWeight.bold),
@@ -327,7 +340,7 @@ class _CollectionStatusState extends State<CollectionStatus> {
                       padding: EdgeInsets.symmetric(
                           vertical: 10, horizontal: 10),
                       child: Text(
-                        'Paid Installment (${emiCollections.length})',
+                        '${AppLocalizations.of(context)!.pinstallment} (${emiCollections.length})',
                         style: TextStyle(
                             color: Colors.grey.shade700,
                             fontWeight: FontWeight.bold),

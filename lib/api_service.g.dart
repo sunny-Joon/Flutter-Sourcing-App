@@ -511,6 +511,7 @@ class _ApiService implements ApiService {
     String dob,
     String age,
     String gender,
+    String guardianName,
     String pPhone,
     String fatherFirstName,
     String fatherMiddleName,
@@ -579,6 +580,10 @@ class _ApiService implements ApiService {
     _data.fields.add(MapEntry(
       'gender',
       gender,
+    ));
+    _data.fields.add(MapEntry(
+      'Guardian_Name',
+      guardianName,
     ));
     _data.fields.add(MapEntry(
       'p_Phone',
@@ -2378,13 +2383,13 @@ class _ApiService implements ApiService {
   Future<SecondEsignModel> BorrowerList2(
     String token,
     String dbName,
-    String Creator,
+    String CreatorId,
     String Banchcode,
     String IMEINO,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
-      r'Creator': Creator,
+      r'CreatorId': CreatorId,
       r'Banchcode': Banchcode,
       r'IMEINO': IMEINO,
     };
@@ -3509,6 +3514,47 @@ class _ApiService implements ApiService {
     late QrResponseModel _value;
     try {
       _value = QrResponseModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<CommonStringModel2> getReferalCode(
+    String token,
+    String dbname,
+    String username,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'username': username};
+    final _headers = <String, dynamic>{
+      r'Authorization': token,
+      r'dbname': dbname,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<CommonStringModel2>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'Tracklocations/GetCSOReferralCode',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late CommonStringModel2 _value;
+    try {
+      _value = CommonStringModel2.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

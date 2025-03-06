@@ -83,7 +83,11 @@ class _HomePageState extends State<HomePage> {
 
   }
   Future<void> csoRankApi(BuildContext context) async {
-  //  EasyLoading.show(status: "Loading...");
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
 
 
@@ -105,7 +109,7 @@ class _HomePageState extends State<HomePage> {
         });
       } else{
         message = 'Calculating...';
-      GlobalClass.showUnsuccessfulAlert(context, "Rank Not Fetched", 1);
+     // GlobalClass.showUnsuccessfulAlert(context, response.message, 1);
       }
     } catch (err) {
       GlobalClass.showErrorAlert(context, "Error in fetching Rank", 1);

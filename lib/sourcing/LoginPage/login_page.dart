@@ -1,22 +1,27 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/sourcing/LoginPage/share_device_id.dart';
-import 'package:flutter_sourcing_app/sourcing/LoginPage/terms_conditions.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_sourcing_app/Models/banner_post_model.dart';
+import 'package:flutter_sourcing_app/global_class.dart';
+import 'package:flutter_sourcing_app/popup_dialog.dart';
+import 'package:flutter_sourcing_app/share_device_id.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../api_service.dart';
-import '../OnBoarding/fragments.dart';
-import '../global_class.dart';
+import 'EncryptionUtils.dart';
+import 'api_service.dart';
 import 'chat_bot.dart';
 import 'device_id_generator.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'fragments.dart';
+import 'Models/login_model.dart';
 import 'languageprovider.dart';
+import 'terms_conditions.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -42,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     // Define your custom color
     const Color customColor = Color(0xFFD42D3F);
-    TextEditingController passwordControllerlogin = TextEditingController(text: '12345');
+    TextEditingController passwordControllerlogin = TextEditingController(text: 'Admin@12');
     final TextEditingController mobileControllerlogin = TextEditingController(text: 'GRST002064');
     String deviceId = '';
 
@@ -60,13 +65,22 @@ class _LoginPageState extends State<LoginPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Asset image with PopupMenuButton for the dropdown
                   PopupMenuButton<String>(
-                    icon: Image.asset(
-                      'assets/Images/languages.png', // Path to your asset image
-                      height: 30.0, // Adjust the size as needed
-                      width: 30.0,
-                    ),
+                    color: Colors.blueGrey,
+                    icon: Container(
+                      padding: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Image.asset(
+                          'assets/Images/languages.png',
+                          height: 30.0,
+                          width: 30.0,
+                        ),
+                      ),),
                     onSelected: (value) {
                       context.read<languageprovider>().changelanguage(value);
                     },
@@ -74,7 +88,20 @@ class _LoginPageState extends State<LoginPage> {
                       return languageprovider.language.map((language) {
                         return PopupMenuItem<String>(
                           value: language['locale'],
-                          child: Text(language['name']),
+                          child: Container(
+                            color: Colors.yellow,
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  language['icon'],
+                                  height: 24,
+                                  width: 24,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(language['name']),
+                              ],
+                            ),
+                          ),
                         );
                       }).toList();
                     },
@@ -84,8 +111,6 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
@@ -227,8 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                   ElevatedButton(
                       onPressed: () async {
                         if(validateIdPassword(context,mobileControllerlogin.text, passwordControllerlogin.text)){
-                            _getLogin(mobileControllerlogin.text,
-                                passwordControllerlogin.text, context);
+                          _getLogin(mobileControllerlogin.text, passwordControllerlogin.text, context);
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -475,12 +499,21 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _getLogin( String userName, String userPassword, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-     EasyLoading.show(status: 'Loading...',);
+
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
     final api = Provider.of<ApiService>(context, listen: false);
+
+
     Map<String, dynamic> requestBody = {
       "userName": userName,
-      "password": userPassword,
+      "password": EncryptionUtils.encrypt(userPassword),
       "GsmId":  prefs.getString("GSMID")!
+
     };
     // String? DeviceID = await generateDeviceId(userName) as String?;
     return await api.getLogins("0646498585477244", GlobalClass.dbName, requestBody)
@@ -497,7 +530,6 @@ class _LoginPageState extends State<LoginPage> {
                   return; // Stop further execution
                 }*/
                 GlobalClass.token = 'Bearer ' + refToken;
-                GlobalClass.userType = 'Sourcing';
                 GlobalClass.deviceId = value.data.tokenDetails.deviceSrNo;
 
                 GlobalClass.id = value.data.tokenDetails.userName;
@@ -808,15 +840,10 @@ class _LoginPageState extends State<LoginPage> {
 
   bool validateIdPassword(BuildContext context, String? id, String? password) {
     if (id == null || id.isEmpty || password == null || password.isEmpty) {
-      GlobalClass.showErrorAlert(context, "Please enter ID and Password", 1);
+      GlobalClass.showErrorAlert(context, AppLocalizations.of(context)!.pleaseidandpass, 1);
       return false;
-    }else if(id=='111'&& password == '111'){
-      GlobalClass.userType = 'Dealer';
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Fragments( )));
-      return true;
-    }else if (password.length < 5 || id.length < 10 || id.length > 11) {
-      GlobalClass.showErrorAlert(context, "Invalid ID or Password. Please check and try again.", 1);
+    } else if (password.length < 8 || id.length < 10 || id.length > 11) {
+      GlobalClass.showErrorAlert(context, AppLocalizations.of(context)!.invalididandpass, 1);
       return false;
     } else {
       return true;
@@ -860,3 +887,5 @@ class _LoginPageState extends State<LoginPage> {
 
 
 }
+
+
