@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/api_service.dart';
-import 'package:flutter_sourcing_app/global_class.dart';
-
 import '../Models/track_location_request.dart';
+import '../sourcing/global_class.dart';
 import '../utils/current_location.dart';
 
 
