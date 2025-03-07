@@ -863,6 +863,9 @@ class _KYCPageState extends State<KYCPage> {
       String loan_Duration = selectedloanDuration!;
       String loan_amount = _loan_amountController.text.toString();
 
+      int ModuleTypeId = GlobalClass.creator.toLowerCase().startsWith("vh") ? 2 : 1;
+      print("ModuleTypeId $ModuleTypeId");
+
       final api = Provider.of<ApiService>(context, listen: false);
 
       await api
@@ -905,6 +908,7 @@ class _KYCPageState extends State<KYCPage> {
         loan_amount,
         selectedLoanReason!,
         GlobalClass.creatorId,
+        ModuleTypeId,
         _imageFile!,
       )
           .then((value) async {

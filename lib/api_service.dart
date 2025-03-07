@@ -202,6 +202,7 @@ abstract class ApiService {
       @Part( name:"Loan_amount") String loan_amount,
       @Part( name:"Loan_Reason") String loan_Reason,
       @Part( name:"CreatorId") String CreatorId,
+      @Part( name:"ModuleTypeId") int ModuleTypeId,
       @Part( name: "Picture") File Picture);
 
   @POST("FiSourcing/FiDocsUploads")

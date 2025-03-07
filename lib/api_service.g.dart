@@ -539,6 +539,7 @@ class _ApiService implements ApiService {
     String loan_amount,
     String loan_Reason,
     String CreatorId,
+    int ModuleTypeId,
     File Picture,
   ) async {
     final _extra = <String, dynamic>{};
@@ -692,6 +693,10 @@ class _ApiService implements ApiService {
     _data.fields.add(MapEntry(
       'CreatorId',
       CreatorId,
+    ));
+    _data.fields.add(MapEntry(
+      'ModuleTypeId',
+      ModuleTypeId.toString(),
     ));
     _data.files.add(MapEntry(
       'Picture',
