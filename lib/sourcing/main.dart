@@ -275,7 +275,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
          if (response.statuscode == 200) {
 
-
            bool isvalid = response.data[0].isvalid;
            print("isvalid $isvalid");
 

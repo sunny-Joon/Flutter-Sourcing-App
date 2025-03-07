@@ -19,7 +19,6 @@ import '../LoginPage/login_page.dart';
 import '../global_class.dart';
 import '../notifications.dart';
 
-
 class Profile extends StatefulWidget {
   @override
   _ProfileState createState() => _ProfileState();
@@ -163,11 +162,9 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFD42D3F),
-
-
       endDrawer: Container(
         alignment: Alignment.center,
-        width:120,
+        width: 120,
         height: MediaQuery.of(context).size.height /
             2, // Set the height of the drawer
 
@@ -187,10 +184,11 @@ class _ProfileState extends State<Profile> {
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children:  [
-                    Icon(Icons.currency_rupee,size: 40,color: Colors.blue),
+                  children: [
+                    Icon(Icons.currency_rupee, size: 40, color: Colors.blue),
                     SizedBox(height: 5),
-                    Text(AppLocalizations.of(context)!.qrpaymentreport, style: TextStyle(fontSize: 8)),
+                    Text(AppLocalizations.of(context)!.qrpaymentreport,
+                        style: TextStyle(fontSize: 8)),
                   ],
                 ),
               ),
@@ -203,10 +201,11 @@ class _ProfileState extends State<Profile> {
                   );
                 },
                 title: Column(
-                  children:  [
-                    Icon(Icons.currency_rupee,size: 50,color: Colors.blue),
+                  children: [
+                    Icon(Icons.currency_rupee, size: 50, color: Colors.blue),
                     SizedBox(height: 5),
-                    Text(AppLocalizations.of(context)!.collectionreport, style: TextStyle(fontSize: 8)),
+                    Text(AppLocalizations.of(context)!.collectionreport,
+                        style: TextStyle(fontSize: 8)),
                   ],
                 ),
               ),
@@ -217,9 +216,14 @@ class _ProfileState extends State<Profile> {
                 },
                 title: Column(
                   children: [
-                    const Icon(Icons.fingerprint,size: 50,color: Colors.green,),
+                    const Icon(
+                      Icons.fingerprint,
+                      size: 50,
+                      color: Colors.green,
+                    ),
                     const SizedBox(height: 5),
-                    Text(AppLocalizations.of(context)!.morpho, style: const TextStyle(fontSize: 8)),
+                    Text(AppLocalizations.of(context)!.morpho,
+                        style: const TextStyle(fontSize: 8)),
                   ],
                 ),
               ),
@@ -228,31 +232,30 @@ class _ProfileState extends State<Profile> {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SubmitSsQrTransaction(
-                      smcode: "",
-                    )),
+                    MaterialPageRoute(
+                        builder: (context) => SubmitSsQrTransaction(
+                              smcode: "",
+                            )),
                   );
                 },
-                title:Center(
+                title: Center(
                   child: Column(
-                  children: [
-                    const Icon(Icons.currency_rupee_rounded,size: 50,color: Colors.blue),
-                    const SizedBox(height: 5),
-                     Text(
-                       AppLocalizations.of(context)!.payment,
+                    children: [
+                      const Icon(Icons.currency_rupee_rounded,
+                          size: 50, color: Colors.blue),
+                      const SizedBox(height: 5),
+                      Text(
+                        AppLocalizations.of(context)!.payment,
                         style: const TextStyle(fontSize: 7),
                       ),
-                  ],
+                    ],
                   ),
-
                 ),
               )
             ],
           ),
         ),
-
       ),
-
       endDrawerEnableOpenDragGesture: true,
       body: SingleChildScrollView(
         child: ConstrainedBox(
@@ -286,12 +289,16 @@ class _ProfileState extends State<Profile> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                          onPressed: (){
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => NotificationPage()));
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => NotificationPage()));
                           },
-                          icon: Icon(Icons.notification_add,color: Colors.white,)
-                      ),
+                          icon: Icon(
+                            Icons.notification_add,
+                            color: Colors.white,
+                          )),
                       _buildCenterLogo(),
                       _buildLogoutButton(context),
                     ],
@@ -302,9 +309,8 @@ class _ProfileState extends State<Profile> {
                 top: 110,
                 left: 10,
                 right: 10,
-                child:_buildProfilePicture(),
+                child: _buildProfilePicture(),
               ),
-
               Positioned.fill(
                 top: 220,
                 left: 10,
@@ -314,17 +320,15 @@ class _ProfileState extends State<Profile> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                   //   SizedBox(height: MediaQuery.of(context).size.width / 3),
+                      //   SizedBox(height: MediaQuery.of(context).size.width / 3),
                       _buildUserDetailsCard(),
                       SizedBox(
                         height: MediaQuery.of(context).size.height / 6,
                         child: Padding(
                           padding: const EdgeInsets.all(5),
                           child: GridView.builder(
-
                             padding: EdgeInsets.zero,
-
-                             gridDelegate:
+                            gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 4,
                               crossAxisSpacing: 1,
@@ -334,7 +338,9 @@ class _ProfileState extends State<Profile> {
                             itemBuilder: (context, index) {
                               if (index == 0) {
                                 return _buildGridItem(
-                                    AppLocalizations.of(context)!.qrpaymentreport, Icons.qr_code, () {
+                                    AppLocalizations.of(context)!
+                                        .qrpaymentreport,
+                                    Icons.qr_code, () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -344,29 +350,34 @@ class _ProfileState extends State<Profile> {
                                 });
                               } else if (index == 1) {
                                 return _buildGridItem(
-                                    AppLocalizations.of(context)!.morpho, Icons.fingerprint,
-                                    () {
+                                    AppLocalizations.of(context)!.morpho,
+                                    Icons.fingerprint, () {
                                   MorphoRechargeDialog.show(context);
                                 });
-                              }else if (index == 2) {
+                              } else if (index == 2) {
                                 return _buildGridItem(
-                                    AppLocalizations.of(context)!.collectionreport, Icons.file_present_rounded,
-                                    () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => CollectionStatus()),
-                                      );
+                                    AppLocalizations.of(context)!
+                                        .collectionreport,
+                                    Icons.file_present_rounded, () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            CollectionStatus()),
+                                  );
                                 });
                               } else if (index == 3) {
                                 return _buildGridItem(
-                                    AppLocalizations.of(context)!.payment, Icons.currency_rupee,
-                                    () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => SubmitSsQrTransaction(
-                                          smcode: "",
-                                        )),
-                                      );
+                                    AppLocalizations.of(context)!.payment,
+                                    Icons.currency_rupee, () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            SubmitSsQrTransaction(
+                                              smcode: "",
+                                            )),
+                                  );
                                 });
                               }
                               return const SizedBox();
@@ -405,7 +416,6 @@ class _ProfileState extends State<Profile> {
                       ),
                       SizedBox(height: 20),
 
-
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: Card(
@@ -420,7 +430,8 @@ class _ProfileState extends State<Profile> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(0),
                                   image: DecorationImage(
-                                    image: AssetImage('assets/Images/earn6.png'),
+                                    image:
+                                        AssetImage('assets/Images/earn6.png'),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -429,42 +440,55 @@ class _ProfileState extends State<Profile> {
                                 padding: EdgeInsets.all(8.0),
                                 child: Image.asset(
                                   'assets/Images/earn5.png',
-                                  width: MediaQuery.of(context).size.width * 0.95,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.95,
                                   height: 280,
                                   fit: BoxFit.cover,
                                 ),
                               ),
                               Positioned(
-                                bottom: MediaQuery.of(context).size.height * 0.03,
+                                bottom:
+                                    MediaQuery.of(context).size.height * 0.03,
                                 left: MediaQuery.of(context).size.width * 0.02,
                                 child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => referandearnactivity()),
+                                          builder: (context) =>
+                                              referandearnactivity()),
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFFD42D3F),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12))),
                                     padding: EdgeInsets.symmetric(
-                                      horizontal: MediaQuery.of(context).size.width * 0.04,
-                                      vertical: MediaQuery.of(context).size.height * 0.01,
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.04,
+                                      vertical:
+                                          MediaQuery.of(context).size.height *
+                                              0.01,
                                     ),
                                     textStyle: TextStyle(
-                                      fontSize: MediaQuery.of(context).size.width * 0.035,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.035,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  child: Text(AppLocalizations.of(context)!.refernow,style: TextStyle(color: Colors.white),),
+                                  child: Text(
+                                    AppLocalizations.of(context)!.refernow,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-
 
                       SizedBox(height: 50),
                     ],
@@ -498,7 +522,7 @@ class _ProfileState extends State<Profile> {
             ),
           ),
         ),
-       // Space between icon and text
+        // Space between icon and text
         Text(
           title,
           textAlign: TextAlign.center,
@@ -511,7 +535,6 @@ class _ProfileState extends State<Profile> {
       ],
     );
   }
-
 
   Widget _buildGridItem1(String title, IconData icon, VoidCallback onTap) {
     return Card(
@@ -571,17 +594,19 @@ class _ProfileState extends State<Profile> {
                   children: [
                     _buildShinyButton(
                       AppLocalizations.of(context)!.no,
-                          () {
+                      () {
                         EasyLoading.dismiss();
                         Navigator.of(context).pop(true);
                       },
                     ),
                     _buildShinyButton(
                       AppLocalizations.of(context)!.yes,
-                          () {
+                      () {
                         EasyLoading.dismiss();
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => LoginPage()));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()));
                       },
                     ),
                   ],
@@ -608,10 +633,12 @@ class _ProfileState extends State<Profile> {
       child: Icon(icon, size: 16, color: color),
     );
   }
+
   Widget _buildShinyButton(String text, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white, backgroundColor: Color(0xFFD42D3F), // foreground/text
+        foregroundColor: Colors.white,
+        backgroundColor: Color(0xFFD42D3F), // foreground/text
       ),
       onPressed: onPressed,
       child: Text(text),
@@ -663,53 +690,57 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow(Icons.credit_card, AppLocalizations.of(context)!.id, _idController),
+            _buildDetailRow(Icons.credit_card, AppLocalizations.of(context)!.id,
+                _idController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.person, AppLocalizations.of(context)!.nameid, _nameController),
+            _buildDetailRow(Icons.person, AppLocalizations.of(context)!.nameid,
+                _nameController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.phone, AppLocalizations.of(context)!.mnoid, _mobileNoController),
+            _buildDetailRow(Icons.phone, AppLocalizations.of(context)!.mnoid,
+                _mobileNoController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
-            _buildDetailRow(Icons.work, AppLocalizations.of(context)!.designation, _designationController),
+            _buildDetailRow(
+                Icons.work,
+                AppLocalizations.of(context)!.designation,
+                _designationController),
             Divider(thickness: 2, indent: 16, endIndent: 16),
 /*
             _buildDetailList(Icons.admin_panel_settings, AppLocalizations.of(context)!.creater , _creatorController,),
 */
-            Row(
-              children: [
-                Icon(Icons.admin_panel_settings, color: Color(0xFFD42D3F)),
-                Text(
-                  AppLocalizations.of(context)!.selectcreator,
+            Row(children: [
+              Icon(Icons.admin_panel_settings, color: Color(0xFFD42D3F)),
+              Text(
+                AppLocalizations.of(context)!.selectcreator,
+                style: TextStyle(
+                  fontFamily: "Poppins-Regular",
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  _creatorController.text,
                   style: TextStyle(
                     fontFamily: "Poppins-Regular",
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFD42D3F),
                   ),
                 ),
-                Expanded(
-                  child: Text(
-                    _creatorController.text,
-                    style: TextStyle(
-                      fontFamily: "Poppins-Regular",
-                      color: Color(0xFFD42D3F),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.edit, color: Color(0xFFD42D3F)),
-                  onPressed: () {
-                    _showCreatorDialog(context);
-                  },
-                )
-              ]
-            ),
-
+              ),
+              IconButton(
+                icon: Icon(Icons.edit, color: Color(0xFFD42D3F)),
+                onPressed: () {
+                  _showCreatorDialog(context);
+                },
+              )
+            ]),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDetailRow(IconData icon, String label, TextEditingController controller) {
+  Widget _buildDetailRow(
+      IconData icon, String label, TextEditingController controller) {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
@@ -729,7 +760,8 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildDetailList(IconData icon, String label, TextEditingController controller) {
+  Widget _buildDetailList(
+      IconData icon, String label, TextEditingController controller) {
     return Row(
       children: [
         Icon(icon, color: Color(0xFFD42D3F)),
@@ -745,8 +777,10 @@ class _ProfileState extends State<Profile> {
         SizedBox(width: 8), // Add some space between the label and the dropdown
         Expanded(
           child: Container(
-            height: 40, // Set the height to make it smaller
-            padding: EdgeInsets.symmetric(horizontal: 8), // Add horizontal padding
+            height: 40,
+            // Set the height to make it smaller
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            // Add horizontal padding
             decoration: BoxDecoration(
               border: Border.all(color: Color(0xFFD42D3F)),
               borderRadius: BorderRadius.circular(5),
@@ -755,7 +789,8 @@ class _ProfileState extends State<Profile> {
               decoration: InputDecoration(
                 border: InputBorder.none, // Remove the internal border
                 isDense: true, // Make the dropdown more compact
-                contentPadding: EdgeInsets.symmetric(vertical: 10), // Center the text vertically
+                contentPadding: EdgeInsets.symmetric(
+                    vertical: 10), // Center the text vertically
               ),
               value: GlobalClass.creatorlist.isNotEmpty
                   ? GlobalClass.creatorlist.first
@@ -778,7 +813,6 @@ class _ProfileState extends State<Profile> {
                   GlobalClass.creatorId = newValue.creatorId.toString();
                   controller.text = newValue.creatorName;
                   print('Selected Creator: ${GlobalClass.creator}');
-
                 }
               },
             ),
@@ -787,7 +821,6 @@ class _ProfileState extends State<Profile> {
       ],
     );
   }
-
 
   Future<void> punchInOut(BuildContext context) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -812,8 +845,7 @@ class _ProfileState extends State<Profile> {
         context: context,
         builder: (context) => AlertDialog(
           title: Text("Location Error"),
-          content: Text(
-            AppLocalizations.of(context)!.locationerror),
+          content: Text(AppLocalizations.of(context)!.locationerror),
           actions: [
             TextButton(
               onPressed: () {
@@ -874,7 +906,8 @@ class _ProfileState extends State<Profile> {
         .then((value) async {
       if (value.statuscode == 200) {
         if (value.data.length > 0) {
-          if (value.data[0].inTime.isNotEmpty && value.data[0].outTime.isNotEmpty) {
+          if (value.data[0].inTime.isNotEmpty &&
+              value.data[0].outTime.isNotEmpty) {
             setState(() {
               punchCard = false;
               tabName = "PUNCHIN";
@@ -989,7 +1022,7 @@ class _ProfileState extends State<Profile> {
                 minimumSize: Size(80, 40),
               ),
               child: Text(
-        AppLocalizations.of(context)!.cancel,
+                AppLocalizations.of(context)!.cancel,
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -1006,14 +1039,17 @@ class _ProfileState extends State<Profile> {
                   print('Selected Creator: $selectedCreatorName');
                   setState(() {
                     _creatorController.text = selectedCreatorName!;
-                    _creatorController.text = selectedCreatorName!;
+                    //   _creatorController.text = selectedCreatorName!;
                     GlobalClass.creator = selectedCreatorName!;
                     GlobalClass.creatorId = selectedCreatorId!;
                   });
                 }
                 Navigator.pop(context); // Close the dialog
               },
-              child: Text(AppLocalizations.of(context)!.select,style: TextStyle(color: Colors.white,)),
+              child: Text(AppLocalizations.of(context)!.select,
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
             ),
           ],
         );
@@ -1066,38 +1102,41 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
       "Long": longitude.toString()
     };
 
-    await api.morphorecharge(GlobalClass.dbName, GlobalClass.token, requestBody).then((value) async {
+    await api
+        .morphorecharge(GlobalClass.dbName, GlobalClass.token, requestBody)
+        .then((value) async {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
         GlobalClass.showSuccessAlert(context, value.message, 2);
-
       } else {
         EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(
-            context, value.message, 1);
+        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
         Navigator.pop(context);
       }
     }).catchError((error) {
       EasyLoading.dismiss();
-      GlobalClass.showUnsuccessfulAlert(context, AppLocalizations.of(context)!.serversideerror, 1);
+      GlobalClass.showUnsuccessfulAlert(
+          context, AppLocalizations.of(context)!.serversideerror, 1);
       Navigator.pop(context);
     });
-
   }
 
   void _onSubmit() async {
     if (_deviceSirNoController.text.isEmpty) {
-      GlobalClass.showErrorAlert(context, AppLocalizations.of(context)!.pleaseenteryourmorpho, 1);
+      GlobalClass.showErrorAlert(
+          context, AppLocalizations.of(context)!.pleaseenteryourmorpho, 1);
       return;
     }
 
     if (_deviceSirNoController.text.length != 11) {
-      GlobalClass.showErrorAlert(context, AppLocalizations.of(context)!.invalidmorpho, 1);
+      GlobalClass.showErrorAlert(
+          context, AppLocalizations.of(context)!.invalidmorpho, 1);
       return;
     }
 
     try {
-      Map<String, dynamic> locationData = await currentLocation().getCurrentLocation();
+      Map<String, dynamic> locationData =
+          await currentLocation().getCurrentLocation();
       var _latitude = locationData['latitude'] ?? 0.0;
       var _longitude = locationData['longitude'] ?? 0.0;
 
@@ -1106,7 +1145,6 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
       print("Error getting current location: $e");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
