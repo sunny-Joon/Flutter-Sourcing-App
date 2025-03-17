@@ -280,7 +280,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
            if(!isvalid){
              print("isvalid1 $isvalid");
-
              _showUpdateDialog(context,response.data[0].appLink);
            }else{
              Timer(Duration(seconds: 3), () {
@@ -295,7 +294,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
          }
        }).catchError((onError){
-         GlobalClass.showErrorAlert(context, "${onError}", 1);
+         GlobalClass.showErrorAlert(context, "Please check internet connection", 1);
+       //  GlobalClass.showErrorAlert(context, "${onError}", 1);
 
        });
 
