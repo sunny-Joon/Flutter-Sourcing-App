@@ -96,6 +96,7 @@ class _HomePageState extends State<HomePage> {
           .GetCsoRanks(GlobalClass.token, GlobalClass.dbName, GlobalClass.id, GlobalClass.getCurrentMonth(), GlobalClass.getCurrentYear());
 
       if (response.statuscode == 200 && response.data.isNotEmpty && (response.data[0].errormsg.isEmpty || response.data[0].errormsg == null)) {
+        EasyLoading.dismiss();
         setState(() {
           int rank = response.data[0].rank;
           if(rank == 0){
@@ -107,14 +108,16 @@ class _HomePageState extends State<HomePage> {
             message = '$rank People are earning more commission';
           }
         });
+        EasyLoading.dismiss();
       } else{
         message = 'Calculating...';
+        EasyLoading.dismiss();
      // GlobalClass.showUnsuccessfulAlert(context, response.message, 1);
       }
     } catch (err) {
       GlobalClass.showErrorAlert(context, "Error in fetching Rank", 1);
     } finally {
-   //   EasyLoading.dismiss();
+      EasyLoading.dismiss();
     }
   }
 

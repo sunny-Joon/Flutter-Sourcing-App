@@ -21,6 +21,7 @@ import java.util.zip.GZIPInputStream;
 import java.io.ByteArrayOutputStream;
 import androidx.activity.result.ActivityResultLauncher;
 import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.android.FlutterFragmentActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 /*import com.sourcing.paisalo.flutter_sourcing_app.AadharData;
 import com.sourcing.paisalo.flutter_sourcing_app.AadharUtils;*/
@@ -29,7 +30,7 @@ import java.util.Collections;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-public class MainActivity extends FlutterActivity {
+public class MainActivity extends FlutterFragmentActivity  {
     protected static final byte SEPARATOR_BYTE = (byte)255;
 
     private static final String CHANNEL = "com.example.intent"; // Same channel name as in Flutter
