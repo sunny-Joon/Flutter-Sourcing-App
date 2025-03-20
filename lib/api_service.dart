@@ -147,10 +147,10 @@ abstract class ApiService {
       @Body() Map<String, dynamic> body,
       @Query("type") String type);
 
-  @POST("FIIndex/InitilizeCrif")
+  @POST("Masters/InitilizeCrif")
   Future<CrifModel> generateCrif(
-      @Query("creator") String creator,
-      @Query("ficode") String ficode);
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body);
 
   @POST("Masters/SendSms")
   Future<CommonIntModel> mobileOtpSend(

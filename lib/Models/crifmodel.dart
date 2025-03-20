@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-CrifModel crifModelFromJson(String str) => CrifModel.fromJson(json.decode(str));
+CrifModel statusModelFromJson(String str) => CrifModel.fromJson(json.decode(str));
 
-String crifModelToJson(CrifModel data) => json.encode(data.toJson());
+String statusModelToJson(CrifModel data) => json.encode(data.toJson());
 
 class CrifModel {
   int statuscode;
   String message;
-  List<CrifDataModel> data;
+  CrifDataModel data;
 
   CrifModel({
     required this.statuscode,
@@ -18,17 +18,37 @@ class CrifModel {
   factory CrifModel.fromJson(Map<String, dynamic> json) => CrifModel(
     statuscode: json["statuscode"],
     message: json["message"],
-    data: List<CrifDataModel>.from(json["data"].map((x) => CrifDataModel.fromJson(x))),
+    data: CrifDataModel.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
     "statuscode": statuscode,
     "message": message,
-    "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    "data": data.toJson(),
   };
 }
 
 class CrifDataModel {
+  List<String> messageTable;
+  List<MsgData> data;
+
+  CrifDataModel({
+    required this.messageTable,
+    required this.data,
+  });
+
+  factory CrifDataModel.fromJson(Map<String, dynamic> json) => CrifDataModel(
+    messageTable: List<String>.from(json["messageTable"].map((x) => x)),
+    data: List<MsgData>.from(json["data"].map((x) => MsgData.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "messageTable": List<dynamic>.from(messageTable.map((x) => x)),
+    "data": List<dynamic>.from(data.map((x) => x.toJson())),
+  };
+}
+
+class MsgData {
   String overdueAmt;
   String writeOffAmt;
   String scoreValue;
@@ -37,7 +57,7 @@ class CrifDataModel {
   String grpTotalOtherInstallmentAmount;
   String totalOtherCurrentBalance;
 
-  CrifDataModel({
+  MsgData({
     required this.overdueAmt,
     required this.writeOffAmt,
     required this.scoreValue,
@@ -47,14 +67,14 @@ class CrifDataModel {
     required this.totalOtherCurrentBalance,
   });
 
-  factory CrifDataModel.fromJson(Map<String, dynamic> json) => CrifDataModel(
-    overdueAmt: json["OVERDUE-AMT"]??"",
-    writeOffAmt: json["WRITE-OFF-AMT"]??"",
-    scoreValue: json["SCORE-VALUE"]??"",
-    combinedPaymentHistory: json["COMBINED-PAYMENT-HISTORY"]??"",
-    indvTotalOtherInstallmentAmount: json["INDV-TOTAL-OTHER-INSTALLMENT-AMOUNT"]??"",
-    grpTotalOtherInstallmentAmount: json["GRP-TOTAL-OTHER-INSTALLMENT-AMOUNT"]??"",
-    totalOtherCurrentBalance: json["TOTAL-OTHER-CURRENT-BALANCE"]??"",
+  factory MsgData.fromJson(Map<String, dynamic> json) => MsgData(
+    overdueAmt: json["OVERDUE-AMT"],
+    writeOffAmt: json["WRITE-OFF-AMT"],
+    scoreValue: json["SCORE-VALUE"],
+    combinedPaymentHistory: json["COMBINED-PAYMENT-HISTORY"],
+    indvTotalOtherInstallmentAmount: json["INDV-TOTAL-OTHER-INSTALLMENT-AMOUNT"],
+    grpTotalOtherInstallmentAmount: json["GRP-TOTAL-OTHER-INSTALLMENT-AMOUNT"],
+    totalOtherCurrentBalance: json["TOTAL-OTHER-CURRENT-BALANCE"],
   );
 
   Map<String, dynamic> toJson() => {

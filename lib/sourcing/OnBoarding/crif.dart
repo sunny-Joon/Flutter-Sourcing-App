@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'dart:math';
 import '../../Models/bank_names_model.dart';
+import '../../Models/crifmodel.dart';
 import '../../api_service.dart';
 import '../global_class.dart';
 import 'on_boarding.dart';
@@ -188,35 +189,47 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage> with SingleTi
     );
   }
   Future<void> initializeCrif(BuildContext context) async {
-    EasyLoading.show(status: "Please wait...");
+    // EasyLoading.show(status: "Please wait...");
 
-    final api = ApiService.create(baseUrl: ApiConfig.baseUrl9);
-
-    return await api.generateCrif(/*GlobalClass.creator*/"BAREILLY", "261879").then((value) {
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+    Map<String, dynamic> requestBody = {
+      "creator": "AGRA",
+      "ficode": "261988",
+    };
+    return await api.generateCrif(GlobalClass.dbName,requestBody).then((value) {
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
         setState(() {
+          CrifModel crifModel = value;
+          CrifDataModel crifDataModel = crifModel.data;
+          String crifScoreGR = crifDataModel.data[0].scoreValue;
+          print("AAA $crifScoreGR");
           crifScore = 800;
           flag = true;
-          _controller = AnimationController(
-            duration: const Duration(seconds: 2),
-            vsync: this,
-          );
+          if(crifScoreGR.isNotEmpty){
+            _controller = AnimationController(
+              duration: const Duration(seconds: 2),
+              vsync: this,
+            );
 
-          _animation = Tween<double>(begin: 0, end: crifScore).animate(_controller)
-            ..addListener(() {
-              setState(() {});
-            })
-            ..addStatusListener((status) {
-              if (status == AnimationStatus.completed) {
-                // Trigger the icon popup after the needle animation completes
-                setState(() {
-                  // Here, you could trigger any further logic or animations related to the popup
-                });
-              }
-            });
+            _animation =
+            Tween<double>(begin: 0, end: crifScore).animate(_controller)
+              ..addListener(() {
+                setState(() {});
+              })
+              ..addStatusListener((status) {
+                if (status == AnimationStatus.completed) {
+                  // Trigger the icon popup after the needle animation completes
+                  setState(() {
+                    // Here, you could trigger any further logic or animations related to the popup
+                  });
+                }
+              });
 
-          _controller.forward();
+            _controller.forward();
+          }else{
+            GlobalClass.showUnsuccessfulAlert(context, crifDataModel.data[0].scoreValue, 1);
+          }
         });
       } else {
         EasyLoading.dismiss();
