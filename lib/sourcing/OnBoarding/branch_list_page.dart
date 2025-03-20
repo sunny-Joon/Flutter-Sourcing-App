@@ -173,15 +173,15 @@ class _BranchListPageState extends State<BranchListPage> {
                       );
 
                      // _showPopup(context, selectedItem);
-                    // } else {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => GroupListPage(
-                    //           Branchdata: selectedItem,
-                    //           intentFrom: widget.intentFrom),
-                    //     ),
-                    //   );
+                     } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GroupListPage(
+                              Branchdata: selectedItem,
+                              intentFrom: widget.intentFrom),
+                        ),
+                      );
                      }
                   },
                   child: BranchRecyclerItem(item: filteredItems[index]),
