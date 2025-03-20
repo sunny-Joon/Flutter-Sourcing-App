@@ -20,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../api_service.dart';
 import 'LoginPage/languageprovider.dart';
 import 'LoginPage/login_page.dart';
+import 'OnBoarding/crif.dart';
 import 'global_class.dart';
 
 import 'stepper_sd.dart';
@@ -187,6 +188,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: SplashScreen(),
+        //home: LoanEligibilityPage( ficode: 123,),
         //  home: DealerHomePage(),
           builder: EasyLoading.init(),
       ),
@@ -275,13 +277,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
          if (response.statuscode == 200) {
 
-
            bool isvalid = response.data[0].isvalid;
            print("isvalid $isvalid");
 
            if(!isvalid){
              print("isvalid1 $isvalid");
-
              _showUpdateDialog(context,response.data[0].appLink);
            }else{
              Timer(Duration(seconds: 3), () {
@@ -296,7 +296,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
          }
        }).catchError((onError){
-         GlobalClass.showErrorAlert(context, "${onError}", 1);
+         GlobalClass.showErrorAlert(context, "Please check internet connection", 1);
+       //  GlobalClass.showErrorAlert(context, "${onError}", 1);
 
        });
 

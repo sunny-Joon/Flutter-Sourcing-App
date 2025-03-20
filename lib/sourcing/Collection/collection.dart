@@ -39,7 +39,7 @@ class _CollectionState extends State<Collection>
   late String casecode = "", borrower = "";
   late String qrCodeUrl = "";
   late GetCollectionDataModel collectionDataModel;
-  late String buttonName ;
+  late String buttonName="";
   bool flagLS = false;
 
   double showingTotalAmout = 0;
@@ -51,7 +51,10 @@ class _CollectionState extends State<Collection>
     super.initState();
     setValues();
     getQr(context);
-    buttonName = AppLocalizations.of(context)!.submit;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      buttonName = AppLocalizations.of(context)!.submit;
+    });
+   // buttonName = AppLocalizations.of(context)!.submit;
 
     emiAmounts = widget.selectedData.instData
         .map((inst) => int.parse(inst.amount))
@@ -64,12 +67,19 @@ class _CollectionState extends State<Collection>
     _tabController.addListener(() {
       if (_tabController.index == 1) {
         setState(() {
-          buttonName = AppLocalizations.of(context)!.checkpaymentstatus;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            buttonName = AppLocalizations.of(context)!.checkpaymentstatus;
+          });
+         // buttonName = AppLocalizations.of(context)!.checkpaymentstatus;
         });
 
       } else if (_tabController.index == 2) {
         setState(() {
-          buttonName = AppLocalizations.of(context)!.submitlumpsum;
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            buttonName = AppLocalizations.of(context)!.submitlumpsum;
+          });
+        //  buttonName = AppLocalizations.of(context)!.submitlumpsum;
           showingTotalAmout = int.parse(_controllerLumpSum.text.isEmpty
                   ? "0"
                   : _controllerLumpSum.text.replaceAll(",", "")) +
@@ -80,7 +90,9 @@ class _CollectionState extends State<Collection>
 
         setState(() {
           updateTotalAmount();
-          buttonName = AppLocalizations.of(context)!.submit;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            buttonName = AppLocalizations.of(context)!.submit;          });
+         // buttonName = AppLocalizations.of(context)!.submit;
         });
       }
     });

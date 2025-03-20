@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -66,7 +67,6 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   String? _requestTypeError;
   String? _creatorError;
 
-
   final FocusNode _nameFocus = FocusNode();
   final FocusNode _imei1Focus = FocusNode();
   final FocusNode _imei2Focus = FocusNode();
@@ -76,7 +76,8 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   void validateInputs() {
     setState(() {
       if (_selectedRequestType == null) {
-        _requestTypeError = AppLocalizations.of(context)!.pleaseselectarequesttype;
+        _requestTypeError =
+            AppLocalizations.of(context)!.pleaseselectarequesttype;
       } else {
         _requestTypeError = null;
       }
@@ -148,7 +149,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
     // Validate Device ID (16 digits)
     if (_deviceIdController == null) {
-      _deviceIdError =AppLocalizations.of(context)!.deviceidnotfound;
+      _deviceIdError = AppLocalizations.of(context)!.deviceidnotfound;
       isValid = false;
     } else if (!RegExp(r'^\d{16}$').hasMatch(_deviceIdController!)) {
       _deviceIdError = AppLocalizations.of(context)!.deviceidmustbe16digits;
@@ -214,12 +215,11 @@ class _SharedeviceidState extends State<Sharedeviceid> {
         _creators = value.data;
         _selectedCreator = _creators[0].creator;
 
-
         _isLoading = false;
         EasyLoading.dismiss();
       });
       _fetchBranchList(context, _creators[0].creatorId.toString());
-    }else{
+    } else {
       setState(() {
         _isLoading = false;
       });
@@ -229,10 +229,10 @@ class _SharedeviceidState extends State<Sharedeviceid> {
   Future<void> _fetchBranchList(BuildContext context, String creatorId) async {
     print("object0");
     final api = Provider.of<ApiService>(context, listen: false);
-    final value = await api.getBranchList(GlobalClass.token, GlobalClass.dbName,creatorId);
+    final value = await api.getBranchList(
+        GlobalClass.token, GlobalClass.dbName, creatorId);
     print("object1$value");
     if (value.statuscode == 200) {
-
       setState(() {
         _branch_codes = value.data;
         print("object2${value.data}");
@@ -371,11 +371,13 @@ class _SharedeviceidState extends State<Sharedeviceid> {
 
                                     //SizedBox(height:2 ),
                                     SizedBox(height: 4),
+                                    // Request Type Dropdown
                                     Text(
                                       AppLocalizations.of(context)!.requesttype,
                                       style: TextStyle(
-                                          fontFamily: "Poppins-Regular",
-                                          fontSize: 13),
+                                        fontFamily: "Poppins-Regular",
+                                        fontSize: 13,
+                                      ),
                                     ),
                                     Container(
                                       alignment: Alignment.center,
@@ -385,35 +387,45 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                         border: Border.all(color: Colors.grey),
                                         borderRadius: BorderRadius.circular(5),
                                       ),
-                                      child: DropdownButton<String>(
-                                        value: _selectedRequestType,
-                                        isExpanded: true,
-                                        iconSize: 24,
-                                        elevation: 16,
-                                        style: TextStyle(
+                                      child: DropdownSearch<String>(
+                                        popupProps: PopupProps.menu(
+                                          showSearchBox: true, // Enables search functionality
+                                          searchFieldProps: TextFieldProps(
+                                            decoration: InputDecoration(
+                                              labelText: "Search Request Type",
+                                              border: OutlineInputBorder(),
+                                              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                            ),
+                                          ),
+                                        ),
+                                        items: _requestTypes, // Use the list of request types
+                                        selectedItem: _selectedRequestType,
+                                        dropdownBuilder: (context, selectedItem) => Text(
+                                          selectedItem ?? "Select Request Type",
+                                          style: TextStyle(
+                                            fontSize: 13,
                                             fontFamily: "Poppins-Regular",
-                                            color: Colors.black,
-                                            fontSize: 13),
-                                        underline: Container(
-                                          height: 2,
-                                          color: Colors
-                                              .transparent, // Set to transparent to remove default underline
+                                          ),
                                         ),
                                         onChanged: (String? newValue) {
-                                          setState(() {
-                                            _selectedRequestType = newValue;
-                                            validateInputs();
-                                            _requestTypeError =
-                                                null; // Clear error when user selects a value
-                                          });
+                                          if (newValue != null) {
+                                            setState(() {
+                                              _selectedRequestType = newValue;
+                                              _requestTypeError = null;
+                                              validateInputs();
+                                            });
+                                          }
                                         },
-                                        items:
-                                            _requestTypes.map((String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
+                                        dropdownButtonProps: DropdownButtonProps(
+                                          icon: Icon(Icons.arrow_drop_down), // Dropdown button icon
+                                        ),
+                                        dropdownDecoratorProps: DropDownDecoratorProps(
+                                          dropdownSearchDecoration: InputDecoration(
+                                            hintText: "Select Request Type",
+                                            border: OutlineInputBorder(),
+                                            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                     // Display error for Request Type
@@ -432,11 +444,14 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                     SizedBox(height: 4),
 
                                     SizedBox(height: 4),
+
+                                    // Creator Dropdown
                                     Text(
                                       AppLocalizations.of(context)!.creator,
                                       style: TextStyle(
-                                          fontFamily: "Poppins-Regular",
-                                          fontSize: 13),
+                                        fontFamily: "Poppins-Regular",
+                                        fontSize: 13,
+                                      ),
                                     ),
                                     Container(
                                       alignment: Alignment.center,
@@ -446,45 +461,55 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                         border: Border.all(color: Colors.grey),
                                         borderRadius: BorderRadius.circular(5),
                                       ),
-                                      child: DropdownButton<String>(
-                                        value: _selectedCreator,
-                                        isExpanded: true,
-                                        iconSize: 24,
-                                        elevation: 16,
-                                        style: TextStyle(
-                                            fontFamily: "Poppins-Regular",
-                                            color: Colors.black,
-                                            fontSize: 13),
-                                        underline: Container(
-                                          height: 2,
-                                          color: Colors
-                                              .transparent, // Set to transparent to remove default underline
+                                      child: DropdownSearch<String>(
+                                        popupProps: PopupProps.menu(
+                                          showSearchBox: true, // Enables search functionality
+                                          searchFieldProps: TextFieldProps(
+                                            decoration: InputDecoration(
+                                              labelText: "Search Creator",
+                                              border: OutlineInputBorder(),
+                                              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                            ),
+                                          ),
                                         ),
-                                        hint: Text("selectCreator"),
+                                        items: _creators.map((creator) => creator.creator).toList(), // Convert model list to List<String>
+                                        selectedItem: _selectedCreator,
+                                        dropdownBuilder: (context, selectedItem) => Text(
+                                          selectedItem ?? "Select Creator",
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            fontFamily: "Poppins-Regular",
+                                          ),
+                                        ),
                                         onChanged: (String? newValue) {
-                                          setState(() {
-                                            _selectedCreator = newValue;
-                                            _creatorError = null;
-                                            validateInputs(); // Clear error when user selects a value
-                                            // Find the selected creator's ID
-                                            String selectedCreatorId = _creators
-                                                .firstWhere((creator) => creator.creator == newValue)
-                                                .creatorId
-                                                .toString();
-                                            _fetchBranchList(context, selectedCreatorId);
-                                            _branchController.text = "";
-                                            _selectedBranches = [];
-                                          });
+                                          if (newValue != null) {
+                                            setState(() {
+                                              _selectedCreator = newValue;
+                                              _creatorError = null;
+                                              validateInputs();
+                                              String selectedCreatorId = _creators
+                                                  .firstWhere((creator) => creator.creator == newValue)
+                                                  .creatorId
+                                                  .toString();
+                                              _fetchBranchList(context, selectedCreatorId);
+                                              _branchController.text = "";
+                                              _selectedBranches = [];
+                                            });
+                                          }
                                         },
-                                        items: _creators.map((CreatorListDataModel value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value.creator,
-                                            child: Text(value.creator),
-                                          );
-                                        }).toList(),
+                                        dropdownButtonProps: DropdownButtonProps(
+                                          icon: Icon(Icons.arrow_drop_down), // Dropdown button icon
+                                        ),
+                                        dropdownDecoratorProps: DropDownDecoratorProps(
+                                          dropdownSearchDecoration: InputDecoration(
+                                            hintText: "Select Creator",
+                                            border: OutlineInputBorder(),
+                                            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                    // Display error for Creator
+
                                     if (_creatorError != null)
                                       Padding(
                                         padding: const EdgeInsets.only(
@@ -509,7 +534,8 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                           //     _branchFocus,100
                                           // ),
                                           child: _buildTextField(
-                                              AppLocalizations.of(context)!.branchcode,
+                                              AppLocalizations.of(context)!
+                                                  .branchcode,
                                               _branchController,
                                               TextInputType.number,
                                               false,
@@ -724,8 +750,9 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                   ),
                 ),
                 inputFormatters: [
-                  label ==AppLocalizations.of(context)!.name?
-                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")):FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                  label == AppLocalizations.of(context)!.name
+                      ? FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]"))
+                      : FilteringTextInputFormatter.allow(RegExp("[0-9]")),
                 ],
                 enabled: YN,
               ),

@@ -863,6 +863,9 @@ class _KYCPageState extends State<KYCPage> {
       String loan_Duration = selectedloanDuration!;
       String loan_amount = _loan_amountController.text.toString();
 
+      int ModuleTypeId = GlobalClass.creator.toLowerCase().startsWith("vh") ? 2 : 1;
+      print("ModuleTypeId $ModuleTypeId");
+
       final api = Provider.of<ApiService>(context, listen: false);
 
       await api
@@ -905,6 +908,7 @@ class _KYCPageState extends State<KYCPage> {
         loan_amount,
         selectedLoanReason!,
         GlobalClass.creatorId,
+        ModuleTypeId,
         _imageFile!,
       )
           .then((value) async {
@@ -915,6 +919,8 @@ class _KYCPageState extends State<KYCPage> {
             _currentStep += 1;
             Fi_Id = value.data[0].fiId.toString();
             Fi_Code = value.data[0].fiCode.toString();
+            GlobalClass.ficode = value.data[0].fiCode.toString();
+
           });
         } else if (value.statuscode == 201) {
           print("status code 201");
@@ -2753,8 +2759,11 @@ class _KYCPageState extends State<KYCPage> {
                         _drivingLicenseController.text.length < 10) {
                       showToast_Error(AppLocalizations.of(context)!.pleaseentercorrectdrivinglicense);
                     } else {
+                      DateTime parsedDate = DateFormat("yyyy-MM-dd").parse(dlDob!);
+                      String formattedDate = DateFormat("dd-MM-yyyy").format(parsedDate);
+
                       dlVerifyByProtean(GlobalClass.id,
-                          _drivingLicenseController.text, dlDob!);
+                          _drivingLicenseController.text, formattedDate);
                     }
                   },
                   child: Container(

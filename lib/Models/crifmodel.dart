@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final statusModel = statusModelFromJson(jsonString);
+
 import 'dart:convert';
 
 CrifModel statusModelFromJson(String str) => CrifModel.fromJson(json.decode(str));
@@ -56,6 +60,8 @@ class MsgData {
   String indvTotalOtherInstallmentAmount;
   String grpTotalOtherInstallmentAmount;
   String totalOtherCurrentBalance;
+  String Msg;
+
 
   MsgData({
     required this.overdueAmt,
@@ -65,6 +71,7 @@ class MsgData {
     required this.indvTotalOtherInstallmentAmount,
     required this.grpTotalOtherInstallmentAmount,
     required this.totalOtherCurrentBalance,
+    required this.Msg
   });
 
   factory MsgData.fromJson(Map<String, dynamic> json) => MsgData(
@@ -75,6 +82,7 @@ class MsgData {
     indvTotalOtherInstallmentAmount: json["INDV-TOTAL-OTHER-INSTALLMENT-AMOUNT"],
     grpTotalOtherInstallmentAmount: json["GRP-TOTAL-OTHER-INSTALLMENT-AMOUNT"],
     totalOtherCurrentBalance: json["TOTAL-OTHER-CURRENT-BALANCE"],
+    Msg: json["Msg"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -85,5 +93,6 @@ class MsgData {
     "INDV-TOTAL-OTHER-INSTALLMENT-AMOUNT": indvTotalOtherInstallmentAmount,
     "GRP-TOTAL-OTHER-INSTALLMENT-AMOUNT": grpTotalOtherInstallmentAmount,
     "TOTAL-OTHER-CURRENT-BALANCE": totalOtherCurrentBalance,
+    "Msg": Msg
   };
 }

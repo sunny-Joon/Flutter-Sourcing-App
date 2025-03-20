@@ -62,7 +62,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool femMemIncomeEditable = true;
   bool GuarantorEditable = true;
   bool borrowerDocsUploded = false;
-  bool coBorrowerDocsUploaded  = false;
+  bool coBorrowerDocsUploaded = false;
   bool UploadFiDocsEditable = true;
   bool editButtonFunctionOn = false;
   bool banknameverified = false;
@@ -71,6 +71,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool isSubmitEnabled = false; // Determines if submit button should be enabled
 
   String pageTitle = "";
+
 
   final _mobileFocusNode = FocusNode();
   final _pinFocusNodeP = FocusNode();
@@ -372,14 +373,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   late KycScanningDataModel doc;
 
+  Map<int, bool> isClickedMap = {};
+
   @override
   void initState() {
     super.initState();
+
     setState(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        EasyLoading.show(
-          status: AppLocalizations.of(context)!.application,
-        );
+        EasyLoading.show(status: AppLocalizations.of(context)!.application,);
+        pageTitle = AppLocalizations.of(context)!.application;
       });
     });
 
@@ -4576,14 +4579,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
           children: [
             GestureDetector(
               onTap: () async {
-                if (isSubmitEnabled || (borrowerDocsUploded && subType == 'borrower') || (coBorrowerDocsUploaded && subType == 'guarantor')) {
-                 print("isSubmitEnabled $isSubmitEnabled");
-                 print("borrowerDocsUploded $borrowerDocsUploded");
+                if (isSubmitEnabled) {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Document already uploaded!")));
                   return;
                 }
-
+                // if (id != null && isClickedMap[id] == true) {
                 pickedImage = await GlobalClass().pickImage();
                 print("pickedImage $pickedImage");
 
@@ -4716,13 +4717,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           FiDocsUploadsApi(context, "0");
                         }
                       } else if (subType == 'guarantor') {
-                        if (borrowerDocsUploded) {
+                        if (coBorrowerDocsUploaded) {
                           FiDocsUploadsApi(context, "1");
                         }
                       }
                     }
+                    //   isClickedMap[id] = false;
                   });
                 }
+                //  }
               },
               child: Card(
                 color: isPathCleared
@@ -4789,9 +4792,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     // fit: BoxFit.cover,
                   ),
                   onPressed: () {
+                    // if (id != null) {
+                    //   isClickedMap.clear();
+                    //   isClickedMap[id] = true;
+                    // }
                     onPathCleared(id, subType);
                     setState(() {
                       isPathCleared = true;
+                      isSubmitEnabled = false;
+                      borrowerDocsUploded = false;
+                      coBorrowerDocsUploaded = false;
+                      print("isSubmitEnabled $isSubmitEnabled");
+                      _selectedImage = null;
                     });
                   },
                 ),
@@ -6167,7 +6179,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     String Fi_ID = FIID.toString();
     String bankType = selectedAccountType.toString();
-
     String bank_Ac = _bank_AcController.text.toString();
     String bank_IFCS = _bank_IFCSController.text.toString();
     String bank_address = bankAddress!;
@@ -6363,7 +6374,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     final api = Provider.of<ApiService>(context, listen: false);
 
-    return await api.KycScanning(GlobalClass.token, GlobalClass.dbName, FIID.toString())
+    return await api.KycScanning(
+            GlobalClass.token, GlobalClass.dbName, FIID.toString())
         .then((value) async {
       EasyLoading.dismiss();
 
@@ -6374,43 +6386,68 @@ class _ApplicationPageState extends State<ApplicationPage> {
           _isPageLoading = true;
         });
 
-        bool checkDocumentCondition(bool exists, String? path, [String? pathB]) {
-          return exists && (path?.isNotEmpty ?? false) && (pathB?.isNotEmpty ?? true);
+        // Function to check document validity
+        bool checkDocumentCondition(bool exists, String? path,
+            [String? pathB]) {
+          return exists
+              ? ((path?.isNotEmpty ?? false) && (pathB?.isNotEmpty ?? true))
+              : true;
         }
 
-        bool borrowerDocCheckA = checkDocumentCondition(doc.addharExists, doc.aadharPath, doc.aadharBPath);
-        bool borrowerDocCheckB = checkDocumentCondition(doc.panExists, doc.panPath);
-        bool borrowerDocCheckC = checkDocumentCondition(doc.voterExists, doc.voterPath, doc.voterBPath);
-        bool borrowerDocCheckD = checkDocumentCondition(doc.drivingExists, doc.drivingPath);
+        // Borrower document validation
+        bool borrowerDocCheckA = checkDocumentCondition(
+            doc.addharExists, doc.aadharPath, doc.aadharBPath);
+        bool borrowerDocCheckB =
+            checkDocumentCondition(doc.panExists, doc.panPath);
+        bool borrowerDocCheckC = checkDocumentCondition(
+            doc.voterExists, doc.voterPath, doc.voterBPath);
+        bool borrowerDocCheckD =
+            checkDocumentCondition(doc.drivingExists, doc.drivingPath);
 
-         borrowerDocsUploded = borrowerDocCheckA && borrowerDocCheckB && borrowerDocCheckC && borrowerDocCheckD;
+        borrowerDocsUploded = borrowerDocCheckA &&
+            borrowerDocCheckB &&
+            borrowerDocCheckC &&
+            borrowerDocCheckD;
+
         setState(() {
           isSubmitEnabled = borrowerDocsUploded;
-          print("isSubmitEnabled1 $isSubmitEnabled");
         });
 
-        print('Borrower Document Checks: a = $borrowerDocCheckA, b = $borrowerDocCheckB, c = $borrowerDocCheckC, d = $borrowerDocCheckD');
+        print(
+            'Borrower Document Checks: a = $borrowerDocCheckA, b = $borrowerDocCheckB, c = $borrowerDocCheckC, d = $borrowerDocCheckD');
 
+        // Co-Borrower documents check
         if (doc.grDocs != null && doc.grDocs.isNotEmpty) {
           var coBorrowerDocs = doc.grDocs[0];
 
-          bool coBorrowerDocCheckA = checkDocumentCondition(coBorrowerDocs.addharExists, coBorrowerDocs.aadharPath, coBorrowerDocs.aadharBPath);
-          bool coBorrowerDocCheckB = checkDocumentCondition(coBorrowerDocs.panExists, coBorrowerDocs.panPath);
-          bool coBorrowerDocCheckC = checkDocumentCondition(coBorrowerDocs.voterExists, coBorrowerDocs.voterPath, coBorrowerDocs.voterBPath);
-          bool coBorrowerDocCheckD = checkDocumentCondition(coBorrowerDocs.drivingExists, coBorrowerDocs.drivingPath);
+          bool coBorrowerDocCheckA = checkDocumentCondition(
+              coBorrowerDocs.addharExists,
+              coBorrowerDocs.aadharPath,
+              coBorrowerDocs.aadharBPath);
+          bool coBorrowerDocCheckB = checkDocumentCondition(
+              coBorrowerDocs.panExists, coBorrowerDocs.panPath);
+          bool coBorrowerDocCheckC = checkDocumentCondition(
+              coBorrowerDocs.voterExists,
+              coBorrowerDocs.voterPath,
+              coBorrowerDocs.voterBPath);
+          bool coBorrowerDocCheckD = checkDocumentCondition(
+              coBorrowerDocs.drivingExists, coBorrowerDocs.drivingPath);
 
-          coBorrowerDocsUploaded = coBorrowerDocCheckA && coBorrowerDocCheckB && coBorrowerDocCheckC && coBorrowerDocCheckD;
+          coBorrowerDocsUploaded = coBorrowerDocCheckA &&
+              coBorrowerDocCheckB &&
+              coBorrowerDocCheckC &&
+              coBorrowerDocCheckD;
 
           setState(() {
-            isSubmitEnabled = isSubmitEnabled || (coBorrowerDocCheckA && coBorrowerDocCheckB && coBorrowerDocCheckC && coBorrowerDocCheckD);
-            print("isSubmitEnabled2 $isSubmitEnabled");
+            isSubmitEnabled = borrowerDocsUploded && coBorrowerDocsUploaded;
           });
 
-          print("Co-Borrower Document Checks: a = $coBorrowerDocCheckA, b = $coBorrowerDocCheckB, c = $coBorrowerDocCheckC, d = $coBorrowerDocCheckD");
+          print(
+              "Co-Borrower Document Checks: a = $coBorrowerDocCheckA, b = $coBorrowerDocCheckB, c = $coBorrowerDocCheckC, d = $coBorrowerDocCheckD");
         }
-
       } else {
-        GlobalClass.showUnsuccessfulAlert(context, '${getData.message} {Document Details}', 1);
+        GlobalClass.showUnsuccessfulAlert(
+            context, '${getData.message} {Document Details}', 1);
       }
     });
   }
@@ -8337,9 +8374,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     if (gurNum == "0") {
       if (kycScanningDataModel.addharExists == true) {
-        if ((kycScanningDataModel.aadharPath == null || kycScanningDataModel.aadharPath.isEmpty) && adhaarFront == null) {
-          print("kycScanningDataModel.addharExists ${doc.addharExists.toString()}");
-          GlobalClass.showToast_Error(AppLocalizations.of(context)!.pleaseuploadaadhaarfront);
+        if ((kycScanningDataModel.aadharPath == null ||
+                kycScanningDataModel.aadharPath.isEmpty) &&
+            adhaarFront == null) {
+          print(
+              "kycScanningDataModel.addharExists ${doc.addharExists.toString()}");
+          GlobalClass.showToast_Error(
+              AppLocalizations.of(context)!.pleaseuploadaadhaarfront);
           return false;
         }
         if ((kycScanningDataModel.aadharBPath == null ||
