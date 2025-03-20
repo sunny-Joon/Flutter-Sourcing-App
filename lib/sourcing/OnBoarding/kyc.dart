@@ -919,6 +919,8 @@ class _KYCPageState extends State<KYCPage> {
             _currentStep += 1;
             Fi_Id = value.data[0].fiId.toString();
             Fi_Code = value.data[0].fiCode.toString();
+            GlobalClass.ficode = value.data[0].fiCode.toString();
+
           });
         } else if (value.statuscode == 201) {
           print("status code 201");
@@ -2757,8 +2759,11 @@ class _KYCPageState extends State<KYCPage> {
                         _drivingLicenseController.text.length < 10) {
                       showToast_Error(AppLocalizations.of(context)!.pleaseentercorrectdrivinglicense);
                     } else {
+                      DateTime parsedDate = DateFormat("yyyy-MM-dd").parse(dlDob!);
+                      String formattedDate = DateFormat("dd-MM-yyyy").format(parsedDate);
+
                       dlVerifyByProtean(GlobalClass.id,
-                          _drivingLicenseController.text, dlDob!);
+                          _drivingLicenseController.text, formattedDate);
                     }
                   },
                   child: Container(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sourcing_app/Models/SecondEsignModel.dart';
+import 'package:flutter_sourcing_app/Models/group_model.dart';
 import 'package:provider/provider.dart';
 import '../../Models/branch_model.dart';
 import '../../api_service.dart';
@@ -162,8 +163,6 @@ class _BranchListPageState extends State<BranchListPage> {
                   onTap: () {
                     final selectedItem = filteredItems[index];
                     if(widget.intentFrom == 'E SIGN') {
-                      _showPopup(context, selectedItem);
-                    } else {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -172,7 +171,18 @@ class _BranchListPageState extends State<BranchListPage> {
                               intentFrom: widget.intentFrom),
                         ),
                       );
-                    }
+
+                     // _showPopup(context, selectedItem);
+                    // } else {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => GroupListPage(
+                    //           Branchdata: selectedItem,
+                    //           intentFrom: widget.intentFrom),
+                    //     ),
+                    //   );
+                     }
                   },
                   child: BranchRecyclerItem(item: filteredItems[index]),
                 );
@@ -185,14 +195,10 @@ class _BranchListPageState extends State<BranchListPage> {
   }
 
 
-  void _showPopup(BuildContext context, BranchDataModel selectedItem) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
-          content: Padding(
-            padding: const EdgeInsets.symmetric(vertical:16,horizontal: 12),
+ /* void _showPopup(BuildContext context, BranchDataModel selectedItem) {
+    showDialog(context: context, builder: (BuildContext context) {
+        return AlertDialog( shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+          content: Padding( padding: const EdgeInsets.symmetric(vertical:16,horizontal: 12),
             // Add padding around the content
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -234,10 +240,22 @@ class _BranchListPageState extends State<BranchListPage> {
 
                   width: double.infinity, // Match the width of the dialog
                   child: TextButton(
+                    // onPressed: () async {
+                    //   Navigator.of(context).pop();
+                    //
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => GroupListPage(
+                    //           Branchdata: selectedItem,
+                    //           intentFrom: 'E SIGN1'),
+                    //     ),
+                    //   );
+                    // },
                     onPressed: () {
                       Navigator.of(context).pop();
                       SecondEsignList(selectedItem,widget.intentFrom);
-                      /*Navigator.push(
+                      *//*Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => FirstEsign(
@@ -247,7 +265,7 @@ class _BranchListPageState extends State<BranchListPage> {
                             type: 2,
                           ),
                         ),
-                      );*/
+                      );*//*
                     },
                     child: Text(
                        AppLocalizations.of(context)!.sesign,
@@ -270,10 +288,11 @@ class _BranchListPageState extends State<BranchListPage> {
       },
     );
   }
-
-  Future<void> SecondEsignList(BranchDataModel selectedItem, String intentFrom) async {
+*/
+  /*Future<void> SecondEsignList(BranchDataModel selectedItem, String intentFrom) async {
     //EasyLoading.show(status: 'Loading...',);
 
+    GroupDataModel groupDataModel;
     final apiService = Provider.of<ApiService>(context, listen: false);
 
     await apiService.BorrowerList2(
@@ -281,6 +300,7 @@ class _BranchListPageState extends State<BranchListPage> {
         GlobalClass.dbName,
         GlobalClass.creatorId,
         selectedItem.branchCode,
+       // groupDataModel.groupCode,
         GlobalClass.imei
 
     ).then((response) {
@@ -304,6 +324,6 @@ class _BranchListPageState extends State<BranchListPage> {
       GlobalClass.showErrorAlert(context, error.toString(),1);
     });
   }
-
+*/
 
 }

@@ -16,7 +16,6 @@ import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart';
 import 'dart:io';
 
-
 import '../../MasterAPIs/live_track_repository.dart';
 import '../../Models/group_model.dart';
 import '../../Models/branch_model.dart';
@@ -24,33 +23,35 @@ import '../global_class.dart';
 import 'crif.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 class FirstEsign extends StatefulWidget {
-
   final BranchDataModel BranchData;
   final GroupDataModel GroupData;
   final BorrowerListDataModel selectedData;
   final int type;
+
   const FirstEsign({
     super.key,
     required this.BranchData,
     required this.GroupData,
-    required this.selectedData, required this.type,
+    required this.selectedData,
+    required this.type,
   });
+
   @override
   _FirstEsignState createState() => _FirstEsignState();
 }
 
 class _FirstEsignState extends State<FirstEsign> {
-
-  String? localPath;
+  String? localPath, signType;
   bool isLoading = true;
   bool _isChecked = false; // Track the state of the checkbox
   @override
   void initState() {
     super.initState();
+    signType = widget.type.toString();
     fetchFirstESignPDF(widget.selectedData);
-    print("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}");
+    print(
+        "https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}");
   }
 
   Future<void> _loadPdf(String url) async {
@@ -82,163 +83,212 @@ class _FirstEsignState extends State<FirstEsign> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFD42D3F),
-      body:Padding(padding: EdgeInsets.all(8),child:  Column(
-        children: [
-          SizedBox(height: 50,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InkWell(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                        width: 1, color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
+      body: Padding(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 50,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 1, color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    child: Center(
+                      child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                    ),
                   ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                Center(
+                  child: Image.asset(
+                    'assets/Images/logo_white.png',
+                    // Replace with your logo asset path
+                    height: 30,
+                  ),
+                ),
+                Container(
                   height: 40,
                   width: 40,
                   alignment: Alignment.center,
-                  child: Center(
-                    child: Icon(Icons.arrow_back_ios_sharp, size: 16),
-                  ),
                 ),
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              Center(
-                child: Image.asset(
-                  'assets/Images/logo_white.png',
-                  // Replace with your logo asset path
-                  height: 30,
-                ),
-              ),
-              Container(
-                height: 40,
-                width: 40,
-                alignment: Alignment.center,
-              ),
-            ],
-          ),
-          SizedBox(height: 20,),
-
-          Flexible(
-            child: isLoading
-                ? Center(child: CircularProgressIndicator())
-                : PDFView(
-
-              autoSpacing: true,
-              filePath: localPath,
-              swipeHorizontal: true,
-
+              ],
             ),
-          ),
-          SizedBox(height: 10,),
-          Divider(
-            color: Colors.white, // Divider color
-            thickness: 1, // Thickness of the divider
-            indent: 10, // Left padding
-            endIndent: 10, // Right padding
-          )
-          ,          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                  flex: 3,
-                  child:Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Ficode: '.toUpperCase(),
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11,color: Colors.white),
-                        ),
-                        TextSpan(
-                          text: "${widget.selectedData.fiCode}",
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
-                        ),
-                      ],
+            SizedBox(
+              height: 20,
+            ),
+            Flexible(
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : PDFView(
+                      autoSpacing: true,
+                      filePath: localPath,
+                      swipeHorizontal: true,
                     ),
-                  ),
-                  Text.rich(
-                    TextSpan(
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Divider(
+              color: Colors.white, // Divider color
+              thickness: 1, // Thickness of the divider
+              indent: 10, // Left padding
+              endIndent: 10, // Right padding
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                    flex: 3,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextSpan(
-                          text:   AppLocalizations.of(context)!.creator.toUpperCase(),
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11,color: Colors.white),
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Ficode: '.toUpperCase(),
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 11,
+                                    color: Colors.white),
+                              ),
+                              TextSpan(
+                                text: "${widget.selectedData.fiCode}",
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 13,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                         ),
-                        TextSpan(
-                          text: "${widget.selectedData.creator}",
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: AppLocalizations.of(context)!
+                                    .creator
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 11,
+                                    color: Colors.white),
+                              ),
+                              TextSpan(
+                                text: "${widget.selectedData.creator}",
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 13,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                         ),
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: AppLocalizations.of(context)!
+                                    .name
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 11,
+                                    color: Colors.white),
+                              ),
+                              TextSpan(
+                                text: "${widget.selectedData.fullName}",
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 13,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: AppLocalizations.of(context)!
+                                    .address
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 11,
+                                    color: Colors.white),
+                              ),
+                              TextSpan(
+                                text: "${widget.selectedData.pAddress}",
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 13,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
-                    ),
-                  ),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text:   AppLocalizations.of(context)!.name.toUpperCase(),
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11,color: Colors.white),
+                    )),
+                Flexible(
+                    flex: 1,
+                    child: InkWell(
+                      onTap: () {
+                        print("object ${widget.selectedData.aadharNo}");
+                        if (widget.selectedData.aadharNo.isNotEmpty) {
+                          showFullPageDialog(context);
+                        } else {
+                          GlobalClass.showToast_Error(
+                              "Borrower's Aadhaar number is missing");
+                        }
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        color: Colors.grey.shade200,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 45,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 4),
+                            child: Text(
+                              AppLocalizations.of(context)!.proceed,
+                              style: TextStyle(
+                                  fontFamily: "Poppins-Regular",
+                                  color: Colors.black),
+                            ),
+                          ),
                         ),
-                        TextSpan(
-                          text: "${widget.selectedData.fullName}",
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text:   AppLocalizations.of(context)!.address.toUpperCase(),
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 11,color: Colors.white),
-                        ),
-                        TextSpan(
-                          text: "${widget.selectedData.pAddress}",
-                          style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 13, color: Colors.white,fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  )
-
-
-                ],) )
-              ,
-
-              Flexible(
-                 flex: 1,
-                 child:   InkWell(
-                   onTap: (){
-                     if(widget.selectedData.aadharNo!=null){
-                       showFullPageDialog(context);
-                     }else{
-                       GlobalClass.showToast_Error("Borrower's Aadhaar number is missing");
-                     }
-
-                   },
-               child:Card(
-                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                 color: Colors.grey.shade200,
-                 child: Container(
-                   alignment: Alignment.center,
-                   height: 45,
-                   child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 4),child: Text( AppLocalizations.of(context)!.proceed,style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black),),),
-                 ),
-               ),
-             ))
-
-            ],
-          ),
-          SizedBox(height: 10,),
-        ],
-      ),),
+                      ),
+                    ))
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -247,83 +297,87 @@ class _FirstEsignState extends State<FirstEsign> {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      barrierColor: Colors.black.withOpacity(0.5), // Background overlay
+      barrierColor: Colors.black.withOpacity(0.5),
+      // Background overlay
       transitionDuration: Duration(milliseconds: 300),
       pageBuilder: (context, animation, secondaryAnimation) {
         return SafeArea(
           child: Center(
-            child: DialogContent(borrowerAdharNumber: widget.selectedData.aadharNo,selectedBorrower: widget.selectedData,),
+            child: DialogContent(
+                borrowerAdharNumber: widget.selectedData.aadharNo,
+                selectedBorrower: widget.selectedData,
+                signType: signType),
           ),
         );
       },
     );
   }
 
-
   Future<void> fetchFirstESignPDF(BorrowerListDataModel selectedData) async {
-    
-
     final requestBody = {
       "F_Id": selectedData.id,
-      "Type": widget.type==1?"FirsteSign":"SecondeSign",
+      "Type": signType == 1 ? "FirsteSign" : "SecondeSign",
       "DbName": "PDLERP",
     };
 
-try {
-  final response = await ApiService.create(baseUrl: ApiConfig.baseUrl8)
-      .getDocument(requestBody);
-  if (response.statuscode == 200 && response.data.isNotEmpty) {
-    print(
-        "https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "")
-            .replaceAll("\\", "/")}");
-    _loadPdf(
-        "https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "")
-            .replaceAll("\\", "/")}");
-  } else {
-    GlobalClass.showUnsuccessfulAlert(
-        context, "Pdf Not Found\nContact to Administrator", 2);
-  }
-}catch(error){
-  GlobalClass.showErrorAlert(context, "Document Not Fetched", 2);
-}
-  }
+    try {
 
+      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl8)
+          .getDocument(requestBody);
+      if (response.statuscode == 200 && response.data.isNotEmpty) {
+        print(
+            "https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "").replaceAll("\\", "/")}");
+        _loadPdf(
+            "https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "").replaceAll("\\", "/")}");
+      } else {
+        GlobalClass.showUnsuccessfulAlert(
+            context, "Pdf Not Found\nContact to Administrator", 2);
+      }
+    } catch (error) {
+      GlobalClass.showErrorAlert(context, "Document Not Fetched", 2);
+    }
+  }
 }
 
 class DialogContent extends StatefulWidget {
   final String borrowerAdharNumber;
+  final String? signType;
   final BorrowerListDataModel selectedBorrower;
 
-  const DialogContent({super.key, required this.borrowerAdharNumber, required this.selectedBorrower});
+  const DialogContent(
+      {super.key,
+      required this.borrowerAdharNumber,
+      required this.selectedBorrower,
+      required this.signType});
+
   @override
   _DialogContentState createState() => _DialogContentState();
 }
 
-class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveClientMixin{
+class _DialogContentState extends State<DialogContent>
+    with AutomaticKeepAliveClientMixin {
   TextEditingController _dialogAdharController = TextEditingController();
   bool _isChecked = false;
   late ApiService _apiServiceForESign;
   List<String> authModeTypeList = ["Biometric"];
- //List<String> authModeTypeList = ["Biometric","OTP"];
 
-  String authModeType="Biometric";
+  //List<String> authModeTypeList = ["Biometric","OTP"];
+
+  String authModeType = "Biometric";
 
   @override
   void initState() {
-
     super.initState();
 
-    _apiServiceForESign=ApiService.create(baseUrl: ApiConfig.baseUrl7);
+    _apiServiceForESign = ApiService.create(baseUrl: ApiConfig.baseUrl7);
 
     _dialogAdharController.text = widget.borrowerAdharNumber;
     // Set up the handler to receive the result from MainActivity
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-
       margin: const EdgeInsets.all(16), // Add 6 pixels margin around the dialog
       decoration: BoxDecoration(
         color: Colors.transparent, // Background color
@@ -353,28 +407,34 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
                 ),
                 SizedBox(height: 5),
                 Text(
-                    AppLocalizations.of(context)!.readconsent,
-                  style: TextStyle(fontFamily: "Poppins-Regular",fontSize: 12, fontWeight: FontWeight.bold),
+                  AppLocalizations.of(context)!.readconsent,
+                  style: TextStyle(
+                      fontFamily: "Poppins-Regular",
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5),
                 Expanded(
-
                   child: SingleChildScrollView(
-
                     child: consentText(), // Your consent text here
                   ),
                 ),
-
-                Divider(thickness: 2,color: Colors.grey,),
-                _buildLabeledDropdownField('ESign With', 'ESign With',authModeTypeList,authModeType,(String? newValue) {
+                Divider(
+                  thickness: 2,
+                  color: Colors.grey,
+                ),
+                _buildLabeledDropdownField(
+                    'ESign With', 'ESign With', authModeTypeList, authModeType,
+                    (String? newValue) {
                   setState(() {
                     authModeType = newValue!;
                   });
-                },String),
+                }, String),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    IntrinsicWidth( // Ensure the checkbox only takes as much width as it needs
+                    IntrinsicWidth(
+                      // Ensure the checkbox only takes as much width as it needs
                       child: Checkbox(
                         value: _isChecked,
                         onChanged: (bool? value) {
@@ -384,9 +444,11 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
                         },
                       ),
                     ),
-
                     SizedBox(width: 2),
-                    Flexible(child: Text(  AppLocalizations.of(context)!.readallconsents,)),
+                    Flexible(
+                        child: Text(
+                      AppLocalizations.of(context)!.readallconsents,
+                    )),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -394,39 +456,58 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     InkWell(
-                      onTap: (){
-                          Navigator.of(context).pop();
+                      onTap: () {
+                        Navigator.of(context).pop();
                       },
-                      child:Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
                         color: Colors.grey.shade200,
                         child: Container(
                           alignment: Alignment.center,
                           height: 45,
-                          child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text(AppLocalizations.of(context)!.cancel,style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.black),),),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 10),
+                            child: Text(
+                              AppLocalizations.of(context)!.cancel,
+                              style: TextStyle(
+                                  fontFamily: "Poppins-Regular",
+                                  color: Colors.black),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     IgnorePointer(
                       ignoring: !_isChecked,
                       child: InkWell(
-
-                        onTap: (){
-
+                        onTap: () {
                           hitSaveAgreementsAPI(authModeType);
                         },
-                        child:Card(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                          color: _isChecked?Color(0xffb41d2d):Colors.grey.shade400,
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          color: _isChecked
+                              ? Color(0xffb41d2d)
+                              : Colors.grey.shade400,
                           child: Container(
                             alignment: Alignment.center,
                             height: 45,
-                            child: Padding(padding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),child: Text(AppLocalizations.of(context)!.proceed,style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.white),),),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 10),
+                              child: Text(
+                                AppLocalizations.of(context)!.proceed,
+                                style: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    color: Colors.white),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    )
-                    ,
+                    ),
                   ],
                 ),
               ],
@@ -436,8 +517,14 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       ),
     );
   }
+
   Widget _buildLabeledDropdownField<T>(
-      String labelText, String label, List<T> items, T? selectedValue, ValueChanged<T?>? onChanged,Type objName) {
+      String labelText,
+      String label,
+      List<T> items,
+      T? selectedValue,
+      ValueChanged<T?>? onChanged,
+      Type objName) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
@@ -469,9 +556,9 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
             ),
             value: selectedValue,
             items: items.map((T value) {
-              String setdata="";
-            if(value is String){
-                setdata=value;
+              String setdata = "";
+              if (value is String) {
+                setdata = value;
               }
               return DropdownMenuItem<T>(
                 value: value,
@@ -484,31 +571,32 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       ),
     );
   }
-  static const platform = MethodChannel('com.example.intent'); // The same channel name used in MainActivity
+
+  static const platform = MethodChannel(
+      'com.example.intent'); // The same channel name used in MainActivity
 
   // Call a method in MainActivity
   Future<void> callJavaMethod(String xml) async {
     try {
       // Call the Java function by method name
-      final String result = await platform.invokeMethod('callJavaFunction',xml);
-          if(GlobalClass.isXml(result)){
-            final xmlDoc = XmlDocument.parse(result);
-            final esignElement = xmlDoc.getElement('EsignResp');
+      final String result =
+          await platform.invokeMethod('callJavaFunction', xml);
+      if (GlobalClass.isXml(result)) {
+        final xmlDoc = XmlDocument.parse(result);
+        final esignElement = xmlDoc.getElement('EsignResp');
 
-            // Read the AuthMode attribute
-            final errMsg = esignElement?.getAttribute('errMsg');
-            final errCode = esignElement?.getAttribute('errCode');
-            if(errCode?.toLowerCase()!="na" )
-              {
-                GlobalClass.showUnsuccessfulAlert(context, "${errCode} : ${errMsg}", 1);
-              }else{
-              sendXMlToServer(result);
-
-            }
-
-          }else{
-            GlobalClass.showSnackBar(context, result);
-          }
+        // Read the AuthMode attribute
+        final errMsg = esignElement?.getAttribute('errMsg');
+        final errCode = esignElement?.getAttribute('errCode');
+        if (errCode?.toLowerCase() != "na") {
+          GlobalClass.showUnsuccessfulAlert(
+              context, "${errCode} : ${errMsg}", 1);
+        } else {
+          sendXMlToServer(result);
+        }
+      } else {
+        GlobalClass.showSnackBar(context, result);
+      }
     } on PlatformException catch (e) {
       print("Failed to invoke Java function: ${e.message}");
     }
@@ -522,81 +610,80 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       print("Header: $header");
     }
   }
+
   void sendXMlToServer(String result) {
     EasyLoading.show(status: "Data sending to server...");
-    try{
-      _apiServiceForESign.sendXMLtoServer(result).then((value){
-        if(value.responseMessage.statusCode==200){
-          LiveTrackRepository().saveLivetrackData( "",   "ESign",widget.selectedBorrower.id);
-          GlobalClass.showSuccessAlert(context,"ESign Has been done",3);
+    try {
+      _apiServiceForESign.sendXMLtoServer(result).then((value) {
+        if (value.responseMessage.statusCode == 200) {
+          LiveTrackRepository()
+              .saveLivetrackData("", "ESign", widget.selectedBorrower.id);
+          GlobalClass.showSuccessAlert(context, "ESign Has been done", 3);
           Navigator.push(
             context,
             MaterialPageRoute(
               //builder: (context) => ApplicationPage(),
-              builder: (context) => LoanEligibilityPage(
-                  ficode:widget.selectedBorrower.fiCode
-              ),
+              builder: (context) =>
+                  LoanEligibilityPage(ficode: widget.selectedBorrower.fiCode),
             ),
           );
           //Navigator.of(context).pop();
-        }else{
+        } else {
           parseResponse(value);
-          GlobalClass.showUnsuccessfulAlert(context,value.validationMessage ,1);
-
+          GlobalClass.showUnsuccessfulAlert(
+              context, value.validationMessage, 1);
         }
-      }).catchError((onError){
+      }).catchError((onError) {
         print(onError);
         GlobalClass.showToast_Error(onError);
       });
-        EasyLoading.dismiss();
-    }catch(err){
+      EasyLoading.dismiss();
+    } catch (err) {
       print(err);
-      GlobalClass.showUnsuccessfulAlert(context,err.toString(),1);
+      GlobalClass.showUnsuccessfulAlert(context, err.toString(), 1);
 
       EasyLoading.dismiss();
-
     }
-
   }
+
   Future<void> hitSaveAgreementsAPI(String authType) async {
-    EasyLoading.show(status:   AppLocalizations.of(context)!.pleasewait,);
+    EasyLoading.show(
+      status: AppLocalizations.of(context)!.pleasewait,
+    );
 
     try {
       // API call
       final xmlResponse = await _apiServiceForESign.saveAgreements(
-
         widget.selectedBorrower.fiCode.toString(), // Ficode
         widget.selectedBorrower.creator, // Creator
         consentRawText,
-       // "1",// ConsentText
-        authType=="Biometric"?"2":"1",
+        // "1",// ConsentText
+        authType == "Biometric" ? "2" : "1",
         //authType=="Biometric"?"2":"1",      // authMode
-        widget.selectedBorrower.id.toString(),      // F_Id
-        "1",      // SignType
+        widget.selectedBorrower.id.toString(), // F_Id
+        widget.signType!, // SignType
       );
-       EasyLoading.dismiss();
+      EasyLoading.dismiss();
       if (xmlResponse is Map<String, dynamic>) {
         String responseData = xmlResponse["content"];
 
-        if(GlobalClass.isXml(responseData)){
+        if (GlobalClass.isXml(responseData)) {
           callJavaMethod(responseData);
-        }else{
+        } else {
           GlobalClass.showErrorAlert(context, responseData, 1);
         }
         // Parse JSON object if it’s a map
 
         EasyLoading.dismiss();
-      }else if(xmlResponse is String){
-        if(GlobalClass.isXml(xmlResponse)){
+      } else if (xmlResponse is String) {
+        if (GlobalClass.isXml(xmlResponse)) {
           callJavaMethod(xmlResponse);
-        }else{
+        } else {
           GlobalClass.showErrorAlert(context, xmlResponse, 1);
         }
-      }else{
+      } else {
         GlobalClass.showErrorAlert(context, "Invalid data format", 1);
-
       }
-
 
       // Parse XML response
 
@@ -610,8 +697,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       //   flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
       // );
 
-   // await intent.launch();
-
+      // await intent.launch();
     } on DioError catch (e) {
       EasyLoading.dismiss();
       final statusCode = e.response?.statusCode;
@@ -623,11 +709,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       } else {
         // Handle other status codes
         GlobalClass.showErrorAlert(context, e.response!.data!, 1);
-
       }
-
-
-
     }
   }
 
@@ -637,32 +719,28 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
         style: TextStyle(fontSize: 10, color: Colors.black),
         children: [
           TextSpan(
-            text:   AppLocalizations.of(context)!.iherebynsdl ,
+            text: AppLocalizations.of(context)!.iherebynsdl,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           TextSpan(
-            text:
-            AppLocalizations.of(context)!.esigntext1,
+            text: AppLocalizations.of(context)!.esigntext1,
           ),
           TextSpan(
-            text:
-            AppLocalizations.of(context)!.esigntext2,
+            text: AppLocalizations.of(context)!.esigntext2,
           ),
           TextSpan(
-            text:
-            AppLocalizations.of(context)!.esigntext3,
+            text: AppLocalizations.of(context)!.esigntext3,
           ),
           TextSpan(
-            text:
-            AppLocalizations.of(context)!.esigntext4,
+            text: AppLocalizations.of(context)!.esigntext4,
           ),
         ],
       ),
-    )
-    ;
+    );
   }
 
-  String consentRawText = "I hereby authorize NSDL e-Gov on behalf of Paisalo Digital Limited to- "
+  String consentRawText =
+      "I hereby authorize NSDL e-Gov on behalf of Paisalo Digital Limited to- "
       "1. Use my Aadhaar details for Loan Document eSignature and authenticate my identity through the Aadhaar "
       "Authentication system (Aadhaar based e-KYC services of UIDAI) in accordance with the provisions of the Aadhaar "
       "(Targeted Delivery of Financial and other Subsidies, Benefits and Services) Act, 2016 and the allied rules and "

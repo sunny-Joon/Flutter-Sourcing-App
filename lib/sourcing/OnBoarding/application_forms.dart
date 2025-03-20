@@ -72,6 +72,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   String pageTitle = "";
 
+
   final _mobileFocusNode = FocusNode();
   final _pinFocusNodeP = FocusNode();
   final _pinFocusNodeC = FocusNode();
@@ -377,11 +378,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   @override
   void initState() {
     super.initState();
+
     setState(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        EasyLoading.show(
-          status: AppLocalizations.of(context)!.application,
-        );
+        EasyLoading.show(status: AppLocalizations.of(context)!.application,);
+        pageTitle = AppLocalizations.of(context)!.application;
       });
     });
 

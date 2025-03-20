@@ -387,16 +387,15 @@ class _ApiService implements ApiService {
 
   @override
   Future<CrifModel> generateCrif(
-    String creator,
-    String ficode,
+    String dbname,
+    Map<String, dynamic> body,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'creator': creator,
-      r'ficode': ficode,
-    };
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'dbname': dbname};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
     final _options = _setStreamType<CrifModel>(Options(
       method: 'POST',
       headers: _headers,
@@ -404,7 +403,7 @@ class _ApiService implements ApiService {
     )
         .compose(
           _dio.options,
-          'FIIndex/InitilizeCrif',
+          'Masters/InitilizeCrif',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -2390,12 +2389,14 @@ class _ApiService implements ApiService {
     String dbName,
     String CreatorId,
     String Banchcode,
+    String Groupcode,
     String IMEINO,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'CreatorId': CreatorId,
       r'Banchcode': Banchcode,
+      r'Groupcode': Groupcode,
       r'IMEINO': IMEINO,
     };
     final _headers = <String, dynamic>{
