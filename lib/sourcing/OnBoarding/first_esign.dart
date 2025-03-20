@@ -316,7 +316,7 @@ class _FirstEsignState extends State<FirstEsign> {
   Future<void> fetchFirstESignPDF(BorrowerListDataModel selectedData) async {
     final requestBody = {
       "F_Id": selectedData.id,
-      "Type": signType == 1 ? "FirsteSign" : "SecondeSign",
+      "Type":"FirsteSign",// signType == 1 ? "FirsteSign" : "SecondeSign",
       "DbName": "PDLERP",
     };
 
