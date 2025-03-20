@@ -586,14 +586,15 @@ class _LoginPageState extends State<LoginPage> {
 
     Map<String, dynamic> requestBody = {
       "userName": userName,
-      "password": userPassword,
-      // "password": EncryptionUtils.encrypt(userPassword),
+    //  "password": userPassword,
+       "password": EncryptionUtils.encrypt(userPassword),
       "GsmId": prefs.getString("GSMID")!
     };
-    // 0646498585477244 DeviceID
+    // 0646498585477244 DeviceID grst002064
+    // 2234514145687247 DeviceID grst003057
     // String? DeviceID = await generateDeviceId(userName) as String?;
     return await api
-        .getLogins("2234514145687247", GlobalClass.dbName, requestBody)
+        .getLogins("0646498585477244", GlobalClass.dbName, requestBody)
         .then((value) async {
       try {
         if (value.statuscode == 200) {

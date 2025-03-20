@@ -19,6 +19,7 @@ class GlobalClass {
 
   static String userType = "";
   static String id = "";
+  static String ficode="";
   static List<GetCreatorList> creatorlist = [];
   static String creatorId = "";
 

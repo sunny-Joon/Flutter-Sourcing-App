@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import '../../Models/SecondEsignModel.dart';
 import '../../Models/branch_model.dart';
 import '../../Models/group_model.dart';
 import '../../api_service.dart';
 import '../global_class.dart';
 import 'borrower_list.dart';
+import 'borrower_list.dart';
+import 'borrower_list.dart';
+import 'borrower_list.dart';
+import 'borrower_list2.dart';
+import 'first_esign.dart';
+import 'group_list_page2.dart';
 import 'group_recycler_item.dart';
 import 'kyc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class GroupListPage extends StatefulWidget {
@@ -25,6 +33,7 @@ class _GroupListPageState extends State<GroupListPage> {
   List<GroupDataModel> _items = [];
   String _searchText = '';
   bool _isLoading = true;
+  List<SecondEsignDataModel> borrowerList2 = [];
 
   @override
   void initState() {
@@ -213,8 +222,8 @@ class _GroupListPageState extends State<GroupListPage> {
                         break;
                       case 'Visit Report':
                         break;
-                      case 'E SIGN1':
-                        Navigator.push(
+                      case 'E SIGN':
+                       /* Navigator.push(
                           context,
                           MaterialPageRoute(
                             //builder: (context) => ApplicationPage(),
@@ -224,8 +233,8 @@ class _GroupListPageState extends State<GroupListPage> {
                                 page:"E SIGN"
                             ),
                           ),
-                        );
-                        //_showEsignPopup(context);
+                        );*/
+                        _showEsignPopup(context,selectedItem);
                         break;
                       case 'Dealer':
                         /*Navigator.push(
@@ -252,7 +261,7 @@ class _GroupListPageState extends State<GroupListPage> {
     );
   }
 
-  void _showEsignPopup(BuildContext context) {
+  void _showEsignPopup(BuildContext context,GroupDataModel selectedItem) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -270,6 +279,17 @@ class _GroupListPageState extends State<GroupListPage> {
                 child: TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        //builder: (context) => ApplicationPage(),
+                        builder: (context) => BorrowerList(
+                            BranchData: widget.Branchdata,
+                            GroupData: selectedItem,
+                            page:"E SIGN"
+                        ),
+                      ),
+                    );
                     // Add your navigation or functionality for the first Esign here
                   },
                   style: TextButton.styleFrom(
@@ -280,7 +300,7 @@ class _GroupListPageState extends State<GroupListPage> {
                     padding: EdgeInsets.symmetric(vertical: 12.0), // Adjust button padding as needed
                   ),
                   child: Text(
-                    'First Esign',
+                    AppLocalizations.of(context)!.fesign,
                     style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.red),
                   ),
                 ),
@@ -292,6 +312,7 @@ class _GroupListPageState extends State<GroupListPage> {
                 child: TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
+                    SecondEsignList(selectedItem,widget.intentFrom);
                     // Add your navigation or functionality for the second Esign here
                   },
                   style: TextButton.styleFrom(
@@ -302,7 +323,7 @@ class _GroupListPageState extends State<GroupListPage> {
                     padding: EdgeInsets.symmetric(vertical: 12.0), // Adjust button padding as needed
                   ),
                   child: Text(
-                    'Second Esign',
+                    AppLocalizations.of(context)!.sesign,
                     style: TextStyle(fontFamily: "Poppins-Regular",color: Colors.red),
                   ),
                 ),
@@ -313,4 +334,54 @@ class _GroupListPageState extends State<GroupListPage> {
       },
     );
   }
+
+  Future<void> SecondEsignList(GroupDataModel selectedItem, String intentFrom) async {
+    //EasyLoading.show(status: 'Loading...',);
+
+    final apiService = Provider.of<ApiService>(context, listen: false);
+
+    await apiService.BorrowerList2(
+        GlobalClass.token,
+        GlobalClass.dbName,
+        GlobalClass.creatorId,
+        widget.Branchdata.branchCode,
+       selectedItem.groupCode,
+        GlobalClass.imei
+
+    ).then((response) {
+      if (response.statuscode == 200 && response.data[0].errormsg.isEmpty) {
+        borrowerList2 = response.data;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BorrowerList2(
+              BranchData: widget.Branchdata,
+              GroupData: selectedItem,
+              BorrowerList: borrowerList2, // Ensure this is passed correctly
+             // page: "E SIGN",
+            ),
+          ),
+        );
+
+        /*   Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FirstEsign(
+              BranchData: widget.BranchData,
+              GroupData: widget.GroupData,
+              selectedData: item,
+              type: 1,
+            ),
+          ),
+        );*/
+
+      }else{
+        GlobalClass.showUnsuccessfulAlert(context,response.data[0].errormsg, 1);
+      }
+    }).catchError((error) {
+      _isLoading = false;
+      GlobalClass.showErrorAlert(context, "Server Side Error",1);
+    });
+  }
+
 }

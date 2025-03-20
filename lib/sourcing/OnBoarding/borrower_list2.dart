@@ -155,7 +155,7 @@ class _BorrowerList2State extends State<BorrowerList2> {
                           BranchData: widget.BranchData,
                           GroupData: widget.GroupData,
                           selectedData: BorrowerListDataModel(
-                            id: 0,
+                            id: item.id,
                             fiCode: int.parse(item.fiCode),
                             creator: item.creator,
                             dob: item.dob,

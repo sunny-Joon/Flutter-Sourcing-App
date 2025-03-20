@@ -58,15 +58,13 @@ class ApiConfig {
   static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
   static const String baseUrl3 = 'https://ifsc.razorpay.com/';
   static const String baseUrl4 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
-  static const String baseUrl5 = 'https://erpservice.paisalo.in:980/PDL.KYC.API/api/';
+  static const String baseUrl5 = 'https://kyc.paisalo.in:985/api/';
   static const String baseUrl6 = 'https://ocr.paisalo.in:950/api/';
   static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
   static const String baseUrl8 = 'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
   static const String baseUrl9 = 'https://apiuat.paisalo.in:4015/fi/api/';
 
 }
-
-
 
 // @RestApi(baseUrl: "https://predeptest.paisalo.in:8084/MobColen/api/")
 
@@ -147,10 +145,10 @@ abstract class ApiService {
       @Body() Map<String, dynamic> body,
       @Query("type") String type);
 
-  @POST("FIIndex/InitilizeCrif")
+  @POST("Masters/InitilizeCrif")
   Future<CrifModel> generateCrif(
-      @Query("creator") String creator,
-      @Query("ficode") String ficode);
+      @Header("dbname") String dbname,
+      @Body() Map<String, dynamic> body);
 
   @POST("Masters/SendSms")
   Future<CommonIntModel> mobileOtpSend(
@@ -481,6 +479,7 @@ abstract class ApiService {
       @Header("dbname") String dbName,
       @Query("CreatorId") String CreatorId,
       @Query("Banchcode") String Banchcode,
+      @Query("Groupcode") String Groupcode,
       @Query("IMEINO") String IMEINO,
       );
 
