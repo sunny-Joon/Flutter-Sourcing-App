@@ -41,6 +41,7 @@ class CollectionBorrowerListModel {
 
 class CollectionBorrowerListDataModel {
   String db;
+  int fi_Id;
   String dbName;
   String creator;
   String foCode;
@@ -74,6 +75,7 @@ class CollectionBorrowerListDataModel {
 
   CollectionBorrowerListDataModel({
     required this.db,
+    required this.fi_Id,
     required this.dbName,
     required this.creator,
     required this.foCode,
@@ -108,6 +110,7 @@ class CollectionBorrowerListDataModel {
 
   factory CollectionBorrowerListDataModel.fromJson(Map<String, dynamic> json) => CollectionBorrowerListDataModel(
     db: json["db"]??"",
+    fi_Id: json["fi_Id"]??"",
     dbName: json["dbName"]??"",
     creator: json["creator"]??"",
     foCode: json["foCode"]??"",
@@ -142,6 +145,7 @@ class CollectionBorrowerListDataModel {
 
   Map<String, dynamic> toJson() => {
     "db": db,
+    "fi_Id": fi_Id,
     "dbName": dbName,
     "creator": creator,
     "foCode": foCode,

@@ -970,6 +970,8 @@ class _KYCPageState extends State<KYCPage> {
     int isAadharVerified = 1;
     int is_phnno_verified = 1;
     int isNameVerify = 1;
+    String AdharName=_nameController.text.toString();
+    print("AdharName $AdharName");
 
     /*var fields = {
       "Pan No.": pan_no,
@@ -988,9 +990,8 @@ class _KYCPageState extends State<KYCPage> {
     }
 */
     final api = Provider.of<ApiService>(context, listen: false);
-
+     print("_nameController121 ${_nameController.text}");
     Map<String, dynamic> requestBody = {
-      //"Fi_ID": fiid,
       "Fi_ID": fiid,
       "pan_no": pan_no,
       "dl": dl,
@@ -1002,8 +1003,7 @@ class _KYCPageState extends State<KYCPage> {
       "isNameVerify": isNameVerify,
       "Pan_Name": panCardHolderName,
       "VoterId_Name": voterCardHolderName,
-      "Aadhar_Name":
-          "${_nameController.text} ${_nameMController.text} ${_nameLController.text}",
+      "Aadhar_Name": AdharName,
       "DrivingLic_Name": dlCardHolderName,
       "VILLAGE_CODE": selectedVillageCode!.villageCode,
       "CITY_CODE": selectedCityCode!.cityCode,
@@ -2759,11 +2759,11 @@ class _KYCPageState extends State<KYCPage> {
                         _drivingLicenseController.text.length < 10) {
                       showToast_Error(AppLocalizations.of(context)!.pleaseentercorrectdrivinglicense);
                     } else {
-                      DateTime parsedDate = DateFormat("yyyy-MM-dd").parse(dlDob!);
-                      String formattedDate = DateFormat("dd-MM-yyyy").format(parsedDate);
 
-                      dlVerifyByProtean(GlobalClass.id,
-                          _drivingLicenseController.text, formattedDate);
+
+                        print("formattedDate1 $dlDob");
+
+                      dlVerifyByProtean(GlobalClass.id, _drivingLicenseController.text, dlDob!);
                     }
                   },
                   child: Container(
@@ -3000,6 +3000,12 @@ class _KYCPageState extends State<KYCPage> {
     EasyLoading.show(
       status: AppLocalizations.of(context)!.loading,
     );
+    // print("object123 $dob");
+    // DateTime parsedDate = DateFormat("dd-MM-yyyy").parse(dob);
+    // String formattedDate = DateFormat("yyyy-MM-dd").format(parsedDate);
+    // print("formattedDate123 $formattedDate");
+
+
     try {
       Map<String, dynamic> requestBody = {
         "type": type,
@@ -3131,6 +3137,7 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
+
   void dlVerifyByProtean(String userid, String dlNo, String dob) async {
     EasyLoading.show(
       status: 'Loading...',
@@ -3141,7 +3148,6 @@ class _KYCPageState extends State<KYCPage> {
         "userID": userid,
         "dlno": dlNo,
          "dob": dob
-
       };
 
       final response =
@@ -3157,8 +3163,9 @@ class _KYCPageState extends State<KYCPage> {
             dlCardHolderName = "${responseData['result']['name']}";
             dlVerified = true;
           } else {
-            docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
-                _dobController.text);
+            print("object1234 ${_dobController.text}");
+
+            docVerifyIDC("drivinglicense", _drivingLicenseController.text, "", _dobController.text);
           }
         });
         EasyLoading.dismiss();

@@ -666,7 +666,8 @@ class _CollectionState extends State<Collection>
       "PaymentMode": "CASH",
       "collBranchCode": widget.selectedData.groupCode,
       "txnId": "",
-      "TransactionId": ""
+      "TransactionId": "",
+      "Fi_Id": widget.selectedData.fi_Id
     };
     return await api.RcPosting(
             GlobalClass.token, GlobalClass.dbName, requestBody)
