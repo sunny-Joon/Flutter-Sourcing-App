@@ -52,6 +52,8 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     getAppVersion();
     _checkBiometricAvailability();
+    mobileControllerlogin.text="GRST002064";
+    passwordControllerlogin.text="Admin@12";
   }
 
   @override
