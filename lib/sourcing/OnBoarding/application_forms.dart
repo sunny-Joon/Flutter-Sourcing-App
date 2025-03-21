@@ -4585,8 +4585,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   return;
                 }
                 // if (id != null && isClickedMap[id] == true) {
-                pickedImage = await GlobalClass().pickImage();
-                print("pickedImage $pickedImage");
+                if(path == null || path == "") {
+                print("pickedImage $isPathCleared");
+                print("pickedImage22 $path");
+
+                  pickedImage = await GlobalClass().pickImage();
+                  print("pickedImage $pickedImage");
+                }
 
                 bool OSVVerified = false;
                 if (pickedImage != null) {
