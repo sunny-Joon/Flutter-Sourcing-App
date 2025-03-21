@@ -4584,10 +4584,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       SnackBar(content: Text("Document already uploaded!")));
                   return;
                 }
-                // if (id != null && isClickedMap[id] == true) {
-                pickedImage = await GlobalClass().pickImage();
-                print("pickedImage $pickedImage");
-
+                 if (path==null || path=="") {
+                   pickedImage = await GlobalClass().pickImage();
+                   print("pickedImage $pickedImage");
+                 }
                 bool OSVVerified = false;
                 if (pickedImage != null) {
                   print("_selectedImage $_selectedImage");
