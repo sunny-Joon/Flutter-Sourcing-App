@@ -4567,9 +4567,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
     required Function(File) onImagePicked,
     required Function(int?, String?) onPathCleared,
   }) {
-    String baseUrl = 'https://predeptest.paisalo.in:8084';
-    String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
-    String finalUrl = '$baseUrl/$modifiedPath';
+    // String baseUrl = 'https://predeptest.paisalo.in:8084';
+    // String? modifiedPath = path?.replaceAll(r'D:\', '').replaceAll(r'\\', '/');
+    // String finalUrl = '$baseUrl/$modifiedPath';
 
     File? _selectedImage;
     bool isPathCleared = false;
@@ -4767,7 +4767,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                               )
                             : path != null && path.isNotEmpty
                                 ? Image.network(
-                                    finalUrl,
+                                   path,
                                     width: 50,
                                     height: 50,
                                     errorBuilder: (context, error, stackTrace) {
