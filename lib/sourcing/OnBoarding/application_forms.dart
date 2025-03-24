@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../DATABASE/database_helper.dart';
+import '../../MasterAPIs/live_track_repository.dart';
 import '../../Models/borrower_list_model.dart';
 import '../../Models/branch_model.dart';
 import '../../Models/get_all_model.dart';
@@ -71,7 +72,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool isSubmitEnabled = false; // Determines if submit button should be enabled
 
   String pageTitle = "";
-
 
   final _mobileFocusNode = FocusNode();
   final _pinFocusNodeP = FocusNode();
@@ -381,13 +381,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     setState(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        EasyLoading.show(status: AppLocalizations.of(context)!.application,);
+        EasyLoading.show(
+          status: AppLocalizations.of(context)!.application,
+        );
         pageTitle = AppLocalizations.of(context)!.application;
       });
     });
 
-    _imageFile2 =
-       widget.selectedData.profilePic;
+    _imageFile2 = widget.selectedData.profilePic;
     FIID = widget.selectedData.id;
     creator = widget.selectedData.creator;
     ficode = widget.selectedData.fiCode.toString();
@@ -4585,15 +4586,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   return;
                 }
 
-                 if (path==null || path=="") {
-                   pickedImage = await GlobalClass().pickImage();
-                   print("pickedImage $pickedImage");
-                 }
-
+                if (path == null || path == "") {
+                  pickedImage = await GlobalClass().pickImage();
+                  print("pickedImage $pickedImage");
+                  print("GestureDetector4");
+                }
+                print("GestureDetector3");
                 bool OSVVerified = false;
                 if (pickedImage != null) {
                   print("_selectedImage $_selectedImage");
+                  print("GestureDetector2");
                   switch (id) {
+
                     case 1:
                       OSVVerified = await OcrDocsScanning("aadharfront",
                           BorrowerInfo[0].aadharNo, "borrower", context);
@@ -4648,6 +4652,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
                       break;
                     case 7:
+                      print("GestureDetector8");
                       OSVVerified = await OcrDocsScanning(
                           'aadharfront',
                           BorrowerInfo[0].guarantors[0].grAadharId,
@@ -4680,7 +4685,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     case 28:
                       OSVVerified = await OcrDocsScanning(
                           'voterback',
-                          BorrowerInfo[0].guarantors[0].grVoter,
+                          "1",
                           "guarantor",
                           context);
                       if (OSVVerified) {
@@ -4717,7 +4722,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       if (subType == 'borrower') {
                         if (borrowerDocsUploded) {
                           FiDocsUploadsApi(context, "0");
-
                         }
                       } else if (subType == 'guarantor') {
                         if (coBorrowerDocsUploaded) {
@@ -7667,8 +7671,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _aadharIdController.text = data.guarantors[0].grAadharId;
       //  _imageFile2 =GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
 
-      _imageFile1 =
-          data.guarantors[0].grPicture;
+      _imageFile1 = data.guarantors[0].grPicture;
       grPicFlag = true;
       //  genderselected = data.guarantors[0].grGender;
       //  religionselected = data.guarantors[0].grReligion;
@@ -7789,7 +7792,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Future<bool> OcrDocsScanning(
       String type, String id, String subType, BuildContext context) async {
     EasyLoading.show(); // Show a loading indicator
-
+    print("GestureDetector1");
     try {
       if (pickedImage == null) {
         showToast_Error(AppLocalizations.of(context)!.noimageselected);
@@ -7878,8 +7881,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         '${dob.split('T')[0].split('-')[2]}-${dob.split('T')[0].split('-')[1]}-${dob.split('T')[0].split('-')[0]}';
 
     final String loanAmt = borrowerInfo.loanAmount.toString();
-    final String imageUrl =borrowerInfo.profilePic;
-       // GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
+    final String imageUrl = borrowerInfo.profilePic;
+    // GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
     // Replace with your image URL
 
     showDialog(
@@ -8336,6 +8339,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         if (value.statuscode == 200) {
           EasyLoading.dismiss();
           if (GurNum != "0") {
+            LiveTrackRepository().saveLivetrackData( "","Application Form",widget.selectedData.id);
             GlobalClass.showSuccessAlertclose(
               context,
               value.message,

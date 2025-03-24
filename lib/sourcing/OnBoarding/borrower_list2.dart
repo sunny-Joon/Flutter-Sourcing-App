@@ -174,7 +174,7 @@ class _BorrowerList2State extends State<BorrowerList2> {
                             errormsg: item.errormsg,
                             isvalid: item.isvalid,
                             eSignDoc: "",
-                            profilePic: "",
+                            profilePic: item.profilePic,
                             homeVisit: "",
                           ),
                           type: 2,
