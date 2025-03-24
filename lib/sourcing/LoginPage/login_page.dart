@@ -32,9 +32,9 @@ class _LoginPageState extends State<LoginPage> {
   late String refToken, target;
   bool _isObscure = true;
   late TextEditingController passwordControllerlogin =
-      TextEditingController(text: '');
+      TextEditingController(text: 'Admin@12');
   late TextEditingController mobileControllerlogin =
-      TextEditingController(text: '');
+      TextEditingController(text: 'GRST002064');
 
   final LocalAuthentication auth = LocalAuthentication();
   bool _showBiometricIcon = false;

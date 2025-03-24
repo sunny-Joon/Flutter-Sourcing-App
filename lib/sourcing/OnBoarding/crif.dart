@@ -199,16 +199,17 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage>
   }
 
   Future<void> initializeCrif(BuildContext context) async {
-     EasyLoading.show(status: "Please wait...");
+    EasyLoading.show(status: "Please wait...");
 
-    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
-    Map<String, dynamic> requestBody = {
-      "creator":  GlobalClass.creator,//"AGRA",
-      "ficode":  widget.ficode,//"261988"
-    };
-    return await api
-        .generateCrif(GlobalClass.dbName, requestBody)
-        .then((value) {
+    try {
+      final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+      Map<String, dynamic> requestBody = {
+        "creator": GlobalClass.creator, //"AGRA",
+        "ficode": widget.ficode, //"261988"
+      };
+
+      final value = await api.generateCrif(GlobalClass.dbName, requestBody);
+
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
         setState(() {
@@ -216,8 +217,10 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage>
           CrifDataModel crifDataModel = crifModel.data;
           String crifScoreGR = crifDataModel.data[0].scoreValue;
           print("AAA $crifScoreGR");
+
           crifScore = 800;
           flag = true;
+
           if (crifScoreGR.isNotEmpty) {
             _controller = AnimationController(
               duration: const Duration(seconds: 2),
@@ -225,18 +228,17 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage>
             );
 
             _animation =
-                Tween<double>(begin: 0, end: crifScore).animate(_controller)
-                  ..addListener(() {
-                    setState(() {});
-                  })
-                  ..addStatusListener((status) {
-                    if (status == AnimationStatus.completed) {
-                      // Trigger the icon popup after the needle animation completes
-                      setState(() {
-                        // Here, you could trigger any further logic or animations related to the popup
-                      });
-                    }
+            Tween<double>(begin: 0, end: crifScore).animate(_controller)
+              ..addListener(() {
+                setState(() {});
+              })
+              ..addStatusListener((status) {
+                if (status == AnimationStatus.completed) {
+                  setState(() {
+                    // Any further logic after animation completes
                   });
+                }
+              });
 
             _controller.forward();
           } else {
@@ -245,11 +247,15 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage>
           }
         });
       } else {
-        EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
+        throw Exception(value.message);
       }
-    });
+    } catch (e) {
+      EasyLoading.dismiss();
+      print("Error: $e");
+      GlobalClass.showUnsuccessfulAlert(context, e.toString(), 1);
+    }
   }
+
 }
 
 class SemicircleProgressPainter extends CustomPainter {
