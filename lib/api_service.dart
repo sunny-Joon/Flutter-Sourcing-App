@@ -213,7 +213,7 @@ abstract class ApiService {
       @Part(name: "AadhaarCard") File? AadhaarCard,
       @Part( name:"AadhaarCardBack") File? AadhaarCardBack,
       @Part( name:"VoterId") File? VoterId,
-      @Part( name:"VoterIdBack") File? VoterIdBack,
+      @Part( name:"VoterIdBack") File? VoterxIdBack,
       @Part( name:"DrivingLicense") File? DrivingLicense,
       @Part( name:"Pan") File? Pan,
       @Part( name:"PassPort") File? PassPort,
