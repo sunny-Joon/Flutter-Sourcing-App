@@ -4157,14 +4157,25 @@ class _KYCPageState extends State<KYCPage> {
     final String dl = borrowerInfo.dl;
     final String voterId = borrowerInfo.voterId;
     final String dob = borrowerInfo.dob;
-    print("sssssssss + $dob");
+/*    print("sssssssss + $dob");
 
     String formattedDOB =
         '${dob.split('T')[0].split('-')[2]}-${dob.split('T')[0].split('-')[1]}-${dob.split('T')[0].split('-')[0]}';
     print("sssssssss + $formattedDOB");
     dobForSaveFi = DateFormat('yyyy-MM-dd').format(DateTime.parse(formattedDOB));
     dobForIDLC = DateFormat('yyyy/MM/dd').format(DateTime.parse(formattedDOB));
-    dobForProtien = DateFormat('dd-MM-yyyy').format(DateTime.parse(formattedDOB));
+    dobForProtien = DateFormat('dd-MM-yyyy').format(DateTime.parse(formattedDOB));*/
+
+
+    String datePart = dob.split('T')[0];
+
+    List<String> dateParts = datePart.split('-');
+    String formattedDOB = '${dateParts[2]}-${dateParts[1]}-${dateParts[0]}';
+    print("Formatted DOB (dd-MM-yyyy): $formattedDOB");
+    DateTime parsedDate = DateFormat('dd-MM-yyyy').parse(formattedDOB);
+     dobForSaveFi = DateFormat('yyyy-MM-dd').format(parsedDate);
+     dobForIDLC = DateFormat('yyyy/MM/dd').format(parsedDate);
+     dobForProtien = DateFormat('dd-MM-yyyy').format(parsedDate);
 
     print("formattedDate1 $dlDob");
     print("formattedDate2 ${_dobController.text}");
