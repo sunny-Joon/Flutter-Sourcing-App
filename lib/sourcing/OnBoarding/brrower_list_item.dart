@@ -60,10 +60,10 @@ class BorrowerListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? imageUrl;
-    if (pic != null) {
-      imageUrl = transformFilePathToUrl(pic!);
-    }
+    // String? imageUrl;
+    // if (pic != null) {
+    //   imageUrl = transformFilePathToUrl(pic!);
+    // }
 
     return GestureDetector(
       onTap: onTap,
@@ -87,7 +87,7 @@ class BorrowerListItem extends StatelessWidget {
         ),
         child: Row(
           children: <Widget>[
-            ProfileAvatar(imagePath: imageUrl),
+            ProfileAvatar(imagePath: pic),
             SizedBox(width: 16),
             Expanded(
               child: Column(

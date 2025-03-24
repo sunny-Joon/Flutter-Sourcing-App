@@ -341,7 +341,7 @@ class GlobalClass {
 
 
   String transformFilePathToUrl(String filePath) {
-    const String urlPrefix = 'https://predeptest.paisalo.in:8084/LOSDOC//FiDocs//';
+    const String urlPrefix = 'https://apiuat.paisalo.in:4015/data//FiDocs//';
     const String localPrefix = 'D:\\LOSDOC\\FiDocs\\';
     if (filePath.startsWith(localPrefix)) {
       // Remove the local prefix and replace with the URL prefix

@@ -387,7 +387,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     });
 
     _imageFile2 =
-        GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
+       widget.selectedData.profilePic;
     FIID = widget.selectedData.id;
     creator = widget.selectedData.creator;
     ficode = widget.selectedData.fiCode.toString();
@@ -4715,6 +4715,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       if (subType == 'borrower') {
                         if (borrowerDocsUploded) {
                           FiDocsUploadsApi(context, "0");
+
                         }
                       } else if (subType == 'guarantor') {
                         if (coBorrowerDocsUploaded) {
@@ -7665,7 +7666,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       //  _imageFile2 =GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
 
       _imageFile1 =
-          GlobalClass().transformFilePathToUrl(data.guarantors[0].grPicture);
+          data.guarantors[0].grPicture;
       grPicFlag = true;
       //  genderselected = data.guarantors[0].grGender;
       //  religionselected = data.guarantors[0].grReligion;
@@ -7875,8 +7876,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         '${dob.split('T')[0].split('-')[2]}-${dob.split('T')[0].split('-')[1]}-${dob.split('T')[0].split('-')[0]}';
 
     final String loanAmt = borrowerInfo.loanAmount.toString();
-    final String imageUrl =
-        GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
+    final String imageUrl =borrowerInfo.profilePic;
+       // GlobalClass().transformFilePathToUrl(widget.selectedData.profilePic);
     // Replace with your image URL
 
     showDialog(
