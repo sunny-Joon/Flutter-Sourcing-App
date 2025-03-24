@@ -259,6 +259,9 @@ class _KYCPageState extends State<KYCPage> {
   bool dlVerified = false;
   bool voterVerified = false;
   String? dlDob;
+  String? dobForProtien;
+  String? dobForIDLC;
+  String? dobForSaveFi;//2024-09-19
 /*  String? selectedState;
   String? selectedEarningMemberType;
   String? selectedBusinessDetail;
@@ -392,6 +395,16 @@ class _KYCPageState extends State<KYCPage> {
           _selectedDate = picked;
           _dobController.text = DateFormat('dd-MM-yyyy').format(picked);
           dlDob = DateFormat('dd-MM-yyyy').format(picked);
+          dobForSaveFi = DateFormat('yyyy-MM-dd').format(picked);
+          dobForIDLC = DateFormat('yyyy/MM/dd').format(picked);
+          dobForProtien = DateFormat('dd-MM-yyyy').format(picked);
+
+          print("formattedDate1 $dlDob");
+          print("formattedDate2 ${_dobController.text}");
+          print("formattedDate2 ${dobForSaveFi}");
+          print("formattedDate2 ${dobForIDLC}");
+          print("formattedDate2 ${dobForProtien}");
+
           _calculateAge();
         }
       });
@@ -427,12 +440,12 @@ class _KYCPageState extends State<KYCPage> {
     );
     if (picked != null) {
       setState(() {
-        if (type == "dob") {
-          _selectedDate = picked;
+      /*  if (type == "dob") {
+         *//* _selectedDate = picked;
           _dobController.text = DateFormat('dd-MM-yyyy').format(picked);
           dlDob = DateFormat('dd-MM-yyyy').format(picked);
-          _calculateAge();
-        } else if (type == "passExp") {
+          _calculateAge();*//*
+        } else */if (type == "passExp") {
           _passportExpiryController.text =
               DateFormat('dd-MM-yyyy').format(picked);
         } else if (type == "dlExp") {
@@ -821,7 +834,7 @@ class _KYCPageState extends State<KYCPage> {
       String name = _nameController.text.toString();
       String middlename = _nameMController.text.toString();
       String lastname = _nameLController.text.toString();
-      String dob = _dobController.text.toString();
+      String dob = dobForSaveFi!;
       String age = _ageController.text.toString();
       String gender = genderselected.toString();
       String guardianName  = _gurNameController.text.toString();
@@ -971,6 +984,13 @@ class _KYCPageState extends State<KYCPage> {
     int is_phnno_verified = 1;
     int isNameVerify = 1;
     String AdharName=_nameController.text.toString();
+    if(_nameMController.text.isNotEmpty && _nameLController.text.isNotEmpty){
+      AdharName=_nameController.text.toString() +" "+_nameMController.text+" "+_nameLController.text;
+    }else if(_nameMController.text.isNotEmpty){
+      AdharName=_nameController.text.toString() +" "+_nameMController.text;
+    }else if(_nameLController.text.isNotEmpty){
+      AdharName=_nameController.text.toString()+" "+_nameLController.text;
+    }
     print("AdharName $AdharName");
 
     /*var fields = {
@@ -983,12 +1003,11 @@ class _KYCPageState extends State<KYCPage> {
     };
 
     for (var field in fields.entries) {
-      if (field.value == null || field.value.isEmpty) {
+      if (field.value == null || field.value!.isEmpty) {
         showAlertDialog(context, "Please fill in the ${field.key} field.");
         return;
       }
-    }
-*/
+    }*/
     final api = Provider.of<ApiService>(context, listen: false);
      print("_nameController121 ${_nameController.text}");
     Map<String, dynamic> requestBody = {
@@ -1013,26 +1032,45 @@ class _KYCPageState extends State<KYCPage> {
       "DLExpireDate": DLExpireDate,
     };
 
+    print(      "Fi_ID: $fiid,");
+    print(      "pan_no: $pan_no,");
+    print(      "dl: $dl,");
+    print(      "voter_id: $voter_id,");
+    print(      "passport: $passport,");
+    print(      "PassportExpireDate: $PassportExpireDate,");
+    print(      "isAadharVerified: $isAadharVerified,");
+    print(      "is_phnno_verified: $is_phnno_verified,");
+    print(      "isNameVerify: $isNameVerify,");
+    print(      "Pan_Name: $panCardHolderName,");
+    print(      "VoterId_Name: $voterCardHolderName,");
+    print(      "Aadhar_Name: $AdharName,");
+    print(      "DrivingLic_Name: $dlCardHolderName,");
+    print(      "VILLAGE_CODE: $selectedVillageCode!.villageCode,");
+    print(      "CITY_CODE: $selectedCityCode!.cityCode,");
+    print(      "SUB_DIST_CODE: $selectedSubDistrictCode!.subDistCode,");
+    print(      "DIST_CODE: $selectedDistrictCode!.distCode,");
+    print(      "STATE_CODE: $stateselected!.code,");
+    print(      "DLExpireDate: $DLExpireDate,");
     return await api
         .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
-        /*setState(() {
+        setState(() {
           _currentStep += 1;
-        });*/
+        });
         EasyLoading.dismiss();
-        GlobalClass.showSuccessAlertclose(
+        /*GlobalClass.showSuccessAlertclose(
           context,
           "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
           1,
           destinationPage: OnBoarding(),
-        );
+        );*/
       //  _showSuccessAndRedirect(value);
 
-       /* GlobalClass.showSuccessAlert(
+        GlobalClass.showSuccessAlert(
             context,
             "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
-            2);*/
+            2);
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
@@ -1240,6 +1278,15 @@ class _KYCPageState extends State<KYCPage> {
         _calculateAge();
       });
       dlDob = DateFormat('dd-MM-yyyy').format(parsedDate);
+      dobForSaveFi = DateFormat('yyyy-MM-dd').format(parsedDate);
+      dobForIDLC = DateFormat('yyyy/MM/dd').format(parsedDate);
+      dobForProtien = DateFormat('dd-MM-yyyy').format(parsedDate);
+
+      print("formattedDate1 $dlDob");
+      print("formattedDate2 ${_dobController.text}");
+      print("formattedDate2 ${dobForSaveFi}");
+      print("formattedDate2 ${dobForIDLC}");
+      print("formattedDate2 ${dobForProtien}");
       // Return the formatted date string in yyyy-MM-dd format
       return DateFormat('dd-MM-yyyy').format(parsedDate);
     } catch (e) {
@@ -1276,8 +1323,6 @@ class _KYCPageState extends State<KYCPage> {
                     nameParts.sublist(1, nameParts.length - 1).join(' ');
               }
               _dobController.text = formatDate(response.data.dob, 'dd/MM/yyyy');
-
-
 
               genderselected = aadhar_gender.firstWhere((item) =>
                       item.descriptionEn.toLowerCase() ==
@@ -2759,11 +2804,8 @@ class _KYCPageState extends State<KYCPage> {
                         _drivingLicenseController.text.length < 10) {
                       showToast_Error(AppLocalizations.of(context)!.pleaseentercorrectdrivinglicense);
                     } else {
+                      dlVerifyByProtean(GlobalClass.id, _drivingLicenseController.text, dobForProtien!);
 
-
-                        print("formattedDate1 $dlDob");
-
-                      dlVerifyByProtean(GlobalClass.id, _drivingLicenseController.text, dlDob!);
                     }
                   },
                   child: Container(
@@ -3165,7 +3207,7 @@ class _KYCPageState extends State<KYCPage> {
           } else {
             print("object1234 ${_dobController.text}");
 
-            docVerifyIDC("drivinglicense", _drivingLicenseController.text, "", _dobController.text);
+            docVerifyIDC("drivinglicense", _drivingLicenseController.text, "", dobForIDLC!);
           }
         });
         EasyLoading.dismiss();
@@ -3173,12 +3215,12 @@ class _KYCPageState extends State<KYCPage> {
         EasyLoading.dismiss();
 
         docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
-            _dobController.text);
+            dobForIDLC!);
       }
     } catch (e) {
       // Handle errors
       docVerifyIDC("drivinglicense", _drivingLicenseController.text, "",
-          _dobController.text);
+          dobForIDLC!);
       EasyLoading.dismiss();
     }
     EasyLoading.dismiss();
@@ -4115,8 +4157,20 @@ class _KYCPageState extends State<KYCPage> {
     final String dl = borrowerInfo.dl;
     final String voterId = borrowerInfo.voterId;
     final String dob = borrowerInfo.dob;
+    print("sssssssss + $dob");
+
     String formattedDOB =
         '${dob.split('T')[0].split('-')[2]}-${dob.split('T')[0].split('-')[1]}-${dob.split('T')[0].split('-')[0]}';
+    print("sssssssss + $formattedDOB");
+    dobForSaveFi = DateFormat('yyyy-MM-dd').format(DateTime.parse(formattedDOB));
+    dobForIDLC = DateFormat('yyyy/MM/dd').format(DateTime.parse(formattedDOB));
+    dobForProtien = DateFormat('dd-MM-yyyy').format(DateTime.parse(formattedDOB));
+
+    print("formattedDate1 $dlDob");
+    print("formattedDate2 ${_dobController.text}");
+    print("formattedDate2 ${dobForSaveFi}");
+    print("formattedDate2 ${dobForIDLC}");
+    print("formattedDate2 ${dobForProtien}");
 
     final String loanAmt = borrowerInfo.loanAmount.toString();
     // final String imageUrl =GlobalClass().transformFilePathToUrl(borrowerInfo.profilepic);
@@ -4215,8 +4269,17 @@ class _KYCPageState extends State<KYCPage> {
                                       Fi_Id = borrowerInfo.fiId.toString();
                                       Fi_Code = borrowerInfo.fiCode.toString();
                                       dlDob = borrowerInfo.dob.toString();
-                                      _dobController.text =
-                                          borrowerInfo.dob.toString();
+                                      print("sssssssss + $dlDob");
+
+                                      _dobController.text =borrowerInfo.dob.toString();
+                                      print("sssssssss + _dobController.text");
+
+                                      _dobController.text = borrowerInfo.dob.toString().split("T")[0];
+                                      print("sssssssss + _dobController.text");
+
+                                      dlDob = borrowerInfo.dob.toString().split("T")[0];
+                                      print("sssssssss + $dlDob");
+
 
                                       if (borrowerInfo.pState.isNotEmpty) {
                                         stateselected = states.firstWhere(
@@ -4226,12 +4289,7 @@ class _KYCPageState extends State<KYCPage> {
                                                     .toLowerCase());
                                       }
                                       //String statecode = borrowerInfo.pState.toString();
-                                      _dobController.text = borrowerInfo.dob
-                                          .toString()
-                                          .split("T")[0];
-                                      dlDob = borrowerInfo.dob
-                                          .toString()
-                                          .split("T")[0];
+
 
                                       print("sssssssss" + stateselected!.code);
                                       getPlace(

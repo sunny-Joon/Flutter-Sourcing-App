@@ -630,9 +630,17 @@ class _DialogContentState extends State<DialogContent>
           );
           //Navigator.of(context).pop();
         } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              //builder: (context) => ApplicationPage(),
+              builder: (context) =>
+                  LoanEligibilityPage(ficode: 250003),
+            ),
+          );
           parseResponse(value);
-          GlobalClass.showUnsuccessfulAlert(
-              context, value.validationMessage, 1);
+          /*GlobalClass.showUnsuccessfulAlert(
+              context, value.validationMessage, 1);*/
         }
       }).catchError((onError) {
         print(onError);
