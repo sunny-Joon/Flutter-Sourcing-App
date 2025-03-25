@@ -741,7 +741,7 @@ class _ApiService implements ApiService {
     File? AadhaarCard,
     File? AadhaarCardBack,
     File? VoterId,
-    File? VoterIdBack,
+    File? VoterxIdBack,
     File? DrivingLicense,
     File? Pan,
     File? PassPort,
@@ -791,12 +791,12 @@ class _ApiService implements ApiService {
         ),
       ));
     }
-    if (VoterIdBack != null) {
+    if (VoterxIdBack != null) {
       _data.files.add(MapEntry(
         'VoterIdBack',
         MultipartFile.fromFileSync(
-          VoterIdBack.path,
-          filename: VoterIdBack.path.split(Platform.pathSeparator).last,
+          VoterxIdBack.path,
+          filename: VoterxIdBack.path.split(Platform.pathSeparator).last,
         ),
       ));
     }
@@ -2996,7 +2996,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<dynamic> saveAgreements(
+  Future<emudramodel> saveAgreements(
     String ficode,
     String creator,
     String consentText,
@@ -3032,6 +3032,44 @@ class _ApiService implements ApiService {
       'SignType',
       signType,
     ));
+    final _options = _setStreamType<emudramodel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'multipart/form-data',
+    )
+        .compose(
+          _dio.options,
+          'ESign/SaveAgreements',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late emudramodel _value;
+    try {
+      _value = emudramodel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<dynamic> sendXMLtoServer(String response) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.fields.add(MapEntry(
+      'response',
+      response,
+    ));
     final _options = _setStreamType<dynamic>(Options(
       method: 'POST',
       headers: _headers,
@@ -3040,7 +3078,7 @@ class _ApiService implements ApiService {
     )
         .compose(
           _dio.options,
-          'e_SignMobile/SaveAgreements',
+          'ESign/HandleCallbackMobileresponse',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -3051,40 +3089,6 @@ class _ApiService implements ApiService {
         )));
     final _result = await _dio.fetch(_options);
     final _value = _result.data;
-    return _value;
-  }
-
-  @override
-  Future<XmlResponse> sendXMLtoServer(String msg) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = {'msg': msg};
-    final _options = _setStreamType<XmlResponse>(Options(
-      method: 'POST',
-      headers: _headers,
-      extra: _extra,
-      contentType: 'application/x-www-form-urlencoded',
-    )
-        .compose(
-          _dio.options,
-          'E_Sign/XMLReaponseNew',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late XmlResponse _value;
-    try {
-      _value = XmlResponse.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
     return _value;
   }
 

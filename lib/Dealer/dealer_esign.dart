@@ -407,7 +407,7 @@ class _DialogContentState extends State<DialogContent> {
 
                         onTap: (){
 
-                          hitSaveAgreementsAPI(authModeType);
+                          //hitSaveAgreementsAPI(authModeType);
                         },
                         child:Card(
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -551,43 +551,45 @@ EasyLoading.dismiss();
     }
 
   }
-  Future<void> hitSaveAgreementsAPI(String authType) async {
-    EasyLoading.show(status:   AppLocalizations.of(context)!.pleasewait,);
+  //protean
+  /*Future<void> hitSaveAgreementsAPI(String authType) async {
+    EasyLoading.show(
+      status: AppLocalizations.of(context)!.pleasewait,
+    );
 
     try {
       // API call
       final xmlResponse = await _apiServiceForESign.saveAgreements(
-
         widget.selectedBorrower.fiCode.toString(), // Ficode
         widget.selectedBorrower.creator, // Creator
-        consentRawText,   // ConsentText
-        authType=="Biometric"?"2":"1",      // authMode
-        widget.selectedBorrower.id.toString(),      // F_Id
-        "1",      // SignType
+        consentRawText,
+        // "1",// ConsentText
+        authType == "Biometric" ? "2" : "1",
+        //authType=="Biometric"?"2":"1",      // authMode
+        widget.selectedBorrower.id.toString(), // F_Id
+        widget.signType!, // SignType
       );
-    EasyLoading.dismiss();
+      EasyLoading.dismiss();
       if (xmlResponse is Map<String, dynamic>) {
         String responseData = xmlResponse["content"];
 
-        if(GlobalClass.isXml(responseData)){
+        if (GlobalClass.isXml(responseData)) {
           callJavaMethod(responseData);
-        }else{
+        } else {
           GlobalClass.showErrorAlert(context, responseData, 1);
         }
         // Parse JSON object if it’s a map
 
         EasyLoading.dismiss();
-      }else if(xmlResponse is String){
-        if(GlobalClass.isXml(xmlResponse)){
+      } else if (xmlResponse is String) {
+        if (GlobalClass.isXml(xmlResponse)) {
           callJavaMethod(xmlResponse);
-        }else{
+        } else {
           GlobalClass.showErrorAlert(context, xmlResponse, 1);
         }
-      }else{
+      } else {
         GlobalClass.showErrorAlert(context, "Invalid data format", 1);
-
       }
-
 
       // Parse XML response
 
@@ -601,8 +603,7 @@ EasyLoading.dismiss();
       //   flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
       // );
 
-   // await intent.launch();
-
+      // await intent.launch();
     } on DioError catch (e) {
       EasyLoading.dismiss();
       final statusCode = e.response?.statusCode;
@@ -614,14 +615,80 @@ EasyLoading.dismiss();
       } else {
         // Handle other status codes
         GlobalClass.showErrorAlert(context, e.response!.data!, 1);
-
       }
-
-
-
     }
   }
+*/
 
+  //emudra
+
+ /* Future<void> hitSaveAgreementsAPI(String authType) async {
+    EasyLoading.show(
+      status: AppLocalizations.of(context)!.pleasewait,
+    );
+
+    final requestBody = {
+      "ficode": widget.selectedBorrower.fiCode.toString(),
+      "creator": widget.selectedBorrower.creator,
+      "consentText": consentRawText,
+      "authMode":authType == "Biometric" ? "2" : "1",
+      "f_Id":  widget.selectedBorrower.id.toString(),
+      "signType": widget.signType!,
+    };
+
+    try {
+      // API call
+      final xmlResponse = await _apiServiceForESignemudra.saveAgreements(requestBody);
+      EasyLoading.dismiss();
+      if (xmlResponse is Map<String, dynamic>) {
+        String responseData = xmlResponse.responseCode;
+
+        // if (GlobalClass.isXml(responseData)) {
+        callJavaMethod(responseData);
+        // } else {
+        //   GlobalClass.showErrorAlert(context, responseData, 1);
+        // }
+        // Parse JSON object if it’s a map
+
+        EasyLoading.dismiss();
+      } else if (xmlResponse.responseCode.isNotEmpty) {
+        // if (GlobalClass.isXml(xmlResponse)) {
+        //   callJavaMethod(xmlResponse);
+        // } else {
+        GlobalClass.showErrorAlert(context, xmlResponse.message, 1);
+        // }
+      } else {
+        GlobalClass.showErrorAlert(context, "Invalid data format", 1);
+      }
+
+      // Parse XML response
+
+      // final intent = AndroidIntent(
+      //   action: 'com.nsdl.egov.esign.rdservice.fp.CAPTURE',
+      //   arguments: <String, dynamic>{
+      //     'msg': xmlResponse,
+      //     'env': 'PROD',
+      //     'returnUrl': 'https://erpservice.paisalo.in:980/EsignTest/api/DocSignIn/XMLReaponse',
+      //   },
+      //   flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
+      // );
+
+      // await intent.launch();
+    } on DioError catch (e) {
+      EasyLoading.dismiss();
+      final statusCode = e.response?.statusCode;
+      if (statusCode == 404) {
+        // Handle 404 Not Found
+        GlobalClass.showErrorAlert(context, e.response!.data!, 1);
+        print("Error: File not found.");
+        // Show message to user
+      } else {
+        // Handle other status codes
+        GlobalClass.showErrorAlert(context, e.response!.data!, 1);
+      }
+    }
+  }
+*/
   Widget consentText() {
     return RichText(
       text: TextSpan(

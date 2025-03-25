@@ -28,6 +28,7 @@ class Sharedeviceid extends StatefulWidget {
 class _SharedeviceidState extends State<Sharedeviceid> {
   String? _selectedRequestType;
   String? _selectedCreator;
+  String? _selectedCreatorid;
   String _locationMessage = "";
   String? _errorText;
 
@@ -214,6 +215,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       setState(() {
         _creators = value.data;
         _selectedCreator = _creators[0].creator;
+      //  _selectedCreatorid = _creators[0].creatorId.toString();
 
         _isLoading = false;
         EasyLoading.dismiss();
@@ -487,11 +489,11 @@ class _SharedeviceidState extends State<Sharedeviceid> {
                                               _selectedCreator = newValue;
                                               _creatorError = null;
                                               validateInputs();
-                                              String selectedCreatorId = _creators
+                                               _selectedCreatorid = _creators
                                                   .firstWhere((creator) => creator.creator == newValue)
                                                   .creatorId
                                                   .toString();
-                                              _fetchBranchList(context, selectedCreatorId);
+                                              _fetchBranchList(context, _selectedCreatorid!);
                                               _branchController.text = "";
                                               _selectedBranches = [];
                                             });
@@ -825,7 +827,7 @@ class _SharedeviceidState extends State<Sharedeviceid> {
       "IMEI_no2": _imei2Controller.text,
       "deviceId": _deviceIdController,
       "map_branch": _branchController.text,
-      "creator": _selectedCreator,
+      "CreatorID": _selectedCreatorid,
       "userId": _userIdController,
       "longitude": _longitudeController,
       "latitude": _latitudeController,

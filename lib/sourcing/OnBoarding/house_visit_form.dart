@@ -305,6 +305,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                           : Image.file(_image!),
                       ElevatedButton(
                         onPressed: getImage,
+
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.zero, // Makes the corners square
