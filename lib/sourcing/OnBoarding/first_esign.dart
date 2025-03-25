@@ -254,11 +254,17 @@ class _FirstEsignState extends State<FirstEsign> {
                     child: InkWell(
                       onTap: () {
                         print("object ${widget.selectedData.aadharNo}");
-                        if (widget.selectedData.aadharNo.isNotEmpty) {
-                          showFullPageDialog(context);
-                        } else {
+
+                        if(isLoading){
                           GlobalClass.showToast_Error(
-                              "Borrower's Aadhaar number is missing");
+                              "Wait for pdf to get download");
+                        }else {
+                          if (widget.selectedData.aadharNo.isNotEmpty) {
+                            showFullPageDialog(context);
+                          } else {
+                            GlobalClass.showToast_Error(
+                                "Borrower's Aadhaar number is missing");
+                          }
                         }
                       },
                       child: Card(
@@ -630,17 +636,17 @@ class _DialogContentState extends State<DialogContent>
           );
           //Navigator.of(context).pop();
         } else {
-          Navigator.push(
+          /*Navigator.push(
             context,
             MaterialPageRoute(
               //builder: (context) => ApplicationPage(),
               builder: (context) =>
                   LoanEligibilityPage(ficode: 250003),
             ),
-          );
+          );*/
           parseResponse(value);
-          /*GlobalClass.showUnsuccessfulAlert(
-              context, value.validationMessage, 1);*/
+          GlobalClass.showUnsuccessfulAlert(
+              context, value.validationMessage, 1);
         }
       }).catchError((onError) {
         print(onError);
@@ -709,7 +715,10 @@ class _DialogContentState extends State<DialogContent>
       // await intent.launch();
     } on DioError catch (e) {
       EasyLoading.dismiss();
-      final statusCode = e.response?.statusCode;
+
+      GlobalClass.showToast_Error('RPSSS');
+
+     /* final statusCode = e.response?.statusCode;
       if (statusCode == 404) {
         // Handle 404 Not Found
         GlobalClass.showErrorAlert(context, e.response!.data!, 1);
@@ -718,7 +727,7 @@ class _DialogContentState extends State<DialogContent>
       } else {
         // Handle other status codes
         GlobalClass.showErrorAlert(context, e.response!.data!, 1);
-      }
+      }*/
     }
   }
 
