@@ -205,7 +205,7 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage>
       final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
       Map<String, dynamic> requestBody = {
         "creator": GlobalClass.creator, //"AGRA",
-        "ficode": widget.ficode, //"261988"
+        "ficode": widget.ficode.toString(), //"261988"
       };
 
       final value = await api.generateCrif(GlobalClass.dbName, requestBody);
@@ -227,8 +227,7 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage>
               vsync: this,
             );
 
-            _animation =
-            Tween<double>(begin: 0, end: crifScore).animate(_controller)
+            _animation =Tween<double>(begin: 0, end: crifScore).animate(_controller)
               ..addListener(() {
                 setState(() {});
               })
@@ -242,6 +241,26 @@ class _LoanEligibilityPageState extends State<LoanEligibilityPage>
 
             _controller.forward();
           } else {
+            crifScore = 0;
+
+            _controller = AnimationController(
+              duration: const Duration(seconds: 2),
+              vsync: this,
+            );
+
+            _animation =Tween<double>(begin: 0, end: crifScore).animate(_controller)
+              ..addListener(() {
+                setState(() {});
+              })
+              ..addStatusListener((status) {
+                if (status == AnimationStatus.completed) {
+                  setState(() {
+                    // Any further logic after animation completes
+                  });
+                }
+              });
+
+            _controller.forward();
             GlobalClass.showUnsuccessfulAlert(
                 context, crifDataModel.data[0].Msg, 1);
           }
