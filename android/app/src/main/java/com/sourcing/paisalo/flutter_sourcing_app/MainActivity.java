@@ -70,9 +70,9 @@ public class MainActivity extends FlutterFragmentActivity  {
         scanIntegrator.setOrientationLocked(false);
         scanIntegrator.initiateScan(Collections.singleton("QR_CODE"));
     }
-
+//protean
     // Example Java method
-    private void callJavaFunction(String xml) {
+  /*  private void callJavaFunction(String xml) {
         String responseUrl="https://predeptest.paisalo.in:8084/PDL.ESign.API/api/E_Sign/XMLReaponseNew";
 
         // Your Java logic here
@@ -83,6 +83,14 @@ public class MainActivity extends FlutterFragmentActivity  {
         appStartIntent.putExtra("env", "PROD"); //Possible values PREPROD or PROD (case insensative).
         appStartIntent.putExtra("returnUrl", responseUrl); // your package name where esign response failure/success will be sent.
         startActivityForResult(appStartIntent, APK_ESIGN_REQUEST_CODE);
+    }*/
+//emudra
+    private void callJavaFunction(String xml) {
+        String responseUrl="https://apiuat.paisalo.in:4015/PDLEmudra/api/ESign/HandleCallbackMobileresponse";
+        Intent appStartIntent = new Intent();
+        appStartIntent.setAction("com.emudhra.esignpdf.sign");
+         appStartIntent.putExtra("txnRef", xml);
+        startActivityForResult(appStartIntent, APK_ESIGN_REQUEST_CODE);
     }
 
 
@@ -90,19 +98,26 @@ public class MainActivity extends FlutterFragmentActivity  {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("TAG", "onActivityResult: resultCode "+resultCode);
+        Log.d("TAG", "onActivityResult: data "+data);
+        Log.d("TAG", "onActivityResult: requestCode "+requestCode);
         if (requestCode == APK_ESIGN_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
+            if (data != null) {
+              String  status =data.getStringExtra("status");
+                String errorMsg = data.getStringExtra("errorMsg");
+                String responseXML= data.getStringExtra("responseXML");
+
                 try {
-                    String eSignResponse = data.getStringExtra("signedResponse");
-                    result_global.success(eSignResponse);
+                    //String eSignResponse = data.getStringExtra("signedResponse");
+                    result_global.success(responseXML);
                 }catch (Exception e){
                     result_global.success(e.getMessage());
                 }
 
-            } else {
-                result_global.success("Something went wrong during Esign Processing. Please contact administrator(NSDL)");
-
             }
+
+
+
         } else
         if (requestCode == IntentIntegrator.REQUEST_CODE) {
             IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);

@@ -36,6 +36,7 @@ import 'Models/common_string_model2.dart';
 import 'Models/creator_list_model.dart';
 import 'Models/crifmodel.dart';
 import 'Models/csorankmodel.dart';
+import 'Models/emudramodel.dart';
 import 'Models/global_model.dart';
 import 'Models/global_model2.dart';
 import 'Models/ocrdocscanningresponce.dart';
@@ -63,6 +64,7 @@ class ApiConfig {
   static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
   static const String baseUrl8 = 'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
   static const String baseUrl9 = 'https://apiuat.paisalo.in:4015/fi/api/';
+  static const String baseUrl10 = 'https://apiuat.paisalo.in:4015/PDLEmudra/api/';
 
 }
 
@@ -578,8 +580,8 @@ abstract class ApiService {
       @Query("Fromdate") String Fromdate,
       @Query("Todate") String Todate);
 
-
-  @POST("e_SignMobile/SaveAgreements")
+//protean
+/*  @POST("e_SignMobile/SaveAgreements")
   @MultiPart()
   Future<dynamic> saveAgreements(
       @Part(name: "Ficode") String ficode,
@@ -588,13 +590,29 @@ abstract class ApiService {
       @Part(name: "authMode") String authMode,
       @Part(name: "F_Id") String fId,
       @Part(name: "SignType") String signType,
-      );
+      );*/
 
-  @FormUrlEncoded()
+  /*@FormUrlEncoded()
   @POST("E_Sign/XMLReaponseNew")
   Future<XmlResponse> sendXMLtoServer(
       @Field("msg") String msg,
+      );*/
+
+//emudra
+  @MultiPart()
+  @POST("ESign/SaveAgreements")
+  Future<emudramodel> saveAgreements(
+      @Part(name: "Ficode") String ficode,
+      @Part(name: "Creator") String creator,
+      @Part(name: "ConsentText") String consentText,
+      @Part(name: "authMode") String authMode,
+      @Part(name: "F_Id") String fId,
+      @Part(name: "SignType") String signType,
       );
+
+  @MultiPart()
+  @POST("ESign/HandleCallbackMobileresponse")
+  Future<dynamic> sendXMLtoServer(@Part(name: "response") String response);
 
 
   @POST("Ckyc/SearchCkycNoByAadhar")

@@ -23,6 +23,8 @@ import '../global_class.dart';
 import 'crif.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'on_boarding.dart';
+
 class FirstEsign extends StatefulWidget {
   final BranchDataModel BranchData;
   final GroupDataModel GroupData;
@@ -317,12 +319,11 @@ class _FirstEsignState extends State<FirstEsign> {
     print("signType $signType");
     final requestBody = {
       "F_Id": selectedData.id,
-      "Type":  signType == "1" ? "FirsteSign" : "SecondeSign",
+      "Type": signType == "1" ? "FirsteSign" : "SecondeSign",
       "DbName": "PDLERP",
     };
 
     try {
-
       final response = await ApiService.create(baseUrl: ApiConfig.baseUrl8)
           .getDocument(requestBody);
       if (response.statuscode == 200 && response.data.isNotEmpty) {
@@ -355,14 +356,13 @@ class DialogContent extends StatefulWidget {
   _DialogContentState createState() => _DialogContentState();
 }
 
-class _DialogContentState extends State<DialogContent>
-    with AutomaticKeepAliveClientMixin {
+class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveClientMixin {
   TextEditingController _dialogAdharController = TextEditingController();
   bool _isChecked = false;
-  late ApiService _apiServiceForESign;
-  List<String> authModeTypeList = ["Biometric"];
+  late ApiService _apiServiceForESign, _apiServiceForESignemudra;
+  //List<String> authModeTypeList = ["Biometric"];
 
-  //List<String> authModeTypeList = ["Biometric","OTP"];
+  List<String> authModeTypeList = ["Biometric","OTP"];
 
   String authModeType = "Biometric";
 
@@ -371,7 +371,7 @@ class _DialogContentState extends State<DialogContent>
     super.initState();
 
     _apiServiceForESign = ApiService.create(baseUrl: ApiConfig.baseUrl7);
-
+    _apiServiceForESignemudra = ApiService.create(baseUrl: ApiConfig.baseUrl10);
     _dialogAdharController.text = widget.borrowerAdharNumber;
     // Set up the handler to receive the result from MainActivity
   }
@@ -577,12 +577,13 @@ class _DialogContentState extends State<DialogContent>
       'com.example.intent'); // The same channel name used in MainActivity
 
   // Call a method in MainActivity
-  Future<void> callJavaMethod(String xml) async {
+  //protean
+/*  Future<void> callJavaMethod(String xml) async {
     try {
       // Call the Java function by method name
       final String result =
           await platform.invokeMethod('callJavaFunction', xml);
-      if (GlobalClass.isXml(result)) {
+      if (result != null) {
         final xmlDoc = XmlDocument.parse(result);
         final esignElement = xmlDoc.getElement('EsignResp');
 
@@ -601,6 +602,39 @@ class _DialogContentState extends State<DialogContent>
     } on PlatformException catch (e) {
       print("Failed to invoke Java function: ${e.message}");
     }
+  }*/
+  //emudra
+  Future<void> callJavaMethod(String xml) async {
+    try {
+      final String result =
+          await platform.invokeMethod('callJavaFunction', xml);
+      print("object541 $result");
+        if (result != null) {
+          sendXMlToServer(result);
+        }else{
+          GlobalClass.showUnsuccessfulAlert(context, "Something went wrong", 1);
+        }
+     //  if (result != null) {
+     //    final xmlDoc = XmlDocument.parse(result);
+     //     final esignElement = xmlDoc.getElement('EsignResp');
+     //
+     //    // Read the AuthMode attribute
+     //    final errMsg = esignElement?.getAttribute('errMsg');
+     //    final errCode = esignElement?.getAttribute('errCode');
+     //    final responsexml = esignElement?.getAttribute('responseXML');
+     //    if (errCode?.toLowerCase() != "na") {
+     //      GlobalClass.showUnsuccessfulAlert(
+     //          context, "${errCode} : ${errMsg}", 1);
+     //    } else {
+     //      sendXMlToServer(base64EncodedResult);
+     //    }
+     //  } else {
+     //    GlobalClass.showSnackBar(context, result);
+     //  }
+
+    } on PlatformException catch (e) {
+      print("Failed to invoke Java function: ${e.message}");
+    }
   }
 
   void parseResponse(XmlResponse xmlResponse) {
@@ -615,27 +649,28 @@ class _DialogContentState extends State<DialogContent>
   void sendXMlToServer(String result) {
     EasyLoading.show(status: "Data sending to server...");
     try {
-      _apiServiceForESign.sendXMLtoServer(result).then((value) {
-        if (value.responseMessage.statusCode == 200) {
-          LiveTrackRepository()
-              .saveLivetrackData("", "ESign", widget.selectedBorrower.id);
-          GlobalClass.showSuccessAlert(context, "ESign Has been done", 3);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              //builder: (context) => ApplicationPage(),
-              builder: (context) =>
-                  LoanEligibilityPage(ficode: widget.selectedBorrower.fiCode),
-            ),
-          );
-          //Navigator.of(context).pop();
+
+      _apiServiceForESignemudra.sendXMLtoServer(result).then((value) {
+        if (value.toString().isNotEmpty) {
+          if(widget.signType=="1"){
+            LiveTrackRepository().saveLivetrackData("", "ESign", widget.selectedBorrower.id);
+            GlobalClass.showSuccessAlert(context, "1st ESign Has been done", 3);
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                LoanEligibilityPage(ficode: widget.selectedBorrower.fiCode),),);
+          }else{
+            GlobalClass.showSuccessAlertclose(
+              context,
+              "2nd ESign Has been done !!",
+              1,
+              destinationPage: OnBoarding(),
+            );
+          }
+
         } else {
           Navigator.push(
             context,
             MaterialPageRoute(
-              //builder: (context) => ApplicationPage(),
-              builder: (context) =>
-                  LoanEligibilityPage(ficode: 250003),
+              builder: (context) => LoanEligibilityPage(ficode: 250003),
             ),
           );
           parseResponse(value);
@@ -655,7 +690,8 @@ class _DialogContentState extends State<DialogContent>
     }
   }
 
-  Future<void> hitSaveAgreementsAPI(String authType) async {
+//protean
+  /*Future<void> hitSaveAgreementsAPI(String authType) async {
     EasyLoading.show(
       status: AppLocalizations.of(context)!.pleasewait,
     );
@@ -719,6 +755,70 @@ class _DialogContentState extends State<DialogContent>
         // Handle other status codes
         GlobalClass.showErrorAlert(context, e.response!.data!, 1);
       }
+    }
+  }
+*/
+
+  //emudra
+
+  Future<void> hitSaveAgreementsAPI(String authType) async {
+    EasyLoading.show(
+      status: AppLocalizations.of(context)!.pleasewait,
+    );
+
+    // final requestBody = {
+    //   "ficode":      widget.selectedBorrower.fiCode.toString(),
+    //   "creator":     widget.selectedBorrower.creator,
+    //   "consentText": consentRawText,
+    //   "authMode":    authType == "Biometric" ? "2" : "1",
+    //   "f_Id":        widget.selectedBorrower.id.toString(),
+    //   "signType":    widget.signType!,
+    // };
+
+    try {
+      final xmlResponse =
+          await _apiServiceForESignemudra.saveAgreements(
+            widget.selectedBorrower.fiCode.toString(),
+            widget.selectedBorrower.creator,
+            consentRawText,
+            authType == "Biometric" ? "2" : "1",
+            widget.selectedBorrower.id.toString(),
+            widget.signType!,);
+      EasyLoading.dismiss();
+
+      if (xmlResponse != null) {
+        if (xmlResponse.responseCode != null &&
+            xmlResponse.responseCode.isNotEmpty) {
+          callJavaMethod(xmlResponse.txnref);
+        } else {
+          GlobalClass.showErrorAlert(
+              context, xmlResponse.message ?? "Unexpected response", 1);
+        }
+      } else {
+        GlobalClass.showErrorAlert(
+            context, "Failed to fetch response. Please try again.", 1);
+      }
+    } on DioError catch (e) {
+      EasyLoading.dismiss();
+      final statusCode = e.response?.statusCode;
+
+      if (statusCode == 404) {
+        // Handle 404 Not Found
+        GlobalClass.showErrorAlert(context, "Error: File not found.", 1);
+      } else if (statusCode != null) {
+        // Handle other status codes
+        GlobalClass.showErrorAlert(
+            context, "Error: ${e.response?.data ?? 'Something went wrong'}", 1);
+      } else {
+        // Handle network or unknown errors
+        GlobalClass.showErrorAlert(
+            context, "Network error. Please check your connection.", 1);
+      }
+    } catch (e) {
+      EasyLoading.dismiss();
+      // Handle any other unexpected errors
+      GlobalClass.showErrorAlert(
+          context, "An unexpected error occurred: ${e.toString()}", 1);
     }
   }
 
