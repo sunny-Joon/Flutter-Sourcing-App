@@ -3,6 +3,7 @@
 //     final qrPaymentsModel = qrPaymentsModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'dart:ffi';
 
 QrPaymentsModel qrPaymentsModelFromJson(String str) => QrPaymentsModel.fromJson(json.decode(str));
 
@@ -33,11 +34,11 @@ class QrPaymentsModel {
 }
 
 class QrPaymentsDataModel {
-  int amount;
+  double  amount;
   String txnId;
   String creationDate;
   String errormsg;
-  bool isvalid;
+  String isvalid;
 
   QrPaymentsDataModel({
     required this.amount,
