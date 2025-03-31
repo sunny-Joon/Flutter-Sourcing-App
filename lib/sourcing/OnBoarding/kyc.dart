@@ -19,6 +19,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_sourcing_app/Models/global_model.dart';
 import '../../DATABASE/database_helper.dart';
 import '../../MasterAPIs/ckyc_repository.dart';
+import '../../MasterAPIs/live_track_repository.dart';
 import '../../Models/adhaar_model.dart';
 import '../../Models/bank_names_model.dart';
 import '../../Models/group_model.dart';
@@ -930,6 +931,7 @@ class _KYCPageState extends State<KYCPage> {
           setState(() {
             _currentStep += 1;
             Fi_Id = value.data[0].fiId.toString();
+            GlobalClass.Fi_Id=value.data[0].fiId;
             Fi_Code = value.data[0].fiCode.toString();
             GlobalClass.ficode = value.data[0].fiCode.toString();
 
@@ -1054,22 +1056,25 @@ class _KYCPageState extends State<KYCPage> {
         .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
+        LiveTrackRepository().saveLivetrackData("", "KYC Done", int.parse(fiid));
+
         setState(() {
           _currentStep += 1;
         });
         EasyLoading.dismiss();
-        /*GlobalClass.showSuccessAlertclose(
+        GlobalClass.showSuccessAlertclose(
           context,
           "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
           1,
           destinationPage: OnBoarding(),
-        );*/
+        );
       //  _showSuccessAndRedirect(value);
 
-        GlobalClass.showSuccessAlert(
-            context,
-            "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
-            2);
+        // GlobalClass.showSuccessAlert(
+        //     context,
+        //     "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
+        //
+        //     2);
       } else {
         EasyLoading.dismiss();
         GlobalClass.showUnsuccessfulAlert(context, value.message, 1);

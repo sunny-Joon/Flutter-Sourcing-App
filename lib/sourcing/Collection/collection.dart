@@ -703,8 +703,7 @@ class _CollectionState extends State<Collection>
             GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
-        LiveTrackRepository().saveLivetrackData(widget.selectedData.caseCode,
-            "Collection Done", widget.selectedData.fi_Id);
+        LiveTrackRepository().saveLivetrackData(widget.selectedData.caseCode, "Collection Done", widget.selectedData.fi_Id);
         EasyLoading.dismiss();
         GlobalClass.showSuccessAlert(context, value.message, 3);
       } else {
