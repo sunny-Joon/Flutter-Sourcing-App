@@ -57,7 +57,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
       backgroundColor: Color(0xFFD42D3F),
 
       body: Container(
-        padding: EdgeInsets.all(0.0),
+        padding: EdgeInsets.all(6),
         child: Column(
           children: [
             SizedBox(height: 50),
@@ -150,6 +150,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
 
 
             SizedBox(height: 16.0),
+
             Expanded(
               child: _qrPaymentsList.isEmpty
                   ? Center(child: Text(AppLocalizations.of(context)!.nodata))
@@ -162,9 +163,12 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                     2: FlexColumnWidth(1.5),
                     3: FlexColumnWidth(3),
                   },
+
                   children: [
                     TableRow(
+
                       decoration: BoxDecoration(
+
                         color: Colors.grey.shade300,
                       ),
                       children: [
@@ -214,6 +218,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                 ),
               ),
             ),
+
           ],
         ),
       ),

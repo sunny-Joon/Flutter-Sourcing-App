@@ -901,8 +901,7 @@ class _ProfileState extends State<Profile> {
 
     final api = Provider.of<ApiService>(context, listen: false);
 
-    await api.AttendanceStatus(
-            GlobalClass.token, GlobalClass.dbName, GlobalClass.EmpId)
+    await api.AttendanceStatus(GlobalClass.token, GlobalClass.dbName, GlobalClass.EmpId)
         .then((value) async {
       if (value.statuscode == 200) {
         if (value.data.length > 0) {
@@ -1084,42 +1083,37 @@ class _MorphoRechargeDialogState extends State<MorphoRechargeDialog> {
   }
 
   // API call function
-  Future<void> _MorphoRechargeApi(
-      BuildContext context, double latitude, double longitude) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      EasyLoading.show(
-        status: AppLocalizations.of(context)!.loading,
-      );
-    });
+  Future<void> _MorphoRechargeApi(BuildContext context, double latitude, double longitude) async {
+    EasyLoading.show(status: AppLocalizations.of(context)!.loading);
 
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
       "CreatorId": GlobalClass.creatorId,
-      "groupCode": "009",
-      "cityCode": "2299",
+      "groupCode": "",
+      "cityCode": "",
       "deviceSirNo": _deviceSirNoController.text,
       "Lat": latitude.toString(),
       "Long": longitude.toString()
     };
 
-    await api
-        .morphorecharge(GlobalClass.dbName, GlobalClass.token, requestBody)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        EasyLoading.dismiss();
-        GlobalClass.showSuccessAlert(context, value.message, 2);
-      } else {
-        EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
-        Navigator.pop(context);
-      }
-    }).catchError((error) {
+    try {
+      final value = await api.morphorecharge(GlobalClass.dbName, GlobalClass.token, requestBody);
       EasyLoading.dismiss();
-      GlobalClass.showUnsuccessfulAlert(
-          context, AppLocalizations.of(context)!.serversideerror, 1);
+      if (value.statuscode == 200) {
+        Navigator.pop(context);
+        GlobalClass.showSuccessAlert(context, value.message, 1);
+
+      } else {
+        Navigator.pop(context);
+        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
+      }
+    } catch (error) {
       Navigator.pop(context);
-    });
+      EasyLoading.dismiss();
+      GlobalClass.showUnsuccessfulAlert(context, AppLocalizations.of(context)!.serversideerror, 1);
+    }
   }
+
 
   void _onSubmit() async {
     if (_deviceSirNoController.text.isEmpty) {

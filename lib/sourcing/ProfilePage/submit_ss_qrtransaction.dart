@@ -129,7 +129,7 @@ class _SubmitSsQrTransactionState extends State<SubmitSsQrTransaction> {
                                         // Place the search icon at the end (right side)
                                         icon: Icon(Icons.search),
                                         onPressed: () {
-                                          RegExp regex = RegExp(r'^[A-Za-z]{4}\d{6}$');
+                                          RegExp regex = RegExp(r'^[A-Za-z]{2}\d{14}$');
                                           if (_searchController.text.isNotEmpty &&
                                               regex.hasMatch(_searchController.text)) {
                                             fetchDetailsBySmCode();
