@@ -359,8 +359,7 @@ class _KYCPageState extends State<KYCPage> {
     });
   }
 
-  void _selectDate(BuildContext context, TextEditingController controller,
-      String type) async {
+  void _selectDate(BuildContext context, TextEditingController controller, String type) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now().isBefore(DateTime(DateTime.now().year - 21,
@@ -2804,7 +2803,7 @@ class _KYCPageState extends State<KYCPage> {
                         _drivingLicenseController.text.length < 10) {
                       showToast_Error(AppLocalizations.of(context)!.pleaseentercorrectdrivinglicense);
                     } else {
-                      dlVerifyByProtean(GlobalClass.id, _drivingLicenseController.text, dobForProtien!);
+                      dlVerifyByProtean(GlobalClass.EmpId, _drivingLicenseController.text, dobForProtien!);
 
                     }
                   },
@@ -2852,8 +2851,7 @@ class _KYCPageState extends State<KYCPage> {
                     if (_voterIdController.text.isEmpty) {
                       showToast_Error(AppLocalizations.of(context)!.pleaseentervoterno);
                     } else {
-                      voterVerifyByProtean(
-                          GlobalClass.id, _voterIdController.text);
+                      voterVerifyByProtean(GlobalClass.EmpId, _voterIdController.text);
                     }
                   },
                   child: Container(
@@ -3228,35 +3226,25 @@ class _KYCPageState extends State<KYCPage> {
 
   void voterVerifyByProtean(String userid, String voterNo) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      EasyLoading.show(
-        status: AppLocalizations.of(context)!.loading,
+      EasyLoading.show(status: AppLocalizations.of(context)!.loading,
       );
     });
-
     try {
-      // Initialize Dio
-
-      // Create ApiService instance
-
-      // API body
       Map<String, dynamic> requestBody = {
         "userID": userid,
         "voterno": voterNo,
       };
+      final response = await apiService_protean.getVoteretailsProtean(requestBody);
 
-      // Hit the API
-      final response =
-          await apiService_protean.getVoteretailsProtean(requestBody);
-
-      // Handle response
       if (response is Map<String, dynamic>) {
+        EasyLoading.dismiss();
         Map<String, dynamic> responseData = response["data"];
-        // Parse JSON object if it’s a map
         setState(() {
-          if (responseData['result'].responseData['name'] != null) {
-            voterCardHolderName =
-                "${responseData['result'].responseData['name']}";
+          EasyLoading.dismiss();
+          if (responseData['result']['name'] != null) {
+            voterCardHolderName = "${responseData['result']['name']}";
             voterVerified = true;
+            EasyLoading.dismiss();
           } else {
             docVerifyIDC("voterid", _voterIdController.text, "", "");
           }
@@ -3265,14 +3253,10 @@ class _KYCPageState extends State<KYCPage> {
         docVerifyIDC("voterid", _voterIdController.text, "", "");
       }
     } catch (e) {
-      // Handle errors
       docVerifyIDC("voterid", _voterIdController.text, "", "");
+      EasyLoading.dismiss();
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      EasyLoading.show(
-        status: AppLocalizations.of(context)!.loading,
-      );
-    });
+    EasyLoading.dismiss();
   }
 
   Widget _buildNextButton(BuildContext context) {

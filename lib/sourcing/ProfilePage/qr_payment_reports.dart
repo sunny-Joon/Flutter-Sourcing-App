@@ -32,7 +32,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
           GlobalClass.token,
           GlobalClass.dbName,
           smcode,
-          GlobalClass.id,
+          GlobalClass.EmpId,
           "mobile");
       if (response.statuscode == 200) {
         EasyLoading.dismiss();
@@ -40,7 +40,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
           _qrPaymentsList =  response.data;
         });
       } else {
-        GlobalClass.showUnsuccessfulAlert(context, response.message, 1);
+        GlobalClass.showUnsuccessfulAlert(context, response.data[0].errormsg, 1);
         EasyLoading.dismiss();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to fetch data')));
       }
@@ -130,7 +130,7 @@ class _QrPaymentReportsState extends State<QrPaymentReports> {
                               suffixIcon: IconButton( // Place the search icon at the end (right side)
                                 icon: Icon(Icons.search),
                                 onPressed: () {
-                                  RegExp regex = RegExp(r'^[A-Za-z]{4}\d{6}$');
+                                  RegExp regex = RegExp(r'^[A-Za-z]{2}\d{14}$');
                                   if(_searchController.text.isNotEmpty && regex.hasMatch(_searchController.text)) {
                                     _qrPayments(_searchController.text); // Call your API function here
                                   } else {

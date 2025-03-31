@@ -143,7 +143,7 @@ class _CollectionStatusState extends State<CollectionStatus> {
 
                           width: MediaQuery.of(context).size.width-35, // Control the width of the TextField
                           child: TextField(
-                            maxLength: 10,
+                            maxLength: 16,
                             controller: _searchController,
                             decoration: InputDecoration(
                               counterText: "",
@@ -158,7 +158,7 @@ class _CollectionStatusState extends State<CollectionStatus> {
                               suffixIcon: IconButton( // Place the search icon at the end (right side)
                                 icon: Icon(Icons.search),
                                   onPressed: () {
-                                    RegExp regex = RegExp(r'^[A-Za-z]{4}\d{6}$');
+                                    RegExp regex = RegExp(r'^[A-Za-z]{2}\d{14}$');
                                     if(_searchController.text.isNotEmpty && regex.hasMatch(_searchController.text)) {
                                       collectionStatus(context,_searchController.text); // Call your API function here
                                     } else {

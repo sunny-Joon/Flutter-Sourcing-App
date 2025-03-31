@@ -164,6 +164,7 @@ class TokenDetails {
   String role;
   int guId;
   String expiredTime;
+  String empId;
 
   TokenDetails({
     required this.id,
@@ -177,6 +178,7 @@ class TokenDetails {
     required this.role,
     required this.guId,
     required this.expiredTime,
+    required this.empId,
   });
 
   factory TokenDetails.fromJson(Map<String, dynamic> json) => TokenDetails(
@@ -191,6 +193,7 @@ class TokenDetails {
     role: json["role"]??"",
     guId: json["guId"]??"",
     expiredTime: json["expiredTime"]??"",
+    empId: json["empId"]??"",
   );
 
   Map<String, dynamic> toJson() => {
@@ -205,5 +208,6 @@ class TokenDetails {
     "role": role,
     "guId": guId,
     "expiredTime": expiredTime,
+    "empId": empId,
   };
 }

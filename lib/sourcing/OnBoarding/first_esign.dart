@@ -52,8 +52,7 @@ class _FirstEsignState extends State<FirstEsign> {
     super.initState();
     signType = widget.type.toString();
     fetchFirstESignPDF(widget.selectedData);
-    print(
-        "https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}");
+    //print("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}");
   }
 
   Future<void> _loadPdf(String url) async {
@@ -137,6 +136,7 @@ class _FirstEsignState extends State<FirstEsign> {
                   : PDFView(
                       autoSpacing: true,
                       filePath: localPath,
+
                       swipeHorizontal: true,
                     ),
             ),
@@ -333,10 +333,8 @@ class _FirstEsignState extends State<FirstEsign> {
       final response = await ApiService.create(baseUrl: ApiConfig.baseUrl8)
           .getDocument(requestBody);
       if (response.statuscode == 200 && response.data.isNotEmpty) {
-        print(
-            "https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "").replaceAll("\\", "/")}");
-        _loadPdf(
-            "https://predeptest.paisalo.in:8084${response.data.replaceAll("D:", "").replaceAll("\\", "/")}");
+        print(response.data);
+        _loadPdf(response.data);
       } else {
         GlobalClass.showUnsuccessfulAlert(
             context, "Pdf Not Found\nContact to Administrator", 2);
@@ -579,11 +577,9 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     );
   }
 
-  static const platform = MethodChannel(
-      'com.example.intent'); // The same channel name used in MainActivity
+  static const platform = MethodChannel('com.example.intent'); // The same channel name used in MainActivity
 
-  // Call a method in MainActivity
-  //protean
+  //protean java method call
 /*  Future<void> callJavaMethod(String xml) async {
     try {
       // Call the Java function by method name
@@ -609,7 +605,8 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       print("Failed to invoke Java function: ${e.message}");
     }
   }*/
-  //emudra
+
+  //emudra java method call
   Future<void> callJavaMethod(String xml) async {
     try {
       final String result =
@@ -652,31 +649,32 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     }
   }
 
-  void sendXMlToServer(String result) {
+  //protean 2nd api
+  /*
+    void sendXMlToServer(String result) {
     EasyLoading.show(status: "Data sending to server...");
     try {
-
-      _apiServiceForESignemudra.sendXMLtoServer(result).then((value) {
-        if (value.toString().isNotEmpty) {
-          if(widget.signType=="1"){
-            LiveTrackRepository().saveLivetrackData("", "ESign", widget.selectedBorrower.id);
-            GlobalClass.showSuccessAlert(context, "1st ESign Has been done", 3);
-            Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                LoanEligibilityPage(ficode: widget.selectedBorrower.fiCode),),);
-          }else{
-            GlobalClass.showSuccessAlertclose(
-              context,
-              "2nd ESign Has been done !!",
-              1,
-              destinationPage: OnBoarding(),
-            );
-          }
-
+      _apiServiceForESign.sendXMLtoServer(result).then((value) {
+        if (value.responseMessage.statusCode == 200) {
+          LiveTrackRepository()
+              .saveLivetrackData("", "ESign", widget.selectedBorrower.id);
+          GlobalClass.showSuccessAlert(context, "ESign Has been done", 3);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              //builder: (context) => ApplicationPage(),
+              builder: (context) =>
+                  LoanEligibilityPage(ficode: widget.selectedBorrower.fiCode),
+            ),
+          );
+          //Navigator.of(context).pop();
         } else {
           /*Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => LoanEligibilityPage(ficode: 250003),
+              //builder: (context) => ApplicationPage(),
+              builder: (context) =>
+                  LoanEligibilityPage(ficode: 250003),
             ),
           );*/
           parseResponse(value);
@@ -695,8 +693,51 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       EasyLoading.dismiss();
     }
   }
+  * */
 
-//protean
+//emudra 2nd api
+  void sendXMlToServer(String result) async {
+    EasyLoading.show(status: "Data sending to server...");
+
+    try {
+      final response = await _apiServiceForESignemudra.sendXMLtoServer(result);
+      print("esign1 $result");
+      print("esign2 $response");
+
+      if (response != null && response.toString().isNotEmpty) {
+        int statusCode = response["responseMessage"]["statusCode"] ?? 0;
+        print("esign3 $statusCode");
+
+        if (statusCode == 200) {
+          if (widget.signType == "1") {
+            LiveTrackRepository().saveLivetrackData("", "1_ESign", widget.selectedBorrower.id);
+            GlobalClass.showSuccessAlert(context, "1st ESign Has been done", 3);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoanEligibilityPage(ficode: widget.selectedBorrower.fiCode),
+              ),
+            );
+          } else {
+            LiveTrackRepository().saveLivetrackData("", "2_ESign", widget.selectedBorrower.id);
+            GlobalClass.showSuccessAlertclose(context, "2nd ESign Has been done !!", 1,
+              destinationPage: OnBoarding(),
+            );
+          }
+        } else {
+          handleAPIError(response);
+        }
+      } else {
+        handleAPIError(response);
+      }
+    } catch (error) {
+      handleAPIError(error);
+    } finally {
+      EasyLoading.dismiss();
+    }
+  }
+
+//protean 1st api
   /*Future<void> hitSaveAgreementsAPI(String authType) async {
     EasyLoading.show(
       status: AppLocalizations.of(context)!.pleasewait,
@@ -768,7 +809,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
   }
 */
 
-  //emudra
+  //emudra 1nd api
 
   Future<void> hitSaveAgreementsAPI(String authType) async {
     EasyLoading.show(
@@ -834,7 +875,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
   Widget consentText() {
     return RichText(
       text: TextSpan(
-        style: TextStyle(fontSize: 10, color: Colors.black),
+        style: TextStyle(fontSize: 9.5, color: Colors.black),
         children: [
           TextSpan(
             text: AppLocalizations.of(context)!.iherebynsdl,
@@ -851,6 +892,10 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
           ),
           TextSpan(
             text: AppLocalizations.of(context)!.esigntext4,
+          ),
+          TextSpan(
+            text:AppLocalizations.of(context)!.esigntext5
+            ,
           ),
         ],
       ),
@@ -875,4 +920,38 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
 
   @override
   bool get wantKeepAlive => true;
+
+  void handleAPIError(dynamic error) {
+    String errorMessage = "Something went wrong. Please try again.";
+    if (error is DioError && error.response != null) {
+      final responseData = error.response?.data;
+      if (responseData != null && responseData.containsKey("responseMessage")) {
+        final responseMessage = responseData["responseMessage"];
+        if (responseMessage != null && responseMessage.containsKey("statusCode")) {
+          int statusCode = responseMessage["statusCode"];
+          if (statusCode == 400) {
+            errorMessage = responseData["validationMessage"] ??
+                "Invalid request. Please check your details.";
+          } else if (statusCode == 500) {
+            errorMessage = "Internal Server Error";
+          }
+        }
+      }
+    }
+    else if (error is Map) {
+      if (error.containsKey("responseMessage") && error["responseMessage"].containsKey("statusCode")) {
+        int statusCode = error["responseMessage"]["statusCode"];
+        print("esign5 statusCode: $statusCode");
+
+        if (statusCode == 400) {
+          errorMessage = error["validationMessage"] ?? "Invalid request.";
+        }
+      }
+    }
+    else {
+      print("Unknown error format.");
+    }
+    GlobalClass.showUnsuccessfulAlert(context, errorMessage, 2);
+  }
+
 }

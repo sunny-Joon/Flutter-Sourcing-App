@@ -8,7 +8,7 @@ import 'package:flutter_sourcing_app/Models/qrcode_model.dart';
 import 'package:flutter_sourcing_app/Models/common_string_model.dart';
 
 import 'package:flutter_sourcing_app/Models/attendancestatusmodel.dart';
-import 'package:flutter_sourcing_app/sourcing/Collection/collection_report.dart';
+import 'package:flutter_sourcing_app/sourcing/ProfilePage/collection_report.dart';
 
 import 'package:flutter_sourcing_app/sourcing/Collection/collectionborrowerlist.dart';
 import 'package:flutter_sourcing_app/Models/collectionborrowerlistmodel.dart';
@@ -61,7 +61,7 @@ class ApiConfig {
   static const String baseUrl4 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
   static const String baseUrl5 = 'https://kyc.paisalo.in:985/api/';
   static const String baseUrl6 = 'https://ocr.paisalo.in:950/api/';
-  static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
+    static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
   static const String baseUrl8 = 'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
   static const String baseUrl9 = 'https://apiuat.paisalo.in:4015/fi/api/';
   static const String baseUrl10 = 'https://apiuat.paisalo.in:4015/PDLEmudra/api/';
@@ -320,7 +320,8 @@ abstract class ApiService {
   Future<BranchModel> getBranchList(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Query("CreatorID") String CreatorID);
+      @Query("CreatorID") String CreatorID,
+      @Query("IMEINO") String IMEINO);
 
   @GET("FiSourcing/GetAllFiData")
   Future<ApplicationgetAllModel> dataByFIID(

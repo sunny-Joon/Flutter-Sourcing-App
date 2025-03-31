@@ -14,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../api_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../Collection/collection_report.dart';
+import 'collection_report.dart';
 import '../LoginPage/login_page.dart';
 import '../global_class.dart';
 import '../notifications.dart';
@@ -53,7 +53,7 @@ class _ProfileState extends State<Profile> {
 
   void _initializeControllers() {
     _creatorController.text = GlobalClass.creator;
-    _idController.text = GlobalClass.id;
+    _idController.text = GlobalClass.EmpId;
     _validityController.text = GlobalClass.address;
     _mobileNoController.text = GlobalClass.mobile;
     _nameController.text = GlobalClass.userName;
@@ -902,7 +902,7 @@ class _ProfileState extends State<Profile> {
     final api = Provider.of<ApiService>(context, listen: false);
 
     await api.AttendanceStatus(
-            GlobalClass.token, GlobalClass.dbName, GlobalClass.id)
+            GlobalClass.token, GlobalClass.dbName, GlobalClass.EmpId)
         .then((value) async {
       if (value.statuscode == 200) {
         if (value.data.length > 0) {

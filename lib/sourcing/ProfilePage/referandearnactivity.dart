@@ -28,7 +28,7 @@ class _referandearnactivitystate extends State<referandearnactivity> {
     EasyLoading.show(status: 'Loading...');
     final api = Provider.of<ApiService>(context, listen: false);
     try {
-      final value = await api.getReferalCode(GlobalClass.token, GlobalClass.dbName, GlobalClass.id);
+      final value = await api.getReferalCode(GlobalClass.token, GlobalClass.dbName, GlobalClass.EmpId);
       if (value.statuscode == 200) {
         EasyLoading.dismiss();
         setState(() {

@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
 
     try {
       var response = await api
-          .GetCsoRanks(GlobalClass.token, GlobalClass.dbName, GlobalClass.id, GlobalClass.getCurrentMonth(), GlobalClass.getCurrentYear());
+          .GetCsoRanks(GlobalClass.token, GlobalClass.dbName, GlobalClass.EmpId, GlobalClass.getCurrentMonth(), GlobalClass.getCurrentYear());
 
       if (response.statuscode == 200 && response.data.isNotEmpty && (response.data[0].errormsg.isEmpty || response.data[0].errormsg == null)) {
         EasyLoading.dismiss();

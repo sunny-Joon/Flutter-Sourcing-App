@@ -11,7 +11,7 @@ class LiveTrackRepository {
   var _longitude=0.0;
   LiveTrackRepository();
 
-  Future<bool> saveLivetrackData( String smCode ,String activity, int fiId) async {
+  Future<bool> saveLivetrackData(String smCode ,String activity, int fiId) async {
     currentLocation _locationService = currentLocation();
     try {
       Map<String, dynamic> locationData =
@@ -26,7 +26,7 @@ class LiveTrackRepository {
     }
     final request = TrackLocationRequest(
 
-      userId: GlobalClass.userName,
+      userId: GlobalClass.EmpId,
       deviceId: GlobalClass.deviceId,
       smCode: smCode,
       latitude: _latitude.toString(),

@@ -25,8 +25,8 @@ class _DealerBranchListPageState extends State<DealerBranchListPage> {
   @override
   void initState() {
     super.initState();
-    _items.add(BranchDataModel(branchCode: "001",branchName: "Delhi"));
-    _items.add(BranchDataModel(branchCode: "002",branchName: "AGRA"));
+    // _items.add(BranchDataModel(branchCode: "001",branchName: "Delhi",));
+    // _items.add(BranchDataModel(branchCode: "002",branchName: "AGRA"));
     _isLoading = false;
    // _fetchBranchList();
   }

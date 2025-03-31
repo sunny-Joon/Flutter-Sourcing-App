@@ -473,7 +473,7 @@ initializeCamera();
       }
 
 
-  apiService.insertBranchVisit(GlobalClass.dbName, GlobalClass.token, meetingType!, _smCodeController.text, _amountController.text.isEmpty?"0":_amountController.text, _lat!.toString(), _long!.toString(), GlobalClass.userName, _commentController.text, _aadress!, imageFile!).then((value){
+  apiService.insertBranchVisit(GlobalClass.dbName, GlobalClass.token, meetingType!, _smCodeController.text, _amountController.text.isEmpty?"0":_amountController.text, _lat!.toString(), _long!.toString(), GlobalClass.EmpId, _commentController.text, _aadress!, imageFile!).then((value){
     if(value.statuscode==200){
         GlobalClass.showSuccessAlert(context,value.message, 2);
     }else{
