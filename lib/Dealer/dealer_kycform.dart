@@ -1069,7 +1069,7 @@ class _DealerKYCPageState extends State<DealerKYCPage> {
                         showToast_Error("Please Enter Correct Driving License");
                       } else {
                         dlVerifyByProtean(
-                            GlobalClass.id, _drivingLicenseController.text,
+                            GlobalClass.EmpId, _drivingLicenseController.text,
                             dlDob!);
                       }
                     },
@@ -1119,7 +1119,7 @@ class _DealerKYCPageState extends State<DealerKYCPage> {
                         showToast_Error("Please Enter Voter No.");
                       } else {
                         voterVerifyByProtean(
-                            GlobalClass.id, _voterIdController.text);
+                            GlobalClass.EmpId, _voterIdController.text);
                       }
                     },
                     child: Container(

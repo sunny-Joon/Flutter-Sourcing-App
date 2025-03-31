@@ -40,7 +40,7 @@ class _CollectionBranchListPageState extends State<CollectionBranchListPage> {
               GlobalClass.token,
               GlobalClass.dbName,
               GlobalClass.imei,
-              GlobalClass.id
+              GlobalClass.EmpId
           ).then((response) {
             if (response.statuscode == 200) {
               _allitems = response.data;

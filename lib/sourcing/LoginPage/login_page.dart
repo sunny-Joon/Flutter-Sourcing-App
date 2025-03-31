@@ -615,6 +615,7 @@ class _LoginPageState extends State<LoginPage> {
             GlobalClass.id = value.data.tokenDetails.userName;
             GlobalClass.validity = value.data.tokenDetails.validity;
             GlobalClass.imei = value.data.tokenDetails.imeino;
+            GlobalClass.EmpId = value.data.tokenDetails.empId;
             print('object0');
 
             if (value.data.foImei.length > 0) {

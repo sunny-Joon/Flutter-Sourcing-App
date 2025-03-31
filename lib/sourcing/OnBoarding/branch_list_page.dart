@@ -36,11 +36,9 @@ class _BranchListPageState extends State<BranchListPage> {
   Future<void> _fetchBranchList() async {
  //   EasyLoading.show(status: 'Loading...');
 
-
-
     final apiService = Provider.of<ApiService>(context, listen: false);
     try {
-      await apiService.getBranchList(GlobalClass.token, GlobalClass.dbName, GlobalClass.creatorId).then((response) {
+      await apiService.getBranchList(GlobalClass.token, GlobalClass.dbName, GlobalClass.creatorId,GlobalClass.imei).then((response) {
         if (response.statuscode == 200) {
           setState(() {
             _items = response.data; // Store the response data
@@ -50,15 +48,14 @@ class _BranchListPageState extends State<BranchListPage> {
 
           print('Branch List retrieved successfully');
         } else if(response.statuscode == 201) {
-          GlobalClass.showUnsuccessfulAlert(
-              context, "Group List Not Found", 1);
+          GlobalClass.showUnsuccessfulAlert(context, response.message, 2);
           setState(() {
             _isLoading = false;
   //          EasyLoading.dismiss();
           });
         }else {
           GlobalClass.showUnsuccessfulAlert(
-              context, "Not able to fetch Group List", 1);
+              context, "Not able to fetch Branch List", 1);
           setState(() {
             _isLoading = false;
   //          EasyLoading.dismiss();
@@ -162,27 +159,32 @@ class _BranchListPageState extends State<BranchListPage> {
                 return GestureDetector(
                   onTap: () {
                     final selectedItem = filteredItems[index];
-                    if(widget.intentFrom == 'E SIGN') {
-                      Navigator.push(
+                 //   if(widget.intentFrom == 'E SIGN') {
+                  /*    Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => GroupListPage(
                               Branchdata: selectedItem,
                               intentFrom: widget.intentFrom),
                         ),
-                      );
+                      );*/
 
                      // _showPopup(context, selectedItem);
-                     } else {
+              //       } else {
+                    if(selectedItem.status==1) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => GroupListPage(
-                              Branchdata: selectedItem,
-                              intentFrom: widget.intentFrom),
+                          builder: (context) =>
+                              GroupListPage(
+                                  Branchdata: selectedItem,
+                                  intentFrom: widget.intentFrom),
                         ),
                       );
-                     }
+                      // }
+                    }else{
+                      GlobalClass.showErrorAlert(context, "This branch is under trigger.\nPlease contact to your VP",2);
+                    }
                   },
                   child: BranchRecyclerItem(item: filteredItems[index]),
                 );
@@ -210,13 +212,8 @@ class _BranchListPageState extends State<BranchListPage> {
                   child: TextButton(
                     onPressed: () async {
                       Navigator.of(context).pop();
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => GroupListPage(
-                              Branchdata: selectedItem,
-                              intentFrom: 'E SIGN1'),
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => GroupListPage(Branchdata: selectedItem,intentFrom: 'E SIGN1'),
                         ),
                       );
                     },
@@ -255,10 +252,7 @@ class _BranchListPageState extends State<BranchListPage> {
                     onPressed: () {
                       Navigator.of(context).pop();
                       SecondEsignList(selectedItem,widget.intentFrom);
-                      *//*Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FirstEsign(
+                      *//*Navigator.push(context,MaterialPageRoute(builder: (context) => FirstEsign(
                             BranchData: widget.BranchData,
                             GroupData: widget.GroupData,
                             selectedData: item,
@@ -289,6 +283,7 @@ class _BranchListPageState extends State<BranchListPage> {
     );
   }
 */
+
   /*Future<void> SecondEsignList(BranchDataModel selectedItem, String intentFrom) async {
     //EasyLoading.show(status: 'Loading...',);
 

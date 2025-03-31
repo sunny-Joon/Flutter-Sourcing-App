@@ -122,7 +122,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
             //mobile: item.pPhone,
             creator: item.creator,
             // address: item.currentAddress,
-            // pic:item.profilePic,
+             pic:item.profilePic,
             onTap: () {
               _showPayeeDialog(context, item);
               /*Navigator.push(
@@ -179,10 +179,9 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
       GlobalClass.dbName,
       GlobalClass.imei,
       widget.Branchdata.focode,
-
       widget.Branchdata.areaCd,
-      GlobalClass.id,
-      "2024-12-30",
+      GlobalClass.EmpId,
+      "2025-03-30",
 
     ).then((response) {
       if (response.statuscode == 200) {
@@ -527,7 +526,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
     final api = Provider.of<ApiService>(context, listen: false);
 
     Map<String, dynamic> requestBody = {
-      "fi_Id": 1,
+      "fi_Id": _borrowerItems[0].fi_Id,
       "reason": reason,
       "dateToPay": date.toIso8601String(),
     };
@@ -625,7 +624,9 @@ class CollectionBorrowerListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     String? imageUrl;
     if (pic != null) {
-      imageUrl = transformFilePathToUrl(pic!);
+      imageUrl =pic;// transformFilePathToUrl(pic!);
+      print("imageUrl $imageUrl");
+      print("pic $pic");
     }
 
     return GestureDetector(

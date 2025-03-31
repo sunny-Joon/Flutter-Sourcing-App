@@ -30,8 +30,13 @@ import java.util.Collections;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 public class MainActivity extends FlutterFragmentActivity  {
     protected static final byte SEPARATOR_BYTE = (byte)255;
+    public static final String TESTING_PACKAGE_NAME = "com.emudhra.esignpdf.sandbox"; // Testing Environment
+    public static final String PRODUCTION_PACKAGE_NAME = "com.emudhra.esignpdf"; // Production Environment
 
     private static final String CHANNEL = "com.example.intent"; // Same channel name as in Flutter
     Result result_global;
@@ -86,11 +91,16 @@ public class MainActivity extends FlutterFragmentActivity  {
     }*/
 //emudra
     private void callJavaFunction(String xml) {
-        String responseUrl="https://apiuat.paisalo.in:4015/PDLEmudra/api/ESign/HandleCallbackMobileresponse";
-        Intent appStartIntent = new Intent();
-        appStartIntent.setAction("com.emudhra.esignpdf.sign");
-         appStartIntent.putExtra("txnRef", xml);
-        startActivityForResult(appStartIntent, APK_ESIGN_REQUEST_CODE);
+
+        String responseUrl = "https://apiuat.paisalo.in:4015/PDLEmudra/api/ESign/HandleCallbackMobileresponse";
+        try {
+            Intent appStartIntent = new Intent();
+            appStartIntent.setAction("com.emudhra.esignpdf.sign");
+            appStartIntent.putExtra("txnRef", xml);
+            startActivityForResult(appStartIntent, APK_ESIGN_REQUEST_CODE);
+        } catch (ActivityNotFoundException e) {
+            redirectToPlayStoreForeMudhraApp(true);
+        }
     }
 
 
@@ -101,6 +111,24 @@ public class MainActivity extends FlutterFragmentActivity  {
         Log.d("TAG", "onActivityResult: resultCode "+resultCode);
         Log.d("TAG", "onActivityResult: data "+data);
         Log.d("TAG", "onActivityResult: requestCode "+requestCode);
+        //protean
+        /*
+          if (requestCode == APK_ESIGN_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                try {
+                    String eSignResponse = data.getStringExtra("signedResponse");
+                    result_global.success(eSignResponse);
+                }catch (Exception e){
+                    result_global.success(e.getMessage());
+                }
+
+            } else {
+                result_global.success("Something went wrong during Esign Processing. Please contact administrator(NSDL)");
+
+            }
+        }
+        * */
+        //emudra
         if (requestCode == APK_ESIGN_REQUEST_CODE) {
             if (data != null) {
               String  status =data.getStringExtra("status");
@@ -349,6 +377,14 @@ public class MainActivity extends FlutterFragmentActivity  {
 
 
     //=================================================
+    private void redirectToPlayStoreForeMudhraApp(boolean isProduction) {
+        String emudhraAppPackageName = isProduction ? PRODUCTION_PACKAGE_NAME : TESTING_PACKAGE_NAME;
 
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + emudhraAppPackageName)));
+        } catch (ActivityNotFoundException ex) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + emudhraAppPackageName)));
+        }
+    }
 
 }

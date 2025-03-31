@@ -70,6 +70,7 @@ class CollectionBorrowerListDataModel {
   String dataAsOn;
   double interestAmt;
   String schmCode;
+  String profilePic;
   String errormsg;
   bool isvalid;
 
@@ -104,6 +105,7 @@ class CollectionBorrowerListDataModel {
     required this.dataAsOn,
     required this.interestAmt,
     required this.schmCode,
+    required this.profilePic,
     required this.errormsg,
     required this.isvalid,
   });
@@ -139,6 +141,7 @@ class CollectionBorrowerListDataModel {
     dataAsOn: json["dataAsOn"]??"",
     interestAmt: json["interestAmt"],
     schmCode: json["schmCode"]??"",
+    profilePic: json["profilePic"]??"",
     errormsg: json["errormsg"]??"",
     isvalid: json["isvalid"],
   );
@@ -174,6 +177,7 @@ class CollectionBorrowerListDataModel {
     "dataAsOn": dataAsOn,
     "interestAmt": interestAmt,
     "schmCode": schmCode,
+    "profilePic": profilePic,
     "errormsg": errormsg,
     "isvalid": isvalid,
   };

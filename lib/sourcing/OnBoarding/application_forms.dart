@@ -132,6 +132,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String? dlCardHolderName;
   String? voterCardHolderName;
 
+  String? dobForProtien;
+  String? dobForIDLC;
+
   //fiextra
   List<String> onetonine = [
     'Select',
@@ -378,7 +381,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
   @override
   void initState() {
     super.initState();
-
     setState(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         EasyLoading.show(
@@ -425,6 +427,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     GetDocs(context);
     print("getAllDataApi(context):> $getAllDataApi(context)");
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
+    apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
 
     initializeData(); // Fetch initial data
     _emailIdFocus.addListener(_validateEmail);
@@ -3799,8 +3802,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                 showToast_Error(AppLocalizations.of(context)!
                                     .pleaseentercorrectpanno);
                               } else {
-                                verifyDocs(context, _panController.text,
-                                    "pancard", "", "");
+                                verifyDocs(context, _panController.text, "pancard", "", "");
                               }
                             },
                             child: Container(
@@ -3840,7 +3842,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             _dlController,
                             GuarantorEditable,
                             _dlFocus,
-                            nameReg),
+                            idsReg),
                       ),
                       SizedBox(width: 10),
                       Padding(
@@ -3853,8 +3855,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                 showToast_Error(AppLocalizations.of(context)!
                                     .pleaseentercorrectdrivinglicense);
                               } else {
-                                verifyDocs(context, _dlController.text,
-                                    "drivinglicense", "", "");
+
+                                String formattedDOB = "";
+                                try {
+                                  DateTime parsedDate = DateFormat("yyyy-MM-dd").parse(_dobController.text);
+                                  formattedDOB = DateFormat("dd-MM-yyyy").format(parsedDate);
+                                  print("object $formattedDOB");
+                                } catch (e) {
+                                  print("Date format error: $e");
+                                }
+
+                                dlVerifyByProtean(GlobalClass.EmpId, _dlController.text, formattedDOB);
                               }
                             },
                             child: Container(
@@ -3918,8 +3929,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
                                 showToast_Error(AppLocalizations.of(context)!
                                     .pleaseentervoterno);
                               } else {
-                                verifyDocs(context, _voterController.text,
-                                    "voterid", "", _dobController.text);
+
+                                voterVerifyByProtean(GlobalClass.EmpId, _voterController.text);
+                              //  verifyDocs(context, _voterController.text, "voterid", "", _dobController.text);
                               }
                             },
                             child: Container(
@@ -4248,93 +4260,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ),
           padding: EdgeInsets.symmetric(vertical: 13),
         ),
-        /*onPressed: (_currentStep == 7 && isSubmitDisabled == false) ||((_currentStep == 6 || _currentStep < 6))
-            ? () {
-          print("borrowerDocsUploded $borrowerDocsUploded");
-
-          if (_currentStep == 0) {
-            if (personalInfoEditable) {
-              if (_stepOneValidations()) {
-                AddFiExtraDetail(context);
-              }
-            } else {
-              setState(() {
-                _currentStep++;
-                pageTitle = AppLocalizations.of(context)!.familydetails;
-              });
-            }
-          } else if (_currentStep == 1) {
-            if (FiFamilyEditable) {
-              if (_stepTwoValidations()) {
-                AddFiFamilyDetail(context);
-              }
-            } else {
-              setState(() {
-                _currentStep++;
-                pageTitle = AppLocalizations.of(context)!.incomeexpense;
-              });
-            }
-          } else if (_currentStep == 2) {
-            if (FiIncomeEditable) {
-              if (_stepThreeValidations()) {
-                AddFiIncomeAndExpense(context);
-              }
-            } else {
-              setState(() {
-                _currentStep++;
-                pageTitle = AppLocalizations.of(context)!.financialinfo;
-              });
-            }
-          } else if (_currentStep == 3) {
-            if (FinancialInfoEditable) {
-              if (_stepFourValidations()) {
-                AddFinancialInfo(context);
-              }
-            } else {
-              setState(() {
-                _currentStep++;
-                pageTitle = AppLocalizations.of(context)!.familyincome;
-              });
-            }
-          } else if (_currentStep == 4) {
-            if (femMemIncomeEditable) {
-              if (_stepFiveValidations()) {
-                FiFemMemIncome(context);
-              }
-            } else {
-              setState(() {
-                _currentStep++;
-                pageTitle = AppLocalizations.of(context)!.guarantorform;
-              });
-            }
-          } else if (_currentStep == 5) {
-            if (GuarantorEditable) {
-              if (_stepSixValidations()) {
-                saveGuarantorMethod(context);
-              }
-            } else {
-              setState(() {
-                _currentStep++;
-                pageTitle = AppLocalizations.of(context)!.uploaddocs;
-                editButtonFunctionOn = false;
-              });
-            }
-          } else if (_currentStep == 6) {
-            if (!borrowerDocsUploded) {
-              FiDocsUploadsApi(context, "0");
-            } else {
-              setState(() {
-                _currentStep++;
-                pageTitle = AppLocalizations.of(context)!.uploadgrdocs;
-                editButtonFunctionOn = false;
-              });
-            }
-          } else if (_currentStep == 7) {
-            print("Current Step: $_currentStep");
-            FiDocsUploadsApi(context, "1");
-          }
-        }
-            : null,*/
 
         onPressed: () {
           print("borrowerDocsUploded $borrowerDocsUploded");
@@ -4417,6 +4342,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               });
             }
           } else if (_currentStep == 7) {
+
             print("Current Step: $_currentStep");
             FiDocsUploadsApi(context, "1");
           }
@@ -5181,8 +5107,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       setState(() {
         _selectedDate = picked;
         if (type.contains("open")) {
-          _bankOpeningDateController.text =
-              DateFormat('yyyy-MM-dd').format(picked);
+          _bankOpeningDateController.text = DateFormat('yyyy-MM-dd').format(picked);
         } else {
           _dobController.text = DateFormat('dd-MM-yyyy').format(picked);
           _calculateAge();
@@ -6482,8 +6407,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  Future<void> verifyDocs(BuildContext context, String txnNumber, String type,
-      String ifsc, String dob) async {
+  Future<void> verifyDocs(BuildContext context, String txnNumber, String type, String ifsc, String dob) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       EasyLoading.show(
         status: AppLocalizations.of(context)!.loading,
@@ -6586,8 +6510,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     }
   }
 
-  void docVerifyIDC(
-      String type, String txnNumber, String ifsc, String dob) async {
+  void docVerifyIDC(String type, String txnNumber, String ifsc, String dob) async {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     setState(() {
       bankAccHolder = null;
@@ -6601,21 +6524,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "type": type,
       "txtnumber": txnNumber,
       "ifsc": ifsc,
-      //"userdob": dob,
       "userdob": dob,
       "key": "1",
     };
     try {
-      // Hit the API
+      EasyLoading.dismiss();
       final response = await apiService_idc.verifyIdentity(requestBody);
-      // Handle response
-
+     EasyLoading.dismiss();
       if (response["data"] != null) {
+        EasyLoading.dismiss();
         if (response["data"] is Map<String, dynamic>) {
           Map<String, dynamic> responseData = response["data"];
-          // Parse JSON object if it’s a map
           if (type == "bankaccount") {
             setState(() {
+              EasyLoading.dismiss();
               if (response["error"] == null) {
                 temp = txnNumber;
                 verifyFlag == true;
@@ -6624,26 +6546,32 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 banknameverified = true;
                 saveIDsMethod(context);
               } else {
+                EasyLoading.dismiss();
                 bankAccHolder = "Account no. is Not Verified!!";
               }
             });
           } else if (type == "pancard") {
             setState(() {
+              EasyLoading.dismiss();
               if (response["error"] == null) {
+                EasyLoading.dismiss();
                 panCardHolderName = "${responseData['name']} ";
                 panVerified = true;
               } else {
+                EasyLoading.dismiss();
                 panCardHolderName = "PAN no. is wrong please check";
                 panVerified = false;
               }
             });
           } else if (type == "drivinglicense") {
+            EasyLoading.dismiss();
             setState(() {
               dlCardHolderName = "${responseData['name']}";
               dlVerified = true;
             });
           } else if (type == "voterid") {
             setState(() {
+              EasyLoading.dismiss();
               voterCardHolderName = "${responseData['name']}";
               voterVerified = true;
             });
@@ -6651,16 +6579,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
         } else {
           if (type == "pancard") {
             setState(() {
+              EasyLoading.dismiss();
               panCardHolderName = "PAN no is not verified";
               panVerified = false;
             });
           } else if (type == "drivinglicense") {
             setState(() {
+              EasyLoading.dismiss();
               dlCardHolderName = "Driving License is not verified";
               dlVerified = false;
             });
           } else if (type == "voterid") {
             setState(() {
+              EasyLoading.dismiss();
               voterCardHolderName = "Voter no. is not verified";
               voterVerified = false;
             });
@@ -6671,6 +6602,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           EasyLoading.dismiss();
         }
       } else {
+        EasyLoading.dismiss();
         showToast_Error(
             "Unexpected Response: ${response["error"]}\n${response["message"]}");
       }
@@ -6678,6 +6610,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       print("Unexpected Response: $response");
       EasyLoading.dismiss();
     } catch (e) {
+      EasyLoading.dismiss();
       showToast_Error("An error occurred: $e");
       if (type == "pancard") {
         setState(() {
@@ -6706,41 +6639,33 @@ class _ApplicationPageState extends State<ApplicationPage> {
       );
     });
     try {
-      // Initialize Dio
-      // Create ApiService instance
-      // API body
+
       Map<String, dynamic> requestBody = {
         "userID": userid,
         "dlno": dlNo,
         "dob": dob
       };
-      // Hit the API
-      final response =
-          await apiService_protean.getDLDetailsProtean(requestBody);
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        EasyLoading.show(
-          status: AppLocalizations.of(context)!.loading,
-        );
-      });
-      // Handle response
+      final response = await apiService_protean.getDLDetailsProtean(requestBody);
+
       if (response is Map<String, dynamic>) {
         Map<String, dynamic> responseData = response["data"];
-        // Parse JSON object if it’s a map
+        EasyLoading.dismiss();
         setState(() {
+          EasyLoading.dismiss();
           if (responseData['result']['name'] != null) {
             dlCardHolderName = "${responseData['result']['name']}";
             dlVerified = true;
           } else {
-            docVerifyIDC(
-                "drivinglicense", _dlController.text, "", _dobController.text);
+            EasyLoading.dismiss();
+            docVerifyIDC("drivinglicense", _dlController.text, "",_dobController.text);
           }
         });
       } else {
-        docVerifyIDC(
-            "drivinglicense", _dlController.text, "", _dobController.text);
+        EasyLoading.dismiss();
+        docVerifyIDC("drivinglicense", _dlController.text, "", _dobController.text);
       }
     } catch (e) {
-      // Handle errors
+      EasyLoading.dismiss();
       docVerifyIDC(
           "drivinglicense", _dlController.text, "", _dobController.text);
     }
@@ -6749,30 +6674,25 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   void voterVerifyByProtean(String userid, String voterNo) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      EasyLoading.show(
-        status: AppLocalizations.of(context)!.loading,
+      EasyLoading.show(status: AppLocalizations.of(context)!.loading,
       );
     });
     try {
-      // Initialize Dio
-      // Create ApiService instance
-      // API body
       Map<String, dynamic> requestBody = {
         "userID": userid,
         "voterno": voterNo,
       };
-      // Hit the API
-      final response =
-          await apiService_protean.getVoteretailsProtean(requestBody);
-      // Handle response
+      final response = await apiService_protean.getVoteretailsProtean(requestBody);
+
       if (response is Map<String, dynamic>) {
+        EasyLoading.dismiss();
         Map<String, dynamic> responseData = response["data"];
-        // Parse JSON object if it’s a map
         setState(() {
-          if (responseData['result'].responseData['name'] != null) {
-            voterCardHolderName =
-                "${responseData['result'].responseData['name']}";
+          EasyLoading.dismiss();
+          if (responseData['result']['name'] != null) {
+            voterCardHolderName = "${responseData['result']['name']}";
             voterVerified = true;
+            EasyLoading.dismiss();
           } else {
             docVerifyIDC("voterid", _voterController.text, "", "");
           }
@@ -6781,57 +6701,45 @@ class _ApplicationPageState extends State<ApplicationPage> {
         docVerifyIDC("voterid", _voterController.text, "", "");
       }
     } catch (e) {
-      // Handle errors
       docVerifyIDC("voterid", _voterController.text, "", "");
+      EasyLoading.dismiss();
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      EasyLoading.show(
-        status: AppLocalizations.of(context)!.loading,
-      );
-    });
+    EasyLoading.dismiss();
   }
 
-  void bankVerifyByProtean(String userid, String dlNo, String dob) async {
-    EasyLoading.show(
-      status: 'Loading...',
-    );
+  void bankVerifyByProtean(String userid, String AccNo, String IFSc) async {
+    EasyLoading.show(status: 'Loading...',);
+
     try {
-      // Initialize Dio
-      // Create ApiService instance
-      // API body
       Map<String, dynamic> requestBody = {
         "userID": userid,
-        "accNo": _bank_AcController.text,
-        "ifsc": _bank_IFCSController.text
+        "accNo": AccNo,
+        "ifsc":IFSc
       };
-      // Hit the API
       final response =
-          await apiService_protean.getBankDetailsProtean(requestBody);
-      EasyLoading.show(
-        status: 'Loading...',
-      );
-      // Handle response
+      await apiService_protean.getBankDetailsProtean(requestBody);
       if (response is Map<String, dynamic>) {
+        EasyLoading.dismiss();
         Map<String, dynamic> responseData = response["data"];
         // Parse JSON object if it’s a map
         setState(() {
+          EasyLoading.dismiss();
           if (responseData['result']['accountName'] != null) {
             bankAccHolder = "${responseData['result']['accountName']}";
             banknameverified = true;
             saveIDsMethod(context);
           } else {
-            docVerifyIDC("bankaccount", _bank_AcController.text,
-                _bank_IFCSController.text, "");
+            EasyLoading.dismiss();
+            docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
           }
         });
       } else {
-        docVerifyIDC("bankaccount", _bank_AcController.text,
-            _bank_IFCSController.text, "");
+        EasyLoading.dismiss();
+        docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
       }
     } catch (e) {
-      // Handle errors
-      docVerifyIDC("bankaccount", _bank_AcController.text,
-          _bank_IFCSController.text, "");
+      EasyLoading.dismiss();
+      docVerifyIDC("bankaccount", _bank_AcController.text, _bank_IFCSController.text, "");
     }
     EasyLoading.dismiss();
   }
@@ -6846,12 +6754,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
     final api = ApiService.create(baseUrl: ApiConfig.baseUrl3);
 
     return await api.ifscVerify(ifsc).then((value) {
+      EasyLoading.dismiss();
       if (value.address.isNotEmpty) {
         setState(() {
           bankAddress = value.address.toString();
         });
-        docVerifyIDC("bankaccount", _bank_AcController.text,
-            _bank_IFCSController.text, "");
+        print("object $bankVerifyByProtean");
+        bankVerifyByProtean(GlobalClass.EmpId,_bank_AcController.text,_bank_IFCSController.text);
+
         EasyLoading.dismiss();
       } else {
         showToast_Error("Please check IFSC code is not verified");
@@ -6870,14 +6780,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
       );
     });
     pickedImage = await GlobalClass().pickImage();
-
     if (pickedImage != null) {
+      EasyLoading.dismiss();
       try {
         final response = await apiService_OCR.uploadDocument(
           type, // imgType
           pickedImage!, // File
         );
+        EasyLoading.dismiss();
         if (response.statusCode == 200) {
+          EasyLoading.dismiss();
           if (type == "adharFront") {
             setState(() {
               _aadharIdController.text = response.data.adharId;
@@ -7306,7 +7218,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           _currentStep += 1;
           pageTitle = AppLocalizations.of(context)!.uploaddocs;
           GuarantorEditable = false;
-          GetDocs(context);
+
         });
       } else {
         showToast_Error(value.data[0].errormsg);
@@ -8337,6 +8249,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         GurNum == "0" ? passbook : null,
       ).then((value) async {
         if (value.statuscode == 200) {
+          GetDocs(context);
           EasyLoading.dismiss();
           if (GurNum != "0") {
             LiveTrackRepository().saveLivetrackData( "","Application Form",widget.selectedData.id);

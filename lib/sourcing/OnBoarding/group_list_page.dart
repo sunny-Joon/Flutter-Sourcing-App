@@ -380,7 +380,7 @@ class _GroupListPageState extends State<GroupListPage> {
       }
     }).catchError((error) {
       _isLoading = false;
-      GlobalClass.showErrorAlert(context, "Server Side Error",1);
+      GlobalClass.showErrorAlert(context, "borrower list not found",1);
     });
   }
 
