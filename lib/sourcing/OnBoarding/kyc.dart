@@ -45,7 +45,7 @@ class _KYCPageState extends State<KYCPage> {
   late ApiService apiService_protean;
   late ApiService apiService_OCR;
 
-  late AdhaarDataModel adhaardata;
+  AdhaarDataModel? adhaardata;
 
   String nameReg = '[a-zA-Z. ]';
   String addReg = r'[a-zA-Z0-9. ()/,-]';
@@ -926,9 +926,11 @@ class _KYCPageState extends State<KYCPage> {
       )
           .then((value) async {
         if (value.statuscode == 200) {
+          EasyLoading.dismiss();
           getPlace("city", stateselected!.code, "", "");
           getPlace("district", stateselected!.code, "", "");
           setState(() {
+            EasyLoading.dismiss();
             _currentStep += 1;
             Fi_Id = value.data[0].fiId.toString();
             GlobalClass.Fi_Id=value.data[0].fiId;
@@ -937,6 +939,7 @@ class _KYCPageState extends State<KYCPage> {
 
           });
         } else if (value.statuscode == 201) {
+          EasyLoading.dismiss();
           print("status code 201");
           GlobalClass.showAlert(
             context,
@@ -946,6 +949,7 @@ class _KYCPageState extends State<KYCPage> {
             1,
           );
         } else if (value.statuscode == 400) {
+          EasyLoading.dismiss();
           GlobalClass.showSnackBar(context, "Something went wrong in API");
         }
         EasyLoading.dismiss();
@@ -984,14 +988,23 @@ class _KYCPageState extends State<KYCPage> {
     int isAadharVerified = 1;
     int is_phnno_verified = 1;
     int isNameVerify = 1;
-    String AdharName=_nameController.text.toString();
-    if(_nameMController.text.isNotEmpty && _nameLController.text.isNotEmpty){
-      AdharName=_nameController.text.toString() +" "+_nameMController.text+" "+_nameLController.text;
-    }else if(_nameMController.text.isNotEmpty){
-      AdharName=_nameController.text.toString() +" "+_nameMController.text;
-    }else if(_nameLController.text.isNotEmpty){
-      AdharName=_nameController.text.toString()+" "+_nameLController.text;
+
+    String AdharName = "";
+
+    if (adhaardata != null && (adhaardata!.fName.isNotEmpty || adhaardata!.mName.isNotEmpty || adhaardata!.lName.isNotEmpty)) {
+      AdharName = "${adhaardata!.fName} ${adhaardata!.mName} ${adhaardata!.lName}".trim();
+    } else {
+      AdharName = _nameController.text.trim();
+      if (_nameMController.text.isNotEmpty && _nameLController.text.isNotEmpty) {
+        AdharName = "${_nameController.text} ${_nameMController.text} ${_nameLController.text}".trim();
+      } else if (_nameMController.text.isNotEmpty) {
+        AdharName = "${_nameController.text} ${_nameMController.text}".trim();
+      } else if (_nameLController.text.isNotEmpty) {
+        AdharName = "${_nameController.text} ${_nameLController.text}".trim();
+      }
     }
+
+
     print("AdharName $AdharName");
 
     /*var fields = {
@@ -1033,29 +1046,30 @@ class _KYCPageState extends State<KYCPage> {
       "DLExpireDate": DLExpireDate,
     };
 
-    print(      "Fi_ID: $fiid,");
-    print(      "pan_no: $pan_no,");
-    print(      "dl: $dl,");
-    print(      "voter_id: $voter_id,");
-    print(      "passport: $passport,");
-    print(      "PassportExpireDate: $PassportExpireDate,");
-    print(      "isAadharVerified: $isAadharVerified,");
-    print(      "is_phnno_verified: $is_phnno_verified,");
-    print(      "isNameVerify: $isNameVerify,");
-    print(      "Pan_Name: $panCardHolderName,");
-    print(      "VoterId_Name: $voterCardHolderName,");
-    print(      "Aadhar_Name: $AdharName,");
-    print(      "DrivingLic_Name: $dlCardHolderName,");
-    print(      "VILLAGE_CODE: $selectedVillageCode!.villageCode,");
-    print(      "CITY_CODE: $selectedCityCode!.cityCode,");
-    print(      "SUB_DIST_CODE: $selectedSubDistrictCode!.subDistCode,");
-    print(      "DIST_CODE: $selectedDistrictCode!.distCode,");
-    print(      "STATE_CODE: $stateselected!.code,");
-    print(      "DLExpireDate: $DLExpireDate,");
+    print("Fi_ID: $fiid,");
+    print("pan_no: $pan_no,");
+    print("dl: $dl,");
+    print("voter_id: $voter_id,");
+    print("passport: $passport,");
+    print("PassportExpireDate: $PassportExpireDate,");
+    print("isAadharVerified: $isAadharVerified,");
+    print("is_phnno_verified: $is_phnno_verified,");
+    print("isNameVerify: $isNameVerify,");
+    print("Pan_Name: $panCardHolderName,");
+    print("VoterId_Name: $voterCardHolderName,");
+    print("Aadhar_Name: $AdharName,");
+    print("DrivingLic_Name: $dlCardHolderName,");
+    print("VILLAGE_CODE: $selectedVillageCode!.villageCode,");
+    print("CITY_CODE: $selectedCityCode!.cityCode,");
+    print("SUB_DIST_CODE: $selectedSubDistrictCode!.subDistCode,");
+    print("DIST_CODE: $selectedDistrictCode!.distCode,");
+    print("STATE_CODE: $stateselected!.code,");
+    print("DLExpireDate: $DLExpireDate,");
     return await api
         .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
+        EasyLoading.dismiss();
         LiveTrackRepository().saveLivetrackData("", "KYC Done", int.parse(fiid));
 
         setState(() {
@@ -3302,6 +3316,7 @@ class _KYCPageState extends State<KYCPage> {
               });
             }
           } else if (_currentStep == 1) {
+          //  adhaarAllData(context);
             if (secondPageFieldValidate()) {
               saveIDsMethod(context);
             }
@@ -4051,7 +4066,7 @@ class _KYCPageState extends State<KYCPage> {
             EasyLoading.dismiss();
 
             Future.delayed(
-                Duration.zero, () => showIDCardDialog(context, adhaardata, 2));
+                Duration.zero, () => showIDCardDialog(context, adhaardata!, 2));
 
             /* setState(() {
               FiType = "OLD";
@@ -4114,7 +4129,7 @@ class _KYCPageState extends State<KYCPage> {
           else {
             EasyLoading.dismiss();
             Future.delayed(
-                Duration.zero, () => showIDCardDialog(context, adhaardata, 1));
+                Duration.zero, () => showIDCardDialog(context, adhaardata!, 1));
 
             /*String ficode = value.data[0].fiCode.toString();
             GlobalClass.showErrorAlert(context,
@@ -4134,8 +4149,7 @@ class _KYCPageState extends State<KYCPage> {
     });
   }
 
-  void showIDCardDialog(
-      BuildContext context, AdhaarDataModel borrowerInfo, int page) {
+  void showIDCardDialog(BuildContext context, AdhaarDataModel borrowerInfo, int page) {
     final String name = [
       borrowerInfo.fName,
       borrowerInfo.mName,

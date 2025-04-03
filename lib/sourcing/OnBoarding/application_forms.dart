@@ -7214,11 +7214,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
             _imageFile!)
         .then((value) async {
       if (value.statuscode == 200) {
+        EasyLoading.dismiss();
         setState(() {
           _currentStep += 1;
           pageTitle = AppLocalizations.of(context)!.uploaddocs;
           GuarantorEditable = false;
-
+          EasyLoading.dismiss();
         });
       } else {
         showToast_Error(value.data[0].errormsg);

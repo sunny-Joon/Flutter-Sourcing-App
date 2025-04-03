@@ -719,7 +719,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
               ),
             );
           } else {
-            LiveTrackRepository().saveLivetrackData("", "2_ESign", widget.selectedBorrower.id);
+            LiveTrackRepository().saveLivetrackData(GlobalClass.smcode, "2_ESign", widget.selectedBorrower.id);
             GlobalClass.showSuccessAlertclose(context, "2nd ESign Has been done !!", 1,
               destinationPage: OnBoarding(),
             );

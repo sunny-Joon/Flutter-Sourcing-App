@@ -351,6 +351,7 @@ class _GroupListPageState extends State<GroupListPage> {
     ).then((response) {
       if (response.statuscode == 200 && response.data[0].errormsg.isEmpty) {
         borrowerList2 = response.data;
+        GlobalClass.smcode=borrowerList2[0].smcode;
         Navigator.push(
           context,
           MaterialPageRoute(
