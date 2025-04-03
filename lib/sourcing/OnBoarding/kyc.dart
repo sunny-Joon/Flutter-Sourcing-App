@@ -1381,14 +1381,19 @@ class _KYCPageState extends State<KYCPage> {
 
               String cleanedAddName = cleanAddress(response.data.address1);
               print("Cleaned Address: $cleanedAddName");
+
               List<String> addressParts = cleanedAddName.split(" ");
               String address1 = '';
               String address2 = '';
               String address3 = '';
-              if (addressParts.length >= 4) {
+
+              if (addressParts.length >= 6) {
+                address1 = addressParts.take(3).join(" ");  // First 3 words
+                address2 = addressParts.sublist(3, 5).join(" ");  // 4th & 5th words
+                address3 = addressParts.sublist(5).join(" ");  // Remaining words
+              } else if (addressParts.length >= 4) {
                 address1 = addressParts.take(3).join(" ");
-                address2 = addressParts[3] + " " + addressParts[4];
-                address3 = addressParts.sublist(5).join(" ");
+                address2 = addressParts.sublist(3).join(" ");  // Remaining words go into address2
               } else if (addressParts.length == 3) {
                 address1 = addressParts.take(2).join(" ");
                 address2 = addressParts[2];
@@ -1398,12 +1403,15 @@ class _KYCPageState extends State<KYCPage> {
               } else if (addressParts.length == 1) {
                 address1 = addressParts[0];
               }
+
               _address1Controller.text = address1;
               _address2Controller.text = address2;
               _address3Controller.text = address3;
+
               print("Address1: $address1");
               print("Address2: $address2");
               print("Address3: $address3");
+
 
               _address1Controller.text = address1;
               _address2Controller.text = address2;
@@ -3762,7 +3770,8 @@ class _KYCPageState extends State<KYCPage> {
         if (dataList[0].toLowerCase() == 'v2') {
           _pincodeController.text = dataList[11];
           stateselected = states.firstWhere((item) =>
-              item.descriptionEn.toLowerCase() == dataList[13].trim().toLowerCase());
+          item.descriptionEn.toLowerCase() ==
+              dataList[13].trim().toLowerCase());
           String address =
               "${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
           List<String> addressParts = address.trim().split(",");
@@ -3777,7 +3786,50 @@ class _KYCPageState extends State<KYCPage> {
             _address3Controller.text =
                 addressParts.sublist(1, addressParts.length - 1).join(' ');
           }
-        } else if (dataList[0].toLowerCase() == 'v4') {
+        }
+        else if (dataList[0].toLowerCase() == 'v4' && dataList[1].contains("3")) {
+          print("AAAA0${dataList[0]}");
+          print("AAAA1${dataList[1]}");
+          print("AAAA2${dataList[2]}");
+          print("AAAA3${dataList[3]}");
+          print("AAAA4${dataList[4]}");
+          print("AAAA5${dataList[5]}");
+          print("AAAA6${dataList[6]}");
+          print("AAAA7${dataList[7]}");
+          print("AAAA8${dataList[8]}");
+          print("AAAA9${dataList[9]}");
+          print("AAAA10${dataList[10]}");
+          print("AAAA11${dataList[11]}");
+          print("AAAA12${dataList[12]}");
+          print("AAAA13${dataList[13]}");
+          print("AAAA14${dataList[14]}");
+          print("AAAA15${dataList[15]}");
+//[V4, 3, 270020250403123759485, Surendra Kumar, 05-07-1989, M, S/O Manohar Lal, Pilibhit, , vill. maseet post daulatpur patti, , 262001, , Uttar Pradesh, tehseel bisalpur, ]
+
+          setState(() {
+            stateselected = states.firstWhere((item) =>
+            item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+            _pincodeController.text = dataList[11];
+            String address =
+                "${dataList[9]},${dataList[14]},${dataList[7]},${dataList[13]}}";
+            print("AAAA19$address");
+
+            List<String> addressParts = address.trim().split(",");
+            if (addressParts.length == 1) {
+              _address1Controller.text = addressParts[0];
+            } else if (addressParts.length == 2) {
+              _address1Controller.text = addressParts[0];
+              _address2Controller.text = addressParts[1];
+            } else {
+              _address1Controller.text = addressParts.first;
+              _address2Controller.text = addressParts.last;
+              _address3Controller.text =
+                  addressParts.sublist(1, addressParts.length - 1).join(' ');
+            }
+          });
+
+        }
+         else if (dataList[0].toLowerCase() == 'v4') {
           stateselected = states.firstWhere((item) =>
               item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
           _pincodeController.text = dataList[12];
