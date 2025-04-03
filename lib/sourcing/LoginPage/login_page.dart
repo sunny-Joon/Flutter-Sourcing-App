@@ -625,6 +625,7 @@ class _LoginPageState extends State<LoginPage> {
               GlobalClass.userName = value.data.foImei[0].name;
               GlobalClass.designation = value.data.foImei[0].designation;
               //  GlobalClass.creator = value.data.foImei[0].creator;
+              GlobalClass.userType ='Dealer';
 
               for (var foImeiItem in value.data.foImei) {
                 if (foImeiItem.creator != null) {

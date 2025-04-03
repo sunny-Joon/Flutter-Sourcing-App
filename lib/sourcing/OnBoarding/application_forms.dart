@@ -7218,6 +7218,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           _currentStep += 1;
           pageTitle = AppLocalizations.of(context)!.uploaddocs;
           GuarantorEditable = false;
+          EasyLoading.dismiss();
 
         });
       } else {

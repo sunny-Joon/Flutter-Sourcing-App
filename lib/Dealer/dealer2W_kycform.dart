@@ -23,19 +23,19 @@ import '../api_service.dart';
 import '../sourcing/global_class.dart';
 import 'dealerCrif.dart';
 
-class DealerKYCPage extends StatefulWidget {
+class DealerKYCPage2W extends StatefulWidget {
   final result;
   /*final BranchDataModel BranchData;
   final GroupDataModel GroupData;
 
   DealerKYCPage({required this.BranchData, required this.GroupData});*/
-  DealerKYCPage({super.key, required this.result});
+  DealerKYCPage2W({super.key, required this.result});
 
   @override
-  _DealerKYCPageState createState() => _DealerKYCPageState();
+  _DealerKYCPage2WState createState() => _DealerKYCPage2WState();
 }
 
-class _DealerKYCPageState extends State<DealerKYCPage> {
+class _DealerKYCPage2WState extends State<DealerKYCPage2W> {
   late ApiService apiService;
   late ApiService apiService_idc;
   late ApiService apiService_protean;
