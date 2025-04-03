@@ -38,6 +38,7 @@ class BranchDataModel {
   int isDisbursed;
   int isCollection;
   int status;
+  int isEsign;
   int disbursement;
   int crifScore;
   int functions;
@@ -52,6 +53,7 @@ class BranchDataModel {
     required this.isDisbursed,
     required this.isCollection,
     required this.status,
+    required this.isEsign,
     required this.disbursement,
     required this.crifScore,
     required this.functions,
@@ -67,6 +69,7 @@ class BranchDataModel {
     isDisbursed: json["isDisbursed"] ?? 0,
     isCollection: json["isCollection"] ?? 0,
     status: json["status"] ?? 0,
+    isEsign: json["isEsign"] ?? 0,
     disbursement: json["disbursement"] ?? 0,
     crifScore: json["crifScore"] ?? 0,
     functions: json["functions"] ?? 0,

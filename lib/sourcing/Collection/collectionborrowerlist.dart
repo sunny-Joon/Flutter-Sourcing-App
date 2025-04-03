@@ -187,6 +187,7 @@ class _CollectionBorrowerListState extends State<CollectionBorrowerList> {
       if (response.statuscode == 200) {
         setState(() {
           _borrowerItems = response.data;
+         // GlobalClass.smcode=_borrowerItems[0].caseCode;
 
         });
         _isLoading = false;

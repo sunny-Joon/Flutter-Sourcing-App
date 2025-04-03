@@ -171,7 +171,7 @@ class _BranchListPageState extends State<BranchListPage> {
 
                      // _showPopup(context, selectedItem);
               //       } else {
-                    if(selectedItem.status==1) {
+                    if(selectedItem.status==1 || selectedItem.functions==1) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
