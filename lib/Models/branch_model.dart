@@ -36,7 +36,7 @@ class BranchDataModel {
   String ntc;
   int isSourcing;
   int isDisbursed;
-  int isCollection;
+  int isEsign;
   int status;
   int isEsign;
   int disbursement;
@@ -51,7 +51,7 @@ class BranchDataModel {
     required this.ntc,
     required this.isSourcing,
     required this.isDisbursed,
-    required this.isCollection,
+    required this.isEsign,
     required this.status,
     required this.isEsign,
     required this.disbursement,
@@ -67,7 +67,7 @@ class BranchDataModel {
     ntc: json["ntc"] ?? "",
     isSourcing: json["isSourcing"] ?? 0, // Default to 0 if null
     isDisbursed: json["isDisbursed"] ?? 0,
-    isCollection: json["isCollection"] ?? 0,
+    isEsign: json["isEsign"] ?? 0,
     status: json["status"] ?? 0,
     isEsign: json["isEsign"] ?? 0,
     disbursement: json["disbursement"] ?? 0,
@@ -83,7 +83,7 @@ class BranchDataModel {
     "ntc": ntc,
     "isSourcing": isSourcing,
     "isDisbursed": isDisbursed,
-    "isCollection": isCollection,
+    "isEsign": isEsign,
     "status": status,
     "disbursement": disbursement,
     "crifScore": crifScore,

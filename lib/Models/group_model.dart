@@ -31,19 +31,23 @@ class GroupModel {
 class GroupDataModel {
   String groupCode;
   String groupCodeName;
+  String centerName;
 
   GroupDataModel({
     required this.groupCode,
     required this.groupCodeName,
+    required this.centerName
   });
 
   factory GroupDataModel.fromJson(Map<String, dynamic> json) => GroupDataModel(
-    groupCode: json["groupCode"],
-    groupCodeName: json["groupCodeName"],
+      groupCode: json["groupCode"],
+      groupCodeName: json["groupCodeName"],
+      centerName: json["centerName"]
   );
 
   Map<String, dynamic> toJson() => {
     "groupCode": groupCode,
     "groupCodeName": groupCodeName,
+    "centerName": centerName
   };
 }

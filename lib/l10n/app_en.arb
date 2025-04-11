@@ -582,7 +582,14 @@
 
   "pleasesearchpancardholdernameforverification": "Please search PAN card holder name for verification",
   "pleaseenter": "Please enter",
-  "recordnotfound": "Record Not Found!!"
+  "recordnotfound": "Record Not Found!!",
+  "caseStatus": "Case Status",
+
+  "alternateMobile": "Alternate Mobile no",
+  "pleaseentermobilenoalternate": "Please enter correct Alternate Mobile no",
+
+  "accountHolderNameMismatchShort": "Account holder name doesn't match borrower name.",
+  "consentRawTextmulti": "I hereby authorize NSDL e-Gov on behalf of Paisalo Digital Limited to- \n 1. Use my Aadhaar details for Loan Document eSignature and authenticate my identity through the Aadhaar \n Authentication system (Aadhaar based e-KYC services of UIDAI) in accordance with the provisions of the Aadhaar\n (Targeted Delivery of Financial and other Subsidies, Benefits and Services) Act, 2016 and the allied rules and\n regulations notified thereunder and for no other purpose.2. Authenticate my Aadhaar through OTP or Biometric for authenticating my identity through the AadhaarAuthentication system for obtaining my e-KYC through Aadhaar based e-KYC services of UIDAI and use my Photo andDemographic details (Name, Gender, Date of Birth and Address) for Loan Document eSignature.3. I understand that Security and confidentiality of personal identity data provided, for the purpose of Aadhaarbased authentication is ensured by NSDL e-Gov and the data will be stored by NSDL e-Gov till such time asmentioned in guidelines from UIDAI from time to time.4. I have understood that the system of downloading the copy of loan document for my record from the linkprovided by the company through email or SMS post e-signing of the loan document. I shall download the copy of loan documents as per my convenience at a later stage."
 }
 
 

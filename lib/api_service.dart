@@ -59,16 +59,17 @@ class ApiConfig {
   static const String baseUrl2 =
       'https://agra.paisalo.in:8462/creditmatrix/api/';
   static const String baseUrl3 = 'https://ifsc.razorpay.com/';
-  static const String baseUrl4 =
-      'https://agra.paisalo.in:8462/creditmatrix/api/';
+  static const String baseUrl4 = 'https://pdldocverify.paisalo.in:9987/api/';
   static const String baseUrl5 = 'https://kyc.paisalo.in:985/api/';
   static const String baseUrl6 = 'https://ocr.paisalo.in:950/api/';
   static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
   static const String baseUrl8 =
       'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
   static const String baseUrl9 = 'https://apiuat.paisalo.in:4015/fi/api/';
-  static const String baseUrl10 =
-      'https://apiuat.paisalo.in:4015/PDLEmudra/api/';
+  static const String baseUrl10 = 'https://apiuat.paisalo.in:4015/PDLEmudra/api/';
+  static const String baseUrl11 = 'https://apiuat.paisalo.in:4015/PDLDocESign/api/';
+
+
 }
 
 // @RestApi(baseUrl: "https://predeptest.paisalo.in:8084/MobColen/api/")
@@ -154,43 +155,52 @@ abstract class ApiService {
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Part(name: "aadhar_no") String aadharNo,
-      @Part(name: "title") String title,
-      @Part(name: "f_Name") String fName,
-      @Part(name: "m_Name") String mName,
-      @Part(name: "l_Name") String lName,
-      @Part(name: "dob") String dob,
-      @Part(name: "Age") String age,
-      @Part(name: "gender") String gender,
-      @Part(name: "Guardian_Name") String guardianName,
-      @Part(name: "p_Phone") String pPhone,
-      @Part(name: "fatheR_FIRST_NAME") String fatherFirstName,
-      @Part(name: "fatheR_MIDDLE_NAME") String fatherMiddleName,
-      @Part(name: "fatheR_LAST_NAME") String fatherLastName,
-      @Part(name: "spousE_FIRST_NAME") String spouseFirstName,
-      @Part(name: "spousE_MIDDLE_NAME") String spouseMiddleName,
-      @Part(name: "spousE_LAST_NAME") String spouseLastName,
-      @Part(name: "creator") String creator,
-      @Part(name: "expense") int expense,
-      @Part(name: "income") int income,
-      @Part(name: "latitude") double latitude,
-      @Part(name: "longitude") double longitude,
-      @Part(name: "P_Address1") String currentAddress1,
-      @Part(name: "P_Address2") String currentAddress2,
-      @Part(name: "P_Address3") String currentAddress3,
-      @Part(name: "P_City") String currentCity,
-      @Part(name: "P_Pincode") String currentPincode,
-      @Part(name: "P_State") String currentState,
-      @Part(name: "IsMarried") bool isMarried,
-      @Part(name: "GroupCode") String groupCode,
-      @Part(name: "BranchCode") String branchCode,
-      @Part(name: "Relation_with_Borrower") String relation_with_Borrower,
-      @Part(name: "BankSanctionId") String bank_name,
-      @Part(name: "Loan_Duration") String loan_Duration,
-      @Part(name: "Loan_amount") String loan_amount,
-      @Part(name: "Loan_Reason") String loan_Reason,
-      @Part(name: "CreatorId") String CreatorId,
-      @Part(name: "ModuleTypeId") int ModuleTypeId,
-      @Part(name: "Picture") File Picture);
+
+      @Part( name:"title") String title,
+      @Part( name:"f_Name") String fName,
+      @Part( name:"m_Name") String mName,
+      @Part( name:"l_Name") String lName,
+      @Part( name:"dob") String dob,
+      @Part( name:"Age") String age,
+      @Part( name:"gender") String gender,
+      @Part( name:"Guardian_Name") String guardianName,
+      @Part( name:"p_Phone") String pPhone,
+      @Part( name:"fatheR_FIRST_NAME") String fatherFirstName,
+      @Part( name:"fatheR_MIDDLE_NAME") String fatherMiddleName,
+      @Part( name:"fatheR_LAST_NAME") String fatherLastName,
+      @Part( name:"MOTHER_FIRST_NAME") String MOTHER_FIRST_NAME,
+      @Part( name:"MOTHER_MIDDLE_NAME") String MOTHER_MIDDLE_NAME,
+      @Part( name:"MOTHER_LAST_NAME") String MOTHER_LAST_NAME,
+      @Part( name:"spousE_FIRST_NAME") String spouseFirstName,
+      @Part( name:"spousE_MIDDLE_NAME") String spouseMiddleName,
+      @Part( name:"spousE_LAST_NAME") String spouseLastName,
+      @Part( name:"creator") String creator,
+      @Part( name:"expense") int expense,
+      @Part( name:"income") int income,
+      @Part( name:"latitude") double latitude,
+      @Part( name:"longitude") double longitude,
+      @Part( name:"P_Address1") String currentAddress1,
+      @Part( name:"P_Address2") String currentAddress2,
+      @Part( name:"P_Address3") String currentAddress3,
+      @Part( name:"P_City") String currentCity,
+      @Part( name:"P_Pincode") String currentPincode,
+      @Part( name:"P_State") String currentState,
+      @Part( name:"IsMarried") bool isMarried,
+      @Part( name:"GroupCode") String groupCode,
+      @Part( name:"BranchCode") String branchCode,
+      @Part( name:"Relation_with_Borrower") String relation_with_Borrower,
+      @Part( name:"BankSanctionId") String bank_name,
+      @Part( name:"Loan_Duration") String loan_Duration,
+      @Part( name:"Loan_amount") String loan_amount,
+      @Part( name:"Loan_Reason") String loan_Reason,
+      @Part( name:"CreatorId") String CreatorId,
+      @Part( name:"ModuleTypeId") int ModuleTypeId,
+      @Part( name:"Current_Phone") String Current_Phone,
+      @Part( name:"SchoolingChildren") String SchoolingChildren,
+      @Part( name:"NoOfChildren") String NoOfChildren,
+      @Part( name:"OtherDependents") String OtherDependents,
+      @Part( name: "Picture") File Picture);
+
 
   @POST("FiSourcing/FiDocsUploads")
   @MultiPart()
@@ -464,6 +474,7 @@ abstract class ApiService {
     @Query("IMEINO") String IMEINO,
   );
 
+
   @GET("Collection/GetPandingCollectionGroupCode")
   Future<CollectionBorrowerListModel> CollectionBorrowerList(
     @Header("Authorization") String token,
@@ -534,9 +545,13 @@ abstract class ApiService {
       @Query("MobileNo") String mobileNo,
       @Query("Otp") String otp);
 
-  @GET("FiSourcing/GetAllAdharData")
-  Future<AdhaarModel> dataByAdhaar(@Header("Authorization") String token,
-      @Header("dbname") String dbName, @Query("AdharCard") String AdharCard);
+  @GET("FiSourcing/GetDataByAadhar")
+  Future<DatabyAadhaarModel> dataByAdhaar(
+      @Header("Authorization") String token,
+      @Header("dbname") String dbName,
+      @Query("AdharCard") String AdharCard
+      );
+
 
   @GET("Tracklocations/GetAchievementDetails")
   Future<LeaderboardModel> leaderboardList(
@@ -547,22 +562,23 @@ abstract class ApiService {
       @Query("Todate") String Todate);
 
 //protean
-/*  @POST("e_SignMobile/SaveAgreements")
+  @POST("ESignProtean/SaveProteanAgreements")
   @MultiPart()
-  Future<dynamic> saveAgreements(
+  Future<dynamic> saveAgreementsProtien(
       @Part(name: "Ficode") String ficode,
       @Part(name: "Creator") String creator,
       @Part(name: "ConsentText") String consentText,
       @Part(name: "authMode") String authMode,
       @Part(name: "F_Id") String fId,
       @Part(name: "SignType") String signType,
-      );*/
+      @Part(name: "device") String device,
+      );
 
-  /*@FormUrlEncoded()
-  @POST("E_Sign/XMLReaponseNew")
-  Future<XmlResponse> sendXMLtoServer(
+  @FormUrlEncoded()
+  @POST("ESignProtean/ProteanMobileXMLResponse")
+  Future<XmlResponse> sendXMLtoServerProtien(
       @Field("msg") String msg,
-      );*/
+      );
 
 //emudra
   @MultiPart()

@@ -213,7 +213,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   final _bank_IFCSController = TextEditingController();
   final _bank_AcController = TextEditingController();
-  String? bankAccHolder, bankAddress;
+  String? bankAccHolder, bankAddress,bankname_ifsc;
   final _bankOpeningDateController = TextEditingController();
 
   // AddFiFamilyDetail
@@ -797,7 +797,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     switch (_currentStep) {
       case 0:
         return _buildStepOne();
-      case 1:
+     /* case 1:
         return _buildStepTwo();
       case 2:
         return _buildStepThree();
@@ -810,6 +810,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
       case 6:
         return _buildStepSeven();
       case 7:
+        return _buildStepEight();*/
+
+      case 1:
+        return _buildStepThree();
+      case 2:
+        return _buildStepFour();
+      case 3:
+        return _buildStepFive();
+      case 4:
+        return _buildStepSix();
+      case 5:
+        return _buildStepSeven();
+      case 6:
         return _buildStepEight();
       default:
         return _buildStepOne();
@@ -833,8 +846,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
         _stepIndicator(5),
         _lineIndicator(),
         _stepIndicator(6),
-        _lineIndicator(),
-        _stepIndicator(7),
+        /*_lineIndicator(),
+        _stepIndicator(7),*/
       ],
     );
   }
@@ -875,6 +888,19 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   Widget _buildStepOne() {
+    setState(() {
+      address1ControllerP.text=BorrowerInfo[0].pAddress1;
+      address2ControllerP.text=BorrowerInfo[0].pAddress2;
+      address3ControllerP.text=BorrowerInfo[0].pAddress3;
+      pincodeControllerP.text=BorrowerInfo[0].pPincode;
+      cityControllerP.text=BorrowerInfo[0].pCity;
+     // selectedStateextraC = BorrowerInfo[0].pState;
+      selectedStateextraP = states.firstWhere((item) =>
+      item.descriptionEn.toLowerCase() == BorrowerInfo[0].pState.toLowerCase());
+
+      print('ssstate ${BorrowerInfo[0].pState})');
+      print('ssstate2 $selectedStateextraP');
+    });
     return SingleChildScrollView(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -898,7 +924,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 focusNode: _emailIdFocus,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  errorText: _emailError,
+                 // errorText: _emailError,
                 ),
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -1105,7 +1131,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           ],
         ),
 
-        SizedBox(height: 10),
+        /*SizedBox(height: 10),
 
         Text(
           AppLocalizations.of(context)!.mobile,
@@ -1135,7 +1161,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   // Maximum length of 10
                 ],
               ),
-            )),
+            )),*/
+
         SizedBox(height: 10),
 
         Row(
@@ -4269,7 +4296,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               if (_stepOneValidations()) {
                 AddFiExtraDetail(context);
               }
-            } else {
+            } /*else {
               setState(() {
                 _currentStep++;
                 pageTitle = AppLocalizations.of(context)!.familydetails;
@@ -4280,13 +4307,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
               if (_stepTwoValidations()) {
                 AddFiFamilyDetail(context);
               }
-            } else {
+            }*/ else {
               setState(() {
                 _currentStep++;
                 pageTitle = AppLocalizations.of(context)!.incomeexpense;
               });
             }
-          } else if (_currentStep == 2) {
+          } else if (_currentStep == 1) {
             if (FiIncomeEditable) {
               if (_stepThreeValidations()) {
                 AddFiIncomeAndExpense(context);
@@ -4297,7 +4324,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 pageTitle = AppLocalizations.of(context)!.financialinfo;
               });
             }
-          } else if (_currentStep == 3) {
+          } else if (_currentStep == 2) {
             if (FinancialInfoEditable) {
               if (_stepFourValidations()) {
                 AddFinancialInfo(context);
@@ -4308,7 +4335,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 pageTitle = AppLocalizations.of(context)!.familyincome;
               });
             }
-          } else if (_currentStep == 4) {
+          } else if (_currentStep == 3) {
             if (femMemIncomeEditable) {
               if (_stepFiveValidations()) {
                 FiFemMemIncome(context);
@@ -4319,7 +4346,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 pageTitle = AppLocalizations.of(context)!.guarantorform;
               });
             }
-          } else if (_currentStep == 5) {
+          } else if (_currentStep == 4) {
             if (GuarantorEditable) {
               if (_stepSixValidations()) {
                 saveGuarantorMethod(context);
@@ -4331,7 +4358,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 editButtonFunctionOn = false;
               });
             }
-          } else if (_currentStep == 6) {
+          } else if (_currentStep == 5) {
             if (!borrowerDocsUploded) {
               FiDocsUploadsApi(context, "0");
             } else {
@@ -4341,14 +4368,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 editButtonFunctionOn = false;
               });
             }
-          } else if (_currentStep == 7) {
+          } else if (_currentStep == 6) {
 
             print("Current Step: $_currentStep");
             FiDocsUploadsApi(context, "1");
           }
         },
         child: Text(
-          _currentStep == 7
+          _currentStep == 6
               ? AppLocalizations.of(context)!.submit
               : AppLocalizations.of(context)!.next,
           style: TextStyle(
@@ -5449,11 +5476,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
   }
 
   bool _stepOneValidations() {
-    if (emailIdController.text.isEmpty) {
+    /*if (emailIdController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenteremailid);
       _emailIdFocus.requestFocus();
       return false;
-    } else if (placeOfBirthController.text.isEmpty) {
+    } else*/ if (placeOfBirthController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterplaceofbirth);
       _placeOfBirthFocus.requestFocus();
       return false;
@@ -5475,14 +5502,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _resCatFocus.requestFocus();
       return false;
     }*/
-    else if (mobileController.text.isEmpty ||
+    /*else if (mobileController.text.isEmpty ||
         mobileController.text.length != 10 ||
         !mobileController.text.contains(RegExp(r'^[0-9]{10}$'))) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseentercorrectmobilenumber);
       _mobileFocus.requestFocus();
       return false;
-    } else if (selectedIsHandicap == null ||
+    }*/ else if (selectedIsHandicap == null ||
         selectedIsHandicap!.toLowerCase() == "select") {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectishandicap);
       return false;
@@ -5709,7 +5736,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
     } else if (_othersController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterotherexpenses);
       return false;
-    }
+    }/*else if ((int.parse(_expenseController.text) <=
+        ((int.parse(_incomeController.text)) * 0.5))) {
+      showToast_Error(AppLocalizations.of(context)!.expenseshouldbegreaterthan50ofincome);
+      return false;
+    }*/
     return true;
   }
 
@@ -5747,6 +5778,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
     } else if (bankAccHolder == null || bankAccHolder!.isEmpty) {
       showToast_Error(
           AppLocalizations.of(context)!.accountholdernameisnotfound);
+      return false;
+    }
+
+    String fullName = "${BorrowerInfo[0].fName} ${BorrowerInfo[0].mName} ${BorrowerInfo[0].lName}".trim().replaceAll(RegExp(r'\s+'), ' ');
+    String normalizedBankAccHolder = bankAccHolder?.trim().replaceAll(RegExp(r'\s+'), ' ') ?? '';
+    if (!normalizedBankAccHolder.toLowerCase().contains(fullName.toLowerCase())) {
+      showToast_Error(AppLocalizations.of(context)!.accountHolderNameMismatchShort);
       return false;
     }
     return true;
@@ -6125,6 +6163,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "bank_IFCS": bank_IFCS,
       "bank_address": bank_address,
       "bankOpeningDate": bankOpeningDate,
+      "BankName": bankname_ifsc,
     };
 
     if (DataValidate(context, requestBody)) {
@@ -6245,7 +6284,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
     int entertainment = int.parse(_entertainmentController.text.toString());
     int others = int.parse(_othersController.text.toString());
     String docs_path = "";
-
+    print('iiiinciome ${future_Income+agriculture_income+other_Income+annuaL_INCOME+pensionIncome+otheR_THAN_AGRICULTURAL_INCOME+any_RentalIncome}');
+print('iiiinciome2  ${others+entertainment+travelling+health+education+fooding+rent+spendOnChildren}');
     final api = Provider.of<ApiService>(context, listen: false);
 
     Map<String, dynamic> requestBody = {
@@ -6274,7 +6314,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "homeRoofType": homeRoofType,
       "toiletType": toiletType,
       "livingwithSpouse": livingSpouse,
-      "docs_path": docs_path
+      "docs_path": docs_path,
+      "income": future_Income+agriculture_income+other_Income+annuaL_INCOME+pensionIncome+otheR_THAN_AGRICULTURAL_INCOME+any_RentalIncome,
+      "expense":others+entertainment+travelling+health+education+fooding+rent+spendOnChildren
     };
 
     return await api.AddFiIncomeAndExpense(
@@ -6758,6 +6800,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       if (value.address.isNotEmpty) {
         setState(() {
           bankAddress = value.address.toString();
+          bankname_ifsc=value.bank.toString();
         });
         print("object $bankVerifyByProtean");
         bankVerifyByProtean(GlobalClass.EmpId,_bank_AcController.text,_bank_IFCSController.text);
@@ -7220,6 +7263,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           pageTitle = AppLocalizations.of(context)!.uploaddocs;
           GuarantorEditable = false;
           EasyLoading.dismiss();
+
         });
       } else {
         showToast_Error(value.data[0].errormsg);
@@ -7785,7 +7829,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
       borrowerInfo.mName,
       borrowerInfo.lName
     ].where((part) => part != null && part.isNotEmpty).join(" ");
-    final String aadhaarNo = borrowerInfo.aadharNo;
+    final String aadhaarNo = AadhaarMasker(borrowerInfo.aadharNo);
+  //  final String aadhaarNo = borrowerInfo.aadharNo;
     final String panNo = borrowerInfo.panNo;
     final String dl = borrowerInfo.dl;
     final String voterId = borrowerInfo.voterId;
@@ -8578,5 +8623,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
         }
       }
     });
+  }
+
+  String AadhaarMasker(String aadhaarNo) {
+    return "xxxx xxxx " + aadhaarNo.substring(8);
   }
 }

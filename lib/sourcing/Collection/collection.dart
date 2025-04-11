@@ -6,7 +6,6 @@ import 'package:flutter_sourcing_app/Models/collectionborrowerlistmodel.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import '../../MasterAPIs/live_track_repository.dart';
 import '../../Models/getCollectionModel.dart';
 import '../../Models/qrresponse_model.dart';

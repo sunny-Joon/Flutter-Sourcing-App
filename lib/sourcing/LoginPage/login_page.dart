@@ -590,7 +590,7 @@ class _LoginPageState extends State<LoginPage> {
       "userName": userName,
     //  "password": userPassword,
        "password": EncryptionUtils.encrypt(userPassword),
-      "GsmId": prefs.getString("GSMID")!
+      "GsmId": "GSMID"
     };
     // 0646498585477244 DeviceID grst002064
     // 2234514145687247 DeviceID grst003057
@@ -625,6 +625,7 @@ class _LoginPageState extends State<LoginPage> {
               GlobalClass.userName = value.data.foImei[0].name;
               GlobalClass.designation = value.data.foImei[0].designation;
               //  GlobalClass.creator = value.data.foImei[0].creator;
+            //  GlobalClass.userType ='Dealer';
 
               for (var foImeiItem in value.data.foImei) {
                 if (foImeiItem.creator != null) {

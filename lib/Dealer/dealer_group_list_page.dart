@@ -27,8 +27,8 @@ class _DealerGroupListPageState extends State<DealerGroupListPage> {
     super.initState();
    // _fetchGroupList();
     _isLoading = false;
-    _items.add(GroupDataModel(groupCode: "0001", groupCodeName: "New Delhi"));
-    _items.add(GroupDataModel(groupCode: "0002", groupCodeName: "West Delhi"));
+    _items.add(GroupDataModel(groupCode: "0001", groupCodeName: "New Delhi", centerName: ''));
+    _items.add(GroupDataModel(groupCode: "0002", groupCodeName: "West Delhi", centerName: ''));
 
   }
 

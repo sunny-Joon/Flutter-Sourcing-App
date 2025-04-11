@@ -8,7 +8,6 @@ import 'branch_recycler_item.dart';
 import 'group_list_page.dart';
 import 'group_list_page2.dart';
 import '../global_class.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class BranchListPage extends StatefulWidget {

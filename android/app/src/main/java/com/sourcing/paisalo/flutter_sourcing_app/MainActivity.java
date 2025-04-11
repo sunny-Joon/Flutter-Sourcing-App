@@ -41,7 +41,8 @@ public class MainActivity extends FlutterFragmentActivity  {
     private static final String CHANNEL = "com.example.intent"; // Same channel name as in Flutter
     Result result_global;
     protected ArrayList<String> decodedData;
-    private static final int APK_ESIGN_REQUEST_CODE = 404;
+    private static final int APK_ESIGN_REQUEST_CODEP = 404;
+    private static final int APK_ESIGN_REQUEST_CODEM = 405;
     protected static final int VTC_INDEX = 15;
     protected int emailMobilePresent, imageStartIndex, imageEndIndex;
     protected String signature,email,mobile;
@@ -55,12 +56,15 @@ public class MainActivity extends FlutterFragmentActivity  {
                     @Override
                     public void onMethodCall(MethodCall call, Result result) {
                         result_global=result;
-                        if (call.method.equals("callJavaFunction")) {
+                        if (call.method.equals("callJavaFunctionP")) {
                             String xml =call.arguments();
-
-
                             // Call your Java method here and return a result
-                            callJavaFunction(xml); // Example of calling your Java function
+                            callJavaFunctionP(xml); // Example of calling your Java function
+                            // Send result back to Flutter
+                        }else if (call.method.equals("callJavaFunctionM")) {
+                            String xml =call.arguments();
+                            // Call your Java method here and return a result
+                            callJavaFunctionM(xml); // Example of calling your Java function
                             // Send result back to Flutter
                         } else  if (call.method.equals("callJavaMethodQr")) {
                             openQRActivity();
@@ -77,27 +81,26 @@ public class MainActivity extends FlutterFragmentActivity  {
     }
 //protean
     // Example Java method
-  /*  private void callJavaFunction(String xml) {
+    private void callJavaFunctionP(String xml) {
         String responseUrl="https://predeptest.paisalo.in:8084/PDL.ESign.API/api/E_Sign/XMLReaponseNew";
 
         // Your Java logic here
-
         Intent appStartIntent = new Intent();
         appStartIntent.setAction("com.nsdl.egov.esign.rdservice.fp.CAPTURE");
         appStartIntent.putExtra("msg", xml); // msg contains esign request xml from ASP.
         appStartIntent.putExtra("env", "PROD"); //Possible values PREPROD or PROD (case insensative).
         appStartIntent.putExtra("returnUrl", responseUrl); // your package name where esign response failure/success will be sent.
-        startActivityForResult(appStartIntent, APK_ESIGN_REQUEST_CODE);
-    }*/
+        startActivityForResult(appStartIntent, APK_ESIGN_REQUEST_CODEP);
+    }
 //emudra
-    private void callJavaFunction(String xml) {
+    private void callJavaFunctionM(String xml) {
 
         String responseUrl = "https://apiuat.paisalo.in:4015/PDLEmudra/api/ESign/HandleCallbackMobileresponse";
         try {
             Intent appStartIntent = new Intent();
             appStartIntent.setAction("com.emudhra.esignpdf.sign");
             appStartIntent.putExtra("txnRef", xml);
-            startActivityForResult(appStartIntent, APK_ESIGN_REQUEST_CODE);
+            startActivityForResult(appStartIntent, APK_ESIGN_REQUEST_CODEM);
         } catch (ActivityNotFoundException e) {
             redirectToPlayStoreForeMudhraApp(true);
         }
@@ -112,8 +115,7 @@ public class MainActivity extends FlutterFragmentActivity  {
         Log.d("TAG", "onActivityResult: data "+data);
         Log.d("TAG", "onActivityResult: requestCode "+requestCode);
         //protean
-        /*
-          if (requestCode == APK_ESIGN_REQUEST_CODE) {
+          if (requestCode == APK_ESIGN_REQUEST_CODEP) {
             if (resultCode == RESULT_OK) {
                 try {
                     String eSignResponse = data.getStringExtra("signedResponse");
@@ -121,20 +123,17 @@ public class MainActivity extends FlutterFragmentActivity  {
                 }catch (Exception e){
                     result_global.success(e.getMessage());
                 }
-
             } else {
                 result_global.success("Something went wrong during Esign Processing. Please contact administrator(NSDL)");
-
             }
         }
-        * */
+
         //emudra
-        if (requestCode == APK_ESIGN_REQUEST_CODE) {
+        if (requestCode == APK_ESIGN_REQUEST_CODEM) {
             if (data != null) {
               String  status =data.getStringExtra("status");
                 String errorMsg = data.getStringExtra("errorMsg");
                 String responseXML= data.getStringExtra("responseXML");
-
                 try {
                     //String eSignResponse = data.getStringExtra("signedResponse");
                     result_global.success(responseXML);
@@ -278,16 +277,25 @@ public class MainActivity extends FlutterFragmentActivity  {
 
 
     protected void decodeData(List<byte[]> encodedData) {
-        Iterator<byte[]> i = encodedData.iterator();
-        decodedData = new ArrayList<String>();
-        while(i.hasNext()){
-            decodedData.add(new String(i.next(), StandardCharsets.ISO_8859_1));
-        }
-        // set the value of email/mobile present flag
-        Log.e("Parts======2======> ","part data =====> "+decodedData.toString());
-        //emailMobilePresent = Integer.parseInt(decodedData[0]);
+        try {
+            Log.e("Parts======1======> ","part data =====> "+decodedData.toString());
 
-        result_global.success(decodedData.toString());
+            Iterator<byte[]> i = encodedData.iterator();
+            decodedData = new ArrayList<String>();
+            while(i.hasNext()){
+                Log.e("Parts======4======> ","part data =====> "+decodedData.toString());
+
+                decodedData.add(new String(i.next(), StandardCharsets.ISO_8859_1));
+            }
+            // set the value of email/mobile present flag
+            Log.e("Parts======2======> ","part data =====> "+decodedData.toString());
+            //emailMobilePresent = Integer.parseInt(decodedData[0]);
+
+            result_global.success(decodedData.toString());
+        }catch (Error e){
+            Log.e("Parts======3======> ","part data =====> "+e);
+        }
+
 
 
     }

@@ -28,9 +28,6 @@ import 'package:http/http.dart'as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
-
-
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print("Handling a background message: ${message.messageId}");
@@ -49,21 +46,8 @@ Future<void> main() async {
   requestPermissions(); // Request permissions when the app starts+
 
   await FirebaseAppCheck.instance.activate(
-    // You can also use a `ReCaptchaEnterpriseProvider` provider instance as an
-    // argument for `webProvider`
     webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    // Default provider for Android is the Play Integrity provider. You can use the "AndroidProvider" enum to choose
-    // your preferred provider. Choose from:
-    // 1. Debug provider
-    // 2. Safety Net provider
-    // 3. Play Integrity provider
-    androidProvider: AndroidProvider.debug,
-    // Default provider for iOS/macOS is the Device Check provider. You can use the "AppleProvider" enum to choose
-    // your preferred provider. Choose from:
-    // 1. Debug provider
-    // 2. Device Check provider
-    // 3. App Attest provider
-    // 4. App Attest provider with fallback to Device Check provider (App Attest provider is only available on iOS 14.0+, macOS 14.0+)
+   androidProvider: AndroidProvider.debug,
     appleProvider: AppleProvider.appAttest,
   );
 
@@ -90,8 +74,6 @@ Future<void> main() async {
       print(message.notification?.body);
       print(message.notification?.title);
       print("forground-     ${message.notification?.title}");
-
-
     }
     LocalNotificationService.display(message);
 
@@ -105,18 +87,13 @@ Future<void> main() async {
     LocalNotificationService.display(message);
     print("background_OpenedApp-     ${message.notification?.title}");
 
-
   });
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, // Allow only portrait up orientation
-    // DeviceOrientation.portraitDown, // Uncomment to allow upside-down portrait
-    // DeviceOrientation.landscapeLeft, // Uncomment to allow landscape left
-    // DeviceOrientation.landscapeRight, // Uncomment to allow landscape right
   ]).then((_) {
     runApp(ChangeNotifierProvider(create: (context) => languageprovider(),
       child: const MyApp(),
     ));
-
   });
   configLoading();
 }
@@ -142,12 +119,8 @@ void requestPermissions() async {
   // Check each permission status
   statuses.forEach((permission, status) {
     if (status.isGranted) {
-
     } else if (status.isDenied) {
-
     } else if (status.isPermanentlyDenied) {
-
-      // You can show a dialog to the user explaining why the permission is needed
     }
   });
 }
@@ -164,7 +137,6 @@ class MyApp extends StatelessWidget {
 
       child: MaterialApp(
 
-
         supportedLocales: const[
           Locale('en'),
           Locale('hi'),
@@ -179,7 +151,6 @@ class MyApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-
 
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
@@ -196,7 +167,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -207,8 +177,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     checkForLocalServerUpdate();
-    // Navigate to Home Screen after 3 seconds
-
   }
 
   @override
@@ -241,14 +209,12 @@ class _SplashScreenState extends State<SplashScreen> {
           content: Text('A new version of the app is available. Please update to the latest version.'),
           actions: <Widget>[
             TextButton(
-
               child: Text('Download App'),
               onPressed: () async {
                 _launchURLBrowser();
               },
             ),
             TextButton(
-
               child: Text('Close'),
               onPressed: () {
                exit(0);
@@ -272,11 +238,9 @@ class _SplashScreenState extends State<SplashScreen> {
     print("GlobalClass.appVersion $GlobalClass.appVersion");
     print("packageInfo.version $packageInfo.version");
 
-
        ApiService.create(baseUrl: ApiConfig.baseUrl1).VersionCheck(GlobalClass.dbName, appVersion,"S","1").then((response){
 
          if (response.statuscode == 200) {
-
            bool isvalid = response.data[0].isvalid;
            print("isvalid $isvalid");
 
@@ -293,15 +257,11 @@ class _SplashScreenState extends State<SplashScreen> {
            }
          } else {
            GlobalClass.showErrorAlert(context, "Please check internet connection", 1);
-
          }
        }).catchError((onError){
          GlobalClass.showErrorAlert(context, "Please check internet connection", 1);
        //  GlobalClass.showErrorAlert(context, "${onError}", 1);
-
        });
-
-
   }
 
 }

@@ -14,14 +14,14 @@ import '../api_service.dart';
 import '../sourcing/ProfilePage/qr_scan_page.dart';
 import '../sourcing/global_class.dart';
 import 'dealerCrif.dart';
-import 'dealer_kycform.dart';
+import 'dealer2W_kycform.dart';
 
-class DealerKYCPage2 extends StatefulWidget {
+class DealerKYCPage2W2 extends StatefulWidget {
   @override
-  _DealerKYCPage2State createState() => _DealerKYCPage2State();
+  _DealerKYCPage2W2State createState() => _DealerKYCPage2W2State();
 }
 
-class _DealerKYCPage2State extends State<DealerKYCPage2> {
+class _DealerKYCPage2W2State extends State<DealerKYCPage2W2> {
 
   final List<Widget> imageSliders = [];
   final List<Widget> idSliders = [];
@@ -36,10 +36,7 @@ class _DealerKYCPage2State extends State<DealerKYCPage2> {
   File? _voterImage;
   late ApiService apiService_OCR;
 
-  String? selectedProduct;
-  List<String> productList = ['Select', 'Bike', 'Car', 'Medical Instrument'];
-  String? selectedDealer;
-  List<String> dealerList = ['Select', 'MG Central', 'Pasco Automobiles', 'Kalra'];
+
 
   int _currentStep = 0;
   String panCardHolderName =
@@ -66,9 +63,7 @@ class _DealerKYCPage2State extends State<DealerKYCPage2> {
     geolocator(context);
     updatelist();
     updatelist2();
-    Future.delayed(Duration.zero, () {
-      this. SelectDealer();
-    });
+
 
   }
 
@@ -210,7 +205,7 @@ class _DealerKYCPage2State extends State<DealerKYCPage2> {
                                   //
                                   //   qrResult= decodeData(parts);
                                   // });
-                                  Navigator.push(context, MaterialPageRoute(builder:(context) =>  DealerKYCPage(result: result)));
+                                  Navigator.push(context, MaterialPageRoute(builder:(context) =>  DealerKYCPage2W(result: result)));
 
                                   print('rrr' + result);
                                   //  setQRData(result);
@@ -2006,137 +2001,6 @@ class _DealerKYCPage2State extends State<DealerKYCPage2> {
           ],
         )));
   }
-
-
-
-  Future<void> SelectDealer() async {
-    print("2323");
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return WillPopScope(
-            child: StatefulBuilder(
-            builder: (context, setState) {
-          // Start timer once the dialog opens
-
-          return  AlertDialog(
-          backgroundColor: Colors.white, // Red background
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              Text(
-                'Product',
-                style: TextStyle(
-                    color: Color(0xFFD42D3F), fontWeight: FontWeight.bold),textAlign: TextAlign.center,
-              ),
-
-              SizedBox(height: 5),
-              Container(
-                alignment: Alignment.center,
-                height: 55,
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: DropdownButton<String>(
-                  value: selectedProduct,
-                  // Make sure this variable exists
-                  isExpanded: true,
-                  iconSize: 24,
-                  iconEnabledColor: Colors.black,
-                  dropdownColor: Colors.white,
-                  elevation: 13,
-                  style: TextStyle(
-                    fontFamily: "Poppins-Regular",
-                    color: Colors.black,
-                    fontSize: 13,
-                  ),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.transparent,
-                  ),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedProduct = newValue!;
-                    });
-                  },
-                  items: productList.map((String value) {
-                    // Make sure this list exists
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
-
-              Text(
-                'Dealer',
-                style: TextStyle(
-                    color: Color(0xFFD42D3F), fontWeight: FontWeight.bold),textAlign: TextAlign.center,
-              ),
-
-              SizedBox(height: 5),
-              Container(
-                alignment: Alignment.center,
-                height: 55,
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: DropdownButton<String>(
-                  value: selectedDealer,
-                  // Make sure this variable exists
-                  isExpanded: true,
-                  iconSize: 24,
-                  iconEnabledColor: Colors.black,
-                  dropdownColor: Colors.white,
-                  elevation: 13,
-                  style: TextStyle(
-                    fontFamily: "Poppins-Regular",
-                    color: Colors.black,
-                    fontSize: 13,
-                  ),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.transparent,
-                  ),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedDealer = newValue!;
-                    });
-                  },
-                  items: dealerList.map((String value) {
-                    // Make sure this list exists
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
-              SizedBox(height: 5),
-
-              _buildShinyButton(
-                'Submit',
-                    () {
-                  Navigator.pop(context);
-                },
-              ),
-
-            ],
-          ),
-        );
-            },
-            ),
-            onWillPop: () async => false);
-    });
-      }
-
 
   Widget _buildShinyButton(String label, VoidCallback onPressed) {
     return GestureDetector(
