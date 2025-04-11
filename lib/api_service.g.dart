@@ -2429,12 +2429,14 @@ class _ApiService implements ApiService {
     String CreatorId,
     String Banchcode,
     String Groupcode,
+    String IMEINO,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'CreatorId': CreatorId,
       r'Banchcode': Banchcode,
       r'Groupcode': Groupcode,
+      r'IMEINO': IMEINO,
     };
     final _headers = <String, dynamic>{
       r'Authorization': token,
