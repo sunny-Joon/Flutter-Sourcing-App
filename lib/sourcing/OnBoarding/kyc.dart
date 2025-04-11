@@ -48,7 +48,7 @@ class _KYCPageState extends State<KYCPage> {
 
   late DatabyAadhaarDataModel adhaardata;
 
-  AdhaarDataModel? adhaardata;
+
 
 
   String nameReg = '[a-zA-Z. ]';
@@ -940,8 +940,8 @@ class _KYCPageState extends State<KYCPage> {
 
     String AdharName = "";
 
-    if (adhaardata != null && (adhaardata!.fName.isNotEmpty || adhaardata!.mName.isNotEmpty || adhaardata!.lName.isNotEmpty)) {
-      AdharName = "${adhaardata!.fName} ${adhaardata!.mName} ${adhaardata!.lName}".trim();
+    if (adhaardata.customerName != null ) {
+      AdharName = "${adhaardata!.customerName}";
     } else {
       AdharName = _nameController.text.trim();
       if (_nameMController.text.isNotEmpty && _nameLController.text.isNotEmpty) {
