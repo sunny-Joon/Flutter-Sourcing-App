@@ -58,13 +58,14 @@ class ApiConfig {
   static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
   static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
   static const String baseUrl3 = 'https://ifsc.razorpay.com/';
-  static const String baseUrl4 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
+  static const String baseUrl4 = 'https://pdldocverify.paisalo.in:9987/api/';
   static const String baseUrl5 = 'https://kyc.paisalo.in:985/api/';
   static const String baseUrl6 = 'https://ocr.paisalo.in:950/api/';
     static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
   static const String baseUrl8 = 'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
   static const String baseUrl9 = 'https://apiuat.paisalo.in:4015/fi/api/';
   static const String baseUrl10 = 'https://apiuat.paisalo.in:4015/PDLEmudra/api/';
+  static const String baseUrl11 = 'https://apiuat.paisalo.in:4015/PDLDocESign/api/';
 
 }
 
@@ -179,6 +180,9 @@ abstract class ApiService {
       @Part( name:"fatheR_FIRST_NAME") String fatherFirstName,
       @Part( name:"fatheR_MIDDLE_NAME") String fatherMiddleName,
       @Part( name:"fatheR_LAST_NAME") String fatherLastName,
+      @Part( name:"MOTHER_FIRST_NAME") String MOTHER_FIRST_NAME,
+      @Part( name:"MOTHER_MIDDLE_NAME") String MOTHER_MIDDLE_NAME,
+      @Part( name:"MOTHER_LAST_NAME") String MOTHER_LAST_NAME,
       @Part( name:"spousE_FIRST_NAME") String spouseFirstName,
       @Part( name:"spousE_MIDDLE_NAME") String spouseMiddleName,
       @Part( name:"spousE_LAST_NAME") String spouseLastName,
@@ -203,6 +207,10 @@ abstract class ApiService {
       @Part( name:"Loan_Reason") String loan_Reason,
       @Part( name:"CreatorId") String CreatorId,
       @Part( name:"ModuleTypeId") int ModuleTypeId,
+      @Part( name:"Current_Phone") String Current_Phone,
+      @Part( name:"SchoolingChildren") String SchoolingChildren,
+      @Part( name:"NoOfChildren") String NoOfChildren,
+      @Part( name:"OtherDependents") String OtherDependents,
       @Part( name: "Picture") File Picture);
 
   @POST("FiSourcing/FiDocsUploads")
@@ -483,7 +491,7 @@ abstract class ApiService {
       @Query("CreatorId") String CreatorId,
       @Query("Banchcode") String Banchcode,
       @Query("Groupcode") String Groupcode,
-      @Query("IMEINO") String IMEINO,
+
       );
 
   @GET("Collection/GetPandingCollectionGroupCode")
@@ -566,8 +574,8 @@ abstract class ApiService {
       @Query("Otp") String otp
       );
 
-  @GET("FiSourcing/GetAllAdharData")
-  Future<AdhaarModel> dataByAdhaar(
+  @GET("FiSourcing/GetDataByAadhar")
+  Future<DatabyAadhaarModel> dataByAdhaar(
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
       @Query("AdharCard") String AdharCard
@@ -582,22 +590,23 @@ abstract class ApiService {
       @Query("Todate") String Todate);
 
 //protean
-/*  @POST("e_SignMobile/SaveAgreements")
+  @POST("ESignProtean/SaveProteanAgreements")
   @MultiPart()
-  Future<dynamic> saveAgreements(
+  Future<dynamic> saveAgreementsProtien(
       @Part(name: "Ficode") String ficode,
       @Part(name: "Creator") String creator,
       @Part(name: "ConsentText") String consentText,
       @Part(name: "authMode") String authMode,
       @Part(name: "F_Id") String fId,
       @Part(name: "SignType") String signType,
-      );*/
+      @Part(name: "device") String device,
+      );
 
-  /*@FormUrlEncoded()
-  @POST("E_Sign/XMLReaponseNew")
-  Future<XmlResponse> sendXMLtoServer(
+  @FormUrlEncoded()
+  @POST("ESignProtean/ProteanMobileXMLResponse")
+  Future<XmlResponse> sendXMLtoServerProtien(
       @Field("msg") String msg,
-      );*/
+      );
 
 //emudra
   @MultiPart()

@@ -515,6 +515,9 @@ class _ApiService implements ApiService {
     String fatherFirstName,
     String fatherMiddleName,
     String fatherLastName,
+    String MOTHER_FIRST_NAME,
+    String MOTHER_MIDDLE_NAME,
+    String MOTHER_LAST_NAME,
     String spouseFirstName,
     String spouseMiddleName,
     String spouseLastName,
@@ -539,6 +542,10 @@ class _ApiService implements ApiService {
     String loan_Reason,
     String CreatorId,
     int ModuleTypeId,
+    String Current_Phone,
+    String SchoolingChildren,
+    String NoOfChildren,
+    String OtherDependents,
     File Picture,
   ) async {
     final _extra = <String, dynamic>{};
@@ -600,6 +607,18 @@ class _ApiService implements ApiService {
     _data.fields.add(MapEntry(
       'fatheR_LAST_NAME',
       fatherLastName,
+    ));
+    _data.fields.add(MapEntry(
+      'MOTHER_FIRST_NAME',
+      MOTHER_FIRST_NAME,
+    ));
+    _data.fields.add(MapEntry(
+      'MOTHER_MIDDLE_NAME',
+      MOTHER_MIDDLE_NAME,
+    ));
+    _data.fields.add(MapEntry(
+      'MOTHER_LAST_NAME',
+      MOTHER_LAST_NAME,
     ));
     _data.fields.add(MapEntry(
       'spousE_FIRST_NAME',
@@ -696,6 +715,22 @@ class _ApiService implements ApiService {
     _data.fields.add(MapEntry(
       'ModuleTypeId',
       ModuleTypeId.toString(),
+    ));
+    _data.fields.add(MapEntry(
+      'Current_Phone',
+      Current_Phone,
+    ));
+    _data.fields.add(MapEntry(
+      'SchoolingChildren',
+      SchoolingChildren,
+    ));
+    _data.fields.add(MapEntry(
+      'NoOfChildren',
+      NoOfChildren,
+    ));
+    _data.fields.add(MapEntry(
+      'OtherDependents',
+      OtherDependents,
     ));
     _data.files.add(MapEntry(
       'Picture',
@@ -2394,14 +2429,12 @@ class _ApiService implements ApiService {
     String CreatorId,
     String Banchcode,
     String Groupcode,
-    String IMEINO,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'CreatorId': CreatorId,
       r'Banchcode': Banchcode,
       r'Groupcode': Groupcode,
-      r'IMEINO': IMEINO,
     };
     final _headers = <String, dynamic>{
       r'Authorization': token,
@@ -2912,7 +2945,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<AdhaarModel> dataByAdhaar(
+  Future<DatabyAadhaarModel> dataByAdhaar(
     String token,
     String dbName,
     String AdharCard,
@@ -2925,14 +2958,14 @@ class _ApiService implements ApiService {
     };
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<AdhaarModel>(Options(
+    final _options = _setStreamType<DatabyAadhaarModel>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          'FiSourcing/GetAllAdharData',
+          'FiSourcing/GetDataByAadhar',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -2942,9 +2975,9 @@ class _ApiService implements ApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late AdhaarModel _value;
+    late DatabyAadhaarModel _value;
     try {
-      _value = AdhaarModel.fromJson(_result.data!);
+      _value = DatabyAadhaarModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -2992,6 +3025,104 @@ class _ApiService implements ApiService {
     late LeaderboardModel _value;
     try {
       _value = LeaderboardModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<dynamic> saveAgreementsProtien(
+    String ficode,
+    String creator,
+    String consentText,
+    String authMode,
+    String fId,
+    String signType,
+    String device,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.fields.add(MapEntry(
+      'Ficode',
+      ficode,
+    ));
+    _data.fields.add(MapEntry(
+      'Creator',
+      creator,
+    ));
+    _data.fields.add(MapEntry(
+      'ConsentText',
+      consentText,
+    ));
+    _data.fields.add(MapEntry(
+      'authMode',
+      authMode,
+    ));
+    _data.fields.add(MapEntry(
+      'F_Id',
+      fId,
+    ));
+    _data.fields.add(MapEntry(
+      'SignType',
+      signType,
+    ));
+    _data.fields.add(MapEntry(
+      'device',
+      device,
+    ));
+    final _options = _setStreamType<dynamic>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'multipart/form-data',
+    )
+        .compose(
+          _dio.options,
+          'ESignProtean/SaveProteanAgreements',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    return _value;
+  }
+
+  @override
+  Future<XmlResponse> sendXMLtoServerProtien(String msg) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'msg': msg};
+    final _options = _setStreamType<XmlResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'application/x-www-form-urlencoded',
+    )
+        .compose(
+          _dio.options,
+          'ESignProtean/ProteanMobileXMLResponse',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late XmlResponse _value;
+    try {
+      _value = XmlResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

@@ -87,6 +87,7 @@ dependencies:
   intl_translation: ^0.20.1
   encrypt: ^5.0.3
   local_auth: ^2.3.0
+  flutter_tts: ^4.2.1
   flutter_localizations:
     sdk: flutter
 

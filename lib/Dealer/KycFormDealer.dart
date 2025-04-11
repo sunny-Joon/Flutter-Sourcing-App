@@ -37,7 +37,7 @@ class _KYCFormDealerPageState extends State<KYCFormDealerPage> {
   late ApiService apiService_protean;
   late ApiService apiService_OCR;
 
-  late AdhaarDataModel adhaardata;
+  late DatabyAadhaarModel adhaardata;
 
   String nameReg = '[a-zA-Z. ]';
   String addReg = r'[a-zA-Z0-9. ()/,-]';
@@ -239,7 +239,7 @@ class _KYCFormDealerPageState extends State<KYCFormDealerPage> {
       } else {
         _errorMessageAadhaar = "";
         if (_aadharIdController.text.length == 12) {
-          adhaarAllData(context);
+      //    adhaarAllData(context);
         }
       }
     });
@@ -663,7 +663,7 @@ class _KYCFormDealerPageState extends State<KYCFormDealerPage> {
     );
   }
 
-  Future<void> saveFiMethod(BuildContext context) async {
+/*  Future<void> saveFiMethod(BuildContext context) async {
     print("Sunny");
     try {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -710,8 +710,8 @@ class _KYCFormDealerPageState extends State<KYCFormDealerPage> {
       String state = stateselected!.code.toString();
       bool ismarried = selectedMarritalStatus.toString() == 'Married';
       print("married $ismarried");
-      /*String gCode = widget.GroupData.groupCode;
-      String bCode = widget.data.branchCode.toString();*/
+      *//*String gCode = widget.GroupData.groupCode;
+      String bCode = widget.data.branchCode.toString();*//*
 
       String relation_with_Borrower = relationwithBorrowerselected;
       String bank_name = bankselected!.toString();
@@ -799,7 +799,7 @@ class _KYCFormDealerPageState extends State<KYCFormDealerPage> {
           context, "An unexpected error occurred: ${e.toString()}");
       EasyLoading.dismiss();
     }
-  }
+  }*/
 
   Widget _buildTextField2(String label, TextEditingController controller, TextInputType inputType, int maxlength, String regex) {
     return Container(
@@ -2082,7 +2082,7 @@ class _KYCFormDealerPageState extends State<KYCFormDealerPage> {
         onPressed: () {
             if (FiType == "NEW") {
               if (firstPageFieldValidate()) {
-                saveFiMethod(context);
+                //saveFiMethod(context);
               }
             }
         },
@@ -2482,7 +2482,7 @@ class _KYCFormDealerPageState extends State<KYCFormDealerPage> {
     );
   }
 
-  Future<void> adhaarAllData(BuildContext contextDialog) async {
+ /* Future<void> adhaarAllData(BuildContext contextDialog) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       EasyLoading.show(
         status: AppLocalizations.of(context)!.loading,
@@ -2531,7 +2531,7 @@ class _KYCFormDealerPageState extends State<KYCFormDealerPage> {
   }
 
   void showIDCardDialog(
-      BuildContext context, AdhaarDataModel borrowerInfo, int page) {
+      BuildContext context, DatabyAadhaarModel borrowerInfo, int page) {
     final String name = [
       borrowerInfo.fName,
       borrowerInfo.mName,
@@ -2747,7 +2747,7 @@ class _KYCFormDealerPageState extends State<KYCFormDealerPage> {
             ));
       },
     );
-  }
+  }*/
 
   Future<String?> callJavaMethodQr() async {
     const platform = MethodChannel('com.example.intent');
