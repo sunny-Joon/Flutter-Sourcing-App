@@ -45,7 +45,11 @@ class _KYCPageState extends State<KYCPage> {
   late ApiService apiService_protean;
   late ApiService apiService_OCR;
 
+
   late DatabyAadhaarDataModel adhaardata;
+
+  AdhaarDataModel? adhaardata;
+
 
   String nameReg = '[a-zA-Z. ]';
   String addReg = r'[a-zA-Z0-9. ()/,-]';
@@ -872,9 +876,11 @@ class _KYCPageState extends State<KYCPage> {
       )
           .then((value) async {
         if (value.statuscode == 200) {
+          EasyLoading.dismiss();
           getPlace("city", stateselected!.code, "", "");
           getPlace("district", stateselected!.code, "", "");
           setState(() {
+            EasyLoading.dismiss();
             _currentStep += 1;
             Fi_Id = value.data[0].fiId.toString();
             GlobalClass.Fi_Id = value.data[0].fiId;
@@ -882,6 +888,7 @@ class _KYCPageState extends State<KYCPage> {
             GlobalClass.ficode = value.data[0].fiCode.toString();
           });
         } else if (value.statuscode == 201) {
+          EasyLoading.dismiss();
           print("status code 201");
           GlobalClass.showAlert(
             context,
@@ -891,6 +898,7 @@ class _KYCPageState extends State<KYCPage> {
             1,
           );
         } else if (value.statuscode == 400) {
+          EasyLoading.dismiss();
           GlobalClass.showSnackBar(context, "Something went wrong in API");
         }
         EasyLoading.dismiss();
@@ -929,18 +937,24 @@ class _KYCPageState extends State<KYCPage> {
     int isAadharVerified = 1;
     int is_phnno_verified = 1;
     int isNameVerify = 1;
-    String AdharName = _nameController.text.toString();
-    if (_nameMController.text.isNotEmpty && _nameLController.text.isNotEmpty) {
-      AdharName = _nameController.text.toString() +
-          " " +
-          _nameMController.text +
-          " " +
-          _nameLController.text;
-    } else if (_nameMController.text.isNotEmpty) {
-      AdharName = _nameController.text.toString() + " " + _nameMController.text;
-    } else if (_nameLController.text.isNotEmpty) {
-      AdharName = _nameController.text.toString() + " " + _nameLController.text;
+
+    String AdharName = "";
+
+    if (adhaardata != null && (adhaardata!.fName.isNotEmpty || adhaardata!.mName.isNotEmpty || adhaardata!.lName.isNotEmpty)) {
+      AdharName = "${adhaardata!.fName} ${adhaardata!.mName} ${adhaardata!.lName}".trim();
+    } else {
+      AdharName = _nameController.text.trim();
+      if (_nameMController.text.isNotEmpty && _nameLController.text.isNotEmpty) {
+        AdharName = "${_nameController.text} ${_nameMController.text} ${_nameLController.text}".trim();
+      } else if (_nameMController.text.isNotEmpty) {
+        AdharName = "${_nameController.text} ${_nameMController.text}".trim();
+      } else if (_nameLController.text.isNotEmpty) {
+        AdharName = "${_nameController.text} ${_nameLController.text}".trim();
+      }
+
     }
+
+
     print("AdharName $AdharName");
 
     /*var fields = {
@@ -1005,9 +1019,8 @@ class _KYCPageState extends State<KYCPage> {
         .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
         .then((value) async {
       if (value.statuscode == 200) {
-        LiveTrackRepository()
-            .saveLivetrackData("", "KYC Done", int.parse(fiid));
-
+        EasyLoading.dismiss();
+        LiveTrackRepository().saveLivetrackData("", "KYC Done", int.parse(fiid));
         setState(() {
           _currentStep += 1;
         });
@@ -1321,14 +1334,19 @@ class _KYCPageState extends State<KYCPage> {
 
               String cleanedAddName = cleanAddress(response.data.address1);
               print("Cleaned Address: $cleanedAddName");
+
               List<String> addressParts = cleanedAddName.split(" ");
               String address1 = '';
               String address2 = '';
               String address3 = '';
-              if (addressParts.length >= 4) {
+
+              if (addressParts.length >= 6) {
+                address1 = addressParts.take(3).join(" ");  // First 3 words
+                address2 = addressParts.sublist(3, 5).join(" ");  // 4th & 5th words
+                address3 = addressParts.sublist(5).join(" ");  // Remaining words
+              } else if (addressParts.length >= 4) {
                 address1 = addressParts.take(3).join(" ");
-                address2 = addressParts[3] + " " + addressParts[4];
-                address3 = addressParts.sublist(5).join(" ");
+                address2 = addressParts.sublist(3).join(" ");  // Remaining words go into address2
               } else if (addressParts.length == 3) {
                 address1 = addressParts.take(2).join(" ");
                 address2 = addressParts[2];
@@ -1338,12 +1356,15 @@ class _KYCPageState extends State<KYCPage> {
               } else if (addressParts.length == 1) {
                 address1 = addressParts[0];
               }
+
               _address1Controller.text = address1;
               _address2Controller.text = address2;
               _address3Controller.text = address3;
+
               print("Address1: $address1");
               print("Address2: $address2");
               print("Address3: $address3");
+
 
               _address1Controller.text = address1;
               _address2Controller.text = address2;
@@ -3487,6 +3508,7 @@ class _KYCPageState extends State<KYCPage> {
               });
             }
           } else if (_currentStep == 1) {
+          //  adhaarAllData(context);
             if (secondPageFieldValidate()) {
               saveIDsMethod(context);
             }
@@ -3994,7 +4016,8 @@ class _KYCPageState extends State<KYCPage> {
 
           _pincodeController.text = dataList[11];
           stateselected = states.firstWhere((item) =>
-              item.descriptionEn.toLowerCase() ==
+          item.descriptionEn.toLowerCase() ==
+
               dataList[13].trim().toLowerCase());
           String address =
               "${dataList[9]},${dataList[10]},${dataList[12]},${dataList[14]},${dataList[15]}";
@@ -4010,8 +4033,10 @@ class _KYCPageState extends State<KYCPage> {
             _address3Controller.text =
                 addressParts.sublist(1, addressParts.length - 1).join(' ');
           }
-        } else if (dataList[0].toLowerCase() == 'v4' &&
-            dataList[1].contains("3")) {
+
+        }
+        else if (dataList[0].toLowerCase() == 'v4' && dataList[1].contains("3")) {
+
           print("AAAA0${dataList[0]}");
           print("AAAA1${dataList[1]}");
           print("AAAA2${dataList[2]}");
@@ -4033,6 +4058,7 @@ class _KYCPageState extends State<KYCPage> {
           setState(() {
             stateselected = states.firstWhere((item) =>
                 item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+
             _pincodeController.text = dataList[11];
             String address =
                 "${dataList[9]},${dataList[14]},${dataList[7]},${dataList[13]}}";
@@ -4051,7 +4077,11 @@ class _KYCPageState extends State<KYCPage> {
                   addressParts.sublist(1, addressParts.length - 1).join(' ');
             }
           });
-        } else if (dataList[0].toLowerCase() == 'v4') {
+
+
+        }
+         else if (dataList[0].toLowerCase() == 'v4') {
+
           stateselected = states.firstWhere((item) =>
               item.descriptionEn.toLowerCase() == dataList[14].toLowerCase());
           _pincodeController.text = dataList[12];
@@ -4339,7 +4369,7 @@ class _KYCPageState extends State<KYCPage> {
             EasyLoading.dismiss();
 
             Future.delayed(
-                Duration.zero, () => showIDCardDialog(context, adhaardata, 2));
+                Duration.zero, () => showIDCardDialog(context, adhaardata!, 2));
 
             /* setState(() {
               FiType = "OLD";
@@ -4401,7 +4431,7 @@ class _KYCPageState extends State<KYCPage> {
           } else {
             EasyLoading.dismiss();
             Future.delayed(
-                Duration.zero, () => showIDCardDialog(context, adhaardata, 1));
+                Duration.zero, () => showIDCardDialog(context, adhaardata!, 1));
 
             /*String ficode = value.data[0].fiCode.toString();
             GlobalClass.showErrorAlert(context,
@@ -4420,6 +4450,7 @@ class _KYCPageState extends State<KYCPage> {
       EasyLoading.dismiss();
     });
   }
+
 
   void showIDCardDialog(
       BuildContext context, DatabyAadhaarDataModel borrowerInfo, int page) {

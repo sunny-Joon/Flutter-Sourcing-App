@@ -73,6 +73,7 @@ class SecondEsignDataModel {
   bool isvalid;
   String errormsg;
   String profilePic;
+  String smcode;
   String groupName;
 
   SecondEsignDataModel({
@@ -116,6 +117,7 @@ class SecondEsignDataModel {
     required this.isvalid,
     required this.errormsg,
     required this.profilePic,
+    required this.smcode,
     required this.groupName,
   });
 
@@ -160,6 +162,7 @@ class SecondEsignDataModel {
     isvalid: json["isvalid"]??false,
     errormsg: json["errormsg"]??"",
     groupName: json["groupName"]??"",
+    smcode: json["smcode"]??"",
     profilePic: json["profilePic"]??"",
   );
 
@@ -204,6 +207,7 @@ class SecondEsignDataModel {
     "isvalid": isvalid,
     "errormsg": errormsg,
     "profilePic": profilePic,
+    "smcode": smcode,
     "groupName": groupName,
   };
 }

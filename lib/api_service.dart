@@ -50,22 +50,25 @@ import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
 import 'Models/ocr_response_model.dart';
 import 'Models/track_location_request.dart';
+
 part 'api_service.g.dart';
 
-
-
 class ApiConfig {
-  static const String baseUrl1 = 'https://predeptest.paisalo.in:8084/MobColen/api/';
-  static const String baseUrl2 = 'https://agra.paisalo.in:8462/creditmatrix/api/';
+  static const String baseUrl1 =
+      'https://predeptest.paisalo.in:8084/MobColen/api/';
+  static const String baseUrl2 =
+      'https://agra.paisalo.in:8462/creditmatrix/api/';
   static const String baseUrl3 = 'https://ifsc.razorpay.com/';
   static const String baseUrl4 = 'https://pdldocverify.paisalo.in:9987/api/';
   static const String baseUrl5 = 'https://kyc.paisalo.in:985/api/';
   static const String baseUrl6 = 'https://ocr.paisalo.in:950/api/';
-    static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
-  static const String baseUrl8 = 'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
+  static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
+  static const String baseUrl8 =
+      'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
   static const String baseUrl9 = 'https://apiuat.paisalo.in:4015/fi/api/';
   static const String baseUrl10 = 'https://apiuat.paisalo.in:4015/PDLEmudra/api/';
   static const String baseUrl11 = 'https://apiuat.paisalo.in:4015/PDLDocESign/api/';
+
 
 }
 
@@ -74,8 +77,8 @@ class ApiConfig {
 @RestApi()
 abstract class ApiService {
   factory ApiService(Dio dio, {String? baseUrl}) = _ApiService;
-  static ApiService create({required String baseUrl}) {
 
+  static ApiService create({required String baseUrl}) {
     final dio = Dio();
     dio.interceptors.add(
       PrettyDioLogger(
@@ -89,30 +92,23 @@ abstract class ApiService {
       ),
     );
 
-    return ApiService(dio,baseUrl: baseUrl);
-
+    return ApiService(dio, baseUrl: baseUrl);
   }
 
   @POST("Account/GetToken")
-  Future<LoginModel> getLogins(
-      @Header("devid") String devid,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+  Future<LoginModel> getLogins(@Header("devid") String devid,
+      @Header("dbname") String dbname, @Body() Map<String, dynamic> body);
 
   @POST("IMEIMapping/InsertDevicedata")
   Future<GlobalModel> getImeiMappingReq(
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+      @Header("dbname") String dbname, @Body() Map<String, dynamic> body);
 
   @POST("FiSourcing/InsertMonthlyTarget")
-  Future<GlobalModel> insertMonthlytarget(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+  Future<GlobalModel> insertMonthlytarget(@Header("Authorization") String token,
+      @Header("dbname") String dbname, @Body() Map<String, dynamic> body);
 
   @GET("Tracklocations/GetAppLink")
   Future<GlobalModel> VersionCheck(
-
       @Header("dbname") String dbName,
       @Query("version") String version,
       @Query("AppName") String AppName,
@@ -120,15 +116,11 @@ abstract class ApiService {
 
   @GET("Masters/GetRangeCategories")
   Future<RangeCategoryModel> RangeCategory(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbName);
+      @Header("Authorization") String token, @Header("dbname") String dbName);
 
   @GET("FiSourcing/DeleteGuarantor")
-  Future<GlobalModel> deleteGurrantor(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbName,
-      @Query("Fi_Id") String Fi_Id);
-
+  Future<GlobalModel> deleteGurrantor(@Header("Authorization") String token,
+      @Header("dbname") String dbName, @Query("Fi_Id") String Fi_Id);
 
   @GET("Collection/CollectionStatus")
   Future<CollectionStatusModel> collectionStatus(
@@ -136,10 +128,8 @@ abstract class ApiService {
       @Header("dbname") String dbName,
       @Query("SmCode") String SmCode);
 
-
   @POST("IdentityVerification/Get")
-  Future<DocsVerify> verifyDocs(
-      @Body() Map<String, dynamic> body);
+  Future<DocsVerify> verifyDocs(@Body() Map<String, dynamic> body);
 
   @POST("Masters/CreatePunchInOrOut")
   Future<GlobalModel> punchInOut(
@@ -150,24 +140,22 @@ abstract class ApiService {
 
   @POST("Masters/InitilizeCrif")
   Future<CrifModel> generateCrif(
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+      @Header("dbname") String dbname, @Body() Map<String, dynamic> body);
 
   @POST("Masters/SendSms")
-  Future<CommonIntModel> mobileOtpSend(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+  Future<CommonIntModel> mobileOtpSend(@Header("Authorization") String token,
+      @Header("dbname") String dbname, @Body() Map<String, dynamic> body);
 
   @GET("{ifsc}")
-  Future<Ifcsc> ifscVerify (@Path("ifsc") String ifsc);
+  Future<Ifcsc> ifscVerify(@Path("ifsc") String ifsc);
 
   @POST("FiSourcing/InsertFiSourcedata")
   @MultiPart()
-  Future <GlobalModel> saveFi(
+  Future<GlobalModel> saveFi(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Part(name: "aadhar_no") String aadharNo,
+
       @Part( name:"title") String title,
       @Part( name:"f_Name") String fName,
       @Part( name:"m_Name") String mName,
@@ -213,116 +201,105 @@ abstract class ApiService {
       @Part( name:"OtherDependents") String OtherDependents,
       @Part( name: "Picture") File Picture);
 
+
   @POST("FiSourcing/FiDocsUploads")
   @MultiPart()
-  Future <GlobalModel> FiDocsUploads(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Part(name: "FI_ID") String FI_ID,
-      @Part(name: "GrNo") String GrNo,
-      @Part(name: "AadhaarCard") File? AadhaarCard,
-      @Part( name:"AadhaarCardBack") File? AadhaarCardBack,
-      @Part( name:"VoterId") File? VoterId,
-      @Part( name:"VoterIdBack") File? VoterxIdBack,
-      @Part( name:"DrivingLicense") File? DrivingLicense,
-      @Part( name:"Pan") File? Pan,
-      @Part( name:"PassPort") File? PassPort,
-      @Part( name:"PassBook") File? PassBook,
-      );
+  Future<GlobalModel> FiDocsUploads(
+    @Header("Authorization") String token,
+    @Header("dbname") String dbname,
+    @Part(name: "FI_ID") String FI_ID,
+    @Part(name: "GrNo") String GrNo,
+    @Part(name: "AadhaarCard") File? AadhaarCard,
+    @Part(name: "AadhaarCardBack") File? AadhaarCardBack,
+    @Part(name: "VoterId") File? VoterId,
+    @Part(name: "VoterIdBack") File? VoterxIdBack,
+    @Part(name: "DrivingLicense") File? DrivingLicense,
+    @Part(name: "Pan") File? Pan,
+    @Part(name: "PassPort") File? PassPort,
+    @Part(name: "PassBook") File? PassBook,
+  );
 
   @POST("FiSourcing/FiDocsUploadSingleFile")
   @MultiPart()
-  Future <GlobalModel> uploadFiDocs(
+  Future<GlobalModel> uploadFiDocs(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Part( name:"FI_ID") String FI_ID,
-      @Part( name:"GrNo") int GrNo,
-      @Part( name: "CheckListId") int CheckListId,
-      @Part( name: "Remarks") String Remarks,
-      @Part( name: "FileName") File FileName);
+      @Part(name: "FI_ID") String FI_ID,
+      @Part(name: "GrNo") int GrNo,
+      @Part(name: "CheckListId") int CheckListId,
+      @Part(name: "Remarks") String Remarks,
+      @Part(name: "FileName") File FileName);
 
   @POST("FiSourcing/AddFiIDs")
-  Future <GlobalModel> addFiIds(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+  Future<GlobalModel> addFiIds(@Header("Authorization") String token,
+      @Header("dbname") String dbname, @Body() Map<String, dynamic> body);
 
   @POST("FiSourcing/AddFiIDs")
-  Future <GlobalModel> getIdVerify(
+  Future<GlobalModel> getIdVerify(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Body() Map<String, dynamic> requestBody);
 
   @POST("FiSourcing/AddFiFamilyDetail")
-  Future <GlobalModel> FiFamilyDetail(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+  Future<GlobalModel> FiFamilyDetail(@Header("Authorization") String token,
+      @Header("dbname") String dbname, @Body() Map<String, dynamic> body);
 
   @POST("FiSourcing/AddFiIncomeAndExpense")
-  Future <GlobalModel> AddFiIncomeAndExpense(
+  Future<GlobalModel> AddFiIncomeAndExpense(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Body() Map<String, dynamic> body);
 
   @POST("FiSourcing/AddFinancialInfo")
-  Future <GlobalModel> AddFinancialInfo(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+  Future<GlobalModel> AddFinancialInfo(@Header("Authorization") String token,
+      @Header("dbname") String dbname, @Body() Map<String, dynamic> body);
 
   @GET("Masters/GetBankName")
-  Future <BankNamesModel> bankNames(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname);
+  Future<BankNamesModel> bankNames(
+      @Header("Authorization") String token, @Header("dbname") String dbname);
 
   @POST("Tracklocations/CreateFiVerfiedInfo")
-  Future <GlobalModel> FiVerifiedInfo(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+  Future<GlobalModel> FiVerifiedInfo(@Header("Authorization") String token,
+      @Header("dbname") String dbname, @Body() Map<String, dynamic> body);
 
   @POST("FiSourcing/InsertFIFamilyIncome")
-  Future <GlobalModel> FIFamilyIncome(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+  Future<GlobalModel> FIFamilyIncome(@Header("Authorization") String token,
+      @Header("dbname") String dbname, @Body() Map<String, dynamic> body);
 
   @POST("FiSourcing/AddFiGaurantor")
   @MultiPart()
-  Future <GlobalModel> saveGurrantor(
+  Future<GlobalModel> saveGurrantor(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Part( name:"fi_ID") String fi_ID,
-      @Part( name:"gr_Sno") String gr_Sno,
-      @Part( name:"title") String title,
-      @Part( name:"fname") String fname,
-      @Part( name:"mname") String mname,
-      @Part( name:"lname") String lname,
-      @Part( name:"GuardianName") String GuardianName,
-      @Part( name:"relation_with_Borrower") String relation_with_Borrower,
-      @Part( name:"p_Address1") String p_Address1,
-      @Part( name:"p_Address2") String p_Address2,
-      @Part( name:"p_Address3") String p_Address3,
-      @Part( name:"p_City") String p_City,
-      @Part( name:"p_State") String p_State,
-      @Part( name:"pincode") String pincode,
-      @Part( name:"dob") String dob,
-      @Part( name:"age") String age,
-      @Part( name:"phone") String phone,
-      @Part( name:"pan") String pan,
-      @Part( name:"dl") String dl,
-      @Part( name:"voter") String voter,
-      @Part( name:"aadharId") String aadharId,
-      @Part( name:"gender") String gender,
-      @Part( name:"religion") String religion,
-      @Part( name:"esign_Succeed") bool esign_Succeed,
-      @Part( name:"esign_UUID") String esign_UUID,
-      @Part( name: "Picture") File Picture);
+      @Part(name: "fi_ID") String fi_ID,
+      @Part(name: "gr_Sno") String gr_Sno,
+      @Part(name: "title") String title,
+      @Part(name: "fname") String fname,
+      @Part(name: "mname") String mname,
+      @Part(name: "lname") String lname,
+      @Part(name: "GuardianName") String GuardianName,
+      @Part(name: "relation_with_Borrower") String relation_with_Borrower,
+      @Part(name: "p_Address1") String p_Address1,
+      @Part(name: "p_Address2") String p_Address2,
+      @Part(name: "p_Address3") String p_Address3,
+      @Part(name: "p_City") String p_City,
+      @Part(name: "p_State") String p_State,
+      @Part(name: "pincode") String pincode,
+      @Part(name: "dob") String dob,
+      @Part(name: "age") String age,
+      @Part(name: "phone") String phone,
+      @Part(name: "pan") String pan,
+      @Part(name: "dl") String dl,
+      @Part(name: "voter") String voter,
+      @Part(name: "aadharId") String aadharId,
+      @Part(name: "gender") String gender,
+      @Part(name: "religion") String religion,
+      @Part(name: "esign_Succeed") bool esign_Succeed,
+      @Part(name: "esign_UUID") String esign_UUID,
+      @Part(name: "Picture") File Picture);
 
   @GET("Masters/GetAllCreators")
-  Future<CreatorListModel> getCreatorList(
-      @Header("dbname") String dbname);
+  Future<CreatorListModel> getCreatorList(@Header("dbname") String dbname);
 
   @GET("Masters/GetBranchCode")
   Future<BranchModel> getBranchList(
@@ -366,158 +343,160 @@ abstract class ApiService {
       @Query("UserName") String UserName);
 
   @POST("Collection/SaveReceipt")
-  Future<CommonBoolModel> RcPosting(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbname,
-      @Body() Map<String, dynamic> body);
+  Future<CommonBoolModel> RcPosting(@Header("Authorization") String token,
+      @Header("dbname") String dbname, @Body() Map<String, dynamic> body);
 
   @POST("FiSourcing/AddFiExtraDetail")
-  Future<GlobalModel> updatePersonalDetails(
-      @Header("dbname") String dbname,
-      @Header("Authorization") String token,
-      @Body() Map<String, dynamic> body);
+  Future<GlobalModel> updatePersonalDetails(@Header("dbname") String dbname,
+      @Header("Authorization") String token, @Body() Map<String, dynamic> body);
 
   @POST("Tracklocations/InsertMorphoRechargeDetails")
-  Future<GlobalModel> morphorecharge(
-      @Header("dbname") String dbname,
-      @Header("Authorization") String token,
-      @Body() Map<String, dynamic> body);
-
-
+  Future<GlobalModel> morphorecharge(@Header("dbname") String dbname,
+      @Header("Authorization") String token, @Body() Map<String, dynamic> body);
 
   @POST("Tracklocations/CreateHomeVisit")
   @MultiPart()
-  Future <GlobalModel> saveHouseVisit(
+  Future<GlobalModel> saveHouseVisit(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Part(name: "fi_Id") String fi_Id,
-      @Part( name:"Creator") String Creator,
-      @Part( name:"BranchName") String BranchName,
-      @Part( name:"AreaCode") String AreaCode,
-      @Part( name:"AreaName") String AreaName,
-      @Part( name:"Center") String Center,
-      @Part( name:"GroupCode") String GroupCode,
-      @Part( name:"GroupName") String GroupName,
-      @Part( name:"HouseType") String HouseType,
-      @Part( name:"IsvalidLocation") String IsvalidLocation,
-      @Part( name:"CPFlifeStyle") String CPFlifeStyle,
-      @Part( name:"CpfPOAddressVerify") String CpfPOAddressVerify,
-      @Part( name:"PhotoIdVerification") String PhotoIdVerification,
-      @Part( name:"CurrentAddressprof") String CurrentAddressprof,
+      @Part(name: "Creator") String Creator,
+      @Part(name: "BranchName") String BranchName,
+      @Part(name: "AreaCode") String AreaCode,
+      @Part(name: "AreaName") String AreaName,
+      @Part(name: "Center") String Center,
+      @Part(name: "GroupCode") String GroupCode,
+      @Part(name: "GroupName") String GroupName,
+      @Part(name: "HouseType") String HouseType,
+      @Part(name: "IsvalidLocation") String IsvalidLocation,
+      @Part(name: "CPFlifeStyle") String CPFlifeStyle,
+      @Part(name: "CpfPOAddressVerify") String CpfPOAddressVerify,
+      @Part(name: "PhotoIdVerification") String PhotoIdVerification,
+      @Part(name: "CurrentAddressprof") String CurrentAddressprof,
       @Part(name: "HasbandWifeAgeverificaton") String HasbandWifeAgeverificaton,
-      @Part( name:"ParmanentAddressPincode") String ParmanentAddressPincode,
-      @Part( name:"StampOnPhotocopy") String StampOnPhotocopy,
-      @Part( name:"LastLoanVerification") String LastLoanVerification,
-      @Part( name:"LoanUsagePercentage") String LoanUsagePercentage,
-      @Part( name:"AbsentReasonInCentermeeting") String AbsentReasonInCentermeeting,
-      @Part( name:"RepaymentFault") String RepaymentFault,
-      @Part( name:"LoanreasonVerification") String LoanreasonVerification,
-      @Part( name:"IsAppliedAmountAppropriate") String IsAppliedAmountAppropriate,
-      @Part( name:"FamilyAwarenessaboutloan") String FamilyAwarenessaboutloan,
-      @Part( name:"IsloanAppropriateforBusiness") String IsloanAppropriateforBusiness,
-      @Part( name:"Businessaffectedourrelation") String Businessaffectedourrelation,
-      @Part( name:"Repayeligiblity") String Repayeligiblity,
-      @Part( name:"Cashflowoffamily") String Cashflowoffamily,
-      @Part( name:"IncomeMatchedwithprofile") String IncomeMatchedwithprofile,
-      @Part( name:"BorrowersupportedGroup") String BorrowersupportedGroup,
-      @Part( name:"ComissionDemand") String ComissionDemand,
-      @Part( name:"GroupReadyToVilay") String GroupReadyToVilay,
-      @Part( name:"GroupHasBloodRelation") String GroupHasBloodRelation,
-      @Part( name:"VerifyExternalLoan") String VerifyExternalLoan,
-      @Part( name:"UnderstandsFaultPolicy") String UnderstandsFaultPolicy,
-      @Part( name:"OverlimitLoan_borrowfromgroup") String OverlimitLoan_borrowfromgroup,
-      @Part( name:"toatlDebtUnderLimit") String toatlDebtUnderLimit,
-      @Part( name:"workingPlaceVerification") String workingPlaceVerification,
-      @Part( name:"IsWorkingPlaceValid") String IsWorkingPlaceValid,
-      @Part( name:"workingPlacedescription") String workingPlacedescription,
-      @Part( name:"workExperience") String workExperience,
-      @Part( name:"SeasonDependency") String SeasonDependency,
-      @Part( name:"StockVerification") String StockVerification,
-      @Part( name:"monthlyIncome") int monthlyIncome,
+      @Part(name: "ParmanentAddressPincode") String ParmanentAddressPincode,
+      @Part(name: "StampOnPhotocopy") String StampOnPhotocopy,
+      @Part(name: "LastLoanVerification") String LastLoanVerification,
+      @Part(name: "LoanUsagePercentage") String LoanUsagePercentage,
+      @Part(name: "AbsentReasonInCentermeeting")
+      String AbsentReasonInCentermeeting,
+      @Part(name: "RepaymentFault") String RepaymentFault,
+      @Part(name: "LoanreasonVerification") String LoanreasonVerification,
+      @Part(name: "IsAppliedAmountAppropriate")
+      String IsAppliedAmountAppropriate,
+      @Part(name: "FamilyAwarenessaboutloan") String FamilyAwarenessaboutloan,
+      @Part(name: "IsloanAppropriateforBusiness")
+      String IsloanAppropriateforBusiness,
+      @Part(name: "Businessaffectedourrelation")
+      String Businessaffectedourrelation,
+      @Part(name: "Repayeligiblity") String Repayeligiblity,
+      @Part(name: "Cashflowoffamily") String Cashflowoffamily,
+      @Part(name: "IncomeMatchedwithprofile") String IncomeMatchedwithprofile,
+      @Part(name: "BorrowersupportedGroup") String BorrowersupportedGroup,
+      @Part(name: "ComissionDemand") String ComissionDemand,
+      @Part(name: "GroupReadyToVilay") String GroupReadyToVilay,
+      @Part(name: "GroupHasBloodRelation") String GroupHasBloodRelation,
+      @Part(name: "VerifyExternalLoan") String VerifyExternalLoan,
+      @Part(name: "UnderstandsFaultPolicy") String UnderstandsFaultPolicy,
+      @Part(name: "OverlimitLoan_borrowfromgroup")
+      String OverlimitLoan_borrowfromgroup,
+      @Part(name: "toatlDebtUnderLimit") String toatlDebtUnderLimit,
+      @Part(name: "workingPlaceVerification") String workingPlaceVerification,
+      @Part(name: "IsWorkingPlaceValid") String IsWorkingPlaceValid,
+      @Part(name: "workingPlacedescription") String workingPlacedescription,
+      @Part(name: "workExperience") String workExperience,
+      @Part(name: "SeasonDependency") String SeasonDependency,
+      @Part(name: "StockVerification") String StockVerification,
+      @Part(name: "monthlyIncome") int monthlyIncome,
       @Part(name: "monthlySales") int monthlySales,
-      @Part( name:"loansufficientwithdebt") String loansufficientwithdebt,
-      @Part( name:"NameofInterviewed") String NameofInterviewed,
-      @Part( name:"AgeofInterviewed") String AgeofInterviewed,
-      @Part( name:"RelationofInterviewer") String RelationofInterviewer,
-      @Part( name:"Applicant_Status") String Applicant_Status,
-      @Part( name:"Residing_with") String Residing_with,
-      @Part( name:"FamilymemberfromPaisalo") String FamilymemberfromPaisalo,
-      @Part( name:"HouseMonthlyRent") int HouseMonthlyRent,
-      @Part( name:"Residence_Type") String Residence_Type,
-      @Part( name:"Residential_Stability") String Residential_Stability,
-      @Part( name:"Distancetobranch") String Distancetobranch,
-      @Part( name:"Timetoreachbranch") String Timetoreachbranch,
-      @Part( name:"TotalExperienceOccupation") String TotalExperienceOccupation,
-      @Part( name:"Totalmonthlyexpensesofoccupation") int Totalmonthlyexpensesofoccupation,
-      @Part( name:"Netmonthlyincome_afterproposedloan") int Netmonthlyincome_afterproposedloan,
-      @Part( name:"Totalmonthlyhouseholdexpenses") int Totalmonthlyhouseholdexpenses,
-      @Part( name:"Netmonthlyincomeotherfamilymembers") int Netmonthlyincomeotherfamilymembers,
-      @Part( name:"Relationearningmember") String Relationearningmember,
-      @Part( name:"Namereferenceperson1") String Namereferenceperson1,
-      @Part( name:"Mobilereferenceperson1") String Mobilereferenceperson1,
-      @Part( name:"Namereferenceperson2") String Namereferenceperson2,
-      @Part( name:"Mobilereferenceperson2") String Mobilereferenceperson2,
-      @Part( name:"feedbacknearbyresident") String feedbacknearbyresident,
-      @Part( name:"UnderstandInsaurancePolicy") String UnderstandInsaurancePolicy,
-      @Part( name:"BusinessVerification") String BusinessVerification,
-      @Part( name:"Latitude") double Latitude,
-      @Part( name:"Longitude") double Longitude,
-      @Part( name:"EmpCode") String EmpCode,
-      @Part( name:"Address") String Address,
-      @Part( name: "Image") File Picture );
+      @Part(name: "loansufficientwithdebt") String loansufficientwithdebt,
+      @Part(name: "NameofInterviewed") String NameofInterviewed,
+      @Part(name: "AgeofInterviewed") String AgeofInterviewed,
+      @Part(name: "RelationofInterviewer") String RelationofInterviewer,
+      @Part(name: "Applicant_Status") String Applicant_Status,
+      @Part(name: "Residing_with") String Residing_with,
+      @Part(name: "FamilymemberfromPaisalo") String FamilymemberfromPaisalo,
+      @Part(name: "HouseMonthlyRent") int HouseMonthlyRent,
+      @Part(name: "Residence_Type") String Residence_Type,
+      @Part(name: "Residential_Stability") String Residential_Stability,
+      @Part(name: "Distancetobranch") String Distancetobranch,
+      @Part(name: "Timetoreachbranch") String Timetoreachbranch,
+      @Part(name: "TotalExperienceOccupation") String TotalExperienceOccupation,
+      @Part(name: "Totalmonthlyexpensesofoccupation")
+      int Totalmonthlyexpensesofoccupation,
+      @Part(name: "Netmonthlyincome_afterproposedloan")
+      int Netmonthlyincome_afterproposedloan,
+      @Part(name: "Totalmonthlyhouseholdexpenses")
+      int Totalmonthlyhouseholdexpenses,
+      @Part(name: "Netmonthlyincomeotherfamilymembers")
+      int Netmonthlyincomeotherfamilymembers,
+      @Part(name: "Relationearningmember") String Relationearningmember,
+      @Part(name: "Namereferenceperson1") String Namereferenceperson1,
+      @Part(name: "Mobilereferenceperson1") String Mobilereferenceperson1,
+      @Part(name: "Namereferenceperson2") String Namereferenceperson2,
+      @Part(name: "Mobilereferenceperson2") String Mobilereferenceperson2,
+      @Part(name: "feedbacknearbyresident") String feedbacknearbyresident,
+      @Part(name: "UnderstandInsaurancePolicy")
+      String UnderstandInsaurancePolicy,
+      @Part(name: "BusinessVerification") String BusinessVerification,
+      @Part(name: "Latitude") double Latitude,
+      @Part(name: "Longitude") double Longitude,
+      @Part(name: "EmpCode") String EmpCode,
+      @Part(name: "Address") String Address,
+      @Part(name: "Image") File Picture);
 
   @POST("Collection/InsertQrSettlement")
   @MultiPart()
-  Future <GlobalModel> InsertQrSettlement(
+  Future<GlobalModel> InsertQrSettlement(
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
-      @Part( name:"SmCode") String SmCode,
-      @Part( name: "picture") File picture );
+      @Part(name: "SmCode") String SmCode,
+      @Part(name: "picture") File picture
+  );
 
   @GET("FiSourcing/GetDataForEsign")
   Future<BorrowerListModel> BorrowerList(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbName,
-      @Query("Group_code") String Group_code,
-      @Query("Branch_code") String Branch_code,
-      @Query("CreatorId") String CreatorId,
-      @Query("Type") int Type,
-      );
+    @Header("Authorization") String token,
+    @Header("dbname") String dbName,
+    @Query("Group_code") String Group_code,
+    @Query("Branch_code") String Branch_code,
+    @Query("CreatorId") String CreatorId,
+    @Query("Type") int Type,
+  );
 
   @GET("FiSourcing/GetSecondEsignBorrowerList")
   Future<SecondEsignModel> BorrowerList2(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbName,
-      @Query("CreatorId") String CreatorId,
-      @Query("Banchcode") String Banchcode,
-      @Query("Groupcode") String Groupcode,
+    @Header("Authorization") String token,
+    @Header("dbname") String dbName,
+    @Query("CreatorId") String CreatorId,
+    @Query("Banchcode") String Banchcode,
+    @Query("Groupcode") String Groupcode,
+    @Query("IMEINO") String IMEINO,
+  );
 
-      );
 
   @GET("Collection/GetPandingCollectionGroupCode")
   Future<CollectionBorrowerListModel> CollectionBorrowerList(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbName,
-      @Query("Imei") String Imei,
-      @Query("BranchCode") String BranchCode,
-      @Query("GroupCode") String GroupCode,
-      @Query("UserId") String UserId,
-      @Query("GetDate") String GetDate,
-      );
+    @Header("Authorization") String token,
+    @Header("dbname") String dbName,
+    @Query("Imei") String Imei,
+    @Query("BranchCode") String BranchCode,
+    @Query("GroupCode") String GroupCode,
+    @Query("UserId") String UserId,
+    @Query("GetDate") String GetDate,
+  );
 
   @GET("Collection/Getmappedfoforcoll")
   Future<CollectionBranchListModel> CollectionBranchList(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbName,
-      @Query("Imei") String Imei,
-      @Query("UserId") String UserId,
-      );
+    @Header("Authorization") String token,
+    @Header("dbname") String dbName,
+    @Query("Imei") String Imei,
+    @Query("UserId") String UserId,
+  );
 
   @GET("FiSourcing/GetFiUploadedDocuments")
-  Future<KycScanningModel> KycScanning(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbName,
-      @Query("Fi_Id") String Fi_Id);
+  Future<KycScanningModel> KycScanning(@Header("Authorization") String token,
+      @Header("dbname") String dbName, @Query("Fi_Id") String Fi_Id);
 
   @GET("Collection/GetQRLinkStatus")
   Future<QrCodeModel> QrGeneration(
@@ -526,14 +505,12 @@ abstract class ApiService {
       @Query("SmCode") String SmCode,
       @Query("Type") String Type);
 
-
   @POST("IdentityVerification/Get")
   Future<dynamic> verifyIdentity(@Body() Map<String, dynamic> body);
 
   @POST("Collection/RcPromiseToPay")
   Future<GlobalModel> promiseToPay(@Header("Authorization") String token,
-      @Header("dbname") String dbName,@Body() Map<String, dynamic> body);
-
+      @Header("dbname") String dbName, @Body() Map<String, dynamic> body);
 
   @POST("DocVerify/GetDLDetails")
   Future<dynamic> getDLDetailsProtean(@Body() Map<String, dynamic> body);
@@ -544,35 +521,29 @@ abstract class ApiService {
   @POST("DocVerify/GetVoterDetails")
   Future<dynamic> getVoteretailsProtean(@Body() Map<String, dynamic> body);
 
-
   @GET("FiSourcing/GetVillageStateDistrict")
   Future<PlaceCodesModel> getVillageStateDistrict(
-
-      @Header("Authorization") String token,
-      @Header("dbname") String dbName,
-      @Query("Type") String type,
-      @Query("SubDistrictCode") String? subDistrictCode,
-      @Query("DistrictCode") String? districtCode,
-      @Query("StateCode") String stateCode,
-      );
-
-
+    @Header("Authorization") String token,
+    @Header("dbname") String dbName,
+    @Query("Type") String type,
+    @Query("SubDistrictCode") String? subDistrictCode,
+    @Query("DistrictCode") String? districtCode,
+    @Query("StateCode") String stateCode,
+  );
 
   @POST("OCR/DocVerifyforSpaceOCR")
   @MultiPart()
   Future<OcrResponse> uploadDocument(
-      @Query("imgType") String imgType,
-      @Part(name: "file") File file,
-      );
-
+    @Query("imgType") String imgType,
+    @Part(name: "file") File file,
+  );
 
   @GET("Masters/OTPVerify")
   Future<CommonIntModel> otpVerify(
       @Header("Authorization") String token,
       @Header("dbname") String dbName,
       @Query("MobileNo") String mobileNo,
-      @Query("Otp") String otp
-      );
+      @Query("Otp") String otp);
 
   @GET("FiSourcing/GetDataByAadhar")
   Future<DatabyAadhaarModel> dataByAdhaar(
@@ -580,6 +551,7 @@ abstract class ApiService {
       @Header("dbname") String dbName,
       @Query("AdharCard") String AdharCard
       );
+
 
   @GET("Tracklocations/GetAchievementDetails")
   Future<LeaderboardModel> leaderboardList(
@@ -612,44 +584,43 @@ abstract class ApiService {
   @MultiPart()
   @POST("ESign/SaveAgreements")
   Future<emudramodel> saveAgreements(
-      @Part(name: "Ficode") String ficode,
-      @Part(name: "Creator") String creator,
-      @Part(name: "ConsentText") String consentText,
-      @Part(name: "authMode") String authMode,
-      @Part(name: "F_Id") String fId,
-      @Part(name: "SignType") String signType,
-      );
+    @Part(name: "Ficode") String ficode,
+    @Part(name: "Creator") String creator,
+    @Part(name: "ConsentText") String consentText,
+    @Part(name: "authMode") String authMode,
+    @Part(name: "F_Id") String fId,
+    @Part(name: "SignType") String signType,
+  );
 
   @MultiPart()
   @POST("ESign/HandleCallbackMobileresponse")
   Future<dynamic> sendXMLtoServer(@Part(name: "response") String response);
 
-
   @POST("Ckyc/SearchCkycNoByAadhar")
   Future<GlobalModel> searchCkycNoByAadhar(
-      @Header("Authorization") String token,
-      @Header("dbname") String dbName,
-    @Query("AadharId")  String aadharId,
-    @Query("PanNo")  String panNo,
+    @Header("Authorization") String token,
+    @Header("dbname") String dbName,
+    @Query("AadharId") String aadharId,
+    @Query("PanNo") String panNo,
     @Query("VoterId") String voterId,
-    @Query("DOB")  String dob,
-    @Query("Gender")  String gender,
-    @Query("Name")  String name,
+    @Query("DOB") String dob,
+    @Query("Gender") String gender,
+    @Query("Name") String name,
   );
 
   @POST("Tracklocations/CreateLiveTrack")
   Future<GlobalModel> createLiveTrack(
-      @Body() TrackLocationRequest request,
-      @Header("dbname") String dbname,
-      @Header("Authorization") String authorization,
-      );
+    @Body() TrackLocationRequest request,
+    @Header("dbname") String dbname,
+    @Header("Authorization") String authorization,
+  );
 
   @GET("FiSourcing/GetBorrowerDetails")
   Future<DetailsBySMcodeResponse> getBorrowerDetails(
     @Query("SmCode") String smcode,
-      @Header("dbname") String dbname,
-      @Header("Authorization") String authorization,
-      );
+    @Header("dbname") String dbname,
+    @Header("Authorization") String authorization,
+  );
 
   @GET("FiSourcing/GetCsoRanks")
   Future<CsoRankModel> GetCsoRanks(
@@ -662,47 +633,38 @@ abstract class ApiService {
   @POST("Tracklocations/InsertBranchVisit")
   @MultiPart()
   Future<GlobalModel> insertBranchVisit(
-      @Header("dbname")  String dbName,
-      @Header("Authorization")  String authorization,
-      @Part(name: "VisitType")  String visitType,
-      @Part(name: "SmCode")  String smCode,
-      @Part(name: "Amount")  String amount,
-      @Part(name: "Lat")  String lat,
-      @Part(name: "Long")  String long,
-      @Part(name: "UserId")  String userId,
-      @Part(name: "Remarks")  String remarks,
-      @Part(name: "Address")  String address,
-      @Part(name: "Picture")  File picture
-      );
-
-
+      @Header("dbname") String dbName,
+      @Header("Authorization") String authorization,
+      @Part(name: "VisitType") String visitType,
+      @Part(name: "SmCode") String smCode,
+      @Part(name: "Amount") String amount,
+      @Part(name: "Lat") String lat,
+      @Part(name: "Long") String long,
+      @Part(name: "UserId") String userId,
+      @Part(name: "Remarks") String remarks,
+      @Part(name: "Address") String address,
+      @Part(name: "Picture") File picture);
 
   @POST("DocGen/GetDocument")
   Future<CommonStringModel> getDocument(@Body() Map<String, dynamic> body);
 
-
   @POST("OCR/DocVerifyforOSVSpaceOCR")
-  Future<OcrDocsScanningResponse> OcrDocsScan(
-      @Query("imgType") String imgType,
-      @Query("Id") String Id,
-      @Part( name: "file") File file);
+  Future<OcrDocsScanningResponse> OcrDocsScan(@Query("imgType") String imgType,
+      @Query("Id") String Id, @Part(name: "file") File file);
 
   @GET("Masters/GetBannerPost")
   Future<BannerPostModel> getBannersAndFlashMessage(
       @Header("dbname") String dbName,
-      @Header("Authorization")  String authorization,
+      @Header("Authorization") String authorization,
       @Query("AppType") String AppType,
-      @Query("MessageType") String MessageType
-    );
-
+      @Query("MessageType") String MessageType);
 
   @GET("FiSourcing/GetQRCodePayments")
   Future<QrResponseModel> getQrPaymentModel(
-      @Header("Authorization") String authorization,
-      @Header("dbname") String dbname,
-      @Query("SmCode") String SmCode,
-      );
-
+    @Header("Authorization") String authorization,
+    @Header("dbname") String dbname,
+    @Query("SmCode") String SmCode,
+  );
 
   @GET("Tracklocations/GetCSOReferralCode")
   Future<CommonStringModel2> getReferalCode(
@@ -710,4 +672,3 @@ abstract class ApiService {
       @Header("dbname") String dbname,
       @Query("username") String username);
 }
-

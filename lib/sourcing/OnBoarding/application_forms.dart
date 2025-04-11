@@ -7257,6 +7257,7 @@ print('iiiinciome2  ${others+entertainment+travelling+health+education+fooding+r
             _imageFile!)
         .then((value) async {
       if (value.statuscode == 200) {
+        EasyLoading.dismiss();
         setState(() {
           _currentStep += 1;
           pageTitle = AppLocalizations.of(context)!.uploaddocs;
