@@ -68,6 +68,8 @@ public class MainActivity extends FlutterFragmentActivity  {
                             // Send result back to Flutter
                         } else  if (call.method.equals("callJavaMethodQr")) {
                             openQRActivity();
+                        }else  if (call.method.equals("callJavaMethodRd")) {
+                            openRdActivity();
                         } else {
                             result.notImplemented();
                         }
@@ -78,6 +80,11 @@ public class MainActivity extends FlutterFragmentActivity  {
         IntentIntegrator scanIntegrator = new IntentIntegrator(this);
         scanIntegrator.setOrientationLocked(false);
         scanIntegrator.initiateScan(Collections.singleton("QR_CODE"));
+    }
+
+    private void openRdActivity() {
+
+
     }
 //protean
     // Example Java method

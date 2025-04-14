@@ -149,12 +149,26 @@
   "proceed": "Proceed",
   "readallconsents": "I have read all the consents properly",
   "pleasewait": "Please wait....",
+
   "iherebynsdl": "I hereby authorize NSDL e-Gov on behalf of Paisalo Digital Limited to:\n",
+
   "esigntext1": "1. Use my Aadhaar details for Loan Document eSignature and authenticate my identity through the Aadhaar Authentication system (Aadhaar based e-KYC services of UIDAI) in accordance with the provisions of the Aadhaar (Targeted Delivery of Financial and other Subsidies, Benefits and Services) Act, 2016 and the allied rules and regulations notified thereunder and for no other purpose.\n\n",
+  "esigntext11": "1. Use my Aadhaar details solely for the purpose of Loan Document eSignature and for authenticating my identity through the Aadhaar Authentication system (Aadhaar-based e-KYC services of UIDAI) in accordance with the provisions of the Aadhaar (Targeted Delivery of Financial and Other Subsidies, Benefits and Services) Act, 2016, and the rules and regulations made thereunder, and for no other purpose.\n\n",
+
+
   "esigntext2": "2. Authenticate my Aadhaar through OTP or Biometric for authenticating my identity through the Aadhaar Authentication system for obtaining my e-KYC through Aadhaar based e-KYC services of UIDAI and use my Photo and Demographic details (Name, Gender, Date of Birth, and Address) for Loan Document eSignature.\n\n",
+  "esigntext22": "2. Authenticate my Aadhaar through OTP or biometric means for the sole purpose of identity verification and e-KYC through UIDAI’s Aadhaar-based services. I authorize the use of my demographic and photograph data (Name, Gender, Date of Birth, and Address) strictly for Loan Document eSignature.\n\n",
+
   "esigntext3": "3. I understand that security and confidentiality of personal identity data provided, for the purpose of Aadhaar based authentication is ensured by NSDL e-Gov and the data will be stored by NSDL e-Gov till such time as mentioned in guidelines from UIDAI from time to time.\n\n",
+  "esigntext33": "3. I understand that no umbrella consent is being sought and I am providing consent only for the specific purposes mentioned in this document. My Aadhaar number or e-KYC data will not be shared with any third party or entity other than those explicitly named herein, and only for the stated purposes.\n\n",
+
   "esigntext4": "4. I have understood that the system of downloading the copy of loan document for my record from the link provided by the company through email or SMS post e-signing of the loan document. I shall download the copy of loan documents as per my convenience at a later stage.\n\n",
+  "esigntext44": "4. I acknowledge that the confidentiality and security of my personal identity information will be maintained as per the guidelines of UIDAI. My data will be stored by NSDL e-Gov in accordance with applicable legal and regulatory requirements.\n\n",
+
   "esigntext5": "5. I, hereby provide my explicit consent to Paisalo Digital Limited to access and retrieve my credit information from CRIF High Mark for the purpose of financial assessment, loan processing, and related services..",
+  "esigntext55": "5. I, hereby provide my explicit consent to Paisalo Digital Limited to access and retrieve my credit information from CRIF High Mark for the purpose of financial assessment, loan processing, and related services.I understand that the system for downloading the copy of the signed loan document for my records shall be made available through a secure link shared via email or SMS after successful e-signing.\n\n",
+
+  "esigntext66": "6. I hereby give my explicit consent to Paisalo Digital Limited to access and retrieve my credit information from CRIF High Mark for the sole purpose of financial assessment and loan processing, and for no other purpose..",
 
 
   "cancel": "Cancel",
@@ -589,8 +603,14 @@
   "pleaseentermobilenoalternate": "Please enter correct Alternate Mobile no",
 
   "accountHolderNameMismatchShort": "Account holder name doesn't match borrower name.",
-  "consentRawTextmulti": "I hereby authorize NSDL e-Gov on behalf of Paisalo Digital Limited to- \n 1. Use my Aadhaar details for Loan Document eSignature and authenticate my identity through the Aadhaar \n Authentication system (Aadhaar based e-KYC services of UIDAI) in accordance with the provisions of the Aadhaar\n (Targeted Delivery of Financial and other Subsidies, Benefits and Services) Act, 2016 and the allied rules and\n regulations notified thereunder and for no other purpose.2. Authenticate my Aadhaar through OTP or Biometric for authenticating my identity through the AadhaarAuthentication system for obtaining my e-KYC through Aadhaar based e-KYC services of UIDAI and use my Photo andDemographic details (Name, Gender, Date of Birth and Address) for Loan Document eSignature.3. I understand that Security and confidentiality of personal identity data provided, for the purpose of Aadhaarbased authentication is ensured by NSDL e-Gov and the data will be stored by NSDL e-Gov till such time asmentioned in guidelines from UIDAI from time to time.4. I have understood that the system of downloading the copy of loan document for my record from the linkprovided by the company through email or SMS post e-signing of the loan document. I shall download the copy of loan documents as per my convenience at a later stage."
+
+  "consentRawTextmulti": "I hereby authorize NSDL e-Gov on behalf of Paisalo Digital Limited to:\n Use my Aadhaar details solely for the purpose of Loan Document eSignature and for authenticating my identity through the Aadhaar Authentication system (Aadhaar-based e-KYC services of UIDAI) in accordance with the provisions of the Aadhaar (Targeted Delivery of Financial and Other Subsidies, Benefits and Services) Act, 2016, and the rules and regulations made thereunder, and for no other purpose.\n Authenticate my Aadhaar through OTP or biometric means for the sole purpose of identity verification and e-KYC through UIDAI’s Aadhaar-based services. I authorize the use of my demographic and photograph data (Name, Gender, Date of Birth, and Address) strictly for Loan Document eSignature.\n I understand that no umbrella consent is being sought and I am providing consent only for the specific purposes mentioned in this document. My Aadhaar number or e-KYC data will not be shared with any third party or entity other than those explicitly named herein, and only for the stated purposes.\n I acknowledge that the confidentiality and security of my personal identity information will be maintained as per the guidelines of UIDAI. My data will be stored by NSDL e-Gov in accordance with applicable legal and regulatory requirements.\n I understand that the system for downloading the copy of the signed loan document for my records shall be made available through a secure link shared via email or SMS after successful e-signing.\n I hereby give my explicit consent to Paisalo Digital Limited to access and retrieve my credit information from CRIF High Mark for the sole purpose of financial assessment and loan processing, and for no other purpose."
+
+
+
 }
+
+
 
 
 
