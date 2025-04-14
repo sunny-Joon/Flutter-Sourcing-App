@@ -45,11 +45,7 @@ class _KYCPageState extends State<KYCPage> {
   late ApiService apiService_protean;
   late ApiService apiService_OCR;
 
-
   late DatabyAadhaarDataModel adhaardata;
-
-
-
 
   String nameReg = '[a-zA-Z. ]';
   String addReg = r'[a-zA-Z0-9. ()/,-]';
@@ -1227,6 +1223,41 @@ class _KYCPageState extends State<KYCPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.circular(5), // Adjust as needed
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 10), // Space between buttons
+                // Adhaar Back Button
+                SizedBox(
+                  width: double.infinity, // Match the width of the dialog
+                  child: TextButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      try {
+                        final resultrd =
+                            await callJavaMethodRd(); // Call the method directly
+
+                        if (resultrd != null) {
+                          print("QR Data: $resultrd");
+
+                          //setQRData(resultrd.replaceAll('[', "").replaceAll(']', "")); // Process the result as needed
+                        }
+                      } catch (e) {
+                        print("Error: $e");
+                      }
+                    },
+                    child: Text(
+                      'Data Fatech By Morpho',
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular", color: Colors.white),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Color(0xFFD42D3F),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius.circular(5), // Adjust as needed
                       ),
                     ),
                   ),
@@ -4712,6 +4743,17 @@ class _KYCPageState extends State<KYCPage> {
       // Call the Java method
       final String result = await platform.invokeMethod('callJavaMethodQr');
       return result;
+    } on PlatformException catch (e) {
+      print("Failed to invoke Java method: ${e.message}");
+      return null;
+    }
+  }
+
+  Future<String?> callJavaMethodRd() async {
+    const platform = MethodChannel('com.example.intent');
+    try {
+      final String resultrd = await platform.invokeMethod('callJavaMethodRd');
+      return resultrd;
     } on PlatformException catch (e) {
       print("Failed to invoke Java method: ${e.message}");
       return null;

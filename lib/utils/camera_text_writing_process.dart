@@ -24,10 +24,13 @@ class _CameraScreenState extends State<CameraScreen> {
   late Future<void> _initializeControllerFuture;
   Position? position;
   String _locationMessage = "";
+  late currentLocation _locationService;
 
   @override
   void initState() {
     super.initState();
+    _locationService = currentLocation();
+
     _controller = CameraController(
       widget.camera,
       ResolutionPreset.veryHigh,
@@ -180,7 +183,7 @@ class _CameraScreenState extends State<CameraScreen> {
               child: InkWell(
                 onTap: () async {
                   String imageText = "";
-                  currentLocation _locationService = currentLocation();
+                   // _locationService = currentLocation();
                   try {
                     await _initializeControllerFuture;
 

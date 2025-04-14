@@ -399,8 +399,16 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     await flutterTts.setSpeechRate(0.5);
     await flutterTts.setPitch(1.0);
     await flutterTts.setVolume(1.0);
-    final bool isHindi = RegExp(r'[\u0900-\u097F]').hasMatch(consentRawTextmain);
-    String desiredLocale = isHindi ? 'hi-IN' : 'en-IN';
+
+    String desiredLocale = 'en-IN';
+
+    if (RegExp(r'[\u0900-\u097F]').hasMatch(consentRawTextmain)) {
+
+      desiredLocale = consentRawTextmain.contains('मी ') ? 'mr-IN' : 'hi-IN';
+    } else if (RegExp(r'[\u0980-\u09FF]').hasMatch(consentRawTextmain)) {
+      desiredLocale = 'bn-IN';
+    }
+
     List<dynamic> voices = await flutterTts.getVoices;
     final selectedVoice = voices.firstWhere(
           (voice) =>
@@ -824,8 +832,6 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
         } else {
           GlobalClass.showErrorAlert(context, responseData, 1);
         }
-        // Parse JSON object if it’s a map
-
         EasyLoading.dismiss();
       } else if (xmlResponse is String) {
         if (GlobalClass.isXml(xmlResponse)) {
@@ -845,7 +851,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
 
       GlobalClass.showToast_Error('RPSSS');
 
-     /* final statusCode = e.response?.statusCode;
+      final statusCode = e.response?.statusCode;
       if (statusCode == 404) {
         // Handle 404 Not Found
         GlobalClass.showErrorAlert(context, e.response!.data!, 1);
@@ -854,9 +860,71 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       } else {
         // Handle other status codes
         GlobalClass.showErrorAlert(context, e.response!.data!, 1);
-      }*/
+      }
     }
   }
+
+  //attempt code
+/*  int attemptCount = 0;
+  Future<void> hitSaveAgreementsAPIProtien(String authType) async {
+    EasyLoading.show(
+      status: AppLocalizations.of(context)!.pleasewait,
+    );
+
+    try {
+      final xmlResponse = await _apiServiceForESign.saveAgreementsProtien(
+          widget.selectedBorrower.fiCode.toString(), // Ficode
+          widget.selectedBorrower.creator, // Creator
+          consentRawText,
+          authType == "Biometric" ? "2" : "1",
+          widget.selectedBorrower.id.toString(), // F_Id
+          widget.signType!,
+          "M" // SignType
+      );
+
+      EasyLoading.dismiss();
+
+      if (xmlResponse is Map<String, dynamic>) {
+        String responseData = xmlResponse["content"];
+
+        if (GlobalClass.isXml(responseData)) {
+          callJavaMethodProtien(responseData);
+          attemptCount = 0;
+        } else {
+          GlobalClass.showErrorAlert(context, responseData, 1);
+        }
+      } else if (xmlResponse is String) {
+        if (GlobalClass.isXml(xmlResponse)) {
+          callJavaMethodProtien(xmlResponse);
+          attemptCount = 0;
+        } else {
+          GlobalClass.showErrorAlert(context, xmlResponse, 1);
+          attemptCount += 1;
+        }
+      } else {
+        GlobalClass.showErrorAlert(context, "Invalid data format", 1);
+        attemptCount += 1;
+      }
+
+      if (attemptCount >= 3) {
+        GlobalClass.showErrorAlert(context, "You have tried 3 attempts. Please try after some time.", 1);
+        attemptCount = 0;
+      }
+
+    } on DioError catch (e) {
+      EasyLoading.dismiss();
+
+      GlobalClass.showToast_Error('RPSSS');
+      attemptCount += 1; // Increment attempt counter on failure
+
+      if (attemptCount >= 3) {
+        // Show alert after 3 failed attempts
+        GlobalClass.showErrorAlert(context, "You have tried 3 attempts. Please try after some time.", 1);
+        attemptCount = 0; // Reset counter after showing the alert
+      }
+    }
+  }*/
+
 
   //emudra 1nd api
   Future<void> hitSaveAgreementsAPIEmudra(String authType) async {
@@ -917,7 +985,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     }
   }
 
-  Widget consentText() {
+ /* Widget consentText() {
     return RichText(
       text: TextSpan(
         style: TextStyle(fontSize: 9.5, color: Colors.black),
@@ -940,6 +1008,38 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
           ),
           TextSpan(
             text:AppLocalizations.of(context)!.esigntext5
+            ,
+          ),
+        ],
+      ),
+    );
+  }*/
+ Widget consentText() {
+    return RichText(
+      text: TextSpan(
+        style: TextStyle(fontSize: 9.5, color: Colors.black),
+        children: [
+          TextSpan(
+            text: AppLocalizations.of(context)!.iherebynsdl,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          TextSpan(
+            text: AppLocalizations.of(context)!.esigntext11,
+          ),
+          TextSpan(
+            text: AppLocalizations.of(context)!.esigntext22,
+          ),
+          TextSpan(
+            text: AppLocalizations.of(context)!.esigntext33,
+          ),
+          TextSpan(
+            text: AppLocalizations.of(context)!.esigntext44,
+          ),
+          TextSpan(
+            text:AppLocalizations.of(context)!.esigntext55
+            ,
+          ), TextSpan(
+            text:AppLocalizations.of(context)!.esigntext66
             ,
           ),
         ],
