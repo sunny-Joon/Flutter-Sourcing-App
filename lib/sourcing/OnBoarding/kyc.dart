@@ -243,9 +243,9 @@ class _KYCPageState extends State<KYCPage> {
   final _motherMController = TextEditingController();
   final _motherLController = TextEditingController();
   bool FiFamilyEditable = true;
-  String? selectednumOfChildren;
-  String? selectedschoolingChildren;
-  String? selectedotherDependents;
+  late String selectednumOfChildren="Select";
+  late String selectedschoolingChildren="Select";
+  late String selectedotherDependents ="Select";
   List<String> onetonine = [
     'Select',
     '0',
@@ -818,6 +818,9 @@ class _KYCPageState extends State<KYCPage> {
           GlobalClass.creator.toLowerCase().startsWith("vh") ? 2 : 1;
       print("ModuleTypeId $ModuleTypeId");
 
+      String SelectedschoolingChildren = selectedschoolingChildren ==null?"0": selectedschoolingChildren;
+      String SelectednumOfChildren = selectednumOfChildren ==null?"0": selectednumOfChildren;
+
       final api = Provider.of<ApiService>(context, listen: false);
 
       await api
@@ -865,9 +868,9 @@ class _KYCPageState extends State<KYCPage> {
         GlobalClass.creatorId,
         ModuleTypeId,
         mobileController.text,
-        selectedschoolingChildren!,
-        selectednumOfChildren!,
-        selectedotherDependents!,
+        SelectedschoolingChildren,
+        SelectednumOfChildren,
+        selectedotherDependents,
         _imageFile!,
       )
           .then((value) async {
@@ -2614,106 +2617,113 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 1,
-              ),
-              Text(
-                AppLocalizations.of(context)!.noofchildren,
-                style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-              ),
-              SizedBox(
-                height: 1,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                // Adjust the width as needed
-                //height: 45,
-                // Fixed height
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: DropdownButton<String>(
-                  value: selectednumOfChildren,
-                  isExpanded: true,
-                  iconSize: 24,
-                  elevation: 16,
-                  style: TextStyle(
-                      fontFamily: "Poppins-Regular",
-                      color: Colors.black,
-                      fontSize: 13),
-                  underline: Container(
-                    height: 2,
-                    color: Colors
-                        .transparent, // Set to transparent to remove default underline
-                  ),
-                  onChanged: FiFamilyEditable
-                      ? (String? newValue) {
-                          setState(() {
-                            selectednumOfChildren = newValue!;
-                          });
-                        }
-                      : null,
-                  items: onetonine.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                AppLocalizations.of(context)!.schoolgoingchildren,
-                style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-              ),
-              SizedBox(
-                height: 1,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                // Adjust the width as needed
-                //height: 45,
-                // Fixed height
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: DropdownButton<String>(
-                  value: selectedschoolingChildren,
-                  isExpanded: true,
-                  iconSize: 24,
-                  elevation: 16,
-                  style: TextStyle(
-                      fontFamily: "Poppins-Regular",
-                      color: Colors.black,
-                      fontSize: 13),
-                  underline: Container(
-                    height: 2,
-                    color: Colors
-                        .transparent, // Set to transparent to remove default underline
-                  ),
-                  onChanged: FiFamilyEditable
-                      ? (String? newValue) {
-                          setState(() {
-                            selectedschoolingChildren = newValue!;
-                          });
-                        }
-                      : null,
-                  items: onetonine.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
             ],
           ),
+        SizedBox(
+          height: 10,
+        ),
+
+        if (selectedMarritalStatus.toString() != 'Unmarried' && selectedMarritalStatus.toString() != "" && selectedMarritalStatus.toString() !="Select")
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+          Text(
+            AppLocalizations.of(context)!.noofchildren,
+            style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+          ),
+          SizedBox(
+            height: 1,
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            // Adjust the width as needed
+            //height: 45,
+            // Fixed height
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: DropdownButton<String>(
+              value: selectednumOfChildren,
+              isExpanded: true,
+              iconSize: 24,
+              elevation: 16,
+              style: TextStyle(
+                  fontFamily: "Poppins-Regular",
+                  color: Colors.black,
+                  fontSize: 13),
+              underline: Container(
+                height: 2,
+                color: Colors
+                    .transparent, // Set to transparent to remove default underline
+              ),
+              onChanged: FiFamilyEditable
+                  ? (String? newValue) {
+                setState(() {
+                  selectednumOfChildren = newValue!;
+                });
+              }
+                  : null,
+              items: onetonine.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            AppLocalizations.of(context)!.schoolgoingchildren,
+            style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+          ),
+          SizedBox(
+            height: 1,
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            // Adjust the width as needed
+            //height: 45,
+            // Fixed height
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: DropdownButton<String>(
+              value: selectedschoolingChildren,
+              isExpanded: true,
+              iconSize: 24,
+              elevation: 16,
+              style: TextStyle(
+                  fontFamily: "Poppins-Regular",
+                  color: Colors.black,
+                  fontSize: 13),
+              underline: Container(
+                height: 2,
+                color: Colors
+                    .transparent, // Set to transparent to remove default underline
+              ),
+              onChanged: FiFamilyEditable
+                  ? (String? newValue) {
+                setState(() {
+                  selectedschoolingChildren = newValue!;
+                });
+              }
+                  : null,
+              items: onetonine.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+        ],),
+
 
         SizedBox(
           height: 10,
@@ -3529,6 +3539,10 @@ class _KYCPageState extends State<KYCPage> {
           if (_currentStep == 0) {
             if (FiType == "NEW") {
               if (firstPageFieldValidate()) {
+                if(selectedMarritalStatus.toString() == "Unmarried"){
+                  selectedschoolingChildren = "0";
+                  selectednumOfChildren = "0";
+                }
                 saveFiMethod(context);
               }
             } else {
@@ -3783,14 +3797,12 @@ class _KYCPageState extends State<KYCPage> {
         showToast_Error("Please enter spouse last name");
         return false;
       }*/
-      } else if (selectedMarritalStatus!.toLowerCase() == "married"&& selectednumOfChildren == null ||
-          selectednumOfChildren?.toLowerCase() == 'select') {
+      } else if (selectedMarritalStatus!.toLowerCase() != "unmarried"&& selectednumOfChildren.toLowerCase() == 'select') {
         showToast_Error(
             AppLocalizations.of(context)!.pleaseselectnumberofchildren);
         return false;
-      } else if (selectedMarritalStatus!.toLowerCase() == "married"&&(selectedschoolingChildren == null ||
-          selectedschoolingChildren!.isEmpty ||
-          selectedschoolingChildren!.toLowerCase() == 'select')) {
+      } else if (selectedMarritalStatus!.toLowerCase() != "unmarried"&&( selectedschoolingChildren.isEmpty ||
+          selectedschoolingChildren.toLowerCase() == 'select')) {
         showToast_Error(
             AppLocalizations.of(context)!.pleaseselectschoolgoingchildren);
         return false;
