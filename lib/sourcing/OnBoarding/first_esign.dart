@@ -843,7 +843,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     } on DioError catch (e) {
       EasyLoading.dismiss();
 
-      GlobalClass.showToast_Error('RPSSS');
+      GlobalClass.showToast_Error(e.toString());
 
      /* final statusCode = e.response?.statusCode;
       if (statusCode == 404) {

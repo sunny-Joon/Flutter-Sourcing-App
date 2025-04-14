@@ -8,10 +8,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_sourcing_app/Models/global_model.dart';
 import 'package:flutter_sourcing_app/Models/ocrdocscanningresponce.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -373,7 +375,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   String amountReg = '[0-9]';
   String cityReg = '[a-zA-Z ]';
   String idsReg = '[a-zA-Z0-9/ ]';
-
+  bool loadUi = false;
   late KycScanningDataModel doc;
 
   Map<int, bool> isClickedMap = {};
@@ -579,7 +581,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         onPopInvoked: (bool value) {
           _onWillPop();
         },
-        child: Scaffold(
+        child: loadUi ? Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: Color(0xFFD42D3F),
           body: SingleChildScrollView(
@@ -730,7 +732,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ),
           ),
-        ));
+        ):Scaffold(
+          body: Center(
+    child: LoadingAnimationWidget.twistingDots(
+    leftDotColor: const Color(0xFF1A1A3F),
+    rightDotColor: const Color(0xFFEA3799),
+    size: 200,
+    ),
+    ),
+        )  );
   }
 
   Future<void> _onWillPop() async {
@@ -4183,32 +4193,32 @@ class _ApplicationPageState extends State<ApplicationPage> {
               pageTitle = AppLocalizations.of(context)!.personalinfo;
               _currentStep -= 1;
             });
-          } else if (_currentStep == 2) {
+          } /*else if (_currentStep == 2) {
             setState(() {
               pageTitle = AppLocalizations.of(context)!.familydetails;
               _currentStep -= 1;
             });
-          } else if (_currentStep == 3) {
+          }*/ else if (_currentStep == 2) {
             setState(() {
               pageTitle = AppLocalizations.of(context)!.incomeexpense;
               _currentStep -= 1;
             });
-          } else if (_currentStep == 4) {
+          } else if (_currentStep == 3) {
             setState(() {
               pageTitle = AppLocalizations.of(context)!.financialinfo;
               _currentStep -= 1;
             });
-          } else if (_currentStep == 5) {
+          } else if (_currentStep == 4) {
             setState(() {
               _currentStep -= 1;
               pageTitle = AppLocalizations.of(context)!.familyincome;
             });
-          } else if (_currentStep == 6) {
+          } else if (_currentStep == 5) {
             setState(() {
               pageTitle = AppLocalizations.of(context)!.guarantorform;
               _currentStep -= 1;
             });
-          } else if (_currentStep == 7) {
+          } else if (_currentStep == 6) {
             setState(() {
               editButtonFunctionOn = false;
               pageTitle = AppLocalizations.of(context)!.uploaddocs;
@@ -4244,25 +4254,25 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               FiFamilyEditable = true;
             });
-          } else if (_currentStep == 2) {
+          } /*else if (_currentStep == 2) {
             setState(() {
               FiIncomeEditable = true;
             });
-          } else if (_currentStep == 3) {
+          }*/ else if (_currentStep == 2) {
             setState(() {
               FinancialInfoEditable = true;
             });
-          } else if (_currentStep == 4) {
+          } else if (_currentStep == 3) {
             setState(() {
               femMemIncomeEditable = true;
             });
-          } else if (_currentStep == 5) {
+          } else if (_currentStep == 4) {
             DeleteGur(context);
-          } else if (_currentStep == 6) {
+          } else if (_currentStep == 5) {
             setState(() {
               UploadFiDocsEditable = true;
             });
-          } else if (_currentStep == 7) {
+          } else if (_currentStep == 6) {
             setState(() {
               UploadFiDocsEditable = true;
             });
@@ -7353,23 +7363,27 @@ print('iiiinciome2  ${others+entertainment+travelling+health+education+fooding+r
         BorrowerInfo = value.data;
         Future.delayed(
             Duration.zero, () => showIDCardDialog(context, BorrowerInfo[0]));
+        pageTitle = AppLocalizations.of(context)!.personalinfo;
 
-        if (!value.data[0].placeOfBirth.isEmpty) {
+        if (!value.data[0].placeOfBirth.isEmpty && value.data[0].placeOfBirth != null) {
           print("getAllDataApi111");
 
           setState(() {
             _currentStep = 1;
+            loadUi = true;
+            pageTitle = AppLocalizations.of(context)!.incomeexpense;
+
           });
           personalInfo(value.data[0]);
         }
-        if (!value.data[0].motheRFirstName.isEmpty) {
+       /* if (!value.data[0].motheRFirstName.isEmpty) {
           print("getAllDataApi222");
 
           familyDetails(value.data[0]);
           setState(() {
             _currentStep = 2;
           });
-        }
+        }*/
 
         if (value.data[0].fiIncomeExpenses.length != 0 &&
             value.data[0].fiIncomeExpenses[0].inExHomeType.isNotEmpty) {
@@ -7377,7 +7391,11 @@ print('iiiinciome2  ${others+entertainment+travelling+health+education+fooding+r
 
           fiIncomeExpenses(value.data[0]);
           setState(() {
-            _currentStep = 3;
+            _currentStep = 2;
+            loadUi = true;
+
+            pageTitle = AppLocalizations.of(context)!.financialinfo;
+
           });
         }
 
@@ -7386,7 +7404,11 @@ print('iiiinciome2  ${others+entertainment+travelling+health+education+fooding+r
 
           financialInfo(value.data[0]);
           setState(() {
-            _currentStep = 4;
+            _currentStep = 3;
+            loadUi = true;
+
+            pageTitle = AppLocalizations.of(context)!.familyincome;
+
           });
         }
 
@@ -7395,7 +7417,11 @@ print('iiiinciome2  ${others+entertainment+travelling+health+education+fooding+r
 
           femMemIncome(value.data[0]);
           setState(() {
-            _currentStep = 5;
+            _currentStep = 4;
+            loadUi = true;
+
+            pageTitle = AppLocalizations.of(context)!.guarantorform;
+
           });
         }
         if (value.data[0].guarantors.length != 0) {
@@ -7403,14 +7429,23 @@ print('iiiinciome2  ${others+entertainment+travelling+health+education+fooding+r
 
           guarrantors(value.data[0]);
           setState(() {
-            _currentStep = 6;
+            _currentStep = 5;
+            loadUi = true;
+
+            pageTitle = AppLocalizations.of(context)!.uploaddocs;
+
           });
         }
       } else {
-        setState(() {});
+        setState(() {
+          loadUi = true;
+
+        });
       }
     }).catchError((err) {
       print("ERRORRRR$err");
+      loadUi = true;
+
       EasyLoading.dismiss();
       GlobalClass.showErrorAlert(context, "Corrupt Case", 2);
     });
