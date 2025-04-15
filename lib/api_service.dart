@@ -63,11 +63,11 @@ class ApiConfig {
   static const String baseUrl5 = 'https://kyc.paisalo.in:985/api/';
   static const String baseUrl6 = 'https://ocr.paisalo.in:950/api/';
   static const String baseUrl7 = 'https://predeptest.paisalo.in:8084/PDL.ESign.API/api/';
-  static const String baseUrl8 =
-      'https://apiuat.paisalo.in:4015/PDLDocReports/api/';
+  static const String baseUrl8 ='https://apiuat.paisalo.in:4015/PDLDocReports/api/';
   static const String baseUrl9 = 'https://apiuat.paisalo.in:4015/fi/api/';
   static const String baseUrl10 = 'https://apiuat.paisalo.in:4015/PDLEmudra/api/';
   static const String baseUrl11 = 'https://apiuat.paisalo.in:4015/PDLDocESign/api/';
+  static const String baseUrl12 = 'https://apiuat.paisalo.in:4015/PDLFi/api/';
 
 
 }
@@ -645,8 +645,12 @@ abstract class ApiService {
       @Part(name: "Address") String address,
       @Part(name: "Picture") File picture);
 
-  @POST("DocGen/GetDocument")
-  Future<CommonStringModel> getDocument(@Body() Map<String, dynamic> body);
+  /*@POST("DocGen/GetDocument")
+  Future<CommonStringModel> getDocument(@Body() Map<String, dynamic> body);*/
+
+  @GET("Document/FirstESignPdf")
+  Future<CommonStringModel> getDocument(
+      @Query("Fi_Id") int Fi_Id,);
 
   @POST("OCR/DocVerifyforOSVSpaceOCR")
   Future<OcrDocsScanningResponse> OcrDocsScan(@Query("imgType") String imgType,

@@ -90,7 +90,7 @@ class _KYCPageState extends State<KYCPage> {
   bool isCKYCNumberFound = false;
   List<String> loanDuration = ['Select', '12', '24', '36', '48'];
 
-  List<String> titleList = ["Mr.", "Mrs.", "Miss"];
+  List<String> titleList = ["Select","Mr.", "Mrs.", "Miss"];
   String? selectedTitle;
   String expense = "";
   String income = "";
@@ -1238,6 +1238,9 @@ class _KYCPageState extends State<KYCPage> {
                   child: TextButton(
                     onPressed: () async {
                       Navigator.of(context).pop();
+                      showFinoConcent(context);
+
+
                       try {
                         final resultrd =
                             await callJavaMethodRd(); // Call the method directly
@@ -1252,7 +1255,7 @@ class _KYCPageState extends State<KYCPage> {
                       }
                     },
                     child: Text(
-                      'Data Fatech By Morpho',
+                      'Data Fetch By Morpho',
                       style: TextStyle(
                           fontFamily: "Poppins-Regular", color: Colors.white),
                     ),
@@ -1895,6 +1898,7 @@ class _KYCPageState extends State<KYCPage> {
                             fontFamily: "Poppins-Regular", fontSize: 13),
                         maxLength: 50,
                         controller: _gurNameController,
+                        enabled: manualEntry,
                         decoration: InputDecoration(
                           counterText: "",
                           border: OutlineInputBorder(),
@@ -1939,7 +1943,6 @@ class _KYCPageState extends State<KYCPage> {
                 ),
                 Container(
                   alignment: Alignment.center,
-
                   width: 150,
                   // Adjust the width as needed
                   height: 55,
@@ -1963,14 +1966,14 @@ class _KYCPageState extends State<KYCPage> {
                       color: Colors
                           .transparent, // Set to transparent to remove default underline
                     ),
-                    onChanged: (String? newValue) {
+                    onChanged: manualEntry?(String? newValue) {
                       if (newValue != null) {
                         setState(() {
                           genderselected =
                               newValue; // Update the selected value
                         });
                       }
-                    },
+                    }: null,
                     items: aadhar_gender.map<DropdownMenuItem<String>>(
                       (RangeCategoryDataModel state) {
                         return DropdownMenuItem<String>(
@@ -2024,14 +2027,14 @@ class _KYCPageState extends State<KYCPage> {
                       color: Colors
                           .transparent, // Set to transparent to remove default underline
                     ),
-                    onChanged: (String? newValue) {
+                    onChanged: manualEntry?(String? newValue) {
                       if (newValue != null) {
                         setState(() {
                           relationwithBorrowerselected =
                               newValue; // Update the selected value
                         });
                       }
-                    },
+                    }:null,
                     items: relationwithBorrower.map<DropdownMenuItem<String>>(
                         (RangeCategoryDataModel state) {
                       return DropdownMenuItem<String>(
@@ -2224,6 +2227,7 @@ class _KYCPageState extends State<KYCPage> {
                     color: Colors.white,
                     child: TextField(
                       controller: _dobController,
+                      enabled: manualEntry,
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
                           icon: Icon(Icons.calendar_today),
@@ -4494,7 +4498,130 @@ class _KYCPageState extends State<KYCPage> {
     });
   }
 
+  void showFinoConcent(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent closing dialog when tapping outside
+      builder: (BuildContext context) {
+        bool? finoConsentValue = false;
+        return StatefulBuilder(builder: (context,setState){
+          return WillPopScope(
+              onWillPop: () async =>
+              false, // Prevent closing dialog with back button
+              child: AlertDialog(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                title: Center(
+                    child: Text("Please read below consent before proceed",
+                        style: TextStyle(
+                            fontSize: 16,color: Colors.blue,fontWeight: FontWeight.bold
+                        ))),
+                content: SingleChildScrollView(
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      //  mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Paisalo Digital Limited, as a Sub AUA/Sub KUA, will use your Aadhaar number to perform authentication via UIDAI. Upon successful authentication, only the following information will be shared with us by UIDAI:\n 1.) Aadhaar Number \n 2.) Demographic Information (Name, Gender, Date of Birth, Address, Photo)\n Note: We will only use this information for Aadhaar authentication and e-KYC purposes for your loan document e-signing. We will not collect or use any additional personal information beyond what is shared by UIDAI.\n If you are a parent or legal guardian of a child Aadhaar holder, please ensure that you understand and agree to this use on behalf of the child. By continuing, you confirm that you have been informed of:\n 1.) The nature of data shared by UIDAI during authentication.\n 2.) The specific use of this data by Paisalo Digital Limited.",
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        // Buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Checkbox(
+                                value: finoConsentValue,
+                                onChanged:(bool? value){
+                                  setState(() {
+                                    finoConsentValue = value;
+                                  });
+                                }
+                            ),
+                            Flexible(child: Text(
+                              "Click Proceed to give your explicit consent.",
+                              style: TextStyle(
+                                fontFamily: "Poppins-Regular",
+                                fontSize: 10.0,
+                                color: Color(0xFFD42D3F), // Custom color
+                              ),
+                            ),)
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                if(finoConsentValue!){
+                                  setState(() {
+                                    Navigator.pop(context);
+                                  });
+                                }else{
+                                  showToast_Error("Check Consent First");
+                                }
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 30),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.greenAccent,
+                                      Color(0xFF0BDC15)
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.submit,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      shadows: [
+                                        Shadow(
+                                          blurRadius: 10.0,
+                                          color:
+                                          Colors.black.withOpacity(0.5),
+                                          offset: Offset(2.0, 2.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
 
+                            )
+
+                          ],
+                        ),
+                        SizedBox(height: 10),
+
+                      ],
+                    ),
+                  ),
+                ),
+              ));
+        });
+
+      },
+    );
+  }
   void showIDCardDialog(
       BuildContext context, DatabyAadhaarDataModel borrowerInfo, int page) {
     final String name = borrowerInfo.customerName;
@@ -4750,6 +4877,7 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   Future<String?> callJavaMethodQr() async {
+    print("Called to invoke Java method");
     const platform = MethodChannel('com.example.intent');
     try {
       // Call the Java method
@@ -4775,4 +4903,6 @@ class _KYCPageState extends State<KYCPage> {
   String AadhaarMasker(String aadhaarNo) {
     return "xxxx xxxx " + aadhaarNo.substring(8);
   }
+
+
 }

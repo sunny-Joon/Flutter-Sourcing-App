@@ -77,6 +77,8 @@ public class MainActivity extends FlutterFragmentActivity  {
                 });
     }
     private void openQRActivity() {
+        Log.d("TAGGG", "Open Qr method Run");
+
         IntentIntegrator scanIntegrator = new IntentIntegrator(this);
         scanIntegrator.setOrientationLocked(false);
         scanIntegrator.initiateScan(Collections.singleton("QR_CODE"));
@@ -147,30 +149,32 @@ public class MainActivity extends FlutterFragmentActivity  {
                 }catch (Exception e){
                     result_global.success(e.getMessage());
                 }
-
             }
-
-
-
-        } else
+        }
         if (requestCode == IntentIntegrator.REQUEST_CODE) {
+            Log.d("TAGGG", "Open Qr method Run22");
+
             IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             //Log.d("QR Scan","Executed");
             if (scanningResult != null) {
+                Log.d("TAGGG", "Open Qr method Run33");
+
                 //we have a result
                 String scanContent = scanningResult.getContents();
                 String scanFormat = scanningResult.getFormatName();
                 if (scanFormat != null) {
+                    Log.d("TAGGG", "Open Qr method Run44");
+
                    setAadharContent(scanContent);
                   //  android.util.Log.d(TAG, "onActivityResult: "+scanContent);
                 }
-
         }
-
     }
+
     }
 
     private void setAadharContent(String aadharDataString)  {
+        Log.d("TAGGG", "Open Qr method Run55");
 
             final BigInteger bigIntScanData = new BigInteger(aadharDataString, 10);
             // 2. Convert BigInt to Byte Array
@@ -282,30 +286,71 @@ public class MainActivity extends FlutterFragmentActivity  {
 
     }
 
-
     protected void decodeData(List<byte[]> encodedData) {
         try {
-            Log.e("Parts======1======> ","part data =====> "+decodedData.toString());
+            // Always initialize the list before using it
+            decodedData = new ArrayList<>();
 
-            Iterator<byte[]> i = encodedData.iterator();
+            // Log encoded data if needed
+            Log.e("Parts======1======> ", "encodedData size =====> " + (encodedData != null ? encodedData.size() : "null"));
+
+            if (encodedData != null) {
+                for (byte[] part : encodedData) {
+                    String decodedPart = new String(part, StandardCharsets.ISO_8859_1);
+                    decodedData.add(decodedPart);
+                    Log.e("Parts======4======> ", "decoded part =====> " + decodedPart);
+                }
+            } else {
+                Log.e("decodeData", "encodedData is null!");
+            }
+
+            Log.e("Parts======2======> ", "final decodedData =====> " + decodedData.toString());
+
+            // If result_global is not null
+            if (result_global != null) {
+                result_global.success(decodedData.toString());
+            } else {
+                Log.e("decodeData", "result_global is null!");
+            }
+
+        } catch (Exception e) {
+            Log.e("Parts======3======> ", "Exception while decoding =====> " + e.getMessage(), e);
+        }
+    }
+    /*protected void decodeData(List<byte[]> encodedData) {
+        Log.d("TAGGG", "Open Qr method Run55");
+
+        try {
+            Log.e("Parts======1======> ","part data =====> "+decodedData.toString());
+            // Always initialize the list before using it
             decodedData = new ArrayList<String>();
-            while(i.hasNext()){
-                Log.e("Parts======4======> ","part data =====> "+decodedData.toString());
+
+            if (encodedData != null) {
+            Iterator<byte[]> i = encodedData.iterator();
+            while(i.hasNext()) {
+                Log.e("Parts======4======> ", "part data =====> " + decodedData.toString());
 
                 decodedData.add(new String(i.next(), StandardCharsets.ISO_8859_1));
             }
+            } else {
+                    Log.e("decodeData", "encodedData is null!");
+                }
+
             // set the value of email/mobile present flag
             Log.e("Parts======2======> ","part data =====> "+decodedData.toString());
             //emailMobilePresent = Integer.parseInt(decodedData[0]);
-
+            if (result_global != null) {
             result_global.success(decodedData.toString());
+            } else {
+                Log.e("decodeData", "result_global is null!");
+            }
         }catch (Error e){
             Log.e("Parts======3======> ","part data =====> "+e);
         }
 
 
 
-    }
+    }*/
 
     private String concatenateStrings(String[] strings, int startIndex, int endIndex) {
         StringBuilder result = new StringBuilder();
