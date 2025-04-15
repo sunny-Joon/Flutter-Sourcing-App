@@ -258,7 +258,7 @@ class _DealerEsignState extends State<DealerEsign> {
   Future<void> fetchFirstESignPDF(BorrowerListDataModel selectedData) async {
     
 
-    final requestBody = {
+   /* final requestBody = {
       "F_Id": selectedData.id,
       "Type": widget.type==1?"FirsteSign":"SecondeSign",
       "DbName": "PDLERP",
@@ -280,7 +280,7 @@ try {
   }
 }catch(error){
   GlobalClass.showErrorAlert(context, "Document Not Fetched", 2);
-}
+}*/
   }
 
 }

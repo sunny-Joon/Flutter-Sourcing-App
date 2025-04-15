@@ -298,15 +298,10 @@ class _FirstEsignState extends State<FirstEsign> {
    //Get DOcument
   Future<void> fetchFirstESignPDF(BorrowerListDataModel selectedData) async {
     print("signType $signType");
-    final requestBody = {
-      "F_Id": selectedData.id,
-      "Type": signType == "1" ? "FirsteSign" : "SecondeSign",
-      "DbName": "PDLERP",
-    };
 
     try {
-      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl8).getDocument(requestBody);
-      if (response.statuscode == 200 && response.data.isNotEmpty) {
+      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl12).getDocument(selectedData.id);
+      if (response.statuscode == 200 || response.data.isNotEmpty) {
         print(response.data);
         _loadPdf(response.data);
       } else {

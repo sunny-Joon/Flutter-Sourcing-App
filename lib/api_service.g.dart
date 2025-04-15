@@ -3502,20 +3502,19 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<CommonStringModel> getDocument(Map<String, dynamic> body) async {
+  Future<CommonStringModel> getDocument(int Fi_Id) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'Fi_Id': Fi_Id};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
+    const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<CommonStringModel>(Options(
-      method: 'POST',
+      method: 'GET',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          'DocGen/GetDocument',
+          'Document/FirstESignPdf',
           queryParameters: queryParameters,
           data: _data,
         )

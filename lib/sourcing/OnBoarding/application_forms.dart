@@ -7364,6 +7364,10 @@ print('iiiinciome2  ${others+entertainment+travelling+health+education+fooding+r
         Future.delayed(
             Duration.zero, () => showIDCardDialog(context, BorrowerInfo[0]));
         pageTitle = AppLocalizations.of(context)!.personalinfo;
+        setState(() {
+          loadUi = true;
+          
+        });
 
         if (!value.data[0].placeOfBirth.isEmpty && value.data[0].placeOfBirth != null) {
           print("getAllDataApi111");
