@@ -9,14 +9,10 @@ import 'package:flutter_sourcing_app/Models/branch_model.dart';
 import 'package:flutter_sourcing_app/const/validators.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
-import 'package:xml/xml.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_sourcing_app/Models/global_model.dart';
 import '../../DATABASE/database_helper.dart';
 import '../../MasterAPIs/ckyc_repository.dart';
 import '../../MasterAPIs/live_track_repository.dart';
@@ -55,8 +51,7 @@ class _KYCPageState extends State<KYCPage> {
   String IdsReg = '[a-zA-Z0-9/ ]';
 
   String FiType = "NEW";
-  int _timeLeft = 60; // Timer starting at 60 seconds
-  Timer? _timer;
+
   int imageStartIndex = 0;
   Color iconPan = Colors.red;
   Color iconDl = Colors.red;
@@ -119,23 +114,17 @@ class _KYCPageState extends State<KYCPage> {
     apiService_idc = ApiService.create(baseUrl: ApiConfig.baseUrl4);
     apiService_protean = ApiService.create(baseUrl: ApiConfig.baseUrl5);
     apiService_OCR = ApiService.create(baseUrl: ApiConfig.baseUrl6);
-    // _focusNodeAdhaarId.addListener(_validateOnFocusChange);
-    //    _mobileNoController.text="9910238307";
+
     fetchData();
     selectedloanDuration = loanDuration.isNotEmpty ? loanDuration[0] : null;
     _BabnkNamesAPI(context);
-    // selectedTitle = titleList.isNotEmpty ? titleList[0] : null;
 
     geolocator(context);
     super.initState();
-// Fetch states using the required cat_key
   }
 
   @override
   void dispose() {
-    // _focusNodeAdhaarId
-    //     .removeListener(_validateOnFocusChange); // Remove listener
-    // _focusNodeAdhaarId.dispose(); // Dispose FocusNode when widget is disposed
     super.dispose();
   }
 
@@ -207,7 +196,6 @@ class _KYCPageState extends State<KYCPage> {
     });
   }
 
-  // final _formKeys = List.generate(4, (index) => GlobalKey<FormState>());
   DateTime? _selectedDate;
 
   // TextEditingControllers for all input fields
@@ -229,8 +217,6 @@ class _KYCPageState extends State<KYCPage> {
   late var _spouseMiddleNameController = TextEditingController();
   late var _spouseLastNameController = TextEditingController();
 
-  /* late var _expenseController = TextEditingController();
-  late var _incomeController = TextEditingController();*/
   late var _latitudeController = TextEditingController();
   late var _longitudeController = TextEditingController();
   late var _address1Controller = TextEditingController();
@@ -247,19 +233,7 @@ class _KYCPageState extends State<KYCPage> {
   late String selectednumOfChildren="Select";
   late String selectedschoolingChildren="Select";
   late String selectedotherDependents ="Select";
-  List<String> onetonine = [
-    'Select',
-    '0',
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9'
-  ];
+  List<String> onetonine = ['Select', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
   bool manualEntry = false;
   bool manualFEntry = true;
   bool manualSEntry = true;
@@ -421,7 +395,6 @@ class _KYCPageState extends State<KYCPage> {
               today.day < _selectedDate!.day)) {
         age--;
       }
-
       _ageController.text = age.toString();
     } else {
       _ageController.text = '';
@@ -471,20 +444,11 @@ class _KYCPageState extends State<KYCPage> {
                             ),
                             onTap: () {
                               Navigator.of(context).pop();
-
-                              /*if (_currentStep == 1) {
-                                setState(() {
-                                  Navigator.of(context).pop();
-                                });
-                              } else {
-                                Navigator.of(context).pop();
-                              }*/
                             },
                           ),
                           Center(
                             child: Image.asset(
                               'assets/Images/logo_white.png',
-                              // Replace with your logo asset path
                               height: 30,
                             ),
                           ),
@@ -498,7 +462,6 @@ class _KYCPageState extends State<KYCPage> {
                     ),
                     Column(
                       children: [
-                        //  _buildProgressIndicator(),
                         SizedBox(height: 30),
                         _pageloading
                             ? CircularProgressIndicator(
@@ -664,7 +627,6 @@ class _KYCPageState extends State<KYCPage> {
     try {
       // Parse the string date
       DateTime birthDate = DateFormat(format).parse(dateString);
-
       // Calculate age
       DateTime today = DateTime.now();
       int age = today.year - birthDate.year;
@@ -673,26 +635,12 @@ class _KYCPageState extends State<KYCPage> {
           (today.month == birthDate.month && today.day < birthDate.day)) {
         age--;
       }
-
       return age;
     } catch (e) {
       // Handle parsing error
       print("Error parsing date: $e");
       return -1; // Return an invalid age to indicate error
     }
-  }
-
-  int calculateAge(DateTime birthDate) {
-    DateTime today = DateTime.now();
-    int age = today.year - birthDate.year;
-
-    // Adjust for the month and day
-    if (today.month < birthDate.month ||
-        (today.month == birthDate.month && today.day < birthDate.day)) {
-      age--;
-    }
-
-    return age;
   }
 
   void showToast_Error(String message) {
@@ -751,306 +699,6 @@ class _KYCPageState extends State<KYCPage> {
       ),
     );
   }
-
-  Future<void> saveFiMethod(BuildContext context) async {
-    print("Sunny");
-    try {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        EasyLoading.show(
-          status: AppLocalizations.of(context)!.loading,
-        );
-      });
-
-      String adhaarid = _aadharIdController.text.toString();
-      String title = selectedTitle ?? "";
-      String name = _nameController.text.toString();
-      String middlename = _nameMController.text.toString();
-      String lastname = _nameLController.text.toString();
-      String dob = dobForSaveFi!;
-      String age = _ageController.text.toString();
-      String gender = genderselected.toString();
-      String guardianName = _gurNameController.text.toString();
-      print("gender13 $gender");
-      print("Guardian_Name $guardianName");
-      String mobile = _mobileNoController.text.toString();
-      String fatherF = _fatherFirstNameController.text.toString();
-      String fatherM = _fatherMiddleNameController.text.toString();
-      String fatherL = _fatherLastNameController.text.toString();
-      String motherF = _motherFController.text.toString();
-      String motherM = _motherMController.text.toString();
-      String motherL = _motherLController.text.toString();
-      String spouseF = _spouseFirstNameController.text.toString();
-      String spouseM = _spouseMiddleNameController.text.toString();
-      String spouseL = _spouseLastNameController.text.toString();
-      /*expense = _expenseController.text;
-      income = _incomeController.text;*/
-      lati = _latitudeController.text;
-      longi = _longitudeController.text;
-      int Expense = 0;
-      //   (expense != null && expense.isNotEmpty) ? int.parse(expense) : 0;
-      int Income = 0;
-      //    (income != null && income.isNotEmpty) ? int.parse(income) : 0;
-      double latitude =
-          (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
-      double longitude =
-          (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
-      String add1 = _address1Controller.text.toString();
-      String add2 = _address2Controller.text.toString();
-      String add3 = _address3Controller.text.toString();
-      String city = _cityController.text.toString();
-      String pin = _pincodeController.text.toString();
-      String state = stateselected!.code.toString();
-      bool ismarried = selectedMarritalStatus.toString() == 'Married';
-      print("married12 $ismarried");
-      String gCode = widget.GroupData.groupCode;
-      print("bank $gCode");
-
-      String bCode = widget.data.branchCode.toString();
-      print("bank $bCode");
-
-      String relation_with_Borrower = relationwithBorrowerselected;
-      String bank_name = bankselected!.toString();
-      print("bank $bank_name");
-      String loan_Duration = selectedloanDuration!;
-      print("bank $loan_Duration");
-      String loan_amount = _loan_amountController.text.toString();
-      print("bank $loan_amount");
-      int ModuleTypeId =
-          GlobalClass.creator.toLowerCase().startsWith("vh") ? 2 : 1;
-      print("ModuleTypeId $ModuleTypeId");
-
-      String SelectedschoolingChildren = selectedschoolingChildren ==null?"0": selectedschoolingChildren;
-      String SelectednumOfChildren = selectednumOfChildren ==null?"0": selectednumOfChildren;
-
-      final api = Provider.of<ApiService>(context, listen: false);
-
-      await api
-          .saveFi(
-        GlobalClass.token,
-        GlobalClass.dbName,
-        adhaarid,
-        title,
-        name,
-        middlename,
-        lastname,
-        dob,
-        age,
-        gender,
-        guardianName,
-        mobile,
-        fatherF,
-        fatherM,
-        fatherL,
-        motherF,
-        motherM,
-        motherL,
-        spouseF,
-        spouseM,
-        spouseL,
-        GlobalClass.creator,
-        Expense,
-        Income,
-        latitude,
-        longitude,
-        add1,
-        add2,
-        add3,
-        city,
-        pin,
-        state,
-        ismarried,
-        gCode,
-        bCode,
-        relation_with_Borrower,
-        bank_name,
-        loan_Duration,
-        loan_amount,
-        selectedLoanReason!,
-        GlobalClass.creatorId,
-        ModuleTypeId,
-        mobileController.text,
-        SelectedschoolingChildren,
-        SelectednumOfChildren,
-        selectedotherDependents,
-        _imageFile!,
-      )
-          .then((value) async {
-        if (value.statuscode == 200) {
-          EasyLoading.dismiss();
-          getPlace("city", stateselected!.code, "", "");
-          getPlace("district", stateselected!.code, "", "");
-          setState(() {
-            EasyLoading.dismiss();
-            _currentStep += 1;
-            Fi_Id = value.data[0].fiId.toString();
-            GlobalClass.Fi_Id = value.data[0].fiId;
-            Fi_Code = value.data[0].fiCode.toString();
-            GlobalClass.ficode = value.data[0].fiCode.toString();
-          });
-        } else if (value.statuscode == 201) {
-          EasyLoading.dismiss();
-          print("status code 201");
-          GlobalClass.showAlert(
-            context,
-            value.message,
-            value.data[0].errormsg,
-            Colors.red,
-            1,
-          );
-        } else if (value.statuscode == 400) {
-          EasyLoading.dismiss();
-          GlobalClass.showSnackBar(context, "Something went wrong in API");
-        }
-        EasyLoading.dismiss();
-      }).catchError((error) {
-        GlobalClass.showSnackBar(context, "Error: ${error.toString()}");
-        EasyLoading.dismiss();
-      });
-    } catch (e) {
-      GlobalClass.showSnackBar(
-          context, "An unexpected error occurred: ${e.toString()}");
-      EasyLoading.dismiss();
-    }
-  }
-
-  Future<void> saveIDsMethod(BuildContext context) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      EasyLoading.show(
-        status: AppLocalizations.of(context)!.loading,
-      );
-    });
-
-    print("object");
-    String fiid = Fi_Id.toString();
-    String pan_no = _panNoController.text.toString();
-    String dl = _drivingLicenseController.text.toString();
-    String? DLExpireDate = _dlExpiryController.text.toString().isEmpty
-        ? null
-        : DateFormat('yyyy-MM-dd')
-            .format(DateFormat('dd-MM-yyyy').parse(_dlExpiryController.text));
-    String voter_id = _voterIdController.text.toString();
-    String passport = _passportController.text.toString();
-    String? PassportExpireDate =
-        _passportExpiryController.text.toString().isEmpty
-            ? null
-            : _passportExpiryController.text;
-    int isAadharVerified = 1;
-    int is_phnno_verified = 1;
-    int isNameVerify = 1;
-
-    String AdharName = "";
-
-    if (adhaardata.customerName != null ) {
-      AdharName = "${adhaardata!.customerName}";
-    } else {
-      AdharName = _nameController.text.trim();
-      if (_nameMController.text.isNotEmpty && _nameLController.text.isNotEmpty) {
-        AdharName = "${_nameController.text} ${_nameMController.text} ${_nameLController.text}".trim();
-      } else if (_nameMController.text.isNotEmpty) {
-        AdharName = "${_nameController.text} ${_nameMController.text}".trim();
-      } else if (_nameLController.text.isNotEmpty) {
-        AdharName = "${_nameController.text} ${_nameLController.text}".trim();
-      }
-
-    }
-
-
-    print("AdharName $AdharName");
-
-    /*var fields = {
-      "Pan No.": pan_no,
-      "Driving License": dl,
-      "DL Expire Date": DLExpireDate,
-      "Voter Id": voter_id,
-      "Passport": passport,
-      "Passport Expire Date": PassportExpireDate,
-    };
-
-    for (var field in fields.entries) {
-      if (field.value == null || field.value!.isEmpty) {
-        showAlertDialog(context, "Please fill in the ${field.key} field.");
-        return;
-      }
-    }*/
-    final api = Provider.of<ApiService>(context, listen: false);
-    print("_nameController121 ${_nameController.text}");
-    Map<String, dynamic> requestBody = {
-      "Fi_ID": fiid,
-      "pan_no": pan_no,
-      "dl": dl,
-      "voter_id": voter_id,
-      "passport": passport,
-      "PassportExpireDate": PassportExpireDate,
-      "isAadharVerified": isAadharVerified,
-      "is_phnno_verified": is_phnno_verified,
-      "isNameVerify": isNameVerify,
-      "Pan_Name": panCardHolderName,
-      "VoterId_Name": voterCardHolderName,
-      "Aadhar_Name": AdharName,
-      "DrivingLic_Name": dlCardHolderName,
-      "VILLAGE_CODE": selectedVillageCode!.villageCode,
-      "CITY_CODE": selectedCityCode!.cityCode,
-      "SUB_DIST_CODE": selectedSubDistrictCode!.subDistCode,
-      "DIST_CODE": selectedDistrictCode!.distCode,
-      "STATE_CODE": stateselected!.code,
-      "DLExpireDate": DLExpireDate,
-    };
-
-    print("Fi_ID: $fiid,");
-    print("pan_no: $pan_no,");
-    print("dl: $dl,");
-    print("voter_id: $voter_id,");
-    print("passport: $passport,");
-    print("PassportExpireDate: $PassportExpireDate,");
-    print("isAadharVerified: $isAadharVerified,");
-    print("is_phnno_verified: $is_phnno_verified,");
-    print("isNameVerify: $isNameVerify,");
-    print("Pan_Name: $panCardHolderName,");
-    print("VoterId_Name: $voterCardHolderName,");
-    print("Aadhar_Name: $AdharName,");
-    print("DrivingLic_Name: $dlCardHolderName,");
-    print("VILLAGE_CODE: $selectedVillageCode!.villageCode,");
-    print("CITY_CODE: $selectedCityCode!.cityCode,");
-    print("SUB_DIST_CODE: $selectedSubDistrictCode!.subDistCode,");
-    print("DIST_CODE: $selectedDistrictCode!.distCode,");
-    print("STATE_CODE: $stateselected!.code,");
-    print("DLExpireDate: $DLExpireDate,");
-    return await api
-        .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        EasyLoading.dismiss();
-        LiveTrackRepository().saveLivetrackData("", "KYC Done", int.parse(fiid));
-        setState(() {
-          _currentStep += 1;
-        });
-        EasyLoading.dismiss();
-        GlobalClass.showSuccessAlertclose(
-          context,
-          "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
-          1,
-          destinationPage: OnBoarding(),
-        );
-        //  _showSuccessAndRedirect(value);
-
-        // GlobalClass.showSuccessAlert(
-        //     context,
-        //     "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
-        //
-        //     2);
-      } else {
-        EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
-      }
-    }).catchError((onError) {
-      EasyLoading.dismiss();
-      GlobalClass.showErrorAlert(context, onError, 1);
-    });
-  }
-
-  void savePersonalDetailsMethod() {}
-
-  void saveDataMethod() {}
 
   Widget _buildTextField2(String label, TextEditingController controller,
       TextInputType inputType, int maxlength, String regex, bool tFEnabled) {
@@ -1115,32 +763,6 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-  /* void _showSuccessAndRedirect(GlobalModel value) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Success'),
-          content: Text(
-              "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process"),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => OnBoarding()),
-                );
-              },
-            ),],
-        );
-      },
-    );
-  }
-*/
   void _showPopup(BuildContext context, Function(String) onResult) {
     showDialog(
       context: context,
@@ -1241,6 +863,16 @@ class _KYCPageState extends State<KYCPage> {
                       Navigator.of(context).pop();
                       showFinoConcent(context);
 
+                      try {
+                        final resultrd =
+                            await callJavaMethodRd(); // Call the method directly
+
+                        if (resultrd != null) {
+                          print("QR Data: $resultrd");
+                        }
+                      } catch (e) {
+                        print("Error: $e");
+                      }
                     },
                     child: Text(
                       'Data Fetch By Morpho',
@@ -1432,11 +1064,11 @@ class _KYCPageState extends State<KYCPage> {
               } else if (response.data.relation.toLowerCase() == "husband") {
                 relationwithBorrowerselected = "Husband";
                 selectedMarritalStatus = "Married";
-                // selectedMarritalStatus = true;
 
                 String cleanGuardianName(String name) {
                   return name.replaceAll(RegExp(r'[^a-zA-Z0-9.\s]'), '');
                 }
+
 
                 String cleanedGuardianName =
                     cleanGuardianName(response.data.guardianName);
@@ -1493,17 +1125,11 @@ class _KYCPageState extends State<KYCPage> {
 
     for (int i = 0; i < source.length; i++) {
       if (source[i] == separatorByte) {
-        // Skip if first or last byte is a separator
         if (i != 0 && i != (source.length - 1)) {
-          // Copy the range from 'begin' to 'i' (exclusive)
           separatedParts.add(source.sublist(begin, i));
         }
         begin = i + 1;
-
-        // Check if we have got all the parts of text data
         if (separatedParts.length == (vtcIndex + 1)) {
-          // This is required to extract image data
-          // Assuming imageStartIndex is a global variable
           imageStartIndex = begin;
           break;
         }
@@ -1638,54 +1264,6 @@ class _KYCPageState extends State<KYCPage> {
     return await Geolocator.getCurrentPosition();
   }
 
-  void _onRefreshButtonClick() async {
-    await geolocator(context); // Call to get location and update fields
-  }
-
-  /*Widget _buildProgressIndicator() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _stepIndicator(0),
-        _lineIndicator(),
-        _stepIndicator(1),
-      ],
-    );
-  }*/
-
-  /* Widget _stepIndicator(int step) {
-    bool isActive = _currentStep == step;
-    bool isCompleted = _currentStep > step;
-    return Container(
-      padding: EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: isCompleted
-            ? Colors.greenAccent
-            : (isActive ? Colors.green : Colors.grey.shade300),
-      ),
-      child: CircleAvatar(
-        radius: 12,
-        backgroundColor: isCompleted ? Colors.green : Colors.white,
-        child: Text(
-          (step + 1).toString(),
-          style: TextStyle(
-              color: isCompleted
-                  ? Colors.white
-                  : (isActive ? Colors.red : Colors.grey)),
-        ),
-      ),
-    );
-  }
-
-  Widget _lineIndicator() {
-    return Container(
-      width: 20,
-      height: 2,
-      color: Colors.grey.shade300,
-    );
-  }*/
-
   Widget _getStepContent(BuildContext context) {
     switch (_currentStep) {
       case 0:
@@ -1697,1075 +1275,6 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  Widget _buildStepOne(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-                child: Container(
-              color: Colors.white,
-              margin: EdgeInsets.symmetric(vertical: 0),
-              padding: EdgeInsets.all(0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.adhar,
-                    style: TextStyle(
-                        fontFamily: "Poppins-Regular", fontSize: 13, height: 2),
-                  ),
-                  SizedBox(height: 1),
-                  Container(
-                      padding: EdgeInsets.zero,
-                      width: double.infinity,
-                      child: Center(
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          maxLength: 12,
-                          style: TextStyle(
-                              fontFamily: "Poppins-Regular", fontSize: 13),
-                          focusNode: _focusNodeAdhaarId,
-                          controller: _aadharIdController,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              errorText: _errorMessageAadhaar.isEmpty
-                                  ? null
-                                  : _errorMessageAadhaar,
-                              counterText: ""),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return AppLocalizations.of(context)!
-                                  .aadhaaridfieldcannotbeempty;
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            _validateOnFocusChange();
-                          },
-                        ),
-                      )),
-                ],
-              ),
-            )),
-            Padding(
-              padding: EdgeInsets.only(top: 20),
-              // Add 10px padding from above
-              child: GestureDetector(
-                onTap: () => _showPopup(context, (String result) {
-                  setState(() {
-                    qrResult = result;
-                  });
-                }), // Show popup on image click
-                child: Icon(
-                  Icons.qr_code_2_sharp,
-                  size: 50.0, // Set the size of the icon
-                  color: Colors.grey, // Set the color of the icon
-                ),
-              ),
-            )
-          ],
-        ),
-
-        Row(
-          children: [
-            SizedBox(
-              width: 95, // Fixed width for the Title dropdown
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 2,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.title,
-                    style:
-                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                  ),
-                  SizedBox(
-                    height: 2,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-
-                    height: 55,
-                    // Fixed height
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<String>(
-                      value: selectedTitle,
-                      isExpanded: true,
-                      iconSize: 24,
-                      hint: Text('Select'),
-                      elevation: 16,
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.black,
-                          fontSize: 13),
-                      underline: Container(
-                        height: 2,
-                        color: Colors
-                            .transparent, // Set to transparent to remove default underline
-                      ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedTitle = newValue!;
-                        });
-                      },
-                      items: titleList.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 10),
-            // Add spacing between Title dropdown and Name field if needed
-            Expanded(
-              child: _buildTextField2(
-                  AppLocalizations.of(context)!.name,
-                  _nameController,
-                  TextInputType.text,
-                  30,
-                  nameReg,
-                  manualEntry),
-            ),
-          ],
-        ),
-
-        Row(
-          children: [
-            Expanded(
-                child: _buildTextField2(
-                    AppLocalizations.of(context)!.mname,
-                    _nameMController,
-                    TextInputType.text,
-                    30,
-                    nameReg,
-                    manualEntry)),
-            SizedBox(width: 10),
-            // Add spacing between the text fields if needed
-            Expanded(
-                child: _buildTextField2(
-                    AppLocalizations.of(context)!.lname,
-                    _nameLController,
-                    TextInputType.text,
-                    30,
-                    nameReg,
-                    manualEntry)),
-          ],
-        ),
-
-        Container(
-          color: Colors.white,
-          margin: EdgeInsets.symmetric(vertical: 3),
-          padding: EdgeInsets.all(1),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.gurname,
-                style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-              ),
-              SizedBox(height: 1),
-              Container(
-                  padding: EdgeInsets.zero,
-                  width: double.infinity, // Set the desired width
-                  child: Center(
-                    child: TextFormField(
-                        style: TextStyle(
-                            fontFamily: "Poppins-Regular", fontSize: 13),
-                        maxLength: 50,
-                        controller: _gurNameController,
-                        enabled: manualEntry,
-                        decoration: InputDecoration(
-                          counterText: "",
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return AppLocalizations.of(context)!
-                                .pleaseenterguardianname;
-                          }
-                          return null;
-                        },
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(nameReg)),
-                          // Allow only alphanumeric characters // Optional: to deny spaces
-                          TextInputFormatter.withFunction(
-                            (oldValue, newValue) => TextEditingValue(
-                              text: newValue.text.toUpperCase(),
-                              selection: newValue.selection,
-                            ),
-                          ),
-                        ]),
-                  )),
-            ],
-          ),
-        ),
-
-        Row(
-          children: [
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 6,
-                ),
-                Text(
-                  AppLocalizations.of(context)!.gender,
-                  style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  width: 150,
-                  // Adjust the width as needed
-                  height: 55,
-                  // Fixed height
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: DropdownButton<String>(
-                    value: genderselected,
-                    isExpanded: true,
-                    iconSize: 24,
-                    elevation: 16,
-                    style: TextStyle(
-                        fontFamily: "Poppins-Regular",
-                        color: Colors.black,
-                        fontSize: 13),
-                    underline: Container(
-                      height: 2,
-                      color: Colors
-                          .transparent, // Set to transparent to remove default underline
-                    ),
-                    onChanged: manualEntry?(String? newValue) {
-                      if (newValue != null) {
-                        setState(() {
-                          genderselected =
-                              newValue; // Update the selected value
-                        });
-                      }
-                    }: null,
-                    items: aadhar_gender.map<DropdownMenuItem<String>>(
-                      (RangeCategoryDataModel state) {
-                        return DropdownMenuItem<String>(
-                          value: state.code,
-                          child: Text(state.descriptionEn),
-                        );
-                      },
-                    ).toList(),
-                  ),
-                ),
-              ],
-            )),
-            SizedBox(width: 10),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 6,
-                ),
-                Text(
-                  AppLocalizations.of(context)!.relationship,
-                  style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Container(
-                  alignment: Alignment.center,
-
-                  width: 150,
-                  // Adjust the width as needed
-                  height: 55,
-                  // Fixed height
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: DropdownButton<String>(
-                    value: relationwithBorrowerselected,
-                    isExpanded: true,
-                    iconSize: 24,
-                    elevation: 16,
-                    style: TextStyle(
-                        fontFamily: "Poppins-Regular",
-                        color: Colors.black,
-                        fontSize: 13),
-                    underline: Container(
-                      height: 2,
-                      color: Colors
-                          .transparent, // Set to transparent to remove default underline
-                    ),
-                    onChanged: manualEntry?(String? newValue) {
-                      if (newValue != null) {
-                        setState(() {
-                          relationwithBorrowerselected =
-                              newValue; // Update the selected value
-                        });
-                      }
-                    }:null,
-                    items: relationwithBorrower.map<DropdownMenuItem<String>>(
-                        (RangeCategoryDataModel state) {
-                      return DropdownMenuItem<String>(
-                        value: state.code,
-                        child: Text(state.descriptionEn),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ))
-          ],
-        ),
-
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                color: Colors.white,
-                margin: EdgeInsets.symmetric(vertical: 3),
-                padding: EdgeInsets.all(1),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.mno,
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          fontSize: 13,
-                          height: 2),
-                    ),
-                    Container(
-                      width: double.infinity, // Set the desired width
-                      child: Center(
-                        child: TextFormField(
-                          style: TextStyle(
-                              fontFamily: "Poppins-Regular", fontSize: 13),
-
-                          maxLength: 10,
-                          controller: _mobileNoController,
-                          keyboardType: TextInputType.number,
-                          // Set the input type
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(), counterText: ""),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return AppLocalizations.of(context)!
-                                  .pleaseentermobileno;
-                            }
-                            return null;
-                          },
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp('[a-zA-Z0-9]')),
-                            // Allow only alphanumeric characters // Optional: to deny spaces
-                            TextInputFormatter.withFunction(
-                              (oldValue, newValue) => TextEditingValue(
-                                text: newValue.text.toUpperCase(),
-                                selection: newValue.selection,
-                              ),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              verifyButtonClick = false;
-                              otpVerified = false;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(width: 5),
-            // Add spacing between the text field and the button
-            Padding(
-                padding: EdgeInsets.only(top: 20),
-                // Add 10px padding from above
-                child: InkWell(
-                  onTap: () {
-                    {
-                      if (verifyButtonClick == false) {
-                        if (_mobileNoController.text.isEmpty) {
-                          showToast_Error(AppLocalizations.of(context)!
-                              .pleaseentermobileno);
-                        } else if (_mobileNoController.text.length != 10) {
-                          showToast_Error(AppLocalizations.of(context)!
-                              .pleaseentercorrectmobilenumber);
-                        } else {
-                          verifyButtonClick = true;
-                          //getOTPByMobileNo(_mobileNoController.text);
-                          mobileOtp(context, _mobileNoController.text);
-                        }
-                      }
-                      // Implement OTP verification logic here
-                    }
-                  },
-                  child: Card(
-                    elevation: 4,
-                    color: otpVerified ? Colors.green : Colors.grey,
-                    shape: CircleBorder(),
-                    child: Padding(
-                      padding: EdgeInsets.all(9),
-                      child: Icon(
-                        otpVerified ? Icons.verified : Icons.sms,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                )),
-          ],
-        ),
-        Text(
-          AppLocalizations.of(context)!.alternateMobile,
-          style: TextStyle(
-            fontFamily: "Poppins-Regular",
-            fontSize: 13,
-          ),
-        ),
-        SizedBox(height: 1),
-        Container(
-            width: double.infinity, // Set the desired width
-
-            child: Center(
-              child: TextFormField(
-                controller: mobileController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  errorText: _mobileError,
-                ),
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  // Only digits allowed
-                  LengthLimitingTextInputFormatter(10),
-                  // Maximum length of 10
-                ],
-              ),
-            )),
-        Row(
-          children: [
-            // Age Box
-            SizedBox(
-              width: 80, // Set a fixed width for the age box
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 6,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.age,
-                    style:
-                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                  ),
-                  SizedBox(height: 3),
-                  Container(
-                    color: Colors.white,
-                    child: TextField(
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular", fontSize: 13),
-                      controller: _ageController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
-                      readOnly: true,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 16),
-            // Date of Birth Box
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 6,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.dob,
-                    style:
-                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                  ),
-                  SizedBox(height: 3),
-                  Container(
-                    color: Colors.white,
-                    child: TextField(
-                      controller: _dobController,
-                      enabled: manualEntry,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.calendar_today),
-                          onPressed: () =>
-                              _selectDate(context, _dobController, "dob"),
-                        ),
-                        border: OutlineInputBorder(),
-                      ),
-                      readOnly: true,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-
-        _buildTextField2(
-            AppLocalizations.of(context)!.ffnane,
-            _fatherFirstNameController,
-            TextInputType.text,
-            30,
-            nameReg,
-            manualFEntry),
-
-        Row(
-          children: [
-            Expanded(
-              child: _buildTextField2(
-                  AppLocalizations.of(context)!.mname,
-                  _fatherMiddleNameController,
-                  TextInputType.text,
-                  30,
-                  nameReg,
-                  manualFEntry),
-            ),
-            SizedBox(width: 8),
-            // Add spacing between the text fields if needed
-            Expanded(
-                child: _buildTextField2(
-                    AppLocalizations.of(context)!.lname,
-                    _fatherLastNameController,
-                    TextInputType.text,
-                    30,
-                    nameReg,
-                    manualFEntry)),
-          ],
-        ),
-
-        SizedBox(
-          height: 4,
-        ),
-
-        _buildTextField2(AppLocalizations.of(context)!.mothername,
-            _motherFController, TextInputType.text, 30, nameReg, true),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          children: [
-            Flexible(
-                child: _buildTextField2(AppLocalizations.of(context)!.mname,
-                    _motherMController, TextInputType.text, 30, nameReg, true)),
-            SizedBox(width: 13),
-            // Add spacing between the text fields if needed
-            Flexible(
-                child: _buildTextField2(AppLocalizations.of(context)!.lname,
-                    _motherLController, TextInputType.text, 30, nameReg, true)),
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        _buildTextField2(AppLocalizations.of(context)!.address1,
-            _address1Controller, TextInputType.text, 50, addReg, manualEntry),
-        _buildTextField2(AppLocalizations.of(context)!.address2,
-            _address2Controller, TextInputType.text, 50, addReg, manualEntry),
-        _buildTextField2(AppLocalizations.of(context)!.address3,
-            _address3Controller, TextInputType.text, 50, addReg, manualEntry),
-        Row(
-          children: [
-            Expanded(
-              child: _buildTextField2(
-                  AppLocalizations.of(context)!.city,
-                  _cityController,
-                  TextInputType.text,
-                  30,
-                  cityReg,
-                  manualEntry),
-            ),
-            SizedBox(width: 16),
-            Expanded(
-              child: _buildTextField2(
-                  AppLocalizations.of(context)!.pincode,
-                  _pincodeController,
-                  TextInputType.number,
-                  6,
-                  amountReg,
-                  manualEntry),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 4,
-        ),
-
-        _buildLabeledDropdownField(AppLocalizations.of(context)!.sstate,
-            'State', states, stateselected, (RangeCategoryDataModel? newValue) {
-          setState(() {
-            stateselected = newValue;
-          });
-        }, String),
-        _buildTextField2(AppLocalizations.of(context)!.loanamount,
-            _loan_amountController, TextInputType.number, 7, amountReg, true),
-
-        SizedBox(
-          height: 6,
-        ),
-        Text(
-          AppLocalizations.of(context)!.loanreason,
-          style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-        ),
-        SizedBox(
-          height: 4,
-        ),
-
-        Container(
-          alignment: Alignment.center,
-
-          width: double.infinity,
-          // Adjust the width as needed
-          height: 55,
-          // Fixed height
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: DropdownButton<String>(
-            value: selectedLoanReason,
-            isExpanded: true,
-            hint: Text(AppLocalizations.of(context)!.selectloanreason),
-            iconSize: 24,
-            elevation: 16,
-            style: TextStyle(
-                fontFamily: "Poppins-Regular",
-                color: Colors.black,
-                fontSize: 13),
-            underline: Container(
-              height: 2,
-              color: Colors
-                  .transparent, // Set to transparent to remove default underline
-            ),
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  selectedLoanReason = newValue; // Update the selected value
-                });
-              }
-            },
-            items: reasonForLoan
-                .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
-              return DropdownMenuItem<String>(
-                value: state.code,
-                child: Text(state.descriptionEn),
-              );
-            }).toList(),
-          ),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-
-        Row(
-          children: [
-            // Special Ability Dropdown
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.loanduration,
-                    style:
-                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                  ),
-                  SizedBox(height: 3),
-                  Container(
-                    alignment: Alignment.center,
-                    width: 150,
-                    // Adjust the width as needed
-                    height: 55,
-                    // Fixed height
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<String>(
-                      value: selectedloanDuration,
-                      isExpanded: true,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.black,
-                          fontSize: 13),
-                      underline: Container(
-                        height: 2,
-                        color: Colors
-                            .transparent, // Set to transparent to remove default underline
-                      ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedloanDuration = newValue!;
-                        });
-                      },
-                      items: loanDuration.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 16), // Space between dropdowns
-            // State Name Dropdown
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.bankname,
-                    style:
-                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                  ),
-                  SizedBox(height: 3),
-                  Container(
-                    alignment: Alignment.center,
-                    height: 55,
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<String>(
-                      value: bankselected,
-                      isExpanded: true,
-                      hint: Text(AppLocalizations.of(context)!.selectbank),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.black,
-                          fontSize: 13),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.transparent,
-                      ),
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          setState(() {
-                            bankselected = newValue;
-                          });
-                        }
-                      },
-                      items: bankNamesList.map<DropdownMenuItem<String>>(
-                          (BankNamesDataModel state) {
-                        return DropdownMenuItem<String>(
-                          value: state.id.toString(),
-                          child: Text(state.bankName),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        /*Row(
-          children: [
-            Expanded(
-              child: _buildTextField2(
-                  AppLocalizations.of(context)!.monthlyincome,
-                  _incomeController,
-                  TextInputType.number,
-                  7,
-                  amountReg,manualEntry),
-            ),
-            SizedBox(width: 8),
-            // Add spacing between the text fields if needed
-            Expanded(
-              child: _buildTextField2(
-                  AppLocalizations.of(context)!.monthlyexpence,
-                  _expenseController,
-                  TextInputType.number,
-                  7,
-                  amountReg,manualEntry),
-            ),
-          ],
-        ),*/
-
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          AppLocalizations.of(context)!.marital,
-          style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-        ),
-
-        SizedBox(
-          height: 4,
-        ),
-
-        Container(
-          alignment: Alignment.center,
-
-          width: double.infinity,
-          // Adjust the width as needed
-          height: 55,
-          // Fixed height
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: DropdownButton<String>(
-            value: selectedMarritalStatus,
-            isExpanded: true,
-            iconSize: 24,
-            elevation: 16,
-            style: TextStyle(
-                fontFamily: "Poppins-Regular",
-                color: Colors.black,
-                fontSize: 13),
-            underline: Container(
-              height: 2,
-              color: Colors
-                  .transparent, // Set to transparent to remove default underline
-            ),
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  selectedMarritalStatus = newValue;
-                });
-              }
-            },
-            items: marrital_status
-                .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
-              return DropdownMenuItem<String>(
-                value: state.code,
-                child: Text(state.descriptionEn),
-              );
-            }).toList(),
-          ),
-        ),
-        // Conditionally show the spouse fields only when isMarried is true
-        if (selectedMarritalStatus.toString() == 'Married')
-          Column(
-            children: [
-              _buildTextField2(
-                  AppLocalizations.of(context)!.sfname,
-                  _spouseFirstNameController,
-                  TextInputType.text,
-                  30,
-                  nameReg,
-                  manualSEntry),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildTextField2(
-                        AppLocalizations.of(context)!.mname,
-                        _spouseMiddleNameController,
-                        TextInputType.text,
-                        30,
-                        nameReg,
-                        manualSEntry),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: _buildTextField2(
-                        AppLocalizations.of(context)!.lname,
-                        _spouseLastNameController,
-                        TextInputType.text,
-                        30,
-                        nameReg,
-                        manualSEntry),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        SizedBox(
-          height: 10,
-        ),
-
-        if (selectedMarritalStatus.toString() != 'Unmarried' && selectedMarritalStatus.toString() != "" && selectedMarritalStatus.toString() !="Select")
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-          Text(
-            AppLocalizations.of(context)!.noofchildren,
-            style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-          ),
-          SizedBox(
-            height: 1,
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            // Adjust the width as needed
-            //height: 45,
-            // Fixed height
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: DropdownButton<String>(
-              value: selectednumOfChildren,
-              isExpanded: true,
-              iconSize: 24,
-              elevation: 16,
-              style: TextStyle(
-                  fontFamily: "Poppins-Regular",
-                  color: Colors.black,
-                  fontSize: 13),
-              underline: Container(
-                height: 2,
-                color: Colors
-                    .transparent, // Set to transparent to remove default underline
-              ),
-              onChanged: FiFamilyEditable
-                  ? (String? newValue) {
-                setState(() {
-                  selectednumOfChildren = newValue!;
-                });
-              }
-                  : null,
-              items: onetonine.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            AppLocalizations.of(context)!.schoolgoingchildren,
-            style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-          ),
-          SizedBox(
-            height: 1,
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            // Adjust the width as needed
-            //height: 45,
-            // Fixed height
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: DropdownButton<String>(
-              value: selectedschoolingChildren,
-              isExpanded: true,
-              iconSize: 24,
-              elevation: 16,
-              style: TextStyle(
-                  fontFamily: "Poppins-Regular",
-                  color: Colors.black,
-                  fontSize: 13),
-              underline: Container(
-                height: 2,
-                color: Colors
-                    .transparent, // Set to transparent to remove default underline
-              ),
-              onChanged: FiFamilyEditable
-                  ? (String? newValue) {
-                setState(() {
-                  selectedschoolingChildren = newValue!;
-                });
-              }
-                  : null,
-              items: onetonine.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-        ],),
-
-
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          AppLocalizations.of(context)!.otherdependentis,
-          style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-        ),
-        Container(
-          width: MediaQuery.of(context).size.width,
-          // Adjust the width as needed
-          //height: 45,
-          // Fixed height
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: DropdownButton<String>(
-            value: selectedotherDependents,
-            isExpanded: true,
-            iconSize: 24,
-            elevation: 16,
-            style: TextStyle(
-                fontFamily: "Poppins-Regular",
-                color: Colors.black,
-                fontSize: 13),
-            underline: Container(
-              height: 2,
-              color: Colors
-                  .transparent, // Set to transparent to remove default underline
-            ),
-            onChanged: FiFamilyEditable
-                ? (String? newValue) {
-                    setState(() {
-                      selectedotherDependents = newValue!;
-                    });
-                  }
-                : null,
-            items: onetonine.map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    ));
-  }
 
   void _showOTPDialog(BuildContext context) {
     Timer? countdownTimer;
@@ -2898,6 +1407,1044 @@ class _KYCPageState extends State<KYCPage> {
     ).then((_) {
       countdownTimer?.cancel(); // Cleanup when dialog is closed
     });
+  }
+  Widget _buildStepOne(BuildContext context) {
+    return SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      margin: EdgeInsets.symmetric(vertical: 0),
+                      padding: EdgeInsets.all(0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.adhar,
+                            style: TextStyle(
+                                fontFamily: "Poppins-Regular", fontSize: 13, height: 2),
+                          ),
+                          SizedBox(height: 1),
+                          Container(
+                              padding: EdgeInsets.zero,
+                              width: double.infinity,
+                              child: Center(
+                                child: TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 12,
+                                  style: TextStyle(
+                                      fontFamily: "Poppins-Regular", fontSize: 13),
+                                  focusNode: _focusNodeAdhaarId,
+                                  controller: _aadharIdController,
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      errorText: _errorMessageAadhaar.isEmpty
+                                          ? null
+                                          : _errorMessageAadhaar,
+                                      counterText: ""),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return AppLocalizations.of(context)!
+                                          .aadhaaridfieldcannotbeempty;
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (value) {
+                                    _validateOnFocusChange();
+                                  },
+                                ),
+                              )),
+                        ],
+                      ),
+                    )),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  // Add 10px padding from above
+                  child: GestureDetector(
+                    onTap: () => _showPopup(context, (String result) {
+                      setState(() {
+                        qrResult = result;
+                      });
+                    }), // Show popup on image click
+                    child: Icon(
+                      Icons.qr_code_2_sharp,
+                      size: 50.0, // Set the size of the icon
+                      color: Colors.grey, // Set the color of the icon
+                    ),
+                  ),
+                )
+              ],
+            ),
+
+            Row(
+              children: [
+                SizedBox(
+                  width: 95, // Fixed width for the Title dropdown
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 2,
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.title,
+                        style:
+                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                      ),
+                      SizedBox(
+                        height: 2,
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+
+                        height: 55,
+                        // Fixed height
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: DropdownButton<String>(
+                          value: selectedTitle,
+                          isExpanded: true,
+                          iconSize: 24,
+                          hint: Text('Select'),
+                          elevation: 16,
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular",
+                              color: Colors.black,
+                              fontSize: 13),
+                          underline: Container(
+                            height: 2,
+                            color: Colors
+                                .transparent, // Set to transparent to remove default underline
+                          ),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedTitle = newValue!;
+                            });
+                          },
+                          items: titleList.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
+                // Add spacing between Title dropdown and Name field if needed
+                Expanded(
+                  child: _buildTextField2(
+                      AppLocalizations.of(context)!.name,
+                      _nameController,
+                      TextInputType.text,
+                      30,
+                      nameReg,
+                      manualEntry),
+                ),
+              ],
+            ),
+
+            Row(
+              children: [
+                Expanded(
+                    child: _buildTextField2(
+                        AppLocalizations.of(context)!.mname,
+                        _nameMController,
+                        TextInputType.text,
+                        30,
+                        nameReg,
+                        manualEntry)),
+                SizedBox(width: 10),
+                // Add spacing between the text fields if needed
+                Expanded(
+                    child: _buildTextField2(
+                        AppLocalizations.of(context)!.lname,
+                        _nameLController,
+                        TextInputType.text,
+                        30,
+                        nameReg,
+                        manualEntry)),
+              ],
+            ),
+
+            Container(
+              color: Colors.white,
+              margin: EdgeInsets.symmetric(vertical: 3),
+              padding: EdgeInsets.all(1),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.gurname,
+                    style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                  ),
+                  SizedBox(height: 1),
+                  Container(
+                      padding: EdgeInsets.zero,
+                      width: double.infinity, // Set the desired width
+                      child: Center(
+                        child: TextFormField(
+                            style: TextStyle(
+                                fontFamily: "Poppins-Regular", fontSize: 13),
+                            maxLength: 50,
+                            controller: _gurNameController,
+                            enabled: manualEntry,
+                            decoration: InputDecoration(
+                              counterText: "",
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return AppLocalizations.of(context)!
+                                    .pleaseenterguardianname;
+                              }
+                              return null;
+                            },
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp(nameReg)),
+                              // Allow only alphanumeric characters // Optional: to deny spaces
+                              TextInputFormatter.withFunction(
+                                    (oldValue, newValue) => TextEditingValue(
+                                  text: newValue.text.toUpperCase(),
+                                  selection: newValue.selection,
+                                ),
+                              ),
+                            ]),
+                      )),
+                ],
+              ),
+            ),
+
+            Row(
+              children: [
+                Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.gender,
+                          style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 55,
+                          // Fixed height
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: genderselected,
+                            isExpanded: true,
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(
+                                fontFamily: "Poppins-Regular",
+                                color: Colors.black,
+                                fontSize: 13),
+                            underline: Container(
+                              height: 2,
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
+                            ),
+                            onChanged: manualEntry?(String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  genderselected =
+                                      newValue; // Update the selected value
+                                });
+                              }
+                            }: null,
+                            items: aadhar_gender.map<DropdownMenuItem<String>>(
+                                  (RangeCategoryDataModel state) {
+                                return DropdownMenuItem<String>(
+                                  value: state.code,
+                                  child: Text(state.descriptionEn),
+                                );
+                              },
+                            ).toList(),
+                          ),
+                        ),
+                      ],
+                    )),
+                SizedBox(width: 10),
+                Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.relationship,
+                          style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+
+                          width: 150,
+                          // Adjust the width as needed
+                          height: 55,
+                          // Fixed height
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: relationwithBorrowerselected,
+                            isExpanded: true,
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(
+                                fontFamily: "Poppins-Regular",
+                                color: Colors.black,
+                                fontSize: 13),
+                            underline: Container(
+                              height: 2,
+                              color: Colors
+                                  .transparent, // Set to transparent to remove default underline
+                            ),
+                            onChanged: manualEntry?(String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  relationwithBorrowerselected =
+                                      newValue; // Update the selected value
+                                });
+                              }
+                            }:null,
+                            items: relationwithBorrower.map<DropdownMenuItem<String>>(
+                                    (RangeCategoryDataModel state) {
+                                  return DropdownMenuItem<String>(
+                                    value: state.code,
+                                    child: Text(state.descriptionEn),
+                                  );
+                                }).toList(),
+                          ),
+                        ),
+                      ],
+                    ))
+              ],
+            ),
+
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    color: Colors.white,
+                    margin: EdgeInsets.symmetric(vertical: 3),
+                    padding: EdgeInsets.all(1),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.mno,
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular",
+                              fontSize: 13,
+                              height: 2),
+                        ),
+                        Container(
+                          width: double.infinity, // Set the desired width
+                          child: Center(
+                            child: TextFormField(
+                              style: TextStyle(
+                                  fontFamily: "Poppins-Regular", fontSize: 13),
+
+                              maxLength: 10,
+                              controller: _mobileNoController,
+                              keyboardType: TextInputType.number,
+                              // Set the input type
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(), counterText: ""),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return AppLocalizations.of(context)!
+                                      .pleaseentermobileno;
+                                }
+                                return null;
+                              },
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp('[a-zA-Z0-9]')),
+                                // Allow only alphanumeric characters // Optional: to deny spaces
+                                TextInputFormatter.withFunction(
+                                      (oldValue, newValue) => TextEditingValue(
+                                    text: newValue.text.toUpperCase(),
+                                    selection: newValue.selection,
+                                  ),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  verifyButtonClick = false;
+                                  otpVerified = false;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 5),
+                // Add spacing between the text field and the button
+                Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    // Add 10px padding from above
+                    child: InkWell(
+                      onTap: () {
+                        {
+                          if (verifyButtonClick == false) {
+                            if (_mobileNoController.text.isEmpty) {
+                              showToast_Error(AppLocalizations.of(context)!
+                                  .pleaseentermobileno);
+                            } else if (_mobileNoController.text.length != 10) {
+                              showToast_Error(AppLocalizations.of(context)!
+                                  .pleaseentercorrectmobilenumber);
+                            } else {
+                              verifyButtonClick = true;
+                              //getOTPByMobileNo(_mobileNoController.text);
+                              mobileOtp(context, _mobileNoController.text);
+                            }
+                          }
+                          // Implement OTP verification logic here
+                        }
+                      },
+                      child: Card(
+                        elevation: 4,
+                        color: otpVerified ? Colors.green : Colors.grey,
+                        shape: CircleBorder(),
+                        child: Padding(
+                          padding: EdgeInsets.all(9),
+                          child: Icon(
+                            otpVerified ? Icons.verified : Icons.sms,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+            Text(
+              AppLocalizations.of(context)!.alternateMobile,
+              style: TextStyle(
+                fontFamily: "Poppins-Regular",
+                fontSize: 13,
+              ),
+            ),
+            SizedBox(height: 1),
+            Container(
+                width: double.infinity, // Set the desired width
+
+                child: Center(
+                  child: TextFormField(
+                    controller: mobileController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      errorText: _mobileError,
+                    ),
+                    keyboardType: TextInputType.phone,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      // Only digits allowed
+                      LengthLimitingTextInputFormatter(10),
+                      // Maximum length of 10
+                    ],
+                  ),
+                )),
+            Row(
+              children: [
+                // Age Box
+                SizedBox(
+                  width: 80, // Set a fixed width for the age box
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.age,
+                        style:
+                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                      ),
+                      SizedBox(height: 3),
+                      Container(
+                        color: Colors.white,
+                        child: TextField(
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular", fontSize: 13),
+                          controller: _ageController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
+                          readOnly: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 16),
+                // Date of Birth Box
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.dob,
+                        style:
+                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                      ),
+                      SizedBox(height: 3),
+                      Container(
+                        color: Colors.white,
+                        child: TextField(
+                          controller: _dobController,
+                          enabled: manualEntry,
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.calendar_today),
+                              onPressed: () =>
+                                  _selectDate(context, _dobController, "dob"),
+                            ),
+                            border: OutlineInputBorder(),
+                          ),
+                          readOnly: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            _buildTextField2(
+                AppLocalizations.of(context)!.ffnane,
+                _fatherFirstNameController,
+                TextInputType.text,
+                30,
+                nameReg,
+                manualFEntry),
+
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2(
+                      AppLocalizations.of(context)!.mname,
+                      _fatherMiddleNameController,
+                      TextInputType.text,
+                      30,
+                      nameReg,
+                      manualFEntry),
+                ),
+                SizedBox(width: 8),
+                // Add spacing between the text fields if needed
+                Expanded(
+                    child: _buildTextField2(
+                        AppLocalizations.of(context)!.lname,
+                        _fatherLastNameController,
+                        TextInputType.text,
+                        30,
+                        nameReg,
+                        manualFEntry)),
+              ],
+            ),
+
+            SizedBox(
+              height: 4,
+            ),
+
+            _buildTextField2(AppLocalizations.of(context)!.mothername,
+                _motherFController, TextInputType.text, 30, nameReg, true),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                Flexible(
+                    child: _buildTextField2(AppLocalizations.of(context)!.mname,
+                        _motherMController, TextInputType.text, 30, nameReg, true)),
+                SizedBox(width: 13),
+                // Add spacing between the text fields if needed
+                Flexible(
+                    child: _buildTextField2(AppLocalizations.of(context)!.lname,
+                        _motherLController, TextInputType.text, 30, nameReg, true)),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            _buildTextField2(AppLocalizations.of(context)!.address1,
+                _address1Controller, TextInputType.text, 50, addReg, manualEntry),
+            _buildTextField2(AppLocalizations.of(context)!.address2,
+                _address2Controller, TextInputType.text, 50, addReg, manualEntry),
+            _buildTextField2(AppLocalizations.of(context)!.address3,
+                _address3Controller, TextInputType.text, 50, addReg, manualEntry),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField2(
+                      AppLocalizations.of(context)!.city,
+                      _cityController,
+                      TextInputType.text,
+                      30,
+                      cityReg,
+                      manualEntry),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: _buildTextField2(
+                      AppLocalizations.of(context)!.pincode,
+                      _pincodeController,
+                      TextInputType.number,
+                      6,
+                      amountReg,
+                      manualEntry),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 4,
+            ),
+
+            _buildLabeledDropdownField(AppLocalizations.of(context)!.sstate,
+                'State', states, stateselected, (RangeCategoryDataModel? newValue) {
+                  setState(() {
+                    stateselected = newValue;
+                  });
+                }, String),
+            _buildTextField2(AppLocalizations.of(context)!.loanamount,
+                _loan_amountController, TextInputType.number, 7, amountReg, true),
+
+            SizedBox(
+              height: 6,
+            ),
+            Text(
+              AppLocalizations.of(context)!.loanreason,
+              style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+            ),
+            SizedBox(
+              height: 4,
+            ),
+
+            Container(
+              alignment: Alignment.center,
+
+              width: double.infinity,
+              // Adjust the width as needed
+              height: 55,
+              // Fixed height
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: DropdownButton<String>(
+                value: selectedLoanReason,
+                isExpanded: true,
+                hint: Text(AppLocalizations.of(context)!.selectloanreason),
+                iconSize: 24,
+                elevation: 16,
+                style: TextStyle(
+                    fontFamily: "Poppins-Regular",
+                    color: Colors.black,
+                    fontSize: 13),
+                underline: Container(
+                  height: 2,
+                  color: Colors
+                      .transparent, // Set to transparent to remove default underline
+                ),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      selectedLoanReason = newValue; // Update the selected value
+                    });
+                  }
+                },
+                items: reasonForLoan
+                    .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
+                  return DropdownMenuItem<String>(
+                    value: state.code,
+                    child: Text(state.descriptionEn),
+                  );
+                }).toList(),
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+
+            Row(
+              children: [
+                // Special Ability Dropdown
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.loanduration,
+                        style:
+                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                      ),
+                      SizedBox(height: 3),
+                      Container(
+                        alignment: Alignment.center,
+                        width: 150,
+                        // Adjust the width as needed
+                        height: 55,
+                        // Fixed height
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: DropdownButton<String>(
+                          value: selectedloanDuration,
+                          isExpanded: true,
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular",
+                              color: Colors.black,
+                              fontSize: 13),
+                          underline: Container(
+                            height: 2,
+                            color: Colors
+                                .transparent, // Set to transparent to remove default underline
+                          ),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedloanDuration = newValue!;
+                            });
+                          },
+                          items: loanDuration.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 16), // Space between dropdowns
+                // State Name Dropdown
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.bankname,
+                        style:
+                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                      ),
+                      SizedBox(height: 3),
+                      Container(
+                        alignment: Alignment.center,
+                        height: 55,
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: DropdownButton<String>(
+                          value: bankselected,
+                          isExpanded: true,
+                          hint: Text(AppLocalizations.of(context)!.selectbank),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(
+                              fontFamily: "Poppins-Regular",
+                              color: Colors.black,
+                              fontSize: 13),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.transparent,
+                          ),
+                          onChanged: (String? newValue) {
+                            if (newValue != null) {
+                              setState(() {
+                                bankselected = newValue;
+                              });
+                            }
+                          },
+                          items: bankNamesList.map<DropdownMenuItem<String>>(
+                                  (BankNamesDataModel state) {
+                                return DropdownMenuItem<String>(
+                                  value: state.id.toString(),
+                                  child: Text(state.bankName),
+                                );
+                              }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              AppLocalizations.of(context)!.marital,
+              style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+            ),
+
+            SizedBox(
+              height: 4,
+            ),
+
+            Container(
+              alignment: Alignment.center,
+
+              width: double.infinity,
+              // Adjust the width as needed
+              height: 55,
+              // Fixed height
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: DropdownButton<String>(
+                value: selectedMarritalStatus,
+                isExpanded: true,
+                iconSize: 24,
+                elevation: 16,
+                style: TextStyle(
+                    fontFamily: "Poppins-Regular",
+                    color: Colors.black,
+                    fontSize: 13),
+                underline: Container(
+                  height: 2,
+                  color: Colors
+                      .transparent, // Set to transparent to remove default underline
+                ),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      selectedMarritalStatus = newValue;
+                    });
+                  }
+                },
+                items: marrital_status
+                    .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
+                  return DropdownMenuItem<String>(
+                    value: state.code,
+                    child: Text(state.descriptionEn),
+                  );
+                }).toList(),
+              ),
+            ),
+            // Conditionally show the spouse fields only when isMarried is true
+            if (selectedMarritalStatus.toString() == 'Married')
+              Column(
+                children: [
+                  _buildTextField2(
+                      AppLocalizations.of(context)!.sfname,
+                      _spouseFirstNameController,
+                      TextInputType.text,
+                      30,
+                      nameReg,
+                      manualSEntry),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField2(
+                            AppLocalizations.of(context)!.mname,
+                            _spouseMiddleNameController,
+                            TextInputType.text,
+                            30,
+                            nameReg,
+                            manualSEntry),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: _buildTextField2(
+                            AppLocalizations.of(context)!.lname,
+                            _spouseLastNameController,
+                            TextInputType.text,
+                            30,
+                            nameReg,
+                            manualSEntry),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            SizedBox(
+              height: 10,
+            ),
+
+            if (selectedMarritalStatus.toString() != 'Unmarried' && selectedMarritalStatus.toString() != "" && selectedMarritalStatus.toString() !="Select")
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.noofchildren,
+                    style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                  ),
+                  SizedBox(
+                    height: 1,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectednumOfChildren,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.black,
+                          fontSize: 13),
+                      underline: Container(
+                        height: 2,
+                        color: Colors
+                            .transparent, // Set to transparent to remove default underline
+                      ),
+                      onChanged: FiFamilyEditable
+                          ? (String? newValue) {
+                        setState(() {
+                          selectednumOfChildren = newValue!;
+                        });
+                      }
+                          : null,
+                      items: onetonine.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.schoolgoingchildren,
+                    style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                  ),
+                  SizedBox(
+                    height: 1,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedschoolingChildren,
+                      isExpanded: true,
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.black,
+                          fontSize: 13),
+                      underline: Container(
+                        height: 2,
+                        color: Colors
+                            .transparent, // Set to transparent to remove default underline
+                      ),
+                      onChanged: FiFamilyEditable
+                          ? (String? newValue) {
+                        setState(() {
+                          selectedschoolingChildren = newValue!;
+                        });
+                      }
+                          : null,
+                      items: onetonine.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],),
+
+
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              AppLocalizations.of(context)!.otherdependentis,
+              style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: DropdownButton<String>(
+                value: selectedotherDependents,
+                isExpanded: true,
+                iconSize: 24,
+                elevation: 16,
+                style: TextStyle(
+                    fontFamily: "Poppins-Regular",
+                    color: Colors.black,
+                    fontSize: 13),
+                underline: Container(
+                  height: 2,
+                  color: Colors
+                      .transparent, // Set to transparent to remove default underline
+                ),
+                onChanged: FiFamilyEditable
+                    ? (String? newValue) {
+                  setState(() {
+                    selectedotherDependents = newValue!;
+                  });
+                }
+                    : null,
+                items: onetonine.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ));
   }
 
   Widget _buildStepTwo(BuildContext context) {
@@ -3140,8 +2687,6 @@ class _KYCPageState extends State<KYCPage> {
               selectedDistrictCode = null;
               selectedSubDistrictCode = null;
               selectedVillageCode = null;
-              // getPlace("city",stateselected!.code,"","");
-              // getPlace("district",stateselected!.code,"","");
             });
           }, String),
           _buildLabeledDropdownField(
@@ -3155,7 +2700,6 @@ class _KYCPageState extends State<KYCPage> {
               selectedVillageCode = null;
               getPlace("subdistrict", stateselected!.code,
                   selectedDistrictCode!.distCode!, "");
-              // getPlace("district",stateselected!.code,"","");
             });
           }, String),
           _buildLabeledDropdownField(
@@ -3171,7 +2715,6 @@ class _KYCPageState extends State<KYCPage> {
                   stateselected!.code,
                   selectedDistrictCode!.distCode!,
                   selectedSubDistrictCode!.subDistCode!);
-              // getPlace("district",stateselected!.code,"","");
             });
           }, String),
           _buildLabeledDropdownField(
@@ -3181,22 +2724,14 @@ class _KYCPageState extends State<KYCPage> {
               selectedVillageCode, (PlaceData? newValue) {
             setState(() {
               selectedVillageCode = newValue;
-              // getPlace("city",stateselected!.code,"","");
-              // getPlace("district",stateselected!.code,"","");
-            });
+             });
           }, String),
         ],
       ),
     );
   }
 
-  Widget _buildLabeledDropdownField<T>(
-      String labelText,
-      String label,
-      List<T> items,
-      T? selectedValue,
-      ValueChanged<T?>? onChanged,
-      Type objName) {
+  Widget _buildLabeledDropdownField<T>(String labelText, String label, List<T> items, T? selectedValue, ValueChanged<T?>? onChanged, Type objName) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: SingleChildScrollView(
@@ -3277,15 +2812,10 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-  void docVerifyIDC(
-      String type, String txnNumber, String ifsc, String dob) async {
+  void docVerifyIDC(String type, String txnNumber, String ifsc, String dob) async {
     EasyLoading.show(
       status: AppLocalizations.of(context)!.loading,
     );
-    // print("object123 $dob");
-    // DateTime parsedDate = DateFormat("dd-MM-yyyy").parse(dob);
-    // String formattedDate = DateFormat("yyyy-MM-dd").format(parsedDate);
-    // print("formattedDate123 $formattedDate");
 
     try {
       Map<String, dynamic> requestBody = {
@@ -3516,17 +3046,7 @@ class _KYCPageState extends State<KYCPage> {
           ),
           padding: EdgeInsets.symmetric(vertical: 6),
         ),
-        /*onPressed: () {
-          if (_currentStep < 2) {
-            setState(() {
-              _currentStep += 1;
-            });
-          } else if (_formKey.currentState?.validate() ?? false) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Form submitted successfully")),
-            );
-          }
-        },*/
+
         onPressed: () {
           if (_currentStep == 0) {
             if (FiType == "NEW") {
@@ -3545,27 +3065,10 @@ class _KYCPageState extends State<KYCPage> {
               });
             }
           } else if (_currentStep == 1) {
-          //  adhaarAllData(context);
             if (secondPageFieldValidate()) {
               saveIDsMethod(context);
             }
           }
-          /*   } else if (_currentStep > 1) {
-            showKycDoneDialog(context);
-          }*/
-
-          // if (_currentStep ==0) {
-          //   setState(() {
-          //     _currentStep += 1;
-          //   });
-          // } else if (_currentStep == 1) {
-          //   if(secondPageFieldValidate()){
-          //           saveIDsMethod(context);
-          //         }
-          //   ScaffoldMessenger.of(context).showSnackBar(
-          //     SnackBar(content: Text("Form submitted successfully")),
-          //   );
-          // }
         },
         child: Text(
           AppLocalizations.of(context)!.submit,
@@ -3598,78 +3101,6 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
-  /*void showKycDoneDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("KYC Done"),
-          content: Text("Your KYC process is completed."),
-          actions: <Widget>[
-            TextButton(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.of(context).pop(); // Close the current class
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }*/
-
-  bool secondPageFieldValidate() {
-    if (_panNoController.text.isNotEmpty) {
-      if (!panVerified) {
-        showToast_Error(AppLocalizations.of(context)!.pleaseverifypan);
-        return false;
-      }
-    }
-    if (_voterIdController.text.isNotEmpty) {
-      if (voterCardHolderName == null) {
-        showToast_Error(AppLocalizations.of(context)!.pleaseverifyvoterid);
-        return false;
-      }
-    }
-    if (_drivingLicenseController.text.isNotEmpty) {
-      if (!dlVerified) {
-        showToast_Error(
-            AppLocalizations.of(context)!.pleaseverifydrivinglicense);
-        return false;
-      }
-      if (_dlExpiryController.text.isEmpty) {
-        showToast_Error(AppLocalizations.of(context)!
-            .pleaseenterexpirydateofdrivinglicense);
-        return false;
-      }
-    }
-
-    if (!panVerified && !voterVerified && !dlVerified) {
-      showToast_Error(AppLocalizations.of(context)!
-          .pleaseenterandverifyeithervoteridoranyothertwoids);
-      return false;
-    } else if (checkIdMendate() == false) {
-      showToast_Error(AppLocalizations.of(context)!
-          .pleaseenterandverifyeithervoteridoranyothertwoids);
-      return false;
-    } else if (selectedCityCode == null) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectcity);
-      return false;
-    } else if (selectedDistrictCode == null) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectdistrict);
-      return false;
-    } else if (selectedSubDistrictCode == null) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectsubdistrict);
-      return false;
-    } else if (selectedVillageCode == null) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectvillage);
-      return false;
-    }
-
-    return true;
-  }
-
   bool checkIdMendate() {
     print("voterCardHolderName $voterCardHolderName");
     if (voterVerified || voterCardHolderName != null) {
@@ -3679,177 +3110,6 @@ class _KYCPageState extends State<KYCPage> {
     } else {
       return false;
     }
-  }
-
-  bool firstPageFieldValidate() {
-    if (_aadharIdController.text.isEmpty) {
-      showToast_Error(
-          AppLocalizations.of(context)!.pleaseentercorrectaadhaarid);
-      return false;
-    }
-    // else if(_errorMessageAadhaar.isNotEmpty){
-    //   showToast_Error("Please enter valid aadhaar id");
-    //   return false;
-    // }
-    else if (selectedTitle == null) {
-      showToast_Error(AppLocalizations.of(context)!.pleasechoosetitle);
-      return false;
-    } else if (_nameController.text.isEmpty) {
-      showToast_Error(
-          AppLocalizations.of(context)!.pleaseenterborrowerfirstname);
-      return false;
-    }
-    /* else if (_nameLController.text.isEmpty) {
-      showToast_Error("Please enter borrower last name");
-      return false;
-    }*/
-    else if (_gurNameController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenterguardianname);
-      return false;
-    } else if (genderselected.toLowerCase() == "select") {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectborrowergender);
-      return false;
-    } else if (relationwithBorrowerselected.toLowerCase() == "select") {
-      showToast_Error(AppLocalizations.of(context)!
-          .pleaseselectborrowerrelationwithguardian);
-      return false;
-    } else if (_mobileNoController.text.isEmpty ||
-        _mobileNoController.text.length != 10 ||
-        !_mobileNoController.text.contains(RegExp(r'^[0-9]{10}$'))) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseentermobilenumber);
-      return false;
-    } else if (mobileController.text.isEmpty ||
-        mobileController.text.length != 10 ||
-        mobileController.text == _mobileNoController.text ||
-        !mobileController.text.contains(RegExp(r'^[0-9]{10}$'))) {
-      showToast_Error(
-          AppLocalizations.of(context)!.pleaseentermobilenoalternate);
-      return false;
-    } else if (_dobController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenterdateofbirth);
-      return false;
-    } else if (_fatherFirstNameController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenterfatherfirstname);
-      return false;
-    }
-    /*else if (_fatherLastNameController.text.isEmpty) {
-      showToast_Error("Please enter father last name");
-      return false;
-    }*/
-    if (_motherFController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseentermotherfirstname);
-      return false;
-    } else if (_loan_amountController.text.isEmpty) {
-      showToast_Error(
-          AppLocalizations.of(context)!.pleaseentercorrectloanamount);
-      return false;
-    } else if (!((int.parse(_loan_amountController.text)) >= 5000 &&
-        (int.parse(_loan_amountController.text)) <= 300000)) {
-      showToast_Error(AppLocalizations.of(context)!
-          .loanamountshouldbelessthanthreelakhsandgreaterthan);
-      return false;
-    } else if (selectedLoanReason == null) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectloanreason);
-      return false;
-    } else if (selectedloanDuration == null ||
-        selectedloanDuration!.toLowerCase() == "select") {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectloanduration);
-      return false;
-    } else if (bankselected == null ||
-        bankselected!.toLowerCase() == "select") {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectbank);
-      return false;
-    }else if (selectedMarritalStatus == null ||selectedMarritalStatus!.toLowerCase() == "select") {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectmaritalstatus);
-      return false;
-    }
-    /*else if (_expenseController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseentermonthlyexpenses);
-      return false;
-    } else if (_incomeController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseentermonthlyincome);
-      return false;
-    }*/ /*else if ((!GlobalClass.creator.startsWith('VH') ||
-            !GlobalClass.creator.startsWith('vh')) &&
-        !(int.parse(_incomeController.text) <= 25000 &&
-            int.parse(_incomeController.text) >= 10000)) {
-      showToast_Error(
-          AppLocalizations.of(context)!.incomeshouldbegreaterthanandlessthan);
-      return false;
-    }*/ /*else if (!(int.parse(_incomeController.text)<=25000 && int.parse(_incomeController.text)>=10000)) {
-      showToast_Error("Income should be greater than 10,000 and less than 25,000");
-      return false;
-    }*/
-    else if (selectedMarritalStatus!.toLowerCase() == "married" &&_spouseFirstNameController.text.isEmpty) {
-        showToast_Error(
-            AppLocalizations.of(context)!.pleaseenterspousefirstname);
-        return false;
-
-        /*else if (_spouseLastNameController.text.isEmpty) {
-        showToast_Error("Please enter spouse last name");
-        return false;
-      }*/
-      } else if (selectedMarritalStatus!.toLowerCase() != "unmarried"&& selectednumOfChildren.toLowerCase() == 'select') {
-        showToast_Error(
-            AppLocalizations.of(context)!.pleaseselectnumberofchildren);
-        return false;
-      } else if (selectedMarritalStatus!.toLowerCase() != "unmarried"&&( selectedschoolingChildren.isEmpty ||
-          selectedschoolingChildren.toLowerCase() == 'select')) {
-        showToast_Error(
-            AppLocalizations.of(context)!.pleaseselectschoolgoingchildren);
-        return false;
-      }
-     /*else if (selectednumOfChildren == null ||
-        selectednumOfChildren!.toLowerCase() == 'select') {
-      setState(() {
-        selectednumOfChildren = "0";
-      });
-    } else if (selectedschoolingChildren == null ||
-        selectedschoolingChildren!.isEmpty ||
-        selectedschoolingChildren!.toLowerCase() == 'select') {
-      setState(() {
-        selectedschoolingChildren = "0";
-      });
-    }*/ else if (_address1Controller.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseenteraddress);
-      return false;
-    } else if (_cityController.text.isEmpty) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseentercity);
-      return false;
-    } else if (_pincodeController.text.isEmpty ||
-        _pincodeController.text.length != 6) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseentercorrectpincode);
-      return false;
-    } else if (stateselected == null ||
-        stateselected!.descriptionEn.toLowerCase() == "select") {
-      showToast_Error(AppLocalizations.of(context)!.pleaseselectstate);
-      return false;
-    } else if (selectedotherDependents == null ||
-        selectedotherDependents!.isEmpty ||
-        selectedotherDependents!.toLowerCase() == 'select') {
-      showToast_Error(
-          AppLocalizations.of(context)!.pleaseselectotherdependents);
-      return false;
-    }  else if (_latitudeController.text.isEmpty ||
-        _longitudeController.text.isEmpty) {
-      showToast_Error(
-          AppLocalizations.of(context)!.pleaseturnonlocationserviceofmobile);
-      return false;
-    } else if (_imageFile == null) {
-      showToast_Error(
-          AppLocalizations.of(context)!.pleasecaptureborrowerprofilepicture);
-      return false;
-    } else if (!otpVerified) {
-      showToast_Error(
-          AppLocalizations.of(context)!.pleaseverifymobilenumberwithotp);
-      return false;
-    }
-    return true;
-  }
-
-  void getOTPByMobileNo(String text) {
-    // Handle OTP submission here
-    debugPrint("Submitted OTP: $text");
   }
 
   Future<void> verifyDocs(BuildContext context, String idNoController,
@@ -4072,24 +3332,6 @@ class _KYCPageState extends State<KYCPage> {
         }
         else if (dataList[0].toLowerCase() == 'v4' && dataList[1].contains("3")) {
 
-          print("AAAA0${dataList[0]}");
-          print("AAAA1${dataList[1]}");
-          print("AAAA2${dataList[2]}");
-          print("AAAA3${dataList[3]}");
-          print("AAAA4${dataList[4]}");
-          print("AAAA5${dataList[5]}");
-          print("AAAA6${dataList[6]}");
-          print("AAAA7${dataList[7]}");
-          print("AAAA8${dataList[8]}");
-          print("AAAA9${dataList[9]}");
-          print("AAAA10${dataList[10]}");
-          print("AAAA11${dataList[11]}");
-          print("AAAA12${dataList[12]}");
-          print("AAAA13${dataList[13]}");
-          print("AAAA14${dataList[14]}");
-          print("AAAA15${dataList[15]}");
-//[V4, 3, 270020250403123759485, Surendra Kumar, 05-07-1989, M, S/O Manohar Lal, Pilibhit, , vill. maseet post daulatpur patti, , 262001, , Uttar Pradesh, tehseel bisalpur, ]
-
           setState(() {
             stateselected = states.firstWhere((item) =>
                 item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
@@ -4108,12 +3350,9 @@ class _KYCPageState extends State<KYCPage> {
             } else {
               _address1Controller.text = addressParts.first;
               _address2Controller.text = addressParts.last;
-              _address3Controller.text =
-                  addressParts.sublist(1, addressParts.length - 1).join(' ');
+              _address3Controller.text = addressParts.sublist(1, addressParts.length - 1).join(' ');
             }
           });
-
-
         }
          else if (dataList[0].toLowerCase() == 'v4') {
 
@@ -4245,32 +3484,6 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  Future<void> _BabnkNamesAPI(BuildContext context) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      EasyLoading.show(
-        status: AppLocalizations.of(context)!.loading,
-      );
-    });
-
-    final api = Provider.of<ApiService>(context, listen: false);
-
-    return await api
-        .bankNames(GlobalClass.token, GlobalClass.dbName)
-        .then((value) async {
-      if (value.statuscode == 200) {
-        EasyLoading.dismiss();
-        if (!value.data.isEmpty) {
-          setState(() {
-            bankNamesList = value.data;
-          });
-        }
-      } else {
-        EasyLoading.dismiss();
-        showToast_Error(AppLocalizations.of(context)!.banknamelistnotfetched);
-      }
-    });
-  }
-
   String replaceCharFromName(String gurName) {
     return gurName
         .toUpperCase()
@@ -4377,113 +3590,6 @@ class _KYCPageState extends State<KYCPage> {
       onPressed: onPressed,
       child: Text(text),
     );
-  }
-
-  Future<void> adhaarAllData(BuildContext contextDialog) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      EasyLoading.show(
-        status: AppLocalizations.of(context)!.loading,
-      );
-    });
-    print("object112211");
-
-    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
-
-    return await api
-        .dataByAdhaar(
-      GlobalClass.token,
-      GlobalClass.dbName,
-      _aadharIdController.text,
-    )
-        .then((value) {
-      if (value.statuscode == 200) {
-        if (value.data[0].errormsg.isEmpty) {
-          print("object112222");
-          adhaardata = value.data[0];
-          if (value.data[0].caseStatus.contains("KYC PEnding")) {
-            EasyLoading.dismiss();
-
-            Future.delayed(
-                Duration.zero, () => showIDCardDialog(context, adhaardata!, 2));
-
-            /* setState(() {
-              FiType = "OLD";
-              Fi_Code=value.data[0].fiCode.toString();
-              Fi_Id = value.data[0].fiId.toString();
-              selectedTitle = value.data[0].title.trim();
-              _nameController.text = value.data[0].fName;
-              _nameMController.text = value.data[0].mName;
-              _nameLController.text = value.data[0].lName;
-                if(value.data[0].relationWithBorrower=="Husband"){
-                  relationwithBorrowerselected="Husband";
-                  _gurNameController.text="${value.data[0].spousEFirstName} ${value.data[0].spousEMiddleName} ${value.data[0].spousELastName}";
-                }else if(value.data[0].relationWithBorrower=="Husband"){
-                  relationwithBorrowerselected="Husband";
-                  _gurNameController.text="${value.data[0].fatheRFirstName} ${value.data[0].fatheRMiddleName} ${value.data[0].fatheRLastName}";
-                }
-                genderselected=value.data[0].gender;
-              relationwithBorrowerselected=(value.data[0].relationWithBorrower);
-              _mobileNoController.text = value.data[0].pPhone;
-              _dobController.text = value.data[0].dob.toString().split("T")[0];
-              dlDob = value.data[0].dob.toString().split("T")[0];
-              // _ageController.text =value.data[0].;
-              if(value.data[0].pState.isNotEmpty){
-                stateselected= states
-                    .firstWhere((item) =>
-                item.code.toLowerCase() ==
-                    value.data[0].pState.toLowerCase());
-              }
-
-              _fatherFirstNameController.text = value.data[0].fatheRFirstName;
-              _fatherMiddleNameController.text = value.data[0].fatheRMiddleName;
-              _fatherLastNameController.text = value.data[0].fatheRLastName;
-            //  selectedMarritalStatus = (value.data[0].isMarried)?"Married":"unmarried";
-              _spouseFirstNameController.text = value.data[0].spousEFirstName;
-              _spouseMiddleNameController.text = value.data[0].spousEMiddleName;
-              _spouseLastNameController.text = value.data[0].spousELastName;
-              _expenseController.text =value.data[0].expense.toString();
-              _incomeController.text =value.data[0].income.toString();
-           //   _latitudeController.text =value.data[0].latitude;
-          //    _longitudeController.text =value.data[0].longitude;
-              _address1Controller.text =value.data[0].pAddress1;
-              _address2Controller.text =value.data[0].pAddress2;
-              _address3Controller.text =value.data[0].pAddress3;
-              _cityController.text =value.data[0].pCity;
-              _pincodeController.text =value.data[0].pPincode;
-              */ /*stateselected = states.firstWhere((item) =>
-              item.descriptionEn.toLowerCase() == value.data[0].pState.toString().toLowerCase());*/ /*
-              _loan_amountController.text =value.data[0].loanAmount.toString();
-             EasyLoading.dismiss();
-
-            });
-            GlobalClass.showAlert(
-              contextDialog,
-              "KYC Already Exist with same Aadhaar",
-              "Ficode: ${Fi_Code}\nCreator: ${GlobalClass.creator}\nBorrower Name: ${value.data[0].fName } ${value.data[0].mName } ${value.data[0].lName} ",
-              Colors.red,
-              1,
-            );*/
-          } else {
-            EasyLoading.dismiss();
-            Future.delayed(
-                Duration.zero, () => showIDCardDialog(context, adhaardata!, 1));
-
-            /*String ficode = value.data[0].fiCode.toString();
-            GlobalClass.showErrorAlert(context,
-                "Kyc is Already Done on this Adhaar Id(FiCode is $ficode)", 2);*/
-          }
-        } else {
-          EasyLoading.dismiss();
-        }
-      } else {
-        EasyLoading.dismiss();
-
-        setState(() {});
-      }
-    }).catchError((err) {
-      print("ERRORRRR$err");
-      EasyLoading.dismiss();
-    });
   }
 
   void showFinoConcent(BuildContext context) {
@@ -4635,26 +3741,24 @@ class _KYCPageState extends State<KYCPage> {
                                   ),
                                 ),
                               ),
-
                             )
-
                           ],
                         ),
                         SizedBox(height: 10),
-
                       ],
                     ),
                   ),
                 ),
               ));
         });
-
       },
     );
   }
 
-  void showIDCardDialog(
-      BuildContext context, DatabyAadhaarDataModel borrowerInfo, int page) {
+
+  void showIDCardDialog( BuildContext context, DatabyAadhaarDataModel borrowerInfo, int page) {
+
+
     final String name = borrowerInfo.customerName;
     final String aadhaarNo = borrowerInfo.aadharNo;
     final String maskedaadhaarNo = AadhaarMasker(aadhaarNo);
@@ -4700,19 +3804,6 @@ class _KYCPageState extends State<KYCPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      /*Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.grey,
-                              width: 2), // Border around image
-                          borderRadius:
-                          BorderRadius.circular(50), // Circle border
-                        ),
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: NetworkImage(imageUrl),
-                        ),
-                      ),*/
                       SizedBox(height: 10),
                       // Name
                       Text(
@@ -4771,21 +3862,15 @@ class _KYCPageState extends State<KYCPage> {
                                       Fi_Id = borrowerInfo.fIId.toString();
                                       Fi_Code = borrowerInfo.fiCode.toString();
                                       dlDob = borrowerInfo.dob.toString();
-                                      print("sssssssss + $dlDob");
-
                                       _dobController.text =
                                           borrowerInfo.dob.toString();
-                                      print("sssssssss + _dobController.text");
-
                                       _dobController.text = borrowerInfo.dob
                                           .toString()
                                           .split("T")[0];
-                                      print("sssssssss + _dobController.text");
 
                                       dlDob = borrowerInfo.dob
                                           .toString()
                                           .split("T")[0];
-                                      print("sssssssss + $dlDob");
 
                                       if (borrowerInfo.pState.isNotEmpty) {
                                         stateselected = states.firstWhere(
@@ -4794,15 +3879,11 @@ class _KYCPageState extends State<KYCPage> {
                                                 borrowerInfo.pState
                                                     .toLowerCase());
                                       }
-                                      //String statecode = borrowerInfo.pState.toString();
-
-                                      print("sssssssss" + stateselected!.code);
                                       getPlace(
                                           "city", stateselected!.code, "", "");
                                       getPlace("district", stateselected!.code,
                                           "", "");
                                     });
-                                    print('Verification Confirmed');
                                     Navigator.of(context).pop();
                                   },
                                   child: Container(
@@ -4939,5 +4020,494 @@ class _KYCPageState extends State<KYCPage> {
     return "xxxx xxxx " + aadhaarNo.substring(8);
   }
 
+  Future<void> _BabnkNamesAPI(BuildContext context) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
 
+    final api = Provider.of<ApiService>(context, listen: false);
+
+    return await api
+        .bankNames(GlobalClass.token, GlobalClass.dbName)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        if (!value.data.isEmpty) {
+          setState(() {
+            bankNamesList = value.data;
+          });
+        }
+      } else {
+        EasyLoading.dismiss();
+        showToast_Error(AppLocalizations.of(context)!.banknamelistnotfetched);
+      }
+    });
+  }
+
+  Future<void> adhaarAllData(BuildContext contextDialog) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
+    print("object112211");
+
+    final api = ApiService.create(baseUrl: ApiConfig.baseUrl1);
+
+    return await api
+        .dataByAdhaar(
+      GlobalClass.token,
+      GlobalClass.dbName,
+      _aadharIdController.text,
+    )
+        .then((value) {
+      if (value.statuscode == 200) {
+        if (value.data[0].errormsg.isEmpty) {
+          print("object112222");
+          adhaardata = value.data[0];
+          if (value.data[0].caseStatus.contains("KYC PEnding")) {
+            EasyLoading.dismiss();
+
+            Future.delayed(
+                Duration.zero, () => showIDCardDialog(context, adhaardata!, 2));
+          } else {
+            EasyLoading.dismiss();
+            Future.delayed(
+                Duration.zero, () => showIDCardDialog(context, adhaardata!, 1));
+          }
+        } else {
+          EasyLoading.dismiss();
+        }
+      } else {
+        EasyLoading.dismiss();
+
+        setState(() {});
+      }
+    }).catchError((err) {
+      print("ERRORRRR$err");
+      EasyLoading.dismiss();
+    });
+  }
+
+  bool firstPageFieldValidate() {
+    if (_aadharIdController.text.isEmpty) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseentercorrectaadhaarid);
+      return false;
+    }
+    else if (selectedTitle == null) {
+      showToast_Error(AppLocalizations.of(context)!.pleasechoosetitle);
+      return false;
+    } else if (_nameController.text.isEmpty) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenterborrowerfirstname);
+      return false;
+    }
+
+    else if (_gurNameController.text.isEmpty) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseenterguardianname);
+      return false;
+    } else if (genderselected.toLowerCase() == "select") {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectborrowergender);
+      return false;
+    } else if (relationwithBorrowerselected.toLowerCase() == "select") {
+      showToast_Error(AppLocalizations.of(context)!
+          .pleaseselectborrowerrelationwithguardian);
+      return false;
+    } else if (_mobileNoController.text.isEmpty ||
+        _mobileNoController.text.length != 10 ||
+        !_mobileNoController.text.contains(RegExp(r'^[0-9]{10}$'))) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseentermobilenumber);
+      return false;
+    } else if (mobileController.text.isEmpty ||
+        mobileController.text.length != 10 ||
+        mobileController.text == _mobileNoController.text ||
+        !mobileController.text.contains(RegExp(r'^[0-9]{10}$'))) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseentermobilenoalternate);
+      return false;
+    } else if (_dobController.text.isEmpty) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseenterdateofbirth);
+      return false;
+    } else if (_fatherFirstNameController.text.isEmpty) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseenterfatherfirstname);
+      return false;
+    }
+    if (_motherFController.text.isEmpty) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseentermotherfirstname);
+      return false;
+    } else if (_loan_amountController.text.isEmpty) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseentercorrectloanamount);
+      return false;
+    } else if (!((int.parse(_loan_amountController.text)) >= 55000 &&
+        (int.parse(_loan_amountController.text)) <= 300000)) {
+      showToast_Error(AppLocalizations.of(context)!
+          .loanamountshouldbelessthanthreelakhsandgreaterthan);
+      return false;
+    } else if (selectedLoanReason == null) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectloanreason);
+      return false;
+    } else if (selectedloanDuration == null ||
+        selectedloanDuration!.toLowerCase() == "select") {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectloanduration);
+      return false;
+    } else if (bankselected == null ||
+        bankselected!.toLowerCase() == "select") {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectbank);
+      return false;
+    }else if (selectedMarritalStatus == null ||selectedMarritalStatus!.toLowerCase() == "select") {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectmaritalstatus);
+      return false;
+    }
+    else if (selectedMarritalStatus!.toLowerCase() == "married" &&_spouseFirstNameController.text.isEmpty) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenterspousefirstname);
+      return false;
+    } else if (selectedMarritalStatus!.toLowerCase() != "unmarried"&& selectednumOfChildren.toLowerCase() == 'select') {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectnumberofchildren);
+      return false;
+    } else if (selectedMarritalStatus!.toLowerCase() != "unmarried"&&( selectedschoolingChildren.isEmpty ||
+        selectedschoolingChildren.toLowerCase() == 'select')) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectschoolgoingchildren);
+      return false;
+    } else if (_address1Controller.text.isEmpty) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseenteraddress);
+      return false;
+    } else if (_cityController.text.isEmpty) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseentercity);
+      return false;
+    } else if (_pincodeController.text.isEmpty ||
+        _pincodeController.text.length != 6) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseentercorrectpincode);
+      return false;
+    } else if (stateselected == null ||
+        stateselected!.descriptionEn.toLowerCase() == "select") {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectstate);
+      return false;
+    } else if (selectedotherDependents == null ||
+        selectedotherDependents!.isEmpty ||
+        selectedotherDependents!.toLowerCase() == 'select') {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectotherdependents);
+      return false;
+    }  else if (_latitudeController.text.isEmpty ||
+        _longitudeController.text.isEmpty) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseturnonlocationserviceofmobile);
+      return false;
+    } else if (_imageFile == null) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleasecaptureborrowerprofilepicture);
+      return false;
+    } else if (!otpVerified) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseverifymobilenumberwithotp);
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> saveFiMethod(BuildContext context) async {
+    print("Sunny");
+    try {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        EasyLoading.show(
+          status: AppLocalizations.of(context)!.loading,
+        );
+      });
+
+      String adhaarid = _aadharIdController.text.toString();
+      String title = selectedTitle ?? "";
+      String name = _nameController.text.toString();
+      String middlename = _nameMController.text.toString();
+      String lastname = _nameLController.text.toString();
+      String dob = dobForSaveFi!;
+      String age = _ageController.text.toString();
+      String gender = genderselected.toString();
+      String guardianName = _gurNameController.text.toString();
+      print("gender13 $gender");
+      print("Guardian_Name $guardianName");
+      String mobile = _mobileNoController.text.toString();
+      String fatherF = _fatherFirstNameController.text.toString();
+      String fatherM = _fatherMiddleNameController.text.toString();
+      String fatherL = _fatherLastNameController.text.toString();
+      String motherF = _motherFController.text.toString();
+      String motherM = _motherMController.text.toString();
+      String motherL = _motherLController.text.toString();
+      String spouseF = _spouseFirstNameController.text.toString();
+      String spouseM = _spouseMiddleNameController.text.toString();
+      String spouseL = _spouseLastNameController.text.toString();
+      lati = _latitudeController.text;
+      longi = _longitudeController.text;
+      int Expense = 0;
+      int Income = 0;
+      double latitude =
+      (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
+      double longitude =
+      (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
+      String add1 = _address1Controller.text.toString();
+      String add2 = _address2Controller.text.toString();
+      String add3 = _address3Controller.text.toString();
+      String city = _cityController.text.toString();
+      String pin = _pincodeController.text.toString();
+      String state = stateselected!.code.toString();
+      bool ismarried = selectedMarritalStatus.toString() == 'Married';
+      print("married12 $ismarried");
+      String gCode = widget.GroupData.groupCode;
+      print("bank $gCode");
+
+      String bCode = widget.data.branchCode.toString();
+      print("bank $bCode");
+
+      String relation_with_Borrower = relationwithBorrowerselected;
+      String bank_name = bankselected!.toString();
+      print("bank $bank_name");
+      String loan_Duration = selectedloanDuration!;
+      print("bank $loan_Duration");
+      String loan_amount = _loan_amountController.text.toString();
+      print("bank $loan_amount");
+      int ModuleTypeId =
+      GlobalClass.creator.toLowerCase().startsWith("vh") ? 2 : 1;
+      print("ModuleTypeId $ModuleTypeId");
+
+      String SelectedschoolingChildren = selectedschoolingChildren ==null?"0": selectedschoolingChildren;
+      String SelectednumOfChildren = selectednumOfChildren ==null?"0": selectednumOfChildren;
+
+      final api = Provider.of<ApiService>(context, listen: false);
+
+      await api
+          .saveFi(
+        GlobalClass.token,
+        GlobalClass.dbName,
+        adhaarid,
+        title,
+        name,
+        middlename,
+        lastname,
+        dob,
+        age,
+        gender,
+        guardianName,
+        mobile,
+        fatherF,
+        fatherM,
+        fatherL,
+        motherF,
+        motherM,
+        motherL,
+        spouseF,
+        spouseM,
+        spouseL,
+        GlobalClass.creator,
+        Expense,
+        Income,
+        latitude,
+        longitude,
+        add1,
+        add2,
+        add3,
+        city,
+        pin,
+        state,
+        ismarried,
+        gCode,
+        bCode,
+        relation_with_Borrower,
+        bank_name,
+        loan_Duration,
+        loan_amount,
+        selectedLoanReason!,
+        GlobalClass.creatorId,
+        ModuleTypeId,
+        mobileController.text,
+        SelectedschoolingChildren,
+        SelectednumOfChildren,
+        selectedotherDependents,
+        _imageFile!,
+      )
+          .then((value) async {
+        if (value.statuscode == 200) {
+          EasyLoading.dismiss();
+          getPlace("city", stateselected!.code, "", "");
+          getPlace("district", stateselected!.code, "", "");
+          setState(() {
+            EasyLoading.dismiss();
+            _currentStep += 1;
+            Fi_Id = value.data[0].fiId.toString();
+            GlobalClass.Fi_Id = value.data[0].fiId;
+            Fi_Code = value.data[0].fiCode.toString();
+            GlobalClass.ficode = value.data[0].fiCode.toString();
+          });
+        } else if (value.statuscode == 201) {
+          EasyLoading.dismiss();
+          print("status code 201");
+          GlobalClass.showAlert(
+            context,
+            value.message,
+            value.data[0].errormsg,
+            Colors.red,
+            1,
+          );
+        } else if (value.statuscode == 400) {
+          EasyLoading.dismiss();
+          GlobalClass.showSnackBar(context, "Something went wrong in API");
+        }
+        EasyLoading.dismiss();
+      }).catchError((error) {
+        GlobalClass.showSnackBar(context, "Error: ${error.toString()}");
+        EasyLoading.dismiss();
+      });
+    } catch (e) {
+      GlobalClass.showSnackBar(
+          context, "An unexpected error occurred: ${e.toString()}");
+      EasyLoading.dismiss();
+    }
+  }
+
+  bool secondPageFieldValidate() {
+    if (_panNoController.text.isNotEmpty) {
+      if (!panVerified) {
+        showToast_Error(AppLocalizations.of(context)!.pleaseverifypan);
+        return false;
+      }
+    }
+    if (_voterIdController.text.isNotEmpty) {
+      if (voterCardHolderName == null) {
+        showToast_Error(AppLocalizations.of(context)!.pleaseverifyvoterid);
+        return false;
+      }
+    }
+    if (_drivingLicenseController.text.isNotEmpty) {
+      if (!dlVerified) {
+        showToast_Error(
+            AppLocalizations.of(context)!.pleaseverifydrivinglicense);
+        return false;
+      }
+      if (_dlExpiryController.text.isEmpty) {
+        showToast_Error(AppLocalizations.of(context)!
+            .pleaseenterexpirydateofdrivinglicense);
+        return false;
+      }
+    }
+
+    if (!panVerified && !voterVerified && !dlVerified) {
+      showToast_Error(AppLocalizations.of(context)!
+          .pleaseenterandverifyeithervoteridoranyothertwoids);
+      return false;
+    } else if (checkIdMendate() == false) {
+      showToast_Error(AppLocalizations.of(context)!
+          .pleaseenterandverifyeithervoteridoranyothertwoids);
+      return false;
+    } else if (selectedCityCode == null) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectcity);
+      return false;
+    } else if (selectedDistrictCode == null) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectdistrict);
+      return false;
+    } else if (selectedSubDistrictCode == null) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectsubdistrict);
+      return false;
+    } else if (selectedVillageCode == null) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectvillage);
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void> saveIDsMethod(BuildContext context) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show(
+        status: AppLocalizations.of(context)!.loading,
+      );
+    });
+
+    print("object");
+    String fiid = Fi_Id.toString();
+    String pan_no = _panNoController.text.toString();
+    String dl = _drivingLicenseController.text.toString();
+    String? DLExpireDate = _dlExpiryController.text.toString().isEmpty
+        ? null
+        : DateFormat('yyyy-MM-dd')
+        .format(DateFormat('dd-MM-yyyy').parse(_dlExpiryController.text));
+    String voter_id = _voterIdController.text.toString();
+    String passport = _passportController.text.toString();
+    String? PassportExpireDate =
+    _passportExpiryController.text.toString().isEmpty
+        ? null
+        : _passportExpiryController.text;
+    int isAadharVerified = 1;
+    int is_phnno_verified = 1;
+    int isNameVerify = 1;
+
+    String AdharName = "";
+
+    if (adhaardata.customerName != null ) {
+      AdharName = "${adhaardata!.customerName}";
+    } else {
+      AdharName = _nameController.text.trim();
+      if (_nameMController.text.isNotEmpty && _nameLController.text.isNotEmpty) {
+        AdharName = "${_nameController.text} ${_nameMController.text} ${_nameLController.text}".trim();
+      } else if (_nameMController.text.isNotEmpty) {
+        AdharName = "${_nameController.text} ${_nameMController.text}".trim();
+      } else if (_nameLController.text.isNotEmpty) {
+        AdharName = "${_nameController.text} ${_nameLController.text}".trim();
+      }
+    }
+
+    final api = Provider.of<ApiService>(context, listen: false);
+    print("_nameController121 ${_nameController.text}");
+    Map<String, dynamic> requestBody = {
+      "Fi_ID": fiid,
+      "pan_no": pan_no,
+      "dl": dl,
+      "voter_id": voter_id,
+      "passport": passport,
+      "PassportExpireDate": PassportExpireDate,
+      "isAadharVerified": isAadharVerified,
+      "is_phnno_verified": is_phnno_verified,
+      "isNameVerify": isNameVerify,
+      "Pan_Name": panCardHolderName,
+      "VoterId_Name": voterCardHolderName,
+      "Aadhar_Name": AdharName,
+      "DrivingLic_Name": dlCardHolderName,
+      "VILLAGE_CODE": selectedVillageCode!.villageCode,
+      "CITY_CODE": selectedCityCode!.cityCode,
+      "SUB_DIST_CODE": selectedSubDistrictCode!.subDistCode,
+      "DIST_CODE": selectedDistrictCode!.distCode,
+      "STATE_CODE": stateselected!.code,
+      "DLExpireDate": DLExpireDate,
+    };
+
+    return await api
+        .addFiIds(GlobalClass.token, GlobalClass.dbName, requestBody)
+        .then((value) async {
+      if (value.statuscode == 200) {
+        EasyLoading.dismiss();
+        LiveTrackRepository().saveLivetrackData("", "KYC Done", int.parse(fiid));
+        setState(() {
+          _currentStep += 1;
+        });
+        EasyLoading.dismiss();
+        GlobalClass.showSuccessAlertclose(
+          context,
+          "KYC Saved with ${Fi_Code} and ${GlobalClass.creator} successfully!! \nPlease note these details for further process",
+          1,
+          destinationPage: OnBoarding(),
+        );
+
+      } else {
+        EasyLoading.dismiss();
+        GlobalClass.showUnsuccessfulAlert(context, value.message, 1);
+      }
+    }).catchError((onError) {
+      EasyLoading.dismiss();
+      GlobalClass.showErrorAlert(context, onError, 1);
+    });
+  }
 }

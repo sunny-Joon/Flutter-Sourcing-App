@@ -394,7 +394,7 @@
   "pleaseselectbank": "Please select bank",
   "pleaseselectloanduration": "Please select loan duration",
   "pleaseselectloanreason": "Please select loan reason",
-  "loanamountshouldbelessthanthreelakhsandgreaterthan": "Loan Amount should be Less than three Lakhs and Greater than 5 thousand",
+  "loanamountshouldbelessthanthreelakhsandgreaterthan": "Loan Amount should be Less than three Lakhs and Greater than 55 thousand",
   "pleaseentercorrectloanamount": "Please enter correct loan amount",
   "pleaseselectstate": "Please select state",
   "pleaseentercorrectpincode": "Please enter correct Pin code",

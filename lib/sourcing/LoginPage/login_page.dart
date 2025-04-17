@@ -769,10 +769,13 @@ print("_loginCalled$_loginCalled");
               context, value.statuscode.toString() + "," + value.message, 1);
         }
       } catch (err) {
+        EasyLoading.dismiss();
         GlobalClass.showErrorAlert(context, "SOMETHING WENT WRONG", 1);
         handleDioError(err);
       }
     }).catchError((error) {
+      EasyLoading.dismiss();
+
       if (error is DioException) {
         if (error.type == DioExceptionType.badResponse) {
           if (error.response != null && error.response?.data != null) {
@@ -802,14 +805,20 @@ print("_loginCalled$_loginCalled");
                 }
               }
             } else {
+              EasyLoading.dismiss();
+
               GlobalClass.showErrorAlert(
                   context, 'Error message: ${error.message}', 1);
             }
           } else {
+            EasyLoading.dismiss();
+
             GlobalClass.showErrorAlert(
                 context, 'Error message: ${error.message}', 1);
           }
         } else {
+          EasyLoading.dismiss();
+
           print('DioError type: ${error.type}');
           print('Error message: ${error.message}');
           GlobalClass.showErrorAlert(
