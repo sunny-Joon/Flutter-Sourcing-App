@@ -400,7 +400,7 @@
   "pleaseselectbank": "कृपया बैंक चुनें",
   "pleaseselectloanduration": "कृपया ऋण अवधि चुनें",
   "pleaseselectloanreason": "कृपया ऋण का कारण चुनें",
-  "loanamountshouldbelessthanthreelakhsandgreaterthan": "ऋण राशि तीन लाख से कम और 5 हजार से अधिक होनी चाहिए",
+  "loanamountshouldbelessthanthreelakhsandgreaterthan": "ऋण राशि तीन लाख से कम और 55 हजार से अधिक होनी चाहिए",
   "pleaseentercorrectloanamount": "कृपया सही ऋण राशि दर्ज करें",
   "pleaseselectstate": "कृपया राज्य चुनें",
   "pleaseentercorrectpincode": "कृपया सही पिन कोड दर्ज करें",

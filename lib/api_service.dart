@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_sourcing_app/Models/SecondEsignModel.dart';
@@ -49,6 +50,7 @@ import 'Models/get_all_model.dart';
 import 'Models/ifsc.dart';
 import 'Models/login_model.dart';
 import 'Models/ocr_response_model.dart';
+import 'Models/secondEsignDoc.dart';
 import 'Models/track_location_request.dart';
 
 part 'api_service.g.dart';
@@ -419,7 +421,7 @@ abstract class ApiService {
       @Part(name: "HouseMonthlyRent") int HouseMonthlyRent,
       @Part(name: "Residence_Type") String Residence_Type,
       @Part(name: "Residential_Stability") String Residential_Stability,
-      @Part(name: "Distancetobranch") String Distancetobranch,
+      @Part(name: "Distancetobranch") double Distancetobranch,
       @Part(name: "Timetoreachbranch") String Timetoreachbranch,
       @Part(name: "TotalExperienceOccupation") String TotalExperienceOccupation,
       @Part(name: "Totalmonthlyexpensesofoccupation")
@@ -649,7 +651,11 @@ abstract class ApiService {
   Future<CommonStringModel> getDocument(@Body() Map<String, dynamic> body);*/
 
   @GET("Document/FirstESignPdf")
-  Future<CommonStringModel> getDocument(
+  Future<CommonStringModel> getDocument1(
+      @Query("Fi_Id") int Fi_Id,);
+
+  @GET("Document/GetPdfSecondEsignReportData")
+  Future<SecondEsignDocModel> getDocument2(
       @Query("Fi_Id") int Fi_Id,);
 
   @POST("OCR/DocVerifyforOSVSpaceOCR")

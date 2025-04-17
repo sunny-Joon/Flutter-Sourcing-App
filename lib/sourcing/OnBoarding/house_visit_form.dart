@@ -302,7 +302,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                           _buildTextField2(AppLocalizations.of(context)!.monthlysales, _monthlySalesController, TextInputType.number,amountReg),
                           _buildTextField2(AppLocalizations.of(context)!.interviewedpersonname, _NameofInterviewedController, TextInputType.name,nameReg),
                           _buildTextField2(AppLocalizations.of(context)!.interviewedpersonage, _AgeofInterviewedController, TextInputType.number,amountReg),
-                          _buildTextField2(AppLocalizations.of(context)!.distancetobranch, _DistancetobranchController, TextInputType.number,amountReg),
+                         // _buildTextField2(AppLocalizations.of(context)!.distancetobranch, _DistancetobranchController, TextInputType.number,amountReg),
                           _buildTextField2(AppLocalizations.of(context)!.timetoreachbranch, _TimetoreachbranchController, TextInputType.number,amountReg),
                           _buildTextField2(AppLocalizations.of(context)!.totalmonthlyexpenses, _TotalmonthlyexpensesofoccupationController, TextInputType.number,amountReg),
                           _buildTextField2(AppLocalizations.of(context)!.netmonthlyincomeafterloan, _Netmonthlyincome_afterproposedloanController, TextInputType.number,amountReg),
@@ -576,7 +576,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     int monthlySales=int.parse(_monthlySalesController.text.toString());
     String NameofInterviewed=_NameofInterviewedController.text.toString();
     String AgeofInterviewed=_AgeofInterviewedController.text.toString();
-    String Distancetobranch=_DistancetobranchController.text.toString();
+    //String Distancetobranch=_DistancetobranchController.text.toString();
     String Timetoreachbranch=_TimetoreachbranchController.text.toString();
     int Totalmonthlyexpensesofoccupation=int.parse(_TotalmonthlyexpensesofoccupationController.text.toString());
     int Netmonthlyincome_afterproposedloan=int.parse(_Netmonthlyincome_afterproposedloanController.text.toString());
@@ -665,7 +665,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         HouseMonthlyRent,
         Residence_Type,
         Residential_Stability,
-        Distancetobranch,
+        totalDistance!,
         Timetoreachbranch,
         TotalExperienceOccupation,
         Totalmonthlyexpensesofoccupation,
@@ -976,7 +976,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
       return false;
     }
 
-    String value = _DistancetobranchController.text;
+  /*  String value = _DistancetobranchController.text;
 
     if (value.isNotEmpty && totalDistance != null) {
       double enteredValue = double.tryParse(value) ?? 0.0;
@@ -990,7 +990,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         return true;
       }
      // return false;
-    }
+    }*/
 
 
 

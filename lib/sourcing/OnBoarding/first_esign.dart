@@ -51,7 +51,7 @@ class _FirstEsignState extends State<FirstEsign> {
   void initState() {
     super.initState();
     signType = widget.type.toString();
-    fetchFirstESignPDF(widget.selectedData);
+    signType=="1"? fetchFirstESignPDF(widget.selectedData):fetchSecondESignPDF(widget.selectedData);
     //print("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}");
   }
   @override
@@ -300,7 +300,7 @@ class _FirstEsignState extends State<FirstEsign> {
     print("signType $signType");
 
     try {
-      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl12).getDocument(selectedData.id);
+      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl12).getDocument1(selectedData.id);
       if (response.statuscode == 200 || response.data.isNotEmpty) {
         print(response.data);
         _loadPdf(response.data);
@@ -312,6 +312,24 @@ class _FirstEsignState extends State<FirstEsign> {
       GlobalClass.showErrorAlert(context, "Document Not Fetched", 2);
     }
   }
+
+  Future<void> fetchSecondESignPDF(BorrowerListDataModel selectedData)async {
+    print("signType $signType");
+
+    try {
+      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl12).getDocument2(selectedData.id);
+      if (response.statuscode == 200 || response.data.fileUrl.isNotEmpty) {
+        print(response.data);
+        _loadPdf(response.data.fileUrl);
+      } else {
+        GlobalClass.showUnsuccessfulAlert(
+            context, "Pdf Not Found\nContact to Administrator", 2);
+      }
+    } catch (error) {
+      GlobalClass.showErrorAlert(context, "Document Not Fetched ${error.toString()}", 2);
+    }
+  }
+
 
   Future<void> _loadPdf(String url) async {
     final file = await _downloadPdf(url);
@@ -337,6 +355,7 @@ class _FirstEsignState extends State<FirstEsign> {
     }
     return null;
   }
+
 }
 
 class DialogContent extends StatefulWidget {
@@ -368,7 +387,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
   @override
   void initState() {
     super.initState();
-    _apiServiceForESign = ApiService.create(baseUrl: ApiConfig.baseUrl7);
+    _apiServiceForESign = ApiService.create(baseUrl: ApiConfig.baseUrl11);
     _apiServiceForESignemudra = ApiService.create(baseUrl: ApiConfig.baseUrl10);
     _dialogAdharController.text = widget.borrowerAdharNumber;
     initTTS();
@@ -544,8 +563,8 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
                       ignoring: !_isChecked,
                       child: InkWell(
                         onTap: () {
-                        //  hitSaveAgreementsAPIEmudra(authModeType);
-                          hitSaveAgreementsAPIProtien(authModeType);
+                          hitSaveAgreementsAPIEmudra(authModeType);
+                        //  hitSaveAgreementsAPIProtien(authModeType);
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(
@@ -947,6 +966,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
               context, xmlResponse.message ?? "Unexpected response", 1);
         }
       } else {
+        print("Call1");
 
         hitSaveAgreementsAPIProtien(authType);
        /* GlobalClass.showErrorAlert(
@@ -954,6 +974,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       }
     } on DioError catch (e) {
       EasyLoading.dismiss();
+      print("Call2");
 
       hitSaveAgreementsAPIProtien(authType);
       /*EasyLoading.dismiss();
@@ -976,6 +997,8 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       // Handle any other unexpected errors
       /*GlobalClass.showErrorAlert(
           context, "An unexpected error occurred: ${e.toString()}", 1);*/
+      print("Call3");
+
       hitSaveAgreementsAPIProtien(authType);
     }
   }

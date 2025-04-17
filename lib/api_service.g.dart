@@ -1959,7 +1959,7 @@ class _ApiService implements ApiService {
     int HouseMonthlyRent,
     String Residence_Type,
     String Residential_Stability,
-    String Distancetobranch,
+    double Distancetobranch,
     String Timetoreachbranch,
     String TotalExperienceOccupation,
     int Totalmonthlyexpensesofoccupation,
@@ -2210,7 +2210,7 @@ class _ApiService implements ApiService {
     ));
     _data.fields.add(MapEntry(
       'Distancetobranch',
-      Distancetobranch,
+      Distancetobranch.toString(),
     ));
     _data.fields.add(MapEntry(
       'Timetoreachbranch',
@@ -3502,7 +3502,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<CommonStringModel> getDocument(int Fi_Id) async {
+  Future<CommonStringModel> getDocument1(int Fi_Id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'Fi_Id': Fi_Id};
     final _headers = <String, dynamic>{};
@@ -3527,6 +3527,39 @@ class _ApiService implements ApiService {
     late CommonStringModel _value;
     try {
       _value = CommonStringModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<SecondEsignDocModel> getDocument2(int Fi_Id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'Fi_Id': Fi_Id};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<SecondEsignDocModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'Document/GetPdfSecondEsignReportData',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late SecondEsignDocModel _value;
+    try {
+      _value = SecondEsignDocModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
