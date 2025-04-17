@@ -857,22 +857,11 @@ class _KYCPageState extends State<KYCPage> {
                 SizedBox(height: 10), // Space between buttons
                 // Adhaar Back Button
                 SizedBox(
-                  width: double.infinity, // Match the width of the dialog
+                  width: double.infinity,
                   child: TextButton(
                     onPressed: () async {
                       Navigator.of(context).pop();
                       showFinoConcent(context);
-
-                      try {
-                        final resultrd =
-                            await callJavaMethodRd(); // Call the method directly
-
-                        if (resultrd != null) {
-                          print("QR Data: $resultrd");
-                        }
-                      } catch (e) {
-                        print("Error: $e");
-                      }
                     },
                     child: Text(
                       'Data Fetch By Morpho',
