@@ -685,6 +685,7 @@ print("_loginCalled$_loginCalled");
           print("_loginCalled3$_loginCalled");
           refToken = value.data.tokenDetails.token.toString();
           if (value.message == 'Login Successfully !!') {
+            GlobalClass.showSuccessAlert(context, value.message, 1);
             // Assign values to GlobalClass static members
             /*    if (value.data.foImei.isEmpty) {
                   EasyLoading.dismiss();
