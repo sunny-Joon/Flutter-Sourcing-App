@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _showBiometricIcon = false;
   bool isAvailable=false;
   bool isDeviceSupported=false;
-
+  bool _loginCalled = false;
   /* bool _isExpanded = false;
   late AnimationController _controller;
   late Animation<double> _animation;*/
@@ -272,6 +272,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
+
                   SizedBox(height: 2),
                   Text(
                     AppLocalizations.of(context)!.passerror,
@@ -282,10 +283,41 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   SizedBox(height: 30),
+
+                /*  Align(
+                    alignment: Alignment.centerRight,
+
+                    child:TextButton(
+                      onPressed: () {
+                        showChangePasswordDialog(context);
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: Color(0xFFD42D3F),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10), // some padding
+                        minimumSize: Size(0, 0), // ensures no extra space
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap, // shrink button
+                      ),
+                      child: Text(
+                        'Change Password',
+                        style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.end, // optional, for safety
+                      ),
+                    ),
+
+                  ),
+*/
                   //  Padding(
                   //  padding: const EdgeInsets.symmetric(horizontal: 25),
+
                   ElevatedButton(
                     onPressed: () async {
+
                       if (validateIdPassword(
                           context,
                           mobileControllerlogin.text,
@@ -311,6 +343,55 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text(AppLocalizations.of(context)!.login),
                   ),
 
+                /*  ElevatedButton(
+                    onPressed: () async {
+
+print("_loginCalled$_loginCalled");
+                      // Call login only once
+                      if (validateIdPassword(
+                          context,
+                          mobileControllerlogin.text,
+                          passwordControllerlogin.text)) {
+
+                        if(_loginCalled){
+
+                            // Show alert if login was already called
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text("Alert"),
+                                content: Text("Please change your password"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: Text("OK"),
+                                  )
+                                ],
+                              ),
+                            );
+                            return; // Exit function, don't call API again
+
+                        }else{
+                          print("_loginCalled2$_loginCalled");
+                          _getLogin(mobileControllerlogin.text,
+                              passwordControllerlogin.text, context);
+                        }
+
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: customColor,
+                      minimumSize: Size(double.infinity, 45),
+                      textStyle: TextStyle(
+                          fontFamily: "Poppins-Regular", fontSize: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                    ),
+                    child: Text(AppLocalizations.of(context)!.login),
+                  ),
+*/
                   //    ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -600,8 +681,11 @@ class _LoginPageState extends State<LoginPage> {
         .then((value) async {
       try {
         if (value.statuscode == 200) {
+          _loginCalled = true;
+          print("_loginCalled3$_loginCalled");
           refToken = value.data.tokenDetails.token.toString();
           if (value.message == 'Login Successfully !!') {
+            GlobalClass.showSuccessAlert(context, value.message, 1);
             // Assign values to GlobalClass static members
             /*    if (value.data.foImei.isEmpty) {
                   EasyLoading.dismiss();
@@ -1053,5 +1137,95 @@ class _LoginPageState extends State<LoginPage> {
           pass.isNotEmpty;
     });
   }
+
+  TextEditingController oldPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  void showChangePasswordDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text("Change Password"),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: oldPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Old Password",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: newPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "New Password",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: confirmPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Confirm Password",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFD42D3F),
+              ),
+              onPressed: () {
+                String oldPass = oldPasswordController.text.trim();
+                String newPass = newPasswordController.text.trim();
+                String confirmPass = confirmPasswordController.text.trim();
+
+                if (oldPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Please fill all fields."),
+                  ));
+                  return;
+                }
+
+                if (newPass != confirmPass) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("New and confirm passwords do not match."),
+                  ));
+                  return;
+                }
+
+                // Perform your change password API call or logic here
+                print("Changing password...");
+
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("Submit"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
 }

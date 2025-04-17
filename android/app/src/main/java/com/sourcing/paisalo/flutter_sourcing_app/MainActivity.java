@@ -33,7 +33,14 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
-public class MainActivity extends FlutterFragmentActivity  {
+import com.finopaytech.ausdk.AUAInitializer;
+import com.finopaytech.ausdk.interfaces.AUAResultImp;
+import org.json.JSONObject;
+import java.util.Random;
+import android.os.Build;
+import android.provider.Settings;
+
+public class MainActivity extends FlutterFragmentActivity implements AUAResultImp {
     protected static final byte SEPARATOR_BYTE = (byte)255;
     public static final String TESTING_PACKAGE_NAME = "com.emudhra.esignpdf.sandbox"; // Testing Environment
     public static final String PRODUCTION_PACKAGE_NAME = "com.emudhra.esignpdf"; // Production Environment
@@ -46,9 +53,13 @@ public class MainActivity extends FlutterFragmentActivity  {
     protected static final int VTC_INDEX = 15;
     protected int emailMobilePresent, imageStartIndex, imageEndIndex;
     protected String signature,email,mobile;
+    String randomnumber;
     @Override
     public void configureFlutterEngine(FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
+        Random random = new Random();
+        int randomNumber = 10000 + random.nextInt(90000);
+        randomnumber=String.valueOf(randomNumber);
 
         // Create a MethodChannel to handle method calls from Flutter
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
@@ -69,26 +80,71 @@ public class MainActivity extends FlutterFragmentActivity  {
                         } else  if (call.method.equals("callJavaMethodQr")) {
                             openQRActivity();
                         }else  if (call.method.equals("callJavaMethodRd")) {
-                            openRdActivity();
+                            String aadhaarNumber = call.argument("aadhaar");
+                            openRdActivity(aadhaarNumber);
+                            result_global = result;
                         } else {
                             result.notImplemented();
                         }
                     }
                 });
     }
+
+    @Override
+    public void setResult(int i, String s) {
+        Log.d("TAG", "DATA1234: " + s);
+        if (result_global != null) {
+            result_global.success(s);
+            result_global = null;
+        }
+    }
+
+    AUAResultImp auaResultImp = new AUAResultImp() {
+        @Override
+        public void setResult(int i, String s) {
+            Log.d("TAG", "DATA1234: "+s.toString());
+            Log.e("DATA1234",s);
+        }
+    };
+
     private void openQRActivity() {
         Log.d("TAGGG", "Open Qr method Run");
-
         IntentIntegrator scanIntegrator = new IntentIntegrator(this);
         scanIntegrator.setOrientationLocked(false);
         scanIntegrator.initiateScan(Collections.singleton("QR_CODE"));
     }
 
-    private void openRdActivity() {
+    private void openRdActivity(String aadhaarNumber) {
+        Log.d("TAGGG", "Open RD method Run");
+        AUAInitializer auaBuilder = new AUAInitializer(MainActivity.this, auaResultImp, getRequest(aadhaarNumber));
+        auaBuilder.callAadharAuthActivity();
+    }
 
+    public String getRequest(String aadhaarNumber) {
+        Log.d("TAG", "getRequest: "+BuildConfig.APPLICATION_ID);
+        String mId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String devicedetails = mId+"|"+Build.BRAND+"|"+Build.MANUFACTURER+"|"+Build.MODEL;
+        JSONObject jsonRequestDataObj = new JSONObject();
+        try {
+            jsonRequestDataObj.put("Terminal_Id", "343454567623445");
+            jsonRequestDataObj.put("Mobile_No", "");
+            jsonRequestDataObj.put("Lat_Long", "28.533126,77.249413");
+            jsonRequestDataObj.put("User_id", "Amit");
+            jsonRequestDataObj.put("Device_Details",devicedetails);
+            jsonRequestDataObj.put("AUA_Key", getResources().getString(R.string.AUA_Key));
+            jsonRequestDataObj.put("Client ID","SSVCL12085");
+          //  jsonRequestDataObj.put("UID",aadhaarNumber);
+            jsonRequestDataObj.put("UID","541516386793");
+            jsonRequestDataObj.put("Auth_txn","3234500"+randomnumber);
+            Log.e("Request",jsonRequestDataObj.toString()+"   ------   "+ BuildConfig.APPLICATION_ID);
+            Log.d("TAG", "getRequest: "+jsonRequestDataObj.toString()+"   ------   "+ BuildConfig.APPLICATION_ID);
+        } catch (Exception e) {
+        }
+        return jsonRequestDataObj.toString();
 
     }
-//protean
+
+    //protean
     // Example Java method
     private void callJavaFunctionP(String xml) {
         String responseUrl="https://predeptest.paisalo.in:8084/PDL.ESign.API/api/E_Sign/XMLReaponseNew";
@@ -170,6 +226,9 @@ public class MainActivity extends FlutterFragmentActivity  {
                 }
         }
     }
+
+
+
 
     }
 

@@ -30,7 +30,9 @@
         android:enableOnBackInvokedCallback="true"
         android:label="Sourcing App"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        tools:replace="android:label"
+        xmlns:tools="http://schemas.android.com/tools">
         <activity
             android:name=".MainActivity"
             android:exported="true"

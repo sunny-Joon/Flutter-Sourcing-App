@@ -53,10 +53,22 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    allprojects {
+        repositories {
+            google()
+            mavenCentral()
+            flatDir {
+                dirs 'libs'
+            }
+        }
+    }
 
 
-    // Add your dependencies block here
+
     dependencies {
+
+        implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+        implementation 'com.google.android.material:material:1.9.0'
         // AndroidX Activity library for handling activity results
         implementation 'androidx.activity:activity:1.7.0'  // Updated version
         implementation 'androidx.activity:activity-ktx:1.7.0'  // Updated version

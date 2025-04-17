@@ -18,6 +18,7 @@ import '../../MasterAPIs/ckyc_repository.dart';
 import '../../MasterAPIs/live_track_repository.dart';
 import '../../Models/adhaar_model.dart';
 import '../../Models/bank_names_model.dart';
+import '../../Models/fino_model.dart';
 import '../../Models/group_model.dart';
 import '../../Models/place_codes_model.dart';
 import '../../Models/range_category_model.dart';
@@ -1067,6 +1068,7 @@ class _KYCPageState extends State<KYCPage> {
                 String cleanGuardianName(String name) {
                   return name.replaceAll(RegExp(r'[^a-zA-Z0-9.\s]'), '');
                 }
+
 
                 String cleanedGuardianName =
                     cleanGuardianName(response.data.guardianName);
@@ -3654,14 +3656,56 @@ class _KYCPageState extends State<KYCPage> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                if(finoConsentValue!){
-                                  setState(() {
-                                    Navigator.pop(context);
-                                  });
-                                }else{
+                                Navigator.of(context).pop(); // Close dialog
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                                decoration: BoxDecoration(
+                                  color: Colors.red[300],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  "Cancel",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                if (finoConsentValue!) {
+                                  if (_aadharIdController.text.trim().isEmpty) {
+                                    showToast_Error("Please enter Aadhaar number");
+                                    return;
+                                  }
+
+                                  Navigator.of(context).pop();
+                                  try {
+                                    final resultrd = await callJavaMethodRd(_aadharIdController.text);
+                                    print("callJavaMethodRd 11");
+
+                                    if (resultrd != null) {
+                                      final jsonMap = json.decode(resultrd);
+                                      final model = FinoModel.fromJson(jsonMap);
+
+                                      print("Name: ${model.poiName}, DOB: ${model.poiDob}");
+
+                                      setState(() {
+                                        _nameController.text = model.poiName ?? '';
+                                        _dobController.text = model.poiDob ?? '';
+                                      });
+                                    }
+                                  } catch (e) {
+                                    print("Error: $e");
+                                  }
+                                } else {
                                   showToast_Error("Check Consent First");
                                 }
                               },
+
                               child: Container(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 15, horizontal: 30),
@@ -3711,7 +3755,10 @@ class _KYCPageState extends State<KYCPage> {
     );
   }
 
+
   void showIDCardDialog( BuildContext context, DatabyAadhaarDataModel borrowerInfo, int page) {
+
+
     final String name = borrowerInfo.customerName;
     final String aadhaarNo = borrowerInfo.aadharNo;
     final String maskedaadhaarNo = AadhaarMasker(aadhaarNo);
@@ -3954,16 +4001,20 @@ class _KYCPageState extends State<KYCPage> {
     }
   }
 
-  Future<String?> callJavaMethodRd() async {
+  Future<String?> callJavaMethodRd(String adharno) async {
     const platform = MethodChannel('com.example.intent');
     try {
-      final String resultrd = await platform.invokeMethod('callJavaMethodRd');
+      final String resultrd = await platform.invokeMethod(
+        'callJavaMethodRd',
+        {'aadhaar': adharno},
+      );
       return resultrd;
     } on PlatformException catch (e) {
       print("Failed to invoke Java method: ${e.message}");
       return null;
     }
   }
+
 
   String AadhaarMasker(String aadhaarNo) {
     return "xxxx xxxx " + aadhaarNo.substring(8);
