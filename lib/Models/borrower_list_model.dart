@@ -44,6 +44,7 @@ class BorrowerListDataModel {
   String cast;
   String pAddress;
   String pPhone;
+  String currentPhone;
   String currentAddress;
   String groupCode;
   String branchCode;
@@ -66,6 +67,7 @@ class BorrowerListDataModel {
     required this.cast,
     required this.pAddress,
     required this.pPhone,
+    required this.currentPhone,
     required this.currentAddress,
     required this.groupCode,
     required this.branchCode,
@@ -89,6 +91,7 @@ class BorrowerListDataModel {
     cast: json["cast"]??"",
     pAddress: json["p_Address"]??"",
     pPhone: json["p_Phone"]??"",
+    currentPhone: json["current_Phone"]??"",
     currentAddress: json["current_Address"]??"",
     groupCode: json["group_code"]??"",
     branchCode: json["branch_code"]??"",
@@ -112,6 +115,7 @@ class BorrowerListDataModel {
     "cast": cast,
     "p_Address": pAddress,
     "p_Phone": pPhone,
+    "current_Phone": currentPhone,
     "current_Address": currentAddress,
     "group_code": groupCode,
     "branch_code": branchCode,

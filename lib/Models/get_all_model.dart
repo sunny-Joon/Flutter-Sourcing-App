@@ -159,6 +159,11 @@ class ApplicationgetAllDataModel {
   String loanReason;
   int expenses;
   int income;
+  int hvMonthlyIncome;
+  int hvNetmonthlyincomeotherfamilymembers;
+  int hvTotalmonthlyhouseholdexpenses;
+  int hvTotalmonthlyexpensesofoccupation;
+  String hvRelationearningmember;
   List<FiIncomeExpense> fiIncomeExpenses;
   List<FamilyMember> familyMembers;
   List<Guarantor> guarantors;
@@ -291,6 +296,11 @@ class ApplicationgetAllDataModel {
     required this.familyMembers,
     required this.guarantors,
     required this.special_Social_Category,
+    required this.hvMonthlyIncome,
+    required this.hvNetmonthlyincomeotherfamilymembers,
+    required this.hvTotalmonthlyhouseholdexpenses,
+    required this.hvTotalmonthlyexpensesofoccupation,
+    required this.hvRelationearningmember,
   });
 
   factory ApplicationgetAllDataModel.fromJson(Map<String, dynamic> json) => ApplicationgetAllDataModel(
@@ -417,6 +427,11 @@ class ApplicationgetAllDataModel {
     loanReason: json["loan_Reason"]??"",
     expenses: json["expenses"]??0,
     income: json["income"]??0,
+    hvMonthlyIncome: json["hv_monthlyIncome"],
+    hvNetmonthlyincomeotherfamilymembers: json["hv_Netmonthlyincomeotherfamilymembers"],
+    hvTotalmonthlyhouseholdexpenses: json["hv_Totalmonthlyhouseholdexpenses"],
+    hvTotalmonthlyexpensesofoccupation: json["hv_Totalmonthlyexpensesofoccupation"],
+    hvRelationearningmember: json["hv_Relationearningmember"],
     fiIncomeExpenses: json["fiIncomeExpenses"] != null
         ? List<FiIncomeExpense>.from(json["fiIncomeExpenses"].map((x) => FiIncomeExpense.fromJson(x)))
         : [],
@@ -554,6 +569,11 @@ class ApplicationgetAllDataModel {
     "loan_Reason": loanReason,
     "expenses": expenses,
     "income": income,
+    "hv_monthlyIncome": hvMonthlyIncome,
+    "hv_Netmonthlyincomeotherfamilymembers": hvNetmonthlyincomeotherfamilymembers,
+    "hv_Totalmonthlyhouseholdexpenses": hvTotalmonthlyhouseholdexpenses,
+    "hv_Totalmonthlyexpensesofoccupation": hvTotalmonthlyexpensesofoccupation,
+    "hv_Relationearningmember": hvRelationearningmember,
     "fiIncomeExpenses": List<dynamic>.from(fiIncomeExpenses.map((x) => x.toJson())),
     "familyMembers": List<dynamic>.from(familyMembers.map((x) => x.toJson())),
     "guarantors": List<dynamic>.from(guarantors.map((x) => x.toJson())),

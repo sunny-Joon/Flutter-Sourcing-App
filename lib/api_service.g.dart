@@ -546,6 +546,7 @@ class _ApiService implements ApiService {
     String SchoolingChildren,
     String NoOfChildren,
     String OtherDependents,
+    String CaseBy,
     File Picture,
   ) async {
     final _extra = <String, dynamic>{};
@@ -731,6 +732,10 @@ class _ApiService implements ApiService {
     _data.fields.add(MapEntry(
       'OtherDependents',
       OtherDependents,
+    ));
+    _data.fields.add(MapEntry(
+      'CaseBy',
+      CaseBy,
     ));
     _data.files.add(MapEntry(
       'Picture',
