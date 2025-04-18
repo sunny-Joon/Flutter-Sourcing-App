@@ -961,20 +961,25 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     if (_image == null) {showToast_Error(AppLocalizations.of(context)!.pleaseclickhousepicture);
     return false;
     }
-    if (_Mobilereferenceperson1Controller.text.length != 10 ||
-        !RegExp(r'^[0-9]{10}$')
-            .hasMatch(_Mobilereferenceperson1Controller.text)) {
+    if (_Mobilereferenceperson1Controller.text.length != 10 ||!RegExp(r'^[0-9]{10}$').hasMatch(_Mobilereferenceperson1Controller.text)) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
       return false;
+    }else if(_Mobilereferenceperson1Controller.text == widget.selectedData.pPhone ||_Mobilereferenceperson1Controller.text == widget.selectedData.currentPhone ){
+      showToast_Error(
+          "The mobile number is same as borrower's ");
+      return false;
     }
-    if (_Mobilereferenceperson2Controller.text.length != 10 ||
-        !RegExp(r'^[0-9]{10}$')
-            .hasMatch(_Mobilereferenceperson2Controller.text)) {
+    if (_Mobilereferenceperson2Controller.text.length != 10 ||!RegExp(r'^[0-9]{10}$').hasMatch(_Mobilereferenceperson2Controller.text)) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
       return false;
+    }else if(_Mobilereferenceperson2Controller.text == widget.selectedData.pPhone ||_Mobilereferenceperson1Controller.text == widget.selectedData.currentPhone ){
+      showToast_Error(
+          "The mobile number is same as borrower's ");
+      return false;
     }
+
 
   /*  String value = _DistancetobranchController.text;
 

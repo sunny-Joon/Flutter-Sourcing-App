@@ -157,7 +157,6 @@ abstract class ApiService {
       @Header("Authorization") String token,
       @Header("dbname") String dbname,
       @Part(name: "aadhar_no") String aadharNo,
-
       @Part( name:"title") String title,
       @Part( name:"f_Name") String fName,
       @Part( name:"m_Name") String mName,
@@ -201,6 +200,7 @@ abstract class ApiService {
       @Part( name:"SchoolingChildren") String SchoolingChildren,
       @Part( name:"NoOfChildren") String NoOfChildren,
       @Part( name:"OtherDependents") String OtherDependents,
+      @Part( name:"CaseBy") String CaseBy,
       @Part( name: "Picture") File Picture);
 
 

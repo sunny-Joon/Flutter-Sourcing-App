@@ -167,6 +167,7 @@ class _BorrowerList2State extends State<BorrowerList2> {
                             cast: "",
                             pAddress: "",
                             pPhone: item.pPhone,
+                            currentPhone: item.pPhone,
                             currentAddress: "",
                             groupCode: item.groupCode,
                             branchCode: item.branchCode,

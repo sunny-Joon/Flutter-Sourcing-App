@@ -463,7 +463,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     reasonForLoan = await DatabaseHelper().selectRangeCatData("loan_purpose");
     aadhar_gender = await DatabaseHelper().selectRangeCatData("gender");
     business_Type = await DatabaseHelper()
-        .selectRangeCatData("business-type"); // Call your SQLite method
+        .selectRangeCatData("other_employment"); // Call your SQLite method
     income_type = await DatabaseHelper()
         .selectRangeCatData("income-type"); // Call your SQLite method
     bank = await DatabaseHelper()
@@ -541,6 +541,16 @@ class _ApplicationPageState extends State<ApplicationPage> {
               sortOrder: 0,
               code: 'select'));
       occupationType.insert(
+          0,
+          RangeCategoryDataModel(
+              catKey: 'Select',
+              groupDescriptionEn: 'select',
+              groupDescriptionHi: 'select',
+              descriptionEn: 'Select',
+              descriptionHi: 'select',
+              sortOrder: 0,
+              code: 'select'));
+      business_Type.insert(
           0,
           RangeCategoryDataModel(
               catKey: 'Select',
@@ -947,11 +957,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
             personalInfoEditable,
             _placeOfBirthFocus,
             addReg),
+/*
         SizedBox(height: 10),
+*/
 
         // Control this flag to enable/disable fields
 
-        Padding(
+       /* Padding(
           padding: const EdgeInsets.only(right: 0.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1011,7 +1023,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ],
           ),
-        ),
+        ),*/
 
         SizedBox(height: 10),
 
@@ -1140,38 +1152,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
-
-        /*SizedBox(height: 10),
-
-        Text(
-          AppLocalizations.of(context)!.mobile,
-          style: TextStyle(
-            fontFamily: "Poppins-Regular",
-            fontSize: 13,
-          ),
-        ),
-        SizedBox(height: 1),
-        Container(
-            width: double.infinity, // Set the desired width
-
-            child: Center(
-              child: TextFormField(
-                enabled: personalInfoEditable,
-                controller: mobileController,
-                focusNode: _mobileFocusNode,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  errorText: _mobileError,
-                ),
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  // Only digits allowed
-                  LengthLimitingTextInputFormatter(10),
-                  // Maximum length of 10
-                ],
-              ),
-            )),*/
 
         SizedBox(height: 10),
 
@@ -1379,22 +1359,22 @@ class _ApplicationPageState extends State<ApplicationPage> {
         SizedBox(height: 10),
 
         _buildTextField(AppLocalizations.of(context)!.address1,
-            address1ControllerP, personalInfoEditable, _address1FocusP, addReg),
+            address1ControllerP, false, _address1FocusP, addReg),
         SizedBox(height: 10),
 
         _buildTextField(AppLocalizations.of(context)!.address2,
-            address2ControllerP, personalInfoEditable, _address2FocusP, addReg),
+            address2ControllerP, false, _address2FocusP, addReg),
         SizedBox(height: 10),
 
         _buildTextField(AppLocalizations.of(context)!.address3,
-            address3ControllerP, personalInfoEditable, _address3FocusP, addReg),
+            address3ControllerP, false, _address3FocusP, addReg),
         SizedBox(height: 10),
         _buildLabeledDropdownField(
           AppLocalizations.of(context)!.sstate,
           'State',
           states,
           selectedStateextraP,
-          personalInfoEditable,
+          false,
           (RangeCategoryDataModel? newValue) {
             setState(() {
               selectedDistrict = null;
@@ -1410,48 +1390,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
           String,
         ),
 
-        /*Text(
-          'State',
-          style: TextStyle(fontSize: 13),
-        ),
-        Container(
-          width: MediaQuery.of(context).size.width,
-          // Adjust the width as needed
-          //height: 45,
-          // Fixed height
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: DropdownButton<String>(
-            value: selectedStateextraP,
-            isExpanded: true,
-            iconSize: 24,
-            elevation: 16,
-            style: TextStyle(color: Colors.black, fontSize: 13),
-            underline: Container(
-              height: 2,
-              color: Colors
-                  .transparent, // Set to transparent to remove default underline
-            ),
-            onChanged: personalInfoEditable
-                ?(String? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  selectedStateextraP = newValue; // Update the selected value
-                });
-              }
-            }: null,
-            items: states
-                .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
-              return DropdownMenuItem<String>(
-                value: state.code,
-                child: Text(state.descriptionEn),
-              );
-            }).toList(),
-          ),
-        ),*/
         SizedBox(height: 10),
 
         Row(
@@ -1460,7 +1398,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             // City TextField
             Flexible(
               child: _buildTextField(AppLocalizations.of(context)!.city,
-                  cityControllerP, personalInfoEditable, _cityFocusP, cityReg),
+                  cityControllerP, false, _cityFocusP, cityReg),
             ),
             SizedBox(width: 10),
             // Add some space between the City TextField and Pin Code Text
@@ -1480,7 +1418,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   Container(
                     width: double.infinity, // Set the desired width
                     child: TextFormField(
-                      enabled: personalInfoEditable,
+                      enabled: false,
                       controller: pincodeControllerP,
                       focusNode: _pinFocusNodeP,
                       decoration: InputDecoration(
@@ -1540,31 +1478,27 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
-        _buildTextField(AppLocalizations.of(context)!.address1,
-            address1ControllerC, personalInfoEditable, _address1FocusC, addReg),
-        SizedBox(height: 10),
 
-        _buildTextField(AppLocalizations.of(context)!.address2,
-            address2ControllerC, personalInfoEditable, _address2FocusC, addReg),
-        SizedBox(height: 10),
+        !_isAddressChecked?Column(children: [
+          _buildTextField(AppLocalizations.of(context)!.address1,
+              address1ControllerC, personalInfoEditable, _address1FocusC, addReg),
+          SizedBox(height: 10),
 
-        _buildTextField(AppLocalizations.of(context)!.address3,
-            address3ControllerC, personalInfoEditable, _address3FocusC, addReg),
-        SizedBox(height: 10),
+          _buildTextField(AppLocalizations.of(context)!.address2,
+              address2ControllerC, personalInfoEditable, _address2FocusC, addReg),
+          SizedBox(height: 10),
 
-        _buildLabeledDropdownField(
-          AppLocalizations.of(context)!.sstate,
-          'State',
-          states,
-          selectedStateextraC,
-          personalInfoEditable,
-          (RangeCategoryDataModel? newValue) {
+          _buildTextField(AppLocalizations.of(context)!.address3,
+              address3ControllerC, personalInfoEditable, _address3FocusC, addReg),
+          SizedBox(height: 10),
+
+          _buildLabeledDropdownField(AppLocalizations.of(context)!.sstate, 'State', states, selectedStateextraC, personalInfoEditable, (RangeCategoryDataModel? newValue) {
             setState(() {
               selectedStateextraC = newValue;
             });
-          },
-          String,
-        ),
+          }, String,),
+        ],):SizedBox(),
+
         SizedBox(height: 10),
 
         Row(
@@ -1608,58 +1542,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ),
           ],
         ),
+
         SizedBox(height: 10),
 
-        /*Expanded(
-              child: _buildLabeledDropdownField(
-                  'Village', 'Village', listVillagesCodes, selectedVillage,
-                  (PlaceData? newValue) {
-                setState(() {
-                  selectedVillage = newValue;
-                });
-              }, String),
-            ),*/
-
-        /*Row(
-          children: [
-            Expanded(
-              child: _buildLabeledDropdownField(
-                  'District', 'Districts', listDistrictCodes, selectedDistrict,
-                  (PlaceData? newValue) {
-                setState(() {
-                  selectedVillage = null;
-                  selectedSubDistrict = null;
-
-                  selectedDistrict = newValue;
-
-                  getPlace("subdistrict", selectedStateextraP!.code,
-                      selectedDistrict!.distCode!, "");
-                });
-              }, String),
-            ),
-            SizedBox(width: 16.0), // Optional spacing between the dropdowns
-            Expanded(
-              child: _buildLabeledDropdownField(
-                'Sub-District',
-                'Sub-Districts',
-                listSubDistrictCodes,
-                selectedSubDistrict,
-                (PlaceData? newValue) {
-                  setState(() {
-                    selectedSubDistrict = newValue;
-                  });
-                  getPlace(
-                    "village",
-                    selectedStateextraP!.code,
-                    selectedDistrict!.distCode!,
-                    selectedSubDistrict!.subDistCode!,
-                  );
-                },
-                String,
-              ),
-            ),
-          ],
-        ),*/
         Row(
           children: [
             Flexible(
@@ -1769,7 +1654,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
 
         SizedBox(height: 10),
-        Row(
+        selectedIsHouseRental.toString() == "No"?Row(
           children: [
             Flexible(
               flex: 1,
@@ -1880,7 +1765,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ],
                 ))
           ],
-        )
+        ):SizedBox()
       ],
     ));
   }
@@ -2107,8 +1992,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           ? (String? newValue) {
                               if (newValue != null) {
                                 setState(() {
-                                  selectedOccupation =
-                                      newValue; // Update the selected value
+                                  selectedOccupation = newValue; // Update the selected value
+                                  print("SSSSS${selectedOccupation.toString()}");
                                 });
                               }
                             }
@@ -2126,7 +2011,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ),
             SizedBox(width: 10), // Spacing between the two columns
-            Flexible(
+            selectedOccupation.toString() == "SelfEmployeed"?Flexible(
               flex: 1,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -2177,12 +2062,53 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ),
                 ],
               ),
-            ),
+            ):SizedBox(),
           ],
         ),
         SizedBox(
           height: 10,
         ),
+
+        selectedOccupation == "SelfEmployeed"?Text(
+          AppLocalizations.of(context)!.businessexperience,
+          style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+          textAlign: TextAlign.left,
+        ):SizedBox(),
+        selectedOccupation.toString() == "SelfEmployeed"?Container(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: DropdownButton<String>(
+            value: selectedBusinessExperience,
+            isExpanded: true,
+            iconSize: 24,
+            elevation: 16,
+            style: TextStyle(
+                fontFamily: "Poppins-Regular",
+                color: Colors.black,
+                fontSize: 13),
+            underline: Container(
+              height: 2,
+              color: Colors.transparent,
+            ),
+            onChanged: FiIncomeEditable
+                ? (String? newValue) {
+              setState(() {
+                selectedBusinessExperience = newValue!;
+              });
+            }
+                : null,
+            items: onetonine.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+        ):SizedBox(),
+        SizedBox(height: 10),
         Row(
           children: [
             Flexible(
@@ -2456,46 +2382,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         SizedBox(
           height: 10,
         ),
-        Text(
-          AppLocalizations.of(context)!.businessexperience,
-          style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-          textAlign: TextAlign.left,
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: DropdownButton<String>(
-            value: selectedBusinessExperience,
-            isExpanded: true,
-            iconSize: 24,
-            elevation: 16,
-            style: TextStyle(
-                fontFamily: "Poppins-Regular",
-                color: Colors.black,
-                fontSize: 13),
-            underline: Container(
-              height: 2,
-              color: Colors.transparent,
-            ),
-            onChanged: FiIncomeEditable
-                ? (String? newValue) {
-                    setState(() {
-                      selectedBusinessExperience = newValue!;
-                    });
-                  }
-                : null,
-            items: onetonine.map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          ),
-        ),
-        SizedBox(height: 10),
+
         Container(
           padding: EdgeInsets.all(8.0),
           width: MediaQuery.of(context).size.width,
@@ -5983,6 +5870,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
     int A = selectedIsHandicap == 'Yes' ? 1 : 0;
     print("objectrent $selectedIsHouseRental");
     int B = selectedIsHouseRental == 'Yes' ? 1 : 0;
+    if(B==1){
+      setState(() {
+        selectedPresentHouseOwner = "NA";
+        selectedProperty = "NA";
+      });
+    }
 
     final api = Provider.of<ApiService>(context, listen: false);
     Map<String, dynamic> requestBody = {
@@ -7380,14 +7273,6 @@ print('iiiinciome2  ${others+entertainment+travelling+health+education+fooding+r
           });
           personalInfo(value.data[0]);
         }
-       /* if (!value.data[0].motheRFirstName.isEmpty) {
-          print("getAllDataApi222");
-
-          familyDetails(value.data[0]);
-          setState(() {
-            _currentStep = 2;
-          });
-        }*/
 
         if (value.data[0].fiIncomeExpenses.length != 0 &&
             value.data[0].fiIncomeExpenses[0].inExHomeType.isNotEmpty) {
