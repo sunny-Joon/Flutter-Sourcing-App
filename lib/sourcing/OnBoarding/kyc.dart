@@ -3292,6 +3292,7 @@ class _KYCPageState extends State<KYCPage> {
           }
         }
         else if(dataList[0].toLowerCase().startsWith("3")) {
+          print("SSSSSSSSSS");
           _aadharIdController.text = dataList[1];
           if (_aadharIdController.text.length != 12) {
             GlobalClass.showErrorAlert(context,
@@ -3302,7 +3303,8 @@ class _KYCPageState extends State<KYCPage> {
             nameFlag = true;
             mNameFlag = true;
             lNameFlag = true;
-          }else {
+          }
+          else {
             List<String> nameParts = dataList[2].split(" ");
             if (nameParts.length == 1) {
               _nameController.text = nameParts[0];
@@ -3322,7 +3324,8 @@ class _KYCPageState extends State<KYCPage> {
           }
           if(dataList[3].isEmpty){
             dobFlag = true;
-          }else{
+          }
+          else{
             _dobController.text = formatDate(dataList[3], 'dd-MM-yyyy');
           }
           setState(() {
@@ -3347,7 +3350,8 @@ class _KYCPageState extends State<KYCPage> {
             sfNameFlag = true;
             smNameFlag = true;
             slNameFlag = true;
-          }else {
+          }
+          else {
             if (dataList[5].toLowerCase().contains("s/o") ||
                 dataList[5].toLowerCase().contains("d/o")) {
               setState(() {
@@ -3402,6 +3406,20 @@ class _KYCPageState extends State<KYCPage> {
                           ' ');
                 }
               });
+            }
+            else if (dataList[5].toLowerCase().contains("c/o")) {
+              setState(() {
+
+                ffNameFlag = true;
+                fmNameFlag = true;
+                flNameFlag = true;
+                relationwithBorrowerFLag = true;
+                sfNameFlag = true;
+                smNameFlag = true;
+                slNameFlag = true;
+                _gurNameController.text = replaceCharFromName(dataList[5]);
+
+              });
             } else {
               gurFlag = true;
               ffNameFlag = true;
@@ -3413,45 +3431,88 @@ class _KYCPageState extends State<KYCPage> {
               slNameFlag = true;
             }
           }
-
-          if(dataList[6].isEmpty){
-            cityFlag = true;
-          }else{
-            _cityController.text = dataList[6];
-
-          }
-
-          if(dataList[11].isEmpty){
-            pinFlag = true;
-          }else{
-            _pincodeController.text = dataList[11];
-
-          }
-          if(dataList[13].isEmpty){
-            statesFLag = true;
-          }else {
-            stateselected = states.firstWhere((item) =>
-            item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
-          }
-          if(dataList[9].isEmpty&&dataList[10].isEmpty&&dataList[12].isEmpty) {
-            add1Flag = true;
-            add2Flag = true;
-            add3Flag = true;
-
-          }else {
-            String address =
-                "${dataList[9]},${dataList[10]},${dataList[12]}";
-            List<String> addressParts = address.trim().split(",");
-            if (addressParts.length == 1) {
-              _address1Controller.text = addressParts[0];
-            } else if (addressParts.length == 2) {
-              _address1Controller.text = addressParts[0];
-              _address2Controller.text = addressParts[1];
+          if(dataList.length==16) {
+            print("satish");
+            if (dataList[6].isEmpty) {
+              cityFlag = true;
             } else {
-              _address1Controller.text = addressParts.first;
-              _address2Controller.text = addressParts.last;
-              _address3Controller.text =
-                  addressParts.sublist(1, addressParts.length - 1).join(' ');
+              _cityController.text = dataList[6];
+            }
+
+            if (dataList[10].isEmpty) {
+              pinFlag = true;
+            } else {
+              _pincodeController.text = dataList[10];
+            }
+            if (dataList[12].isEmpty) {
+              statesFLag = true;
+            } else {
+              stateselected = states.firstWhere((item) =>
+              item.descriptionEn.toLowerCase() == dataList[12].toLowerCase());
+            }
+            if (dataList[8].isEmpty && dataList[9].isEmpty &&
+                dataList[7].isEmpty&&
+                dataList[11].isEmpty&&
+                dataList[13].isEmpty) {
+              add1Flag = true;
+              add2Flag = true;
+              add3Flag = true;
+            } else {
+              String address =
+                  "${dataList[8]},${dataList[9]},${dataList[7]},${dataList[11]},${dataList[13]}";
+              List<String> addressParts = address.trim().split(",");
+              if (addressParts.length == 1) {
+                _address1Controller.text = addressParts[0];
+              } else if (addressParts.length == 2) {
+                _address1Controller.text = addressParts[0];
+                _address2Controller.text = addressParts[1];
+              } else {
+                _address1Controller.text = addressParts.first;
+                _address2Controller.text = addressParts.last;
+                _address3Controller.text =
+                    addressParts.sublist(1, addressParts.length - 1).join(' ');
+              }
+            }
+          }
+          else {
+            print("mohit");
+
+            if (dataList[6].isEmpty) {
+              cityFlag = true;
+            } else {
+              _cityController.text = dataList[6];
+            }
+
+            if (dataList[11].isEmpty) {
+              pinFlag = true;
+            } else {
+              _pincodeController.text = dataList[11];
+            }
+            if (dataList[13].isEmpty) {
+              statesFLag = true;
+            } else {
+              stateselected = states.firstWhere((item) =>
+              item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+            }
+            if (dataList[9].isEmpty && dataList[10].isEmpty &&dataList[8].isEmpty&&dataList[12].isEmpty) {
+              add1Flag = true;
+              add2Flag = true;
+              add3Flag = true;
+            } else {
+              String address =
+                  "${dataList[9]},${dataList[10]},${dataList[8]},${dataList[12]}";
+              List<String> addressParts = address.trim().split(",");
+              if (addressParts.length == 1) {
+                _address1Controller.text = addressParts[0];
+              } else if (addressParts.length == 2) {
+                _address1Controller.text = addressParts[0];
+                _address2Controller.text = addressParts[1];
+              } else {
+                _address1Controller.text = addressParts.first;
+                _address2Controller.text = addressParts.last;
+                _address3Controller.text =
+                    addressParts.sublist(1, addressParts.length - 1).join(' ');
+              }
             }
           }
         }
@@ -3978,6 +4039,8 @@ class _KYCPageState extends State<KYCPage> {
         .replaceAll("S/O: ", "")
         .replaceAll("D/O ", "")
         .replaceAll("D/O: ", "")
+        .replaceAll("C/O ", "")
+        .replaceAll("C/O: ", "")
         .replaceAll("W/O ", "")
         .replaceAll("W/O: ", "");
   }
