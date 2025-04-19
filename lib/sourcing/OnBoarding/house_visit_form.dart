@@ -174,9 +174,11 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
 
       //double lat1 = 28.541909899980464;
       //double lon1 = 77.23837911402565;
-      double lat1 = (widget.GroupData.latitude ?? 0.0) as double;
-      double lon1 = (widget.GroupData.longitude ?? 0.0) as double;
+      double lat1 = double.tryParse(widget.GroupData.latitude?.toString() ?? '') ?? 0.0;
+      double lon1 = double.tryParse(widget.GroupData.longitude?.toString() ?? '') ?? 0.0;
 
+      print("lat1 $lat1");
+      print("lon1 $lon1");
 
 
       double distance = calculateDistance(lat1, lon1, _latitude, _longitude);
