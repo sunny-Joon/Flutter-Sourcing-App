@@ -32,8 +32,8 @@ class GroupDataModel {
   String groupCode;
   String groupCodeName;
   String centerName;
-  double latitude;
-  double longitude;
+  String latitude;
+  String longitude;
 
   GroupDataModel({
     required this.groupCode,
