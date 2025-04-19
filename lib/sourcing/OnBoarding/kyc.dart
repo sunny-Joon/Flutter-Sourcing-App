@@ -258,6 +258,8 @@ class _KYCPageState extends State<KYCPage> {
   bool statesFLag = false;
   bool relationwithBorrowerFLag = false;
   bool genderFlag = false;
+  bool titleFlag = false;
+  bool maritalFlag = false;
 
 
   late var _loan_amountController = TextEditingController();
@@ -1286,14 +1288,15 @@ class _KYCPageState extends State<KYCPage> {
                             color: Colors
                                 .transparent, // Set to transparent to remove default underline
                           ),
-                          onChanged: (String? newValue) {
+                          onChanged: titleFlag?(String? newValue) {
                             setState(() {
                               selectedTitle = newValue!;
                             });
-                          },
+                          }:null,
                           items: titleList.map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
+                              enabled: titleFlag,
                               child: Text(value),
                             );
                           }).toList(),
@@ -2012,17 +2015,18 @@ class _KYCPageState extends State<KYCPage> {
                   color: Colors
                       .transparent, // Set to transparent to remove default underline
                 ),
-                onChanged: (String? newValue) {
+                onChanged: maritalFlag?(String? newValue) {
                   if (newValue != null) {
                     setState(() {
                       selectedMarritalStatus = newValue;
                     });
                   }
-                },
+                }:null,
                 items: marrital_status
                     .map<DropdownMenuItem<String>>((RangeCategoryDataModel state) {
                   return DropdownMenuItem<String>(
                     value: state.code,
+                    enabled: maritalFlag,
                     child: Text(state.descriptionEn),
                   );
                 }).toList(),
@@ -2562,7 +2566,7 @@ class _KYCPageState extends State<KYCPage> {
                     ), // Convert the value to string for display
                   );
                 }).toList(),
-                onChanged: onChanged,
+                onChanged: enabled?onChanged:null,
               ),
             ),
           ],
@@ -2812,7 +2816,7 @@ class _KYCPageState extends State<KYCPage> {
               if (firstPageFieldValidate()) {
                 setState(() {
                   if(genderFlag||relationwithBorrowerFLag||statesFLag||pinFlag||cityFlag||add3Flag||add2Flag||add1Flag||slNameFlag||smNameFlag||sfNameFlag
-                  ||flNameFlag||fmNameFlag||ffNameFlag||gurFlag||dobFlag||lNameFlag||mNameFlag||nameFlag){
+                  ||flNameFlag||fmNameFlag||ffNameFlag||gurFlag||dobFlag||lNameFlag||mNameFlag||nameFlag||titleFlag){
                     kycType = "M";
                   }
                   if(selectedMarritalStatus.toString() == "Unmarried"){
@@ -3026,6 +3030,7 @@ class _KYCPageState extends State<KYCPage> {
           setState(() {
             if(dataList[5].isEmpty){
               genderFlag = true;
+              titleFlag = true;
             }else if (dataList[5].trim().toLowerCase() == "m") {
               genderselected = "Male";
               selectedTitle = "Mr.";
@@ -3078,17 +3083,17 @@ class _KYCPageState extends State<KYCPage> {
           } else if (dataList[6].toLowerCase().contains("w/o")) {
             setState(() {
               relationwithBorrowerselected = "Husband";
+              selectedMarritalStatus = "Married";
 
               if(relationwithBorrowerselected.isEmpty){
                 relationwithBorrowerFLag = true;
                 sfNameFlag = true;
+                maritalFlag = true;
                 smNameFlag = true;
                 slNameFlag = true;
               }else {
                 List<String> guarNameParts =
                 replaceCharFromName(dataList[6]).split(" ");
-
-
 
                 if (guarNameParts.length == 1) {
                   sfNameFlag = false;
@@ -3286,7 +3291,7 @@ class _KYCPageState extends State<KYCPage> {
            }
           }
         }
-        else {
+        else if(dataList[0].toLowerCase().startsWith("3")) {
           _aadharIdController.text = dataList[1];
           if (_aadharIdController.text.length != 12) {
             GlobalClass.showErrorAlert(context,
@@ -3315,7 +3320,7 @@ class _KYCPageState extends State<KYCPage> {
                   nameParts.sublist(1, nameParts.length - 1).join(' ');
             }
           }
-          if(dataList[4].isEmpty){
+          if(dataList[3].isEmpty){
             dobFlag = true;
           }else{
             _dobController.text = formatDate(dataList[3], 'dd-MM-yyyy');
@@ -3330,6 +3335,7 @@ class _KYCPageState extends State<KYCPage> {
             }
             if(genderselected.isEmpty || genderselected ==""){
               genderFlag = true;
+              titleFlag =true;
             }
           });
 
@@ -3372,6 +3378,173 @@ class _KYCPageState extends State<KYCPage> {
             else if (dataList[5].toLowerCase().contains("w/o")) {
               setState(() {
                 relationwithBorrowerselected = "Husband";
+                selectedMarritalStatus = "Married";
+
+                ffNameFlag = true;
+                fmNameFlag = true;
+                flNameFlag = true;
+                List<String> guarNameParts =
+                replaceCharFromName(dataList[5]).split(" ");
+                if (guarNameParts.length == 1) {
+                  smNameFlag = true;
+                  slNameFlag = true;
+                  _spouseFirstNameController.text = guarNameParts[0];
+                } else if (guarNameParts.length == 2) {
+                  smNameFlag = true;
+
+                  _spouseFirstNameController.text = guarNameParts[0];
+                  _spouseLastNameController.text = guarNameParts[1];
+                } else {
+                  _spouseFirstNameController.text = guarNameParts.first;
+                  _spouseLastNameController.text = guarNameParts.last;
+                  _spouseMiddleNameController.text =
+                      guarNameParts.sublist(1, guarNameParts.length - 1).join(
+                          ' ');
+                }
+              });
+            } else {
+              gurFlag = true;
+              ffNameFlag = true;
+              fmNameFlag = true;
+              flNameFlag = true;
+              relationwithBorrowerFLag = true;
+              sfNameFlag = true;
+              smNameFlag = true;
+              slNameFlag = true;
+            }
+          }
+
+          if(dataList[6].isEmpty){
+            cityFlag = true;
+          }else{
+            _cityController.text = dataList[6];
+
+          }
+
+          if(dataList[11].isEmpty){
+            pinFlag = true;
+          }else{
+            _pincodeController.text = dataList[11];
+
+          }
+          if(dataList[13].isEmpty){
+            statesFLag = true;
+          }else {
+            stateselected = states.firstWhere((item) =>
+            item.descriptionEn.toLowerCase() == dataList[13].toLowerCase());
+          }
+          if(dataList[9].isEmpty&&dataList[10].isEmpty&&dataList[12].isEmpty) {
+            add1Flag = true;
+            add2Flag = true;
+            add3Flag = true;
+
+          }else {
+            String address =
+                "${dataList[9]},${dataList[10]},${dataList[12]}";
+            List<String> addressParts = address.trim().split(",");
+            if (addressParts.length == 1) {
+              _address1Controller.text = addressParts[0];
+            } else if (addressParts.length == 2) {
+              _address1Controller.text = addressParts[0];
+              _address2Controller.text = addressParts[1];
+            } else {
+              _address1Controller.text = addressParts.first;
+              _address2Controller.text = addressParts.last;
+              _address3Controller.text =
+                  addressParts.sublist(1, addressParts.length - 1).join(' ');
+            }
+          }
+        }
+        else {
+          _aadharIdController.text = dataList[1];
+          if (_aadharIdController.text.length != 12) {
+            GlobalClass.showErrorAlert(context,
+                AppLocalizations.of(context)!.pleaseenteraadhaarnumber, 1);
+            _aadharIdController.text = "";
+          }
+          if(dataList[2].isEmpty){
+            nameFlag = true;
+            mNameFlag = true;
+            lNameFlag = true;
+          }else {
+            List<String> nameParts = dataList[2].split(" ");
+            if (nameParts.length == 1) {
+              _nameController.text = nameParts[0];
+              mNameFlag = true;
+              lNameFlag = true;
+            } else if (nameParts.length == 2) {
+              mNameFlag = true;
+
+              _nameController.text = nameParts[0];
+              _nameLController.text = nameParts[1];
+            } else {
+              _nameController.text = nameParts.first;
+              _nameLController.text = nameParts.last;
+              _nameMController.text =
+                  nameParts.sublist(1, nameParts.length - 1).join(' ');
+            }
+          }
+          if(dataList[3].isEmpty){
+            dobFlag = true;
+          }else{
+            _dobController.text = formatDate(dataList[3], 'dd-MM-yyyy');
+          }
+          setState(() {
+            if (dataList[4].toLowerCase() == "m") {
+              genderselected = "Male";
+              selectedTitle = "Mr.";
+            } else if (dataList[4].toLowerCase() == "f") {
+              genderselected = "Female";
+              selectedTitle = "Mrs.";
+            }
+            if(genderselected.isEmpty || genderselected ==""){
+              genderFlag = true;
+              titleFlag =true;
+            }
+          });
+
+          if(dataList[5].isEmpty){
+            gurFlag = true;
+            ffNameFlag = true;
+            fmNameFlag = true;
+            flNameFlag = true;
+            sfNameFlag = true;
+            smNameFlag = true;
+            slNameFlag = true;
+          }else {
+            if (dataList[5].toLowerCase().contains("s/o") ||
+                dataList[5].toLowerCase().contains("d/o")) {
+              setState(() {
+                relationwithBorrowerselected = "Father";
+                sfNameFlag = true;
+                smNameFlag = true;
+                slNameFlag = true;
+                _gurNameController.text = replaceCharFromName(dataList[5]);
+
+                List<String> guarNameParts =
+                replaceCharFromName(dataList[5]).split(" ");
+                if (guarNameParts.length == 1) {
+                  _fatherFirstNameController.text = guarNameParts[0];
+                  fmNameFlag = true;
+                  flNameFlag = true;
+                } else if (guarNameParts.length == 2) {
+                  _fatherFirstNameController.text = guarNameParts[0];
+                  _fatherLastNameController.text = guarNameParts[1];
+                  fmNameFlag = true;
+
+                } else {
+                  _fatherFirstNameController.text = guarNameParts.first;
+                  _fatherLastNameController.text = guarNameParts.last;
+                  _fatherMiddleNameController.text =guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+                }
+              });
+            }
+            else if (dataList[5].toLowerCase().contains("w/o")) {
+              setState(() {
+                relationwithBorrowerselected = "Husband";
+                selectedMarritalStatus = "Married";
+                _gurNameController.text = replaceCharFromName(dataList[5]);
+
                 ffNameFlag = true;
                 fmNameFlag = true;
                 flNameFlag = true;
@@ -3468,11 +3641,11 @@ class _KYCPageState extends State<KYCPage> {
           EasyLoading.dismiss();
           if (type == "adharFront") {
             setState(() {
-           /*   _aadharIdController.text = response.data.adharId;
+              _aadharIdController.text = response.data.adharId;
               if(_aadharIdController.text.length == 12){
               print("dataaaadtat");
               adhaarAllData(context);
-              }*/
+              }
 
               if(response.data.name.isEmpty){
                 nameFlag = true;
@@ -3508,6 +3681,8 @@ class _KYCPageState extends State<KYCPage> {
                   .descriptionEn;
               if(genderselected.isEmpty){
                 genderFlag = true;
+                titleFlag =true;
+
               }
 
               if (genderselected == "Male") {
@@ -3617,6 +3792,7 @@ class _KYCPageState extends State<KYCPage> {
                 relationwithBorrowerselected = "Husband";
                 if(relationwithBorrowerselected.isEmpty){
                   relationwithBorrowerFLag = true;
+                  maritalFlag = true;
                 }
                 selectedMarritalStatus = "Married";
 
@@ -3673,6 +3849,8 @@ class _KYCPageState extends State<KYCPage> {
               mNameFlag = true;
               lNameFlag = true;
               genderFlag = true;
+              titleFlag =true;
+
               dobFlag = true;
             }else if (type == "adharBack"){
               gurFlag = true;
@@ -3703,6 +3881,7 @@ class _KYCPageState extends State<KYCPage> {
             mNameFlag = true;
             lNameFlag = true;
             genderFlag = true;
+            titleFlag =true;
             dobFlag = true;
           }else if (type == "adharBack"){
             gurFlag = true;
