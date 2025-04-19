@@ -3418,6 +3418,7 @@ class _KYCPageState extends State<KYCPage> {
                 smNameFlag = true;
                 slNameFlag = true;
                 _gurNameController.text = replaceCharFromName(dataList[5]);
+                maritalFlag = true;
 
               });
             } else {
@@ -3428,6 +3429,8 @@ class _KYCPageState extends State<KYCPage> {
               relationwithBorrowerFLag = true;
               sfNameFlag = true;
               smNameFlag = true;
+              maritalFlag = true;
+
               slNameFlag = true;
             }
           }
