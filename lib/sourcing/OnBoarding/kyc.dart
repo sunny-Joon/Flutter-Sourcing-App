@@ -4954,6 +4954,8 @@ class _KYCPageState extends State<KYCPage> {
         : _passportExpiryController.text;
     int isAadharVerified = 1;
     int is_phnno_verified = panVerified ? 1 : 0;
+    int Is_VoterVerified = voterVerified ? 1 : 0;
+    int is_DLVerified = dlVerified ? 1 : 0;
     int isNameVerify = 1;
 
     String AdharName = "";
@@ -4993,6 +4995,8 @@ class _KYCPageState extends State<KYCPage> {
       "DIST_CODE": selectedDistrictCode!.distCode,
       "STATE_CODE": stateselected!.code,
       "DLExpireDate": DLExpireDate,
+      "IsVoterVerified": Is_VoterVerified,
+      "isDLVerified": is_DLVerified,
     };
 
     return await api
