@@ -128,7 +128,7 @@ class _GroupListPage2State extends State<GroupListPage2> {
                                   .where((item) =>
                               item.branchCode == widget.BranchData.branchCode &&
                                   item.branchCode == widget.BranchData.branchCode) // Only add if not already in Set
-                                  .toList(), BranchData: widget.BranchData, GroupData: GroupDataModel(groupCode: filteredItems[index].groupCode, groupCodeName: 'N/A', centerName: '', latitude: 0.0, longitude: 0.0))
+                                  .toList(), BranchData: widget.BranchData, GroupData: GroupDataModel(groupCode: filteredItems[index].groupCode, groupCodeName: 'N/A', centerName: '', latitude: "0.0", longitude: "0.0"))
                             ),
                           );
                         },
