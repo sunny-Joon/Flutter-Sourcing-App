@@ -32,22 +32,30 @@ class GroupDataModel {
   String groupCode;
   String groupCodeName;
   String centerName;
+  double latitude;
+  double longitude;
 
   GroupDataModel({
     required this.groupCode,
     required this.groupCodeName,
-    required this.centerName
+    required this.centerName,
+    required this.latitude,
+    required this.longitude
   });
 
   factory GroupDataModel.fromJson(Map<String, dynamic> json) => GroupDataModel(
       groupCode: json["groupCode"],
       groupCodeName: json["groupCodeName"],
-      centerName: json["centerName"]
+      centerName: json["centerName"],
+      latitude: json["latitude"],
+  longitude: json["longitude"]
   );
 
   Map<String, dynamic> toJson() => {
     "groupCode": groupCode,
     "groupCodeName": groupCodeName,
-    "centerName": centerName
+    "centerName": centerName,
+    "latitude": latitude,
+    "longitude": longitude
   };
 }

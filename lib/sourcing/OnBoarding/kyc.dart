@@ -4681,7 +4681,7 @@ class _KYCPageState extends State<KYCPage> {
 
   bool secondPageFieldValidate() {
     if (_panNoController.text.isNotEmpty) {
-      if (!panVerified) {
+      if (panCardHolderName==null) {
         showToast_Error(AppLocalizations.of(context)!.pleaseverifypan);
         return false;
       }
@@ -4705,11 +4705,33 @@ class _KYCPageState extends State<KYCPage> {
       }
     }
 
-    if (!panVerified && !voterVerified && !dlVerified) {
+    if (_panNoController.text.trim().isNotEmpty &&
+        (panCardHolderName == null || panCardHolderName!.trim().isEmpty)) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseverifypan);
+      return false;
+    }
+
+    if (_voterIdController.text.trim().isNotEmpty &&
+        (voterCardHolderName == null || voterCardHolderName!.trim().isEmpty)) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseverifyvoterno);
+      return false;
+    }
+
+    if (_drivingLicenseController.text.trim().isNotEmpty &&
+        (dlCardHolderName == null || dlCardHolderName!.trim().isEmpty)) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseverifydrivinglicense);
+      return false;
+    }
+
+
+
+
+    /*  if (!panVerified && !voterVerified && !dlVerified) {
       showToast_Error(AppLocalizations.of(context)!
           .pleaseenterandverifyeithervoteridoranyothertwoids);
       return false;
-    } else if (checkIdMendate() == false) {
+    } else*/
+    if (checkIdMendate() == false) {
       showToast_Error(AppLocalizations.of(context)!
           .pleaseenterandverifyeithervoteridoranyothertwoids);
       return false;
@@ -4752,7 +4774,7 @@ class _KYCPageState extends State<KYCPage> {
         ? null
         : _passportExpiryController.text;
     int isAadharVerified = 1;
-    int is_phnno_verified = 1;
+    int is_phnno_verified = panVerified ? 1 : 0;
     int isNameVerify = 1;
 
     String AdharName = "";
