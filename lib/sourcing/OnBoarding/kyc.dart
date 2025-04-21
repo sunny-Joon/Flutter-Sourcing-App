@@ -4925,31 +4925,6 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   bool secondPageFieldValidate() {
-    if (_panNoController.text.isNotEmpty) {
-      if (panCardHolderName==null) {
-        showToast_Error(AppLocalizations.of(context)!.pleaseverifypan);
-        return false;
-      }
-    }
-    if (_voterIdController.text.isNotEmpty) {
-      if (voterCardHolderName == null) {
-        showToast_Error(AppLocalizations.of(context)!.pleaseverifyvoterid);
-        return false;
-      }
-    }
-    if (_drivingLicenseController.text.isNotEmpty) {
-      if (!dlVerified) {
-        showToast_Error(
-            AppLocalizations.of(context)!.pleaseverifydrivinglicense);
-        return false;
-      }
-      if (_dlExpiryController.text.isEmpty) {
-        showToast_Error(AppLocalizations.of(context)!
-            .pleaseenterexpirydateofdrivinglicense);
-        return false;
-      }
-    }
-
     if (_panNoController.text.trim().isNotEmpty &&
         (panCardHolderName == null || panCardHolderName!.trim().isEmpty)) {
       showToast_Error(AppLocalizations.of(context)!.pleaseverifypan);
@@ -4958,44 +4933,58 @@ class _KYCPageState extends State<KYCPage> {
 
     if (_voterIdController.text.trim().isNotEmpty &&
         (voterCardHolderName == null || voterCardHolderName!.trim().isEmpty)) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseverifyvoterno);
+      showToast_Error(AppLocalizations.of(context)!.pleaseverifyvoterid);
       return false;
     }
 
-    if (_drivingLicenseController.text.trim().isNotEmpty &&
-        (dlCardHolderName == null || dlCardHolderName!.trim().isEmpty)) {
-      showToast_Error(AppLocalizations.of(context)!.pleaseverifydrivinglicense);
+    if (_drivingLicenseController.text.trim().isNotEmpty) {
+      if (!dlVerified) {
+        showToast_Error(AppLocalizations.of(context)!.pleaseverifydrivinglicense);
+        return false;
+      }
+
+      if (_dlExpiryController.text.trim().isEmpty) {
+        showToast_Error(AppLocalizations.of(context)!
+            .pleaseenterexpirydateofdrivinglicense);
+        return false;
+      }
+
+      if (dlCardHolderName == null || dlCardHolderName!.trim().isEmpty) {
+        showToast_Error(AppLocalizations.of(context)!.pleaseverifydrivinglicense);
+        return false;
+      }
+    }
+
+    if (!checkIdMendate()) {
+      showToast_Error(AppLocalizations.of(context)!
+          .pleaseenterandverifyeithervoteridoranyothertwoids);
       return false;
     }
 
-
-
-
-    /*  if (!panVerified && !voterVerified && !dlVerified) {
-      showToast_Error(AppLocalizations.of(context)!
-          .pleaseenterandverifyeithervoteridoranyothertwoids);
-      return false;
-    } else*/
-    if (checkIdMendate() == false) {
-      showToast_Error(AppLocalizations.of(context)!
-          .pleaseenterandverifyeithervoteridoranyothertwoids);
-      return false;
-    } else if (selectedCityCode == null) {
+    if (selectedCityCode == null) {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectcity);
       return false;
-    } else if (selectedDistrictCode == null) {
+    }
+
+    if (selectedDistrictCode == null) {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectdistrict);
       return false;
-    } else if (selectedSubDistrictCode == null) {
+    }
+
+    if (selectedSubDistrictCode == null) {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectsubdistrict);
       return false;
-    } else if (selectedVillageCode == null) {
+    }
+
+    if (selectedVillageCode == null) {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectvillage);
       return false;
     }
 
     return true;
   }
+
+
 
   Future<void> saveIDsMethod(BuildContext context) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
