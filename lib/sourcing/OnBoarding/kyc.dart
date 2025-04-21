@@ -2815,8 +2815,7 @@ class _KYCPageState extends State<KYCPage> {
             if (FiType == "NEW") {
               if (firstPageFieldValidate()) {
                 setState(() {
-                  if(genderFlag||relationwithBorrowerFLag||statesFLag||pinFlag||cityFlag||add3Flag||add2Flag||add1Flag||slNameFlag||smNameFlag||sfNameFlag
-                  ||flNameFlag||fmNameFlag||ffNameFlag||gurFlag||dobFlag||lNameFlag||mNameFlag||nameFlag||titleFlag){
+                  if(genderFlag||relationwithBorrowerFLag||statesFLag||pinFlag||cityFlag||add3Flag||add2Flag||add1Flag||gurFlag||dobFlag||lNameFlag||mNameFlag||nameFlag||titleFlag){
                     kycType = "M";
                   }
                   if(selectedMarritalStatus.toString() == "Unmarried"){
@@ -3833,7 +3832,10 @@ class _KYCPageState extends State<KYCPage> {
                 _gurNameController.text = cleanedGuardianName;
                 gurFlag = false;
                 relationwithBorrowerselected = "Father";
-
+                maritalFlag = true;
+                sfNameFlag = true;
+                smNameFlag = true;
+                slNameFlag = true;
                 List<String> guarNameParts =
                 _gurNameController.text.trim().split(" ");
                 if (guarNameParts.length == 1) {
@@ -4783,8 +4785,6 @@ class _KYCPageState extends State<KYCPage> {
       String age = _ageController.text.toString();
       String gender = genderselected.toString();
       String guardianName = _gurNameController.text.toString();
-      print("gender13 $gender");
-      print("Guardian_Name $guardianName");
       String mobile = _mobileNoController.text.toString();
       String fatherF = _fatherFirstNameController.text.toString();
       String fatherM = _fatherMiddleNameController.text.toString();
@@ -4799,10 +4799,8 @@ class _KYCPageState extends State<KYCPage> {
       longi = _longitudeController.text;
       int Expense = 0;
       int Income = 0;
-      double latitude =
-      (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
-      double longitude =
-      (longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
+      double latitude =(lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
+      double longitude =(longi != null && longi.isNotEmpty) ? double.parse(longi) : 0.0;
       String add1 = _address1Controller.text.toString();
       String add2 = _address2Controller.text.toString();
       String add3 = _address3Controller.text.toString();
@@ -4810,24 +4808,13 @@ class _KYCPageState extends State<KYCPage> {
       String pin = _pincodeController.text.toString();
       String state = stateselected!.code.toString();
       bool ismarried = selectedMarritalStatus.toString() == 'Married';
-      print("married12 $ismarried");
       String gCode = widget.GroupData.groupCode;
-      print("bank $gCode");
-
       String bCode = widget.data.branchCode.toString();
-      print("bank $bCode");
-
       String relation_with_Borrower = relationwithBorrowerselected;
       String bank_name = bankselected!.toString();
-      print("bank $bank_name");
       String loan_Duration = selectedloanDuration!;
-      print("bank $loan_Duration");
       String loan_amount = _loan_amountController.text.toString();
-      print("bank $loan_amount");
-      int ModuleTypeId =
-      GlobalClass.creator.toLowerCase().startsWith("vh") ? 2 : 1;
-      print("ModuleTypeId $ModuleTypeId");
-
+      int ModuleTypeId =GlobalClass.creator.toLowerCase().startsWith("vh") ? 2 : 1;
       String SelectedschoolingChildren = selectedschoolingChildren ==null?"0": selectedschoolingChildren;
       String SelectednumOfChildren = selectednumOfChildren ==null?"0": selectednumOfChildren;
       String CaseBy = kycType;
