@@ -989,7 +989,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         // Control this flag to enable/disable fields
 
-        /* Padding(
+         Padding(
           padding: const EdgeInsets.only(right: 0.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1049,7 +1049,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ],
           ),
-        ),*/
+        ),
 
         SizedBox(height: 10),
 
