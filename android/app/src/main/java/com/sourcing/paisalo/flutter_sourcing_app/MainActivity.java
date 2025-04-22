@@ -220,6 +220,7 @@ public class MainActivity extends FlutterFragmentActivity implements AUAResultIm
                 String scanFormat = scanningResult.getFormatName();
                 if (scanFormat != null) {
                     Log.d("TAGGG", "Open Qr method Run44");
+                    Log.d("TAGGG", "Open Qr method Run45 "+scanContent);
 
                    setAadharContent(scanContent);
                   //  android.util.Log.d(TAG, "onActivityResult: "+scanContent);
@@ -232,10 +233,78 @@ public class MainActivity extends FlutterFragmentActivity implements AUAResultIm
 
     }
 
-    private void setAadharContent(String aadharDataString)  {
-        Log.d("TAGGG", "Open Qr method Run55");
+    private void setAadharContent(String aadharDataString) /*throws Exception*/ {
+//        try {
+
+        if (aadharDataString.toUpperCase().contains("XML")) {
+            //AadharData aadharData = AadharUtils.getAadhar(aadharDataString);
+         //   AadharData aadharData = AadharUtils.getAadhar(AadharUtils.ParseAadhar(aadharDataString));
+
+            result_global.success(aadharDataString);
+
+            /*if (aadharData.AadharId != null) {
+
+                Borrower borrower1 = Borrower.getBorrower(aadharData.AadharId);
+                if (borrower1 != null) {
+                    borrower = borrower1;
+                    setDataToView(activity.findViewById(android.R.id.content).getRootView());
+                    tietAadharId.setEnabled(false);
+                    return;
+                }
+
+                if (chkTvTopup.isChecked()) {
+                    if (tietAadharId.getText().toString().equals(aadharData.AadharId)) {
+                        Utils.alert(this, "Aadhar ID did not match with Topup Case");
+                        return;
+                    }
+                }
+                borrower.aadharid = aadharData.AadharId;
+
+
+            }
+
+            if (aadharData.Address2 == null) {
+                aadharData.Address2 = aadharData.Address3;
+                aadharData.Address3 = null;
+            } else if (aadharData.Address2.trim().equals("")) {
+                aadharData.Address2 = aadharData.Address3;
+                aadharData.Address3 = null;
+            }
+            if (aadharData.Address1 == null) {
+                aadharData.Address1 = aadharData.Address2;
+                aadharData.Address2 = aadharData.Address3;
+                aadharData.Address3 = null;
+            } else if (aadharData.Address1.trim().equals("")) {
+                aadharData.Address1 = aadharData.Address2;
+                aadharData.Address2 = aadharData.Address3;
+                aadharData.Address3 = null;
+            }
+
+
+            borrower.isAadharVerified = aadharData.isAadharVerified;
+            borrower.setNames(aadharData.Name);
+            borrower.DOB = aadharData.DOB;
+            borrower.Age = aadharData.Age;
+            borrower.Gender = aadharData.Gender;
+            borrower.setGuardianNames(aadharData.GurName == null ? "" : aadharData.GurName);
+            borrower.P_city = aadharData.City;
+            borrower.p_pin = aadharData.Pin;
+            borrower.P_Add1 = aadharData.Address1;
+            borrower.P_add2 = aadharData.Address2;
+            borrower.P_add3 = aadharData.Address3;
+
+
+            borrower.p_state = AadharUtils.getStateCode(aadharData.State);
+            setDataToView(this.findViewById(android.R.id.content).getRootView());
+            validateBorrower();
+            tietAge.setEnabled(false);
+            tietDob.setEnabled(false);
+            aadharNumberentry = true;
+*/
+        } else {
 
             final BigInteger bigIntScanData = new BigInteger(aadharDataString, 10);
+            Log.e("testbigin======", "AadharData:->" + bigIntScanData);
             // 2. Convert BigInt to Byte Array
             final byte byteScanData[] = bigIntScanData.toByteArray();
 
@@ -245,14 +314,51 @@ public class MainActivity extends FlutterFragmentActivity implements AUAResultIm
             // 4. Split the byte array using delimiter
             List<byte[]> parts = separateData(decompByteScanData);
             // Throw error if there are no parts
+            Log.e("Parts======11======> ", "part data =====> " + parts.toString());
             decodeData(parts);
+            decodeSignature(decompByteScanData);
+            decodeMobileEmail(decompByteScanData);
+          //  aadharNumberentry = true;
+        }
+//            } catch(Exception ex) {
+//            Utils.alert(this, ex.getMessage());
+//        }
+
+    }
+
+   /* private void setAadharContent(String aadharDataString)  {
+        Log.d("TAGGG", "Open Qr method Run55");
+
+        try {
+            final BigInteger bigIntScanData = new BigInteger(aadharDataString, 10);
+            Log.d("TAGGG", "Open Qr method Run66");
+
+            // 2. Convert BigInt to Byte Array
+            final byte byteScanData[] = bigIntScanData.toByteArray();
+            Log.d("TAGGG", "Open Qr method Run77");
+
+            // 3. Decompress Byte Array
+            final byte[] decompByteScanData = decompressData(byteScanData);
+            Log.d("TAGGG", "Open Qr method Run88");
+
+            // 4. Split the byte array using delimiter
+            List<byte[]> parts = separateData(decompByteScanData);
+            Log.d("TAGGG", "Open Qr method Run99");
+
+            // Throw error if there are no parts
+            decodeData(parts);
+            Log.d("TAGGG", "Open Qr method Run10");
+        }catch (Exception  e){
+            Log.d("TAGGG", e.toString());
+
+        }
 //            decodeSignature(decompByteScanData);
 //            decodeMobileEmail(decompByteScanData);
           //  aadharNumberentry=true;
 
 
 
-    }
+    }*/
 
     // 20/11/2022 ========================================
     protected byte[] decompressData(byte[] byteScanData) {
