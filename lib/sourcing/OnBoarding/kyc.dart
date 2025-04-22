@@ -3389,7 +3389,7 @@ class _KYCPageState extends State<KYCPage> {
 
             setState(() {
               if(dataList[1].contains("2")){
-                a=1;
+                a=0;
               }
               if(dataList[14+a].isEmpty){
                 statesFLag = true;
@@ -5191,9 +5191,7 @@ class _KYCPageState extends State<KYCPage> {
 
     String AdharName = "";
 
-    if (adhaardata.customerName != null ) {
-      AdharName = "${adhaardata!.customerName}";
-    } else {
+    if(_nameController.text != null && _nameController.text != "" ){
       AdharName = _nameController.text.trim();
       if (_nameMController.text.isNotEmpty && _nameLController.text.isNotEmpty) {
         AdharName = "${_nameController.text} ${_nameMController.text} ${_nameLController.text}".trim();
@@ -5202,7 +5200,12 @@ class _KYCPageState extends State<KYCPage> {
       } else if (_nameLController.text.isNotEmpty) {
         AdharName = "${_nameController.text} ${_nameLController.text}".trim();
       }
+    }else{
+      if (adhaardata.customerName != null &&  adhaardata.customerName.isNotEmpty) {
+        AdharName = "${adhaardata!.customerName}";
+      }
     }
+
 
     final api = Provider.of<ApiService>(context, listen: false);
     print("_nameController121 ${_nameController.text}");
