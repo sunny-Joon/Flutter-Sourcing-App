@@ -68,14 +68,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
   bool FinancialInfoEditable = true;
   bool femMemIncomeEditable = true;
   bool GuarantorEditable = true;
-  bool borrowerDocsUploded = false;
-  bool coBorrowerDocsUploaded = false;
   bool UploadFiDocsEditable = true;
   bool editButtonFunctionOn = false;
   bool banknameverified = false;
   bool verifyFlag = true;
   bool isSubmitDisabled = false;
-  bool isSubmitEnabled = false; // Determines if submit button should be enabled
+  bool isSubmitEnabled = false;
+  bool borrowerDocsUploded = false;
+  bool coBorrowerDocsUploaded = false;
 
   String pageTitle = "";
 
@@ -5273,7 +5273,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
   bool _isValidEmail(String email) {
     final emailRegex = RegExp(
-      r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+      r"^[a-zA-Z0-9._%+-]+@[a-zA-Z]+\.[a-zA-Z]{2,}$",
     );
     return emailRegex.hasMatch(email);
   }
@@ -5477,6 +5477,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
       _emailIdFocus.requestFocus();
       return false;
     } else*/
+    if (emailIdController.text.isNotEmpty) {
+      if (!_isValidEmail(emailIdController.text.trim())) {
+        showToast_Error(AppLocalizations.of(context)!.pleaseenteremailid);
+        _emailIdFocus.requestFocus();
+        return false;
+      }
+    }
+
     if (placeOfBirthController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterplaceofbirth);
       _placeOfBirthFocus.requestFocus();
