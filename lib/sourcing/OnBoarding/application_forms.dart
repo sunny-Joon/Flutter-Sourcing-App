@@ -2339,7 +2339,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         ),
         Row(
           children: [
-            Flexible(
+            BorrowerInfo[0].maritaLStatus.toString().toLowerCase() == "married"? Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -2385,7 +2385,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   ),
                 ],
               ),
-            ),
+            ):SizedBox(),
             SizedBox(width: 10), // Spacing between the two columns
             Flexible(
               child: Column(
@@ -5601,17 +5601,20 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
       return false;
     }*/
-    else if (selectedResidingFor == null) {
+    else if(selectedIsHouseRental == null){
+      showToast_Error("Please select Is House rental");
+    }
+    else if ( selectedResidingFor == null) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseselectyearsofresiding);
 
       return false;
-    } else if (selectedProperty == null) {
+    } else if (selectedIsHouseRental == "No" && selectedProperty == null) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseselectpropertyinacres);
 
       return false;
-    } else if (selectedPresentHouseOwner == null) {
+    } else if (selectedIsHouseRental == "No" && selectedPresentHouseOwner == null) {
       showToast_Error(AppLocalizations.of(context)!.pleaseselecthouseownertype);
 
       return false;
@@ -5651,9 +5654,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedOccupation!.toLowerCase() == 'select') {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectoccupation);
       return false;
-    } else if (selectedBusiness == null ||
-        selectedBusiness!.isEmpty ||
-        selectedBusiness!.toLowerCase() == 'select') {
+    } else if ((selectedOccupation == "Self Employeed") && (selectedBusiness == null || selectedBusiness!.isEmpty ||selectedBusiness!.toLowerCase() == 'select')) {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectbusiness);
       return false;
     } else if (_currentEMIController.text.isEmpty) {
@@ -5675,20 +5676,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
         selectedToiletType!.toLowerCase() == 'select') {
       showToast_Error(AppLocalizations.of(context)!.pleaseselecttoilettype);
       return false;
-    } else if (selectedLivingWithSpouse == null ||
-        selectedLivingWithSpouse!.isEmpty ||
-        selectedLivingWithSpouse!.toLowerCase() == 'select') {
-      showToast_Error(
-          AppLocalizations.of(context)!.pleaseselectlivingwithspouse);
+    } else if (BorrowerInfo[0].maritaLStatus.toString().toLowerCase() == "married" && (selectedLivingWithSpouse == null ||selectedLivingWithSpouse!.isEmpty ||selectedLivingWithSpouse!.toLowerCase() == 'select')) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectlivingwithspouse);
       return false;
     } else if (selectedEarningMembers == null ||
         selectedEarningMembers!.isEmpty ||
         selectedEarningMembers!.toLowerCase() == 'select') {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectearningmembers);
       return false;
-    } else if (selectedBusinessExperience == null ||
+    } else if ((selectedOccupation == "Self Employeed") && (selectedBusinessExperience == null ||
         selectedBusinessExperience!.isEmpty ||
-        selectedBusinessExperience!.toLowerCase() == 'select') {
+        selectedBusinessExperience!.toLowerCase() == 'select')) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseselectbusinessexperience);
       return false;
@@ -5999,7 +5997,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "fi_Id": FIID,
       "email_Id": emailIdController.text,
       "place_Of_Birth": placeOfBirthController.text,
-      "depedent_Person": 0,
+      "depedent_Person": "0",
       "reservatioN_CATEGORY": "",
       "religion": selectedReligionextra ?? "",
       "Cast": selectedCast,
@@ -6275,14 +6273,22 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String fi_ID = FIID.toString();
     String occupation = selectedOccupation.toString();
     String business_Detail = "";
-    int years_in_business ;
-    if(selectedOccupation == "SelfEmployeed"){
-      business_Detail = "NA";
-      years_in_business = 0;
-    }else{
-       business_Detail = selectedBusiness.toString();
-       years_in_business = int.parse(selectedBusinessExperience.toString());
-    }
+    int years_in_business  = 0;
+
+    setState(() {
+      if(selectedOccupation != "Self Employeed"){
+        business_Detail = "NA";
+        years_in_business = 0;
+      }else{
+        business_Detail = selectedBusiness.toString();
+        years_in_business = int.parse(selectedBusinessExperience.toString());
+      }
+
+      if(BorrowerInfo[0].maritaLStatus.toString().toLowerCase() == "married"){
+        selectedLivingWithSpouse = "No";
+      }
+    });
+
 
 
 
@@ -6290,10 +6296,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String homeType = selectedHomeType.toString();
     String homeRoofType = selectedRoofType.toString();
     String toiletType = selectedToiletType.toString();
-    bool livingSpouse =
-        selectedLivingWithSpouse.toString().toLowerCase() == "true"
-            ? true
-            : false;
+    bool livingSpouse =selectedLivingWithSpouse.toString().toLowerCase() == "true"? true: false;
     int earning_mem_count = int.parse(selectedEarningMembers.toString());
     int future_Income = int.parse(_future_IncomeController.text.toString());
     int agriculture_income =
@@ -7413,7 +7416,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           loadUi = true;
           expenseindication = value.data[0].hvTotalmonthlyhouseholdexpenses.toString();
-          incomeIndication = "Entered monthly income:${value.data[0].hvMonthlyIncome * 12}";
+          incomeIndication = "Entered monthly income:${value.data[0].hvMonthlyIncome}";
           print("objectobject$expenseindication");
           print("objectobject$incomeIndication");
         });
