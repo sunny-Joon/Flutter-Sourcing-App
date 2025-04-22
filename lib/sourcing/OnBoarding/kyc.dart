@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:xml/xml.dart';
 import '../../DATABASE/database_helper.dart';
 import '../../MasterAPIs/ckyc_repository.dart';
 import '../../MasterAPIs/live_track_repository.dart';
@@ -860,13 +861,187 @@ class _KYCPageState extends State<KYCPage> {
                     onPressed: () async {
                       Navigator.of(context).pop();
                       try {
-                        final result =
-                            await callJavaMethodQr(); // Call the method directly
+                        final result = await callJavaMethodQr(); // Call the method directly
 
                         if (result != null) {
                           print("QR Data: $result");
 
-                          setQRData(result.replaceAll('[', "").replaceAll(']', "")); // Process the result as needed
+                          if(result.toUpperCase().contains("XML")){
+                            print("XXXXXXX${result.toString()}");
+                            Map<String, String> aadhaarData = setxmlData(result);
+                            print("XXXXXXXuid:${aadhaarData['uid']}");
+                            print("XXXXXXXname: ${aadhaarData['name']}");
+                            print("XXXXXXXgender: ${aadhaarData['gender']}");
+                            print("XXXXXXXyob: ${aadhaarData['yob']}");
+                            print("XXXXXXXdob: ${aadhaarData['dob']}");
+                            print("XXXXXXXco:${aadhaarData['co']}");
+                            print("XXXXXXXlm: ${aadhaarData['lm']}");
+                            print("XXXXXXXloc: ${aadhaarData['loc']}");
+                            print("XXXXXXXvtc: ${aadhaarData['vtc']}");
+                            print("XXXXXXXpo: ${aadhaarData['po']}");
+                            print("XXXXXXXdist: ${aadhaarData['dist']}");
+                            print("XXXXXXXsubdist: ${aadhaarData['subdist']}");
+                            print("XXXXXXXstate: ${aadhaarData['state']}");
+                            print("XXXXXXXpc: ${aadhaarData['pc']}");
+
+
+                            setState(() {
+                              kycType = "Q";
+
+                              if(aadhaarData['name']!.isEmpty){
+                                nameFlag = true;
+                                mNameFlag = true;
+                                lNameFlag = true;
+                              }else{
+                                List<String> nameParts = aadhaarData['name']!.split(" ");
+                                if (nameParts.length == 1) {
+                                  _nameController.text = nameParts[0];
+                                  mNameFlag = true;
+                                  lNameFlag = true;
+                                } else if (nameParts.length == 2) {
+                                  mNameFlag = true;
+                                  _nameController.text = nameParts[0];
+                                  _nameLController.text = nameParts[1];
+                                } else {
+                                  _nameController.text = nameParts.first;
+                                  _nameLController.text = nameParts.last;
+                                  _nameMController.text =nameParts.sublist(1, nameParts.length - 1).join(' ');
+                                }
+                              }
+
+                           if(aadhaarData['dob'] == null){
+                             dobFlag = true;
+                           }else{
+                             _dobController.text = formatDate(aadhaarData['dob']!.trim(), 'dd-MM-yyyy');
+
+                           }
+
+                            if(aadhaarData['gender'] ==null){
+                              genderFlag = true;
+                              titleFlag = true;
+                            }else if (aadhaarData['gender'].toString().trim().toLowerCase() == "m") {
+                              genderselected = "Male";
+                              selectedTitle = "Mr.";
+                            } else if (aadhaarData['gender'].toString().trim().toLowerCase() == "f") {
+                              genderselected = "Female";
+                              selectedTitle = "Mrs.";
+                            }
+                            if(aadhaarData['co'] ==null){
+                              ffNameFlag = true;
+                              flNameFlag = true;
+                              fmNameFlag = true;
+                              gurFlag = true;
+                              sfNameFlag = true;
+                              smNameFlag = true;
+                              slNameFlag = true;
+                            } else if (aadhaarData['co']!.toLowerCase().contains("s/o") ||
+                                aadhaarData['co']!.toLowerCase().contains("d/o")) {
+                              relationwithBorrowerselected = "Father";
+                              maritalFlag = true;
+                              _gurNameController.text = replaceCharFromName(aadhaarData['co']!);
+
+                              List<String> guarNameParts = replaceCharFromName(
+                                  aadhaarData['co']!.trim()).split(" ");
+
+                              if (guarNameParts.length == 1) {
+                                _fatherFirstNameController.text = guarNameParts[0];
+                                flNameFlag = true;
+                                fmNameFlag = true;
+                              } else if (guarNameParts.length == 2) {
+                                fmNameFlag = true;
+                                _fatherFirstNameController.text = guarNameParts[0];
+                                _fatherLastNameController.text = guarNameParts[1];
+                              } else {
+                                _fatherFirstNameController.text = guarNameParts.first;
+                                _fatherLastNameController.text = guarNameParts.last;
+                                _fatherMiddleNameController.text =
+                                    guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+                              }
+
+                            } else if (aadhaarData['co']!.toLowerCase().contains("w/o")) {
+
+                              relationwithBorrowerselected = "Husband";
+                              selectedMarritalStatus = "Married";
+                              _gurNameController.text = replaceCharFromName(aadhaarData['co']!);
+
+                              List<String> guarNameParts =
+                              replaceCharFromName(aadhaarData['co']!).split(" ");
+
+                              if (guarNameParts.length == 1) {
+                                smNameFlag = true;
+                                slNameFlag = true;
+                                _spouseFirstNameController.text = guarNameParts[0];
+                              } else if (guarNameParts.length == 2) {
+                                smNameFlag = true;
+                                _spouseFirstNameController.text = guarNameParts[0];
+                                _spouseLastNameController.text = guarNameParts[1];
+                              } else {
+                                _spouseFirstNameController.text = guarNameParts.first;
+                                _spouseLastNameController.text = guarNameParts.last;
+                                _spouseMiddleNameController.text =guarNameParts.sublist(1, guarNameParts.length - 1).join(' ');
+                              }
+
+                            } else if (aadhaarData['co']!.toLowerCase().contains("c/o")) {
+                              _gurNameController.text = replaceCharFromName(aadhaarData['co']!);
+                              ffNameFlag = true;
+                              flNameFlag = true;
+                              fmNameFlag = true;
+                              sfNameFlag = true;
+                              smNameFlag = true;
+                              slNameFlag = true;
+                            }
+
+                            if(aadhaarData['lm']==null&&aadhaarData['loc']==null&&aadhaarData['vtc']==null&&aadhaarData['po']==null&&aadhaarData['subdist']==null){
+                              add1Flag = true;
+                              add2Flag = true;
+                              add3Flag = true;
+                            }else{
+                              String address = [
+                                aadhaarData['lm'],
+                                aadhaarData['loc'],
+                                aadhaarData['vtc'],
+                                aadhaarData['po'],
+                                aadhaarData['subdist'],
+                              ].where((e) => e != null && e!.trim().isNotEmpty).join(', ');
+
+                              List<String> addressParts = address.trim().split(",");
+                              print("RRRRRRRRRR$addressParts");
+                              if (addressParts.length == 1) {
+                                _address1Controller.text = addressParts[0];
+                                add2Flag = true;
+                                add3Flag = true;
+                              } else if (addressParts.length == 2) {
+                                add2Flag = true;
+                                _address1Controller.text = addressParts[0];
+                                _address2Controller.text = addressParts[1];
+                              } else {
+                                _address1Controller.text = addressParts.first;
+                                _address2Controller.text = addressParts.last;
+                                _address3Controller.text =addressParts.sublist(1, addressParts.length - 1).join(' ');
+                              }
+                            }
+
+                            if(aadhaarData['state'] == null){
+                              statesFLag = true;
+                            }else{
+                              stateselected = states.firstWhere((item) =>item.descriptionEn.toLowerCase() ==aadhaarData['state']!.trim().toLowerCase());
+                            }
+                            if(aadhaarData['pc'] == null){
+                              pinFlag = true;
+                            }else{
+                              _pincodeController.text = aadhaarData['pc']!;
+                            }
+                            if(aadhaarData['dist'] == null){
+                              cityFlag = true;
+                            }else{
+                              _cityController.text = aadhaarData['dist']!;
+                            }
+
+                            });
+                          }else {
+                            setQRData(result.replaceAll('[', "").replaceAll(
+                                ']', "")); // Process the result as needed
+                          }
                         }
                       } catch (e) {
                         print("Error: $e");
@@ -3043,6 +3218,7 @@ class _KYCPageState extends State<KYCPage> {
             print("dataList[6] $dataList[6]");
             setState(() {
               relationwithBorrowerselected = "Father";
+              maritalFlag = true;
 
               if(relationwithBorrowerselected.isEmpty){
                 relationwithBorrowerFLag = true;
@@ -3582,6 +3758,8 @@ class _KYCPageState extends State<KYCPage> {
                 sfNameFlag = true;
                 smNameFlag = true;
                 slNameFlag = true;
+                maritalFlag = true;
+
                 _gurNameController.text = replaceCharFromName(dataList[5]);
 
                 List<String> guarNameParts =
@@ -5067,4 +5245,28 @@ class _KYCPageState extends State<KYCPage> {
       GlobalClass.showErrorAlert(context, onError, 1);
     });
   }
+
+
+    Map<String, String> setxmlData(String xmlString) {
+      final document = XmlDocument.parse(xmlString);
+      final element = document.getElement('PrintLetterBarcodeData');
+      if (element == null) return {};
+      return {
+        'uid': element.getAttribute('uid') ?? '',
+        'name': element.getAttribute('name') ?? '',
+        'gender': element.getAttribute('gender') ?? '',
+        'yob': element.getAttribute('yob') ?? '',
+        'dob': element.getAttribute('dob') ?? '',
+        'co': element.getAttribute('co') ?? '',
+        'lm': element.getAttribute('lm') ?? '', // ← New line added here
+        'loc': element.getAttribute('loc') ?? '',
+        'vtc': element.getAttribute('vtc') ?? '',
+        'po': element.getAttribute('po') ?? '',
+        'dist': element.getAttribute('dist') ?? '',
+        'subdist': element.getAttribute('subdist') ?? '',
+        'state': element.getAttribute('state') ?? '',
+        'pc': element.getAttribute('pc') ?? '',
+      };
+    }
+
 }

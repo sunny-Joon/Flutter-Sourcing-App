@@ -989,7 +989,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
         // Control this flag to enable/disable fields
 
-         Padding(
+       /*  Padding(
           padding: const EdgeInsets.only(right: 0.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1049,7 +1049,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
             ],
           ),
-        ),
+        ),*/
 
         SizedBox(height: 10),
 
@@ -1542,53 +1542,53 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     },
                     String,
                   ),
+                  SizedBox(height: 10),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // City TextField
+                      Flexible(
+                        child: _buildTextField(AppLocalizations.of(context)!.city,
+                            cityControllerC, personalInfoEditable, _cityFocusC, cityReg),
+                      ),
+                      SizedBox(width: 10),
+                      // Add some space between the City TextField and Pin Code Text
+                      // Pin Code Text and TextFormField
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.pincode,
+                              style: TextStyle(
+                                fontFamily: "Poppins-Regular",
+                                fontSize: 13,
+                              ),
+                            ),
+                            SizedBox(height: 1),
+                            Container(
+                              width: double.infinity, // Set the desired width
+                              child: TextFormField(
+                                enabled: personalInfoEditable,
+                                controller: pincodeControllerC,
+                                focusNode: _pinFocusNodeC,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  errorText: _pinErrorC,
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
                 ],
               )
             : SizedBox(),
-
-        SizedBox(height: 10),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // City TextField
-            Flexible(
-              child: _buildTextField(AppLocalizations.of(context)!.city,
-                  cityControllerC, personalInfoEditable, _cityFocusC, cityReg),
-            ),
-            SizedBox(width: 10),
-            // Add some space between the City TextField and Pin Code Text
-            // Pin Code Text and TextFormField
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.pincode,
-                    style: TextStyle(
-                      fontFamily: "Poppins-Regular",
-                      fontSize: 13,
-                    ),
-                  ),
-                  SizedBox(height: 1),
-                  Container(
-                    width: double.infinity, // Set the desired width
-                    child: TextFormField(
-                      enabled: personalInfoEditable,
-                      controller: pincodeControllerC,
-                      focusNode: _pinFocusNodeC,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        errorText: _pinErrorC,
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
 
         SizedBox(height: 10),
 
@@ -2530,7 +2530,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
                             border: OutlineInputBorder(),
                             counterText:
                                 '',
-                            errorText: showIncomeHint? incomeIndication:null, // Optional: hides the counter below the field
+                            errorText: showIncomeHint? incomeIndication:null,
+                            errorMaxLines: 2// Optional: hides the counter below the field
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -4251,15 +4252,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
             setState(() {
               personalInfoEditable = true;
             });
-          } else if (_currentStep == 1) {
+          } /*else if (_currentStep == 1) {
             setState(() {
               FiFamilyEditable = true;
             });
-          } /*else if (_currentStep == 2) {
+          }*/ else if (_currentStep == 1) {
             setState(() {
               FiIncomeEditable = true;
             });
-          }*/
+          }
           else if (_currentStep == 2) {
             setState(() {
               FinancialInfoEditable = true;
@@ -5481,11 +5482,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterplaceofbirth);
       _placeOfBirthFocus.requestFocus();
       return false;
-    } else if (selectedDependent == null ||
+    } /*else if (selectedDependent == null ||
         selectedDependent!.toLowerCase() == "select") {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectdependents);
       return false;
-    } else if (selectedReligionextra == null ||
+    }*/ else if (selectedReligionextra == null ||
         selectedReligionextra!.toLowerCase() == "select") {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectreligion);
       return false;
@@ -5990,7 +5991,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "fi_Id": FIID,
       "email_Id": emailIdController.text,
       "place_Of_Birth": placeOfBirthController.text,
-      "depedent_Person": selectedDependent,
+      "depedent_Person": 0,
       "reservatioN_CATEGORY": "",
       "religion": selectedReligionextra ?? "",
       "Cast": selectedCast,
@@ -6265,7 +6266,18 @@ class _ApplicationPageState extends State<ApplicationPage> {
 
     String fi_ID = FIID.toString();
     String occupation = selectedOccupation.toString();
-    String business_Detail = selectedBusiness.toString();
+    String business_Detail = "";
+    int years_in_business ;
+    if(selectedOccupation == "SelfEmployeed"){
+      business_Detail = "NA";
+      years_in_business = 0;
+    }else{
+       business_Detail = selectedBusiness.toString();
+       years_in_business = int.parse(selectedBusinessExperience.toString());
+    }
+
+
+
     String any_current_EMI = _currentEMIController.text;
     String homeType = selectedHomeType.toString();
     String homeRoofType = selectedRoofType.toString();
@@ -6275,7 +6287,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
             ? true
             : false;
     int earning_mem_count = int.parse(selectedEarningMembers.toString());
-    int years_in_business = int.parse(selectedBusinessExperience.toString());
     int future_Income = int.parse(_future_IncomeController.text.toString());
     int agriculture_income =
         int.parse(_agriculture_incomeController.text.toString());
