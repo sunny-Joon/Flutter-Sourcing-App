@@ -5126,6 +5126,39 @@ class _KYCPageState extends State<KYCPage> {
       return false;
     }
 
+
+
+
+    String aadhaarName = adhaardata.customerName?.trim().toLowerCase() ?? '';
+    String panName = panCardHolderName?.trim().toLowerCase() ?? '';
+    String voterName = voterCardHolderName?.trim().toLowerCase() ?? '';
+    String dlName = dlCardHolderName?.trim().toLowerCase() ?? '';
+
+    if (aadhaarName.isNotEmpty) {
+      bool matched = false;
+
+      if (panName.isNotEmpty && panName != 'Data not Verified' && panName.contains(aadhaarName)) {
+        matched = true;
+      }
+
+      if (voterName.isNotEmpty && voterName != 'Data not Verified' && voterName.contains(aadhaarName)) {
+        matched = true;
+      }
+
+      if (dlName.isNotEmpty && dlName != 'Data not Verified' && dlName.contains(aadhaarName)) {
+        matched = true;
+      }
+
+      if (!matched) {
+        showToast_Error('Please enter correct ID: PAN, DL, or Voter name should match Aadhaar name.');
+        return false;
+      }
+    }
+
+
+
+
+
     if (selectedCityCode == null) {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectcity);
       return false;
@@ -5146,7 +5179,13 @@ class _KYCPageState extends State<KYCPage> {
       return false;
     }
 
+
+
+
+
     return true;
+
+
   }
 
 
