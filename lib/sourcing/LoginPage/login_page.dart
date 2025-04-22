@@ -686,6 +686,7 @@ print("_loginCalled$_loginCalled");
           refToken = value.data.tokenDetails.token.toString();
           if (value.message == 'Login Successfully !!') {
             GlobalClass.showSuccessAlert(context, value.message, 1);
+           // GlobalClass.showErrorAlert(context, "Your session has expired. Please log in again to continue.", 2);
             // Assign values to GlobalClass static members
             /*    if (value.data.foImei.isEmpty) {
                   EasyLoading.dismiss();

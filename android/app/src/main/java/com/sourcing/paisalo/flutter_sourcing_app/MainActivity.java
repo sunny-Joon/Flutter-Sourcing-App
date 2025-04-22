@@ -83,6 +83,8 @@ public class MainActivity extends FlutterFragmentActivity implements AUAResultIm
                             String aadhaarNumber = call.argument("aadhaar");
                             openRdActivity(aadhaarNumber);
                             result_global = result;
+                            Log.d("TAG", "DATA1: " + result_global);
+
                         } else {
                             result.notImplemented();
                         }
@@ -102,7 +104,7 @@ public class MainActivity extends FlutterFragmentActivity implements AUAResultIm
     AUAResultImp auaResultImp = new AUAResultImp() {
         @Override
         public void setResult(int i, String s) {
-            Log.d("TAG", "DATA1234: "+s.toString());
+            Log.d("TAG", "DATA12345: "+s.toString());
             Log.e("DATA1234",s);
         }
     };
