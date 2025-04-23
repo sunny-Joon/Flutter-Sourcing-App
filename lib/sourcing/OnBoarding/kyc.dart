@@ -5156,9 +5156,6 @@ class _KYCPageState extends State<KYCPage> {
     }
 
 
-
-
-
     if (selectedCityCode == null) {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectcity);
       return false;

@@ -46,6 +46,18 @@ class _LoginPageState extends State<LoginPage> {
   late Animation<double> _animation;*/
   String appVersion = "0.0";
 
+  //securityquestion
+  /*final TextEditingController answerController = TextEditingController();
+
+  String? selectedQuestion;
+  String? answer;
+   List<String> securityQuestions = [
+    'What is your school name?',
+    'What is your father\'s name?',
+    'What is your birthplace?',
+    'What was your first pet\'s name?',
+    'What is your favorite food?'
+  ];*/
   @override
   void initState() {
     // TODO: implement initState
@@ -283,6 +295,47 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   SizedBox(height: 30),
+//securityquestion
+                /*  DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: 'Select Security Question',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    ),
+                    value: selectedQuestion,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedQuestion = newValue;
+                      });
+                    },
+                    items: securityQuestions.map((String question) {
+                      return DropdownMenuItem<String>(
+                        value: question,
+                        child: Text(question),
+                      );
+                    }).toList(),
+                  ),
+
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: answerController,
+                    decoration: InputDecoration(
+                      labelText: 'Your Answer',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 15),
+
+                  // Save Button
+                  ElevatedButton(
+                    onPressed: saveSecurityQuestionAndAnswer,
+                    child: Text("Save Security Info"),
+                  ),*/
 
                 /*  Align(
                     alignment: Alignment.centerRight,
@@ -1229,4 +1282,24 @@ print("_loginCalled$_loginCalled");
   }
 
 
+//securityquestion
+/*  void saveSecurityQuestionAndAnswer() {
+    if (selectedQuestion != null && answerController.text.trim().isNotEmpty) {
+      setState(() {
+        answer = answerController.text.trim();
+      });
+
+      // 👇 You can save this data to backend or local storage as per your need
+      print("Selected Question: $selectedQuestion");
+      print("Answer: $answer");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Security question and answer saved!")),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please select a question and enter answer")),
+      );
+    }
+  }*/
 }
