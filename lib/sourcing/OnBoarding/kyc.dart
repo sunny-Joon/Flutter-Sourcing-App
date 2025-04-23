@@ -85,7 +85,7 @@ class _KYCPageState extends State<KYCPage> {
   PlaceData? selectedSubDistrictCode;
   PlaceData? selectedVillageCode;
   bool isCKYCNumberFound = false;
-  List<String> loanDuration = ['Select', '12', '24', '36', '48'];
+  List<String> loanDuration = ['Select', '12', '24', '36'];
 
   List<String> titleList = ["Select","Mr.", "Mrs.", "Miss"];
   String? selectedTitle;
@@ -5102,7 +5102,7 @@ class _KYCPageState extends State<KYCPage> {
       return false;
     }
 
-    if (_drivingLicenseController.text.trim().isNotEmpty) {
+    if (_drivingLicenseController.text.trim().isNotEmpty && dlCardHolderName.toString().isEmpty) {
       if (!dlVerified) {
         showToast_Error(AppLocalizations.of(context)!.pleaseverifydrivinglicense);
         return false;
@@ -5126,37 +5126,54 @@ class _KYCPageState extends State<KYCPage> {
       return false;
     }
 
+    String aadhaarName = "";
 
-
-
-    String aadhaarName = adhaardata.customerName?.trim().toLowerCase() ?? '';
+if(_nameController.text  != null && _nameController.text != ""){
+  String address = [
+    _nameController.text.trim(),
+    _nameMController.text.trim(),
+    _nameLController.text.trim(),
+  ].where((e) => e != null && e!.trim().isNotEmpty).join(' ');
+  aadhaarName = address;
+}else{
+  aadhaarName = adhaardata.customerName?.trim().toLowerCase() ?? '';
+}
     String panName = panCardHolderName?.trim().toLowerCase() ?? '';
     String voterName = voterCardHolderName?.trim().toLowerCase() ?? '';
     String dlName = dlCardHolderName?.trim().toLowerCase() ?? '';
 
+    print(panName + "bb"+voterName+ "bb"+ dlName+"bb");
+
     if (aadhaarName.isNotEmpty) {
-      bool matched = false;
+      bool matched = true ,matched1 = true, matched2 = true;
+      print(aadhaarName+"bb");
 
-      if (panName.isNotEmpty && panName != 'Data not Verified' && panName.contains(aadhaarName)) {
-        matched = true;
+      if (panName.isEmpty || (panName != 'Data not Verified' && !panName.contains(aadhaarName))) {
+        print("bb1");
+
+        matched = false;
       }
 
-      if (voterName.isNotEmpty && voterName != 'Data not Verified' && voterName.contains(aadhaarName)) {
-        matched = true;
+      if (voterName.isNotEmpty ||( voterName.toLowerCase() == 'data not verified' && !voterName.contains(aadhaarName) && voterName.toLowerCase() != 'voter no. is not verified')) {
+        matched1 = false;
+        print(aadhaarName+"bb2");
+
       }
 
-      if (dlName.isNotEmpty && dlName != 'Data not Verified' && dlName.contains(aadhaarName)) {
-        matched = true;
+      if (dlName.isNotEmpty || (!dlName.toLowerCase().contains("data not verified") && !dlName.contains(aadhaarName))) {
+        matched2 = false;
+        print(aadhaarName+"bb3");
+
       }
 
-      if (!matched) {
+      if (!matched && !matched1 && !matched2) {
         showToast_Error('Please enter correct ID: PAN, DL, or Voter name should match Aadhaar name.');
         return false;
       }
+    }else{
+      showToast_Error('Aadhaar name not fetched');
+
     }
-
-
-
 
 
     if (selectedCityCode == null) {
