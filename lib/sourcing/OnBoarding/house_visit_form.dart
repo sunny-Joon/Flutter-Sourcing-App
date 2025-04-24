@@ -11,10 +11,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../DATABASE/database_helper.dart';
 import '../../MasterAPIs/live_track_repository.dart';
 import '../../Models/borrower_list_model.dart';
 import '../../Models/branch_model.dart';
 import '../../Models/group_model.dart';
+import '../../Models/range_category_model.dart';
 import '../../api_service.dart';
 import '../../utils/camera_text_writing_process.dart';
 import '../global_class.dart';
@@ -46,90 +48,104 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   File? _image;
   final picker = ImagePicker();
   String _locationMessage = "";
-  late double _latitude=0.0;
-  late double _longitude=0.0;
+  late double _latitude = 0.0;
+  late double _longitude = 0.0;
   String? _aadress;
   late List<CameraDescription> cameras;
-  String nameReg ='[a-zA-Z. ]';
+  String nameReg = '[a-zA-Z. ]';
   String addReg = r'[a-zA-Z0-9. ()/,-]';
-  String amountReg ='[0-9]';
-  String cityReg ='[a-zA-Z ]';
-  String IdsReg ='[a-zA-Z0-9/ ]';
+  String amountReg = '[0-9]';
+  String cityReg = '[a-zA-Z ]';
+  String IdsReg = '[a-zA-Z0-9/ ]';
 
-  List<String> relation = ['Select','mother','father','husband','wife','brother','sister'];
-  List<String> residing_type = ['Select','pucca','kaccha'];
-  List<String> residing_with = ['Select','family','separately'];
-  List<String> years = ['Select','1','2','3','4','5','5++'];
-  List<String> ratings = ['Select','good','bad','dontKnow'];
-  List<String> relations = ['Select','spouse','parents','siblings'];
+  List<String> relation = [
+    'Select',
+    'mother',
+    'father',
+    'husband',
+    'wife',
+    'brother',
+    'sister'
+  ];
+  List<String> residing_type = ['Select', 'PUCCA', 'KACCHA'];
+  List<String> residing_with = ['Select', 'FAMILY', 'SEPARATELY'];
+  List<String> withSpouse = ['Select', 'YES', 'NO'];
+  List<String> years = ['Select', '0', '1', '2', '3', '4', '5', '5++'];
+  List<String> ratings = ['Select', 'good', 'bad', 'dontknow'];
+  List<String> relations = ['Select', 'SPOUSE', 'PARENTS', 'SIBLINGS'];
 
-  String? selected_applicant= "";
-  String? selected_residing_type= "";
-  String? selected_residing_with= "";
-  String? selected_years= "";
-  String? selected_years2= "";
-  String? selected_ratings= "";
-  String? selected_relations= "";
+  List<RangeCategoryDataModel> roofType = [];
+  List<RangeCategoryDataModel> toiletType = [];
 
+  String? selected_applicant = "";
+  String? selected_residing_type = "";
+  String? selected_residing_with = "";
+  String? selected_years = "";
+  String? selected_years2 = "";
+  String? selected_ratings = "";
+  String? selected_relations = "";
+  String selectedRoofType = "";
+  String selectedToiletType = "";
+  String selectedLivingWithSpouse = "";
 
-  final  _BranchNameController = TextEditingController();
-  final  _AreaCodeController = TextEditingController();
-  final  _GroupCodeController = TextEditingController();
-  final  _CenterController = TextEditingController();
-  final  _LoanUsagePercentageController = TextEditingController();
-  final  _monthlyIncomeController = TextEditingController();
-  final  _monthlySalesController = TextEditingController();
-  final  _NameofInterviewedController = TextEditingController();
-  final  _AgeofInterviewedController = TextEditingController();
-  final  _DistancetobranchController = TextEditingController();
-  final  _TimetoreachbranchController = TextEditingController();
-  final  _TotalmonthlyexpensesofoccupationController = TextEditingController();
-  final  _Netmonthlyincome_afterproposedloanController = TextEditingController();
-  final  _TotalmonthlyhouseholdexpensesController = TextEditingController();
-  final  _NetmonthlyincomeotherfamilymembersController = TextEditingController();
-  final  _Namereferenceperson1Controller = TextEditingController();
-  final  _Mobilereferenceperson1Controller = TextEditingController();
-  final  _Namereferenceperson2Controller = TextEditingController();
-  final  _Mobilereferenceperson2Controller = TextEditingController();
-  final  _AddressController = TextEditingController();
+  final _BranchNameController = TextEditingController();
+  final _AreaCodeController = TextEditingController();
+  final _GroupCodeController = TextEditingController();
+  final _CenterController = TextEditingController();
+  final _LoanUsagePercentageController = TextEditingController();
+  final _monthlyIncomeController = TextEditingController();
+  final _monthlySalesController = TextEditingController();
+  final _NameofInterviewedController = TextEditingController();
+  final _AgeofInterviewedController = TextEditingController();
+  final _DistancetobranchController = TextEditingController();
+  final _TimetoreachbranchController = TextEditingController();
+  final _TotalmonthlyexpensesofoccupationController = TextEditingController();
+  final _Netmonthlyincome_afterproposedloanController = TextEditingController();
+  final _TotalmonthlyhouseholdexpensesController = TextEditingController();
+  final _NetmonthlyincomeotherfamilymembersController = TextEditingController();
+  final _Namereferenceperson1Controller = TextEditingController();
+  final _Mobilereferenceperson1Controller = TextEditingController();
+  final _Namereferenceperson2Controller = TextEditingController();
+  final _Mobilereferenceperson2Controller = TextEditingController();
+  final _AddressController = TextEditingController();
 
-  String housetype="True";
-  String isvalidlocation="True";
-  String cpflifestyle="True";
-  String cpfpoaddressverify="True";
-  String photoidverification="True";
-  String currentaddressprof="True";
-  String hasbandwifeageverificaton="True";
-  String parmanentaddresspincode="True";
-  String stamponphotocopy="True";
-  String lastloanverification="True";
-  String absentreasonincentermeeting="True";
-  String repaymentfault="True";
-  String loanreasonverification="True";
-  String isappliedamountappropriate="True";
-  String familyawarenessaboutloan="True";
-  String businessaffectedourrelation="True";
-  String isloanappropriateforbusiness="True";
-  String repayeligiblity="True";
-  String cashflowoffamily="True";
-  String incomematchedwithprofile="True";
-  String businessverification="True";
-  String comissiondemand="True";
-  String borrowersupportedgroup="True";
-  String groupreadytovilay="True";
-  String grouphasbloodrelation="True";
-  String understandinsaurancepolicy="True";
-  String verifyexternalloan="True";
-  String understandsfaultpolicy="True";
-  String overlimitloan_borrowfromgroup="True";
-  String toatldebtunderlimit="True";
-  String workingplaceverification="True";
-  String isworkingplacevalid="True";
-  String workingplacedescription="True";
-  String workexperience="True";
-  String seasondependency="True";
-  String stockverification="True";
-  String loansufficientwithdebt="True";
+  String housetype = "True";
+  String isvalidlocation = "True";
+  String cpflifestyle = "True";
+  String cpfpoaddressverify = "True";
+  String photoidverification = "True";
+  String currentaddressprof = "True";
+  String hasbandwifeageverificaton = "True";
+  String parmanentaddresspincode = "True";
+  String stamponphotocopy = "True";
+  String lastloanverification = "True";
+  String absentreasonincentermeeting = "True";
+  String repaymentfault = "True";
+  String loanreasonverification = "True";
+  String isappliedamountappropriate = "True";
+  String familyawarenessaboutloan = "True";
+  String businessaffectedourrelation = "True";
+  String isloanappropriateforbusiness = "True";
+  String repayeligiblity = "True";
+  String cashflowoffamily = "True";
+  String incomematchedwithprofile = "True";
+  String businessverification = "True";
+  String comissiondemand = "True";
+  String borrowersupportedgroup = "True";
+  String groupreadytovilay = "True";
+  String grouphasbloodrelation = "True";
+  String understandinsaurancepolicy = "True";
+  String verifyexternalloan = "True";
+  String understandsfaultpolicy = "True";
+  String overlimitloan_borrowfromgroup = "True";
+  String toatldebtunderlimit = "True";
+  String workingplaceverification = "True";
+  String isworkingplacevalid = "True";
+  String workingplacedescription = "True";
+  String workexperience = "True";
+  String seasondependency = "True";
+  String stockverification = "True";
+  String loansufficientwithdebt = "True";
   late currentLocation _locationService;
   double? totalDistance;
   late String value;
@@ -142,6 +158,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     _BranchNameController.text = widget.BranchData.branchName ?? '';
     _GroupCodeController.text = widget.GroupData.groupCodeName ?? '';
     _CenterController.text = widget.GroupData.centerName ?? '';
+    initializeData(); // Fetch initial data
 
     _initLocationAndDistance();
     // _LoanUsagePercentageController.addListener(() {
@@ -162,7 +179,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
 
   Future<void> _initLocationAndDistance() async {
     try {
-      Map<String, dynamic> locationData = await _locationService.getCurrentLocation();
+      Map<String, dynamic> locationData = await _locationService
+          .getCurrentLocation();
 
       _latitude = locationData['latitude'];
       _longitude = locationData['longitude'];
@@ -174,8 +192,10 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
 
       //double lat1 = 28.541909899980464;
       //double lon1 = 77.23837911402565;
-      double lat1 = double.tryParse(widget.GroupData.latitude?.toString() ?? '') ?? 0.0;
-      double lon1 = double.tryParse(widget.GroupData.longitude?.toString() ?? '') ?? 0.0;
+      double lat1 = double.tryParse(
+          widget.GroupData.latitude?.toString() ?? '') ?? 0.0;
+      double lon1 = double.tryParse(
+          widget.GroupData.longitude?.toString() ?? '') ?? 0.0;
 
       print("lat1 $lat1");
       print("lon1 $lon1");
@@ -189,13 +209,10 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
       setState(() {
 
       });
-
     } catch (e) {
       print("Error getting current location: $e");
     }
   }
-
-
 
 
   Future getImage() async {
@@ -216,12 +233,13 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         child: Scaffold(
           backgroundColor: Color(0xFFD42D3F),
           body: SingleChildScrollView(
-              child:Column(children: [
+              child: Column(children: [
 
                 SizedBox(height: 20,),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                  child:Row(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 24.0),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -250,7 +268,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                           // Replace with your logo asset path
                           height: 50,
                         ),*/
-                          child:Column(children: [
+                          child: Column(children: [
                             Text(
                               AppLocalizations.of(context)!.housevisit,
                               style: TextStyle(fontFamily: "Poppins-Regular",
@@ -260,7 +278,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                               ),
                             ),
                             Text(
-                              "${widget.selectedData.fiCode}/${widget.selectedData.creator}",
+                              "${widget.selectedData.fiCode}/${widget
+                                  .selectedData.creator}",
                               style: TextStyle(fontFamily: "Poppins-Regular",
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -277,8 +296,11 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                   ),),
 
                 Container(
-                  margin: EdgeInsets.only(left: 15,right: 15,),
-                  height: MediaQuery.of(context).size.height - 160,
+                  margin: EdgeInsets.only(left: 15, right: 15,),
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height - 160,
 
                   // padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -299,76 +321,396 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                         children:
                         <Widget>[
                           SizedBox(height: 20),
-                          _buildTextField2(AppLocalizations.of(context)!.branch, _BranchNameController, TextInputType.text,addReg,isEnabled: false),
+                          _buildTextField2(AppLocalizations.of(context)!.branch,
+                              _BranchNameController, TextInputType.text, addReg,
+                              isEnabled: false),
                           // _buildTextField2(AppLocalizations.of(context)!.area, _AreaCodeController, TextInputType.text,addReg),
-                          _buildTextField2(AppLocalizations.of(context)!.group, _GroupCodeController, TextInputType.text,addReg,isEnabled: false),
-                          _buildTextField2(AppLocalizations.of(context)!.center, _CenterController, TextInputType.text,addReg,isEnabled: false),
-                          _buildTextField2(AppLocalizations.of(context)!.loanusagepercentage, _LoanUsagePercentageController, TextInputType.number,amountReg),
-                          _buildTextField2(AppLocalizations.of(context)!.monthlyincomehouse, _monthlyIncomeController, TextInputType.number,amountReg),
-                          _buildTextField2(AppLocalizations.of(context)!.monthlysales, _monthlySalesController, TextInputType.number,amountReg),
-                          _buildTextField2(AppLocalizations.of(context)!.interviewedpersonname, _NameofInterviewedController, TextInputType.name,nameReg),
-                          _buildTextField2(AppLocalizations.of(context)!.interviewedpersonage, _AgeofInterviewedController, TextInputType.number,amountReg),
-                         // _buildTextField2(AppLocalizations.of(context)!.distancetobranch, _DistancetobranchController, TextInputType.number,amountReg),
-                          _buildTextField2(AppLocalizations.of(context)!.timetoreachbranch, _TimetoreachbranchController, TextInputType.number,amountReg),
-                          _buildTextField2(AppLocalizations.of(context)!.totalmonthlyexpenses, _TotalmonthlyexpensesofoccupationController, TextInputType.number,amountReg),
-                          _buildTextField2(AppLocalizations.of(context)!.netmonthlyincomeafterloan, _Netmonthlyincome_afterproposedloanController, TextInputType.number,amountReg),
-                          _buildTextField2(AppLocalizations.of(context)!.totalmonthlyhouseholdexpenses, _TotalmonthlyhouseholdexpensesController, TextInputType.number,amountReg),
-                          _buildTextField2(AppLocalizations.of(context)!.netmonthlyincomeotherfamily, _NetmonthlyincomeotherfamilymembersController, TextInputType.number,amountReg),
-                          _buildTextField2(AppLocalizations.of(context)!.referenceperson1name, _Namereferenceperson1Controller, TextInputType.name,nameReg),
-                          _buildTextField1(AppLocalizations.of(context)!.referenceperson1phone, _Mobilereferenceperson1Controller, TextInputType.number,10),
-                          _buildTextField2(AppLocalizations.of(context)!.referenceperson2name, _Namereferenceperson2Controller, TextInputType.name,nameReg),
-                          _buildTextField1(AppLocalizations.of(context)!.referenceperson2phone, _Mobilereferenceperson2Controller, TextInputType.number,10),
-                          _buildTextField2(AppLocalizations.of(context)!.addresshouse, _AddressController, TextInputType.name,addReg),
+                          _buildTextField2(AppLocalizations.of(context)!.group,
+                              _GroupCodeController, TextInputType.text, addReg,
+                              isEnabled: false),
+                          _buildTextField2(AppLocalizations.of(context)!.center,
+                              _CenterController, TextInputType.text, addReg,
+                              isEnabled: false),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .loanusagepercentage,
+                              _LoanUsagePercentageController,
+                              TextInputType.number, amountReg),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .monthlyincomehouse, _monthlyIncomeController,
+                              TextInputType.number, amountReg),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .monthlysales, _monthlySalesController,
+                              TextInputType.number, amountReg),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .interviewedpersonname,
+                              _NameofInterviewedController, TextInputType.name,
+                              nameReg),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .interviewedpersonage,
+                              _AgeofInterviewedController, TextInputType.number,
+                              amountReg),
+                          // _buildTextField2(AppLocalizations.of(context)!.distancetobranch, _DistancetobranchController, TextInputType.number,amountReg),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .timetoreachbranch, _TimetoreachbranchController,
+                              TextInputType.number, amountReg),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .totalmonthlyexpenses,
+                              _TotalmonthlyexpensesofoccupationController,
+                              TextInputType.number, amountReg),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .netmonthlyincomeafterloan,
+                              _Netmonthlyincome_afterproposedloanController,
+                              TextInputType.number, amountReg),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .totalmonthlyhouseholdexpenses,
+                              _TotalmonthlyhouseholdexpensesController,
+                              TextInputType.number, amountReg),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .netmonthlyincomeotherfamily,
+                              _NetmonthlyincomeotherfamilymembersController,
+                              TextInputType.number, amountReg),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .referenceperson1name,
+                              _Namereferenceperson1Controller,
+                              TextInputType.name, nameReg),
+                          _buildTextField1(AppLocalizations.of(context)!
+                              .referenceperson1phone,
+                              _Mobilereferenceperson1Controller,
+                              TextInputType.number, 10),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .referenceperson2name,
+                              _Namereferenceperson2Controller,
+                              TextInputType.name, nameReg),
+                          _buildTextField1(AppLocalizations.of(context)!
+                              .referenceperson2phone,
+                              _Mobilereferenceperson2Controller,
+                              TextInputType.number, 10),
+                          _buildTextField2(AppLocalizations.of(context)!
+                              .addresshouse, _AddressController,
+                              TextInputType.name, addReg),
 
 
-                          dropdowns(AppLocalizations.of(context)!.relationwithearningmember, relation, selected_applicant!, (newValue) {setState(() {selected_applicant = newValue;});}),
-                          dropdowns(AppLocalizations.of(context)!.residingtype, residing_type, selected_residing_type!, (newValue) {setState(() {selected_residing_type = newValue;});}),
-                          dropdowns(AppLocalizations.of(context)!.residingwith, residing_with, selected_residing_with!, (newValue) {setState(() {selected_residing_with = newValue;});}),
-                          dropdowns(AppLocalizations.of(context)!.residentialstability, years, selected_years!, (newValue) {setState(() {selected_years = newValue;});}),
-                          dropdowns(AppLocalizations.of(context)!.totalexperience, years, selected_years2!, (newValue) {setState(() {selected_years2 = newValue;});}),
-                          dropdowns(AppLocalizations.of(context)!.applicantresponse, ratings, selected_ratings!, (newValue) {setState(() {selected_ratings = newValue;});}),
-                          dropdowns(AppLocalizations.of(context)!.relationwithinterviewed, relations, selected_relations!, (newValue) {setState(() {selected_relations = newValue;});}),
+                          dropdowns(AppLocalizations.of(context)!
+                              .relationwithearningmember, relation,
+                              selected_applicant!, (newValue) {
+                                setState(() {
+                                  selected_applicant = newValue;
+                                });
+                              }),
+                          dropdowns(AppLocalizations.of(context)!.residingtype,
+                              residing_type, selected_residing_type!, (
+                                  newValue) {
+                                setState(() {
+                                  selected_residing_type = newValue;
+                                });
+                              }),
+                          dropdowns(AppLocalizations.of(context)!.residingwith,
+                              residing_with, selected_residing_with!, (
+                                  newValue) {
+                                setState(() {
+                                  selected_residing_with = newValue;
+                                });
+                              }),
+
+                          dropdowns(AppLocalizations.of(context)!
+                              .leavewithspouse, withSpouse,
+                              selectedLivingWithSpouse, (newValue) {
+                                setState(() {
+                                  selectedLivingWithSpouse = newValue;
+                                });
+                              }),
+                          dropdowns2(AppLocalizations.of(context)!.toilettype,
+                              toiletType, selectedToiletType, (newValue) {
+                                setState(() {
+                                  selectedToiletType = newValue;
+                                });
+                              }),
+                          dropdowns2(AppLocalizations.of(context)!.rooftype,
+                              roofType, selectedRoofType, (newValue) {
+                                setState(() {
+                                  selectedRoofType = newValue;
+                                });
+                              }),
 
 
-                          checkboxes(AppLocalizations.of(context)!.roofwalltype, housetype, (newValue) {setState(() {housetype = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.validlocation, isvalidlocation, (newValue) {setState(() {isvalidlocation = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.lifestyleverification, cpflifestyle, (newValue) {setState(() {cpflifestyle = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.verificationofloan, cpfpoaddressverify, (newValue) {setState(() {cpfpoaddressverify = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.idverification, photoidverification, (newValue) {setState(() {photoidverification = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.currentaddressverification, currentaddressprof, (newValue) {setState(() {currentaddressprof = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.ageverification, hasbandwifeageverificaton, (newValue) {setState(() {hasbandwifeageverificaton = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.addressfilledincpf, parmanentaddresspincode, (newValue) {setState(() {parmanentaddresspincode = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.stampedphotocopy, stamponphotocopy, (newValue) {setState(() {stamponphotocopy = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.lastloanusage, lastloanverification, (newValue) {setState(() {lastloanverification = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.centermeetingabsence, absentreasonincentermeeting, (newValue) {setState(() {absentreasonincentermeeting = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.paymentdelays, repaymentfault, (newValue) {setState(() {repaymentfault = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.loanpurpose, loanreasonverification, (newValue) {setState(() {loanreasonverification = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.loanamountappropriate, isappliedamountappropriate, (newValue) {setState(() {isappliedamountappropriate = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.familyawareness, familyawarenessaboutloan, (newValue) {setState(() {familyawarenessaboutloan = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.businesssuitability, businessaffectedourrelation, (newValue) {setState(() {businessaffectedourrelation = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.loanimpactonbusiness, isloanappropriateforbusiness, (newValue) {setState(() {isloanappropriateforbusiness = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.repaymentcapacity, repayeligiblity, (newValue) {setState(() {repayeligiblity = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.familycashflow, cashflowoffamily, (newValue) {setState(() {cashflowoffamily = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.incomeafterloan, incomematchedwithprofile, (newValue) {setState(() {incomematchedwithprofile = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.businessverification, businessverification, (newValue) {setState(() {businessverification = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.commissiondemand, comissiondemand, (newValue) {setState(() {comissiondemand = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.groupreadytovilay, borrowersupportedgroup, (newValue) {setState(() {borrowersupportedgroup = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.groupreadytovilay, groupreadytovilay, (newValue) {setState(() {groupreadytovilay = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.grouphasbloodrelation, grouphasbloodrelation, (newValue) {setState(() {grouphasbloodrelation = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.understandinsurancepolicy, understandinsaurancepolicy, (newValue) {setState(() {understandinsaurancepolicy = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.verifyexternalloan, verifyexternalloan, (newValue) {setState(() {verifyexternalloan = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.understandsfaultpolicy, understandsfaultpolicy, (newValue) {setState(() {understandsfaultpolicy = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.overlimitloanborrowfromgroup, overlimitloan_borrowfromgroup, (newValue) {setState(() {overlimitloan_borrowfromgroup = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.totaldebtunderlimit, toatldebtunderlimit, (newValue) {setState(() {toatldebtunderlimit = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.workingplaceverification, workingplaceverification, (newValue) {setState(() {workingplaceverification = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.isworkingplacevalid, isworkingplacevalid, (newValue) {setState(() {isworkingplacevalid = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.workingplacedescription, workingplacedescription, (newValue) {setState(() {workingplacedescription = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.workexperience, workexperience, (newValue) {setState(() {workexperience = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.seasondependency, seasondependency, (newValue) {setState(() {seasondependency = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.stockverification, stockverification, (newValue) {setState(() {stockverification = newValue;});},),
-                          checkboxes(AppLocalizations.of(context)!.loansufficientwithdebt, loansufficientwithdebt, (newValue) {setState(() {loansufficientwithdebt = newValue;});},),
+                          dropdowns(AppLocalizations.of(context)!
+                              .residentialstability, years, selected_years!, (
+                              newValue) {
+                            setState(() {
+                              selected_years = newValue;
+                            });
+                          }),
+                          dropdowns(AppLocalizations.of(context)!
+                              .totalexperience, years, selected_years2!, (
+                              newValue) {
+                            setState(() {
+                              selected_years2 = newValue;
+                            });
+                          }),
+                          dropdowns(AppLocalizations.of(context)!
+                              .applicantresponse, ratings, selected_ratings!, (
+                              newValue) {
+                            setState(() {
+                              selected_ratings = newValue;
+                            });
+                          }),
+                          dropdowns(AppLocalizations.of(context)!
+                              .relationwithinterviewed, relations,
+                              selected_relations!, (newValue) {
+                                setState(() {
+                                  selected_relations = newValue;
+                                });
+                              }),
 
-                        /*  SizedBox(height: 20),
+
+                          checkboxes(AppLocalizations.of(context)!.roofwalltype,
+                            housetype, (newValue) {
+                              setState(() {
+                                housetype = newValue;
+                              });
+                            },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .validlocation, isvalidlocation, (newValue) {
+                            setState(() {
+                              isvalidlocation = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .lifestyleverification, cpflifestyle, (newValue) {
+                            setState(() {
+                              cpflifestyle = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .verificationofloan, cpfpoaddressverify, (
+                              newValue) {
+                            setState(() {
+                              cpfpoaddressverify = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .idverification, photoidverification, (newValue) {
+                            setState(() {
+                              photoidverification = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .currentaddressverification, currentaddressprof, (
+                              newValue) {
+                            setState(() {
+                              currentaddressprof = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .ageverification, hasbandwifeageverificaton, (
+                              newValue) {
+                            setState(() {
+                              hasbandwifeageverificaton = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .addressfilledincpf, parmanentaddresspincode, (
+                              newValue) {
+                            setState(() {
+                              parmanentaddresspincode = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .stampedphotocopy, stamponphotocopy, (newValue) {
+                            setState(() {
+                              stamponphotocopy = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .lastloanusage, lastloanverification, (newValue) {
+                            setState(() {
+                              lastloanverification = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .centermeetingabsence,
+                            absentreasonincentermeeting, (newValue) {
+                              setState(() {
+                                absentreasonincentermeeting = newValue;
+                              });
+                            },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .paymentdelays, repaymentfault, (newValue) {
+                            setState(() {
+                              repaymentfault = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!.loanpurpose,
+                            loanreasonverification, (newValue) {
+                              setState(() {
+                                loanreasonverification = newValue;
+                              });
+                            },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .loanamountappropriate,
+                            isappliedamountappropriate, (newValue) {
+                              setState(() {
+                                isappliedamountappropriate = newValue;
+                              });
+                            },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .familyawareness, familyawarenessaboutloan, (
+                              newValue) {
+                            setState(() {
+                              familyawarenessaboutloan = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .businesssuitability,
+                            businessaffectedourrelation, (newValue) {
+                              setState(() {
+                                businessaffectedourrelation = newValue;
+                              });
+                            },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .loanimpactonbusiness,
+                            isloanappropriateforbusiness, (newValue) {
+                              setState(() {
+                                isloanappropriateforbusiness = newValue;
+                              });
+                            },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .repaymentcapacity, repayeligiblity, (newValue) {
+                            setState(() {
+                              repayeligiblity = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .familycashflow, cashflowoffamily, (newValue) {
+                            setState(() {
+                              cashflowoffamily = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .incomeafterloan, incomematchedwithprofile, (
+                              newValue) {
+                            setState(() {
+                              incomematchedwithprofile = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .businessverification, businessverification, (
+                              newValue) {
+                            setState(() {
+                              businessverification = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .commissiondemand, comissiondemand, (newValue) {
+                            setState(() {
+                              comissiondemand = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .groupreadytovilay, borrowersupportedgroup, (
+                              newValue) {
+                            setState(() {
+                              borrowersupportedgroup = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .groupreadytovilay, groupreadytovilay, (
+                              newValue) {
+                            setState(() {
+                              groupreadytovilay = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .grouphasbloodrelation, grouphasbloodrelation, (
+                              newValue) {
+                            setState(() {
+                              grouphasbloodrelation = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .understandinsurancepolicy,
+                            understandinsaurancepolicy, (newValue) {
+                              setState(() {
+                                understandinsaurancepolicy = newValue;
+                              });
+                            },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .verifyexternalloan, verifyexternalloan, (
+                              newValue) {
+                            setState(() {
+                              verifyexternalloan = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .understandsfaultpolicy, understandsfaultpolicy, (
+                              newValue) {
+                            setState(() {
+                              understandsfaultpolicy = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .overlimitloanborrowfromgroup,
+                            overlimitloan_borrowfromgroup, (newValue) {
+                              setState(() {
+                                overlimitloan_borrowfromgroup = newValue;
+                              });
+                            },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .totaldebtunderlimit, toatldebtunderlimit, (
+                              newValue) {
+                            setState(() {
+                              toatldebtunderlimit = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .workingplaceverification,
+                            workingplaceverification, (newValue) {
+                              setState(() {
+                                workingplaceverification = newValue;
+                              });
+                            },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .isworkingplacevalid, isworkingplacevalid, (
+                              newValue) {
+                            setState(() {
+                              isworkingplacevalid = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .workingplacedescription,
+                            workingplacedescription, (newValue) {
+                              setState(() {
+                                workingplacedescription = newValue;
+                              });
+                            },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .workexperience, workexperience, (newValue) {
+                            setState(() {
+                              workexperience = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .seasondependency, seasondependency, (newValue) {
+                            setState(() {
+                              seasondependency = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .stockverification, stockverification, (
+                              newValue) {
+                            setState(() {
+                              stockverification = newValue;
+                            });
+                          },),
+                          checkboxes(AppLocalizations.of(context)!
+                              .loansufficientwithdebt, loansufficientwithdebt, (
+                              newValue) {
+                            setState(() {
+                              loansufficientwithdebt = newValue;
+                            });
+                          },),
+
+                          /*  SizedBox(height: 20),
                           _image == null
                               ? Text(AppLocalizations.of(context)!.noimageselected)
                               : Image.file(_image!),
@@ -396,23 +738,25 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                             children: [
                               InkWell(
                                 onTap: () async {
-
                                   final result = await Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => CameraScreen(camera: cameras.first)),
+                                    MaterialPageRoute(builder: (context) =>
+                                        CameraScreen(camera: cameras.first)),
                                   );
 
                                   if (result != null) {
                                     //File? pickedFile=await GlobalClass().pickImage();
                                     setState(() {
-                                      _image=result;
+                                      _image = result;
                                     });
                                     // The result is the modified image
                                     // Use the result (modified image file) here, for example:
                                     print('Image path: ${result.path}');
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => DisplayPictureScreen(imagePath: result.path),
+                                        builder: (context) =>
+                                            DisplayPictureScreen(
+                                                imagePath: result.path),
                                       ),
                                     );
                                   }
@@ -424,15 +768,18 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                                 child: Card(
                                   elevation: 6,
                                   color: Colors.grey.shade300,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6)),
                                   child: Container(
                                     alignment: Alignment.center,
                                     height: 40,
                                     width: 150,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .center,
                                       children: [
-                                        Text(AppLocalizations.of(context)!.clickimage),
+                                        Text(AppLocalizations.of(context)!
+                                            .clickimage),
                                         Icon(Icons.camera)
                                       ],
                                     ),
@@ -442,24 +789,31 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                               SizedBox(width: 10),
                               InkWell(
 
-                                onTap: (){
-                                  if(_image!=null){Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => DisplayPictureScreen(imagePath:_image!.path),
-                                    ),
-                                  );}else{GlobalClass.showSnackBar(context, "Please capture image first!!");}
-
+                                onTap: () {
+                                  if (_image != null) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            DisplayPictureScreen(
+                                                imagePath: _image!.path),
+                                      ),
+                                    );
+                                  } else {
+                                    GlobalClass.showSnackBar(context,
+                                        "Please capture image first!!");
+                                  }
                                 },
-                                child: _image==null? Image(
-                                  image: AssetImage("assets/Images/prof_ic.png"),
+                                child: _image == null ? Image(
+                                  image: AssetImage(
+                                      "assets/Images/prof_ic.png"),
                                   width: 100,
                                   height: 100,
-                                ):Image.file(
+                                ) : Image.file(
                                   File(_image!.path),
                                   width: 100,
                                   height: 100,
                                   fit: BoxFit.cover,
-                                ) ,
+                                ),
                               )
                               ,
                             ],
@@ -468,7 +822,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                           ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                if(validate()){
+                                if (validate()) {
                                   saveHouseVisitForm(context);
                                 }
                                 // Process data
@@ -476,7 +830,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                             },
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero, // Makes the corners square
+                                borderRadius: BorderRadius
+                                    .zero, // Makes the corners square
                               ),
                             ),
                             child: Text(AppLocalizations.of(context)!.submit),
@@ -491,34 +846,35 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
 
           ),
         ));
-
-
   }
+
   Future<bool> _onWillPop() async {
     // Show a confirmation dialog
     return await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.areyousure,),
-        content: Text(AppLocalizations.of(context)!.isclosehousevisit),
-        actions: [
-          TextButton(
-            onPressed: () =>
-                Navigator.of(context).pop(false), // Stay in the app
-            child: Text(AppLocalizations.of(context)!.no),
+      builder: (context) =>
+          AlertDialog(
+            title: Text(AppLocalizations.of(context)!.areyousure,),
+            content: Text(AppLocalizations.of(context)!.isclosehousevisit),
+            actions: [
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(false), // Stay in the app
+                child: Text(AppLocalizations.of(context)!.no),
+              ),
+              TextButton(
+                onPressed: () {
+                  EasyLoading.dismiss();
+                  Navigator.of(context).pop(true);
+                }, // Exit the app
+                child: Text(AppLocalizations.of(context)!.yes),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              EasyLoading.dismiss();
-              Navigator.of(context).pop(true);
-            }, // Exit the app
-            child: Text(AppLocalizations.of(context)!.yes),
-          ),
-        ],
-      ),
     ) ??
         false; // Default to false if dialog is dismissed
   }
+
   Future<void> saveHouseVisitForm(BuildContext context) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       EasyLoading.show(
@@ -526,88 +882,98 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
       );
     });
 
-    String HouseType=housetype;
-    String IsvalidLocation=isvalidlocation;
-    String CPFlifeStyle=cpflifestyle;
-    String CpfPOAddressVerify=cpfpoaddressverify;
-    String PhotoIdVerification=photoidverification;
-    String CurrentAddressprof=currentaddressprof;
-    String HasbandWifeAgeverificaton=hasbandwifeageverificaton;
-    String ParmanentAddressPincode=parmanentaddresspincode;
-    String StampOnPhotocopy=stamponphotocopy;
-    String LastLoanVerification=lastloanverification;
-    String AbsentReasonInCentermeeting=absentreasonincentermeeting;
-    String RepaymentFault=repaymentfault;
-    String LoanreasonVerification=loanreasonverification;
-    String IsAppliedAmountAppropriate=isappliedamountappropriate;
-    String FamilyAwarenessaboutloan=familyawarenessaboutloan;
-    String Businessaffectedourrelation=businessaffectedourrelation;
-    String IsloanAppropriateforBusiness=isloanappropriateforbusiness;
-    String Repayeligiblity=repayeligiblity;
-    String Cashflowoffamily=cashflowoffamily;
-    String IncomeMatchedwithprofile=incomematchedwithprofile;
-    String BusinessVerification=businessverification;
-    String ComissionDemand=comissiondemand;
-    String BorrowersupportedGroup=borrowersupportedgroup;
-    String GroupReadyToVilay=groupreadytovilay;
-    String GroupHasBloodRelation=grouphasbloodrelation;
-    String UnderstandInsaurancePolicy=understandinsaurancepolicy;
-    String VerifyExternalLoan=verifyexternalloan;
-    String UnderstandsFaultPolicy=understandsfaultpolicy;
-    String OverlimitLoan_borrowfromgroup=overlimitloan_borrowfromgroup;
-    String toatlDebtUnderLimit=toatldebtunderlimit;
-    String workingPlaceVerification=workingplaceverification;
-    String IsWorkingPlaceValid=isworkingplacevalid;
-    String workingPlacedescription=workingplacedescription;
-    String workExperience=workexperience;
-    String SeasonDependency=seasondependency;
-    String StockVerification=stockverification;
-    String LoanSufficientWithDebt=loansufficientwithdebt;
+    String HouseType = housetype;
+    String IsvalidLocation = isvalidlocation;
+    String CPFlifeStyle = cpflifestyle;
+    String CpfPOAddressVerify = cpfpoaddressverify;
+    String PhotoIdVerification = photoidverification;
+    String CurrentAddressprof = currentaddressprof;
+    String HasbandWifeAgeverificaton = hasbandwifeageverificaton;
+    String ParmanentAddressPincode = parmanentaddresspincode;
+    String StampOnPhotocopy = stamponphotocopy;
+    String LastLoanVerification = lastloanverification;
+    String AbsentReasonInCentermeeting = absentreasonincentermeeting;
+    String RepaymentFault = repaymentfault;
+    String LoanreasonVerification = loanreasonverification;
+    String IsAppliedAmountAppropriate = isappliedamountappropriate;
+    String FamilyAwarenessaboutloan = familyawarenessaboutloan;
+    String Businessaffectedourrelation = businessaffectedourrelation;
+    String IsloanAppropriateforBusiness = isloanappropriateforbusiness;
+    String Repayeligiblity = repayeligiblity;
+    String Cashflowoffamily = cashflowoffamily;
+    String IncomeMatchedwithprofile = incomematchedwithprofile;
+    String BusinessVerification = businessverification;
+    String ComissionDemand = comissiondemand;
+    String BorrowersupportedGroup = borrowersupportedgroup;
+    String GroupReadyToVilay = groupreadytovilay;
+    String GroupHasBloodRelation = grouphasbloodrelation;
+    String UnderstandInsaurancePolicy = understandinsaurancepolicy;
+    String VerifyExternalLoan = verifyexternalloan;
+    String UnderstandsFaultPolicy = understandsfaultpolicy;
+    String OverlimitLoan_borrowfromgroup = overlimitloan_borrowfromgroup;
+    String toatlDebtUnderLimit = toatldebtunderlimit;
+    String workingPlaceVerification = workingplaceverification;
+    String IsWorkingPlaceValid = isworkingplacevalid;
+    String workingPlacedescription = workingplacedescription;
+    String workExperience = workexperience;
+    String SeasonDependency = seasondependency;
+    String StockVerification = stockverification;
+    String LoanSufficientWithDebt = loansufficientwithdebt;
 
-    String Relationearningmember=selected_applicant!;
-    String Residence_Type=selected_residing_type!;
-    String Residing_with=selected_residing_with!;
-    String feedbacknearbyresident=selected_ratings!;
-    String TotalExperienceOccupation=selected_years!;
-    String Residential_Stability=selected_years2!;
-    String RelationofInterviewer=selected_relations!;
+    String Relationearningmember = selected_applicant!;
+    String Residence_Type = selected_residing_type!;
+    String Residing_with = selected_residing_with!;
+    String feedbacknearbyresident = selected_ratings!;
+    String TotalExperienceOccupation = selected_years!;
+    String Residential_Stability = selected_years2!;
+    String RelationofInterviewer = selected_relations!;
+
+    String HomeRoofType = selectedRoofType;
+    String ToiletType = selectedToiletType;
+    bool LivingwithSpouse = selectedLivingWithSpouse=="Yes"?true:false;
 
 
-    String BranchName=_BranchNameController.text.toString();
-    String AreaCode=GlobalClass.creator;
-    String AreaName=_GroupCodeController.text.toString();
-    String Center=_CenterController.text.toString();
-    String LoanUsagePercentage=_LoanUsagePercentageController.text.toString();
-    int monthlyIncome=int.parse(_monthlyIncomeController.text.toString());
-    int monthlySales=int.parse(_monthlySalesController.text.toString());
-    String NameofInterviewed=_NameofInterviewedController.text.toString();
-    String AgeofInterviewed=_AgeofInterviewedController.text.toString();
+    String BranchName = _BranchNameController.text.toString();
+    String AreaCode = GlobalClass.creator;
+    String AreaName = _GroupCodeController.text.toString();
+    String Center = _CenterController.text.toString();
+    String LoanUsagePercentage = _LoanUsagePercentageController.text.toString();
+    int monthlyIncome = int.parse(_monthlyIncomeController.text.toString());
+    int monthlySales = int.parse(_monthlySalesController.text.toString());
+    String NameofInterviewed = _NameofInterviewedController.text.toString();
+    String AgeofInterviewed = _AgeofInterviewedController.text.toString();
     //String Distancetobranch=_DistancetobranchController.text.toString();
-    String Timetoreachbranch=_TimetoreachbranchController.text.toString();
-    int Totalmonthlyexpensesofoccupation=int.parse(_TotalmonthlyexpensesofoccupationController.text.toString());
-    int Netmonthlyincome_afterproposedloan=int.parse(_Netmonthlyincome_afterproposedloanController.text.toString());
-    int Totalmonthlyhouseholdexpenses=int.parse(_TotalmonthlyhouseholdexpensesController.text.toString());
-    int Netmonthlyincomeotherfamilymembers=int.parse(_NetmonthlyincomeotherfamilymembersController.text.toString());
-    String Namereferenceperson1=_Namereferenceperson1Controller.text.toString();
-    String Mobilereferenceperson1=_Mobilereferenceperson1Controller.text.toString();
-    String Namereferenceperson2=_Namereferenceperson2Controller.text.toString();
-    String Mobilereferenceperson2=_Mobilereferenceperson2Controller.text.toString();
-    String Address=_AddressController.text.toString();
+    String Timetoreachbranch = _TimetoreachbranchController.text.toString();
+    int Totalmonthlyexpensesofoccupation = int.parse(
+        _TotalmonthlyexpensesofoccupationController.text.toString());
+    int Netmonthlyincome_afterproposedloan = int.parse(
+        _Netmonthlyincome_afterproposedloanController.text.toString());
+    int Totalmonthlyhouseholdexpenses = int.parse(
+        _TotalmonthlyhouseholdexpensesController.text.toString());
+    int Netmonthlyincomeotherfamilymembers = int.parse(
+        _NetmonthlyincomeotherfamilymembersController.text.toString());
+    String Namereferenceperson1 = _Namereferenceperson1Controller.text
+        .toString();
+    String Mobilereferenceperson1 = _Mobilereferenceperson1Controller.text
+        .toString();
+    String Namereferenceperson2 = _Namereferenceperson2Controller.text
+        .toString();
+    String Mobilereferenceperson2 = _Mobilereferenceperson2Controller.text
+        .toString();
+    String Address = _AddressController.text.toString();
 
     /*  double Latitude=_latitude;
     double Longitude=_longitude;*/
 
-    String Applicant_Status="N";
-    String FamilymemberfromPaisalo="o";
+    String Applicant_Status = "N";
+    String FamilymemberfromPaisalo = "o";
 
-    String fi_Id=widget.selectedData.id.toString();
-    String Creator=GlobalClass.creator;
-    int HouseMonthlyRent=45;
-    String EmpCode=GlobalClass.EmpId;
-    String GroupCode=widget.GroupData.groupCode;
-    String GroupName=widget.GroupData.groupCodeName;
-
-
+    String fi_Id = widget.selectedData.id.toString();
+    String Creator = GlobalClass.creator;
+    int HouseMonthlyRent = 45;
+    String EmpCode = GlobalClass.EmpId;
+    String GroupCode = widget.GroupData.groupCode;
+    String GroupName = widget.GroupData.groupCodeName;
 
 
     File? Image = _image;
@@ -615,7 +981,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     final api = Provider.of<ApiService>(context, listen: false);
 
     await api.saveHouseVisit(
-        GlobalClass.token,GlobalClass.dbName,
+        GlobalClass.token,
+        GlobalClass.dbName,
         fi_Id,
         Creator,
         BranchName,
@@ -688,8 +1055,9 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         BusinessVerification,
         _latitude,
         _longitude,
-
-
+        HomeRoofType,
+        ToiletType,
+        LivingwithSpouse,
         EmpCode,
         Address,
         Image!).then((response) {
@@ -703,18 +1071,20 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         );
         //  _showSuccessAndRedirect(response);
         //   GlobalClass.showSuccessAlert(context,response.message,3);
-        LiveTrackRepository().saveLivetrackData( "",   "House Visit",widget.selectedData.id);
+        LiveTrackRepository().saveLivetrackData(
+            "", "House Visit", widget.selectedData.id);
       } else {
         EasyLoading.dismiss();
-        GlobalClass.showUnsuccessfulAlert(context,response.message,1);
+        GlobalClass.showUnsuccessfulAlert(context, response.message, 1);
       }
     }).catchError((error) {
       EasyLoading.dismiss();
-      GlobalClass.showErrorAlert(context,"Server Error",1);
+      GlobalClass.showErrorAlert(context, "Server Error", 1);
     });
   }
 
-  Widget _buildTextField2(String label, TextEditingController controller, TextInputType inputType, String regex, {bool isEnabled = true}) {
+  Widget _buildTextField2(String label, TextEditingController controller,
+      TextInputType inputType, String regex, {bool isEnabled = true}) {
     return Container(
       // margin: EdgeInsets.symmetric(vertical: 4),
       padding: EdgeInsets.all(4),
@@ -736,24 +1106,27 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
               child: TextFormField(
                 controller: controller,
                 keyboardType: inputType,
-                enabled: isEnabled, // 🔒 disables if false
+                enabled: isEnabled,
+                // 🔒 disables if false
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(horizontal: 8),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return '${AppLocalizations.of(context)!.pleaseenter} $label';
+                    return '${AppLocalizations.of(context)!
+                        .pleaseenter} $label';
                   }
                   return null;
                 },
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(regex)),
                   TextInputFormatter.withFunction(
-                        (oldValue, newValue) => TextEditingValue(
-                      text: newValue.text.toUpperCase(),
-                      selection: newValue.selection,
-                    ),
+                        (oldValue, newValue) =>
+                        TextEditingValue(
+                          text: newValue.text.toUpperCase(),
+                          selection: newValue.selection,
+                        ),
                   ),
                 ],
               ),
@@ -762,10 +1135,10 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         ],
       ),
     );
-
   }
 
-  Widget _buildTextField1(String label, TextEditingController controller, TextInputType inputType, int maxlength) {
+  Widget _buildTextField1(String label, TextEditingController controller,
+      TextInputType inputType, int maxlength) {
     return Container(
       padding: EdgeInsets.all(4),
       child: Column(
@@ -785,8 +1158,10 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
             child: Center(
               child: TextFormField(
                 controller: controller,
-                keyboardType: inputType, // Set the input type
-                maxLength: maxlength, // Restrict input length
+                keyboardType: inputType,
+                // Set the input type
+                maxLength: maxlength,
+                // Restrict input length
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(horizontal: 8),
@@ -794,7 +1169,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return '${AppLocalizations.of(context)!.pleaseenter} $label';
+                    return '${AppLocalizations.of(context)!
+                        .pleaseenter} $label';
                   }
                   if (value.length > maxlength) {
                     return '$label cannot exceed $maxlength characters';
@@ -810,7 +1186,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   }
 
 
-  Widget checkboxes(String label, String value, ValueChanged<String> onChanged) {
+  Widget checkboxes(String label, String value,
+      ValueChanged<String> onChanged) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
         bool _isChecked = value.toLowerCase() == 'true';
@@ -833,7 +1210,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                         Checkbox(
                           value: _isChecked,
                           checkColor: Color(0xFFD42D3F),
-                          fillColor: MaterialStateProperty.all(Colors.grey.shade400),
+                          fillColor: MaterialStateProperty.all(Colors.grey
+                              .shade400),
                           shape: RoundedRectangleBorder(
 
                             borderRadius: BorderRadius.circular(100),
@@ -852,7 +1230,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                               fontSize: 16,
                               color: Colors.black,
                             ),
-                            maxLines: null, // Allow text to wrap to multiple lines
+                            maxLines: null,
+                            // Allow text to wrap to multiple lines
                             softWrap: true, // Allow soft wrapping of the text
                           ),
                         ),
@@ -868,7 +1247,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     );
   }
 
-  Widget dropdowns(String label, List<String> items, String selectedItem, ValueChanged<String> onChanged) {
+  Widget dropdowns(String label, List<String> items, String selectedItem,
+      ValueChanged<String> onChanged) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4),
       padding: EdgeInsets.all(4),
@@ -888,7 +1268,8 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: Colors.grey), // Add this line for border
+              border: Border.all(
+                  color: Colors.grey), // Add this line for border
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
@@ -912,8 +1293,59 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     );
   }
 
-  bool validate() {
+  Widget dropdowns2(
+      String label,
+      List<RangeCategoryDataModel> items,
+      String selectedItem,
+      ValueChanged<String> onChanged,
+      ) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.all(4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: "Poppins-Regular",
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 8),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: Colors.grey),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: selectedItem.isEmpty
+                    ? items.first.code
+                    : selectedItem,
+                onChanged: (String? newValue) {
+                  onChanged(newValue ?? '');
+                },
+                isExpanded: true,
+                alignment: Alignment.centerLeft,
+                items: items.map<DropdownMenuItem<String>>((item) {
+                  return DropdownMenuItem<String>(
+                    value: item.code,
+                    child: Text(item.descriptionEn),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
+  bool validate() {
     if (selected_applicant == null ||
         selected_applicant!.isEmpty ||
         selected_applicant!.toLowerCase() == 'select') {
@@ -935,6 +1367,28 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectresidingwith);
       return false;
     }
+
+    if (selectedRoofType == null ||
+        selectedRoofType!.isEmpty ||
+        selectedRoofType!.toLowerCase() == 'select') {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselectrooftype);
+      return false;
+    }
+    if (selectedToiletType == null ||
+        selectedToiletType!.isEmpty ||
+        selectedToiletType!.toLowerCase() == 'select') {
+      showToast_Error(AppLocalizations.of(context)!.pleaseselecttoilettype);
+      return false;
+    }
+
+    if ((selectedLivingWithSpouse == null ||
+        selectedLivingWithSpouse!.isEmpty ||
+        selectedLivingWithSpouse!.toLowerCase() == 'select')) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseselectlivingwithspouse);
+      return false;
+    }
+
     if (selected_years == null ||
         selected_years!.isEmpty ||
         selected_years!.toLowerCase() == 'select') {
@@ -959,35 +1413,47 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     if (selected_relations == null ||
         selected_relations!.isEmpty ||
         selected_relations!.toLowerCase() == 'select') {
-      showToast_Error(AppLocalizations.of(context)!.chhooserelationtothepersoninterviewed);
+      showToast_Error(
+          AppLocalizations.of(context)!.chhooserelationtothepersoninterviewed);
       return false;
     }
 
 
-    if (_image == null) {showToast_Error(AppLocalizations.of(context)!.pleaseclickhousepicture);
-    return false;
+    if (_image == null) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseclickhousepicture);
+      return false;
     }
-    if (_Mobilereferenceperson1Controller.text.length != 10 ||!RegExp(r'^[0-9]{10}$').hasMatch(_Mobilereferenceperson1Controller.text)) {
+    if (_Mobilereferenceperson1Controller.text.length != 10 ||
+        !RegExp(r'^[0-9]{10}$').hasMatch(
+            _Mobilereferenceperson1Controller.text)) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
       return false;
-    }else if(_Mobilereferenceperson1Controller.text == widget.selectedData.pPhone ||_Mobilereferenceperson1Controller.text == widget.selectedData.currentPhone ){
+    } else
+    if (_Mobilereferenceperson1Controller.text == widget.selectedData.pPhone ||
+        _Mobilereferenceperson1Controller.text ==
+            widget.selectedData.currentPhone) {
       showToast_Error(
           "The mobile number is same as borrower's ");
       return false;
     }
-    if (_Mobilereferenceperson2Controller.text.length != 10 ||!RegExp(r'^[0-9]{10}$').hasMatch(_Mobilereferenceperson2Controller.text)) {
+    if (_Mobilereferenceperson2Controller.text.length != 10 ||
+        !RegExp(r'^[0-9]{10}$').hasMatch(
+            _Mobilereferenceperson2Controller.text)) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
       return false;
-    }else if(_Mobilereferenceperson2Controller.text == widget.selectedData.pPhone ||_Mobilereferenceperson1Controller.text == widget.selectedData.currentPhone ){
+    } else
+    if (_Mobilereferenceperson2Controller.text == widget.selectedData.pPhone ||
+        _Mobilereferenceperson1Controller.text ==
+            widget.selectedData.currentPhone) {
       showToast_Error(
           "The mobile number is same as borrower's ");
       return false;
     }
 
 
-  /*  String value = _DistancetobranchController.text;
+    /*  String value = _DistancetobranchController.text;
 
     if (value.isNotEmpty && totalDistance != null) {
       double enteredValue = double.tryParse(value) ?? 0.0;
@@ -1004,9 +1470,9 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     }*/
 
 
-
     return true;
   }
+
   void showToast_Error(String message) {
     Fluttertoast.showToast(
         msg: message,
@@ -1111,6 +1577,15 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
 
 
   Future<void> initializeCamera() async {
-    cameras =  await availableCameras();
+    cameras = await availableCameras();
   }
+
+  Future<void> initializeData() async {
+    super.initState();
+    roofType = await DatabaseHelper().selectRangeCatData("house-roof-type");
+    toiletType = await DatabaseHelper().selectRangeCatData("toilet-type");
+  }
+
+
 }
+

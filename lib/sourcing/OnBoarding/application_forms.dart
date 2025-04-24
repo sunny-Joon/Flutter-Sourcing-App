@@ -7320,8 +7320,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
       //  selectedSubDistrict,
       //  selectedVillage,
       selectedResidingFor = data.liveInPresentPlace;
-      selectedProperty = data.propertyArea.toString();
-      selectedPresentHouseOwner = data.houseOwnerName;
+      if(data.propertyArea.toString() != "NA") {
+        selectedProperty = data.propertyArea.toString();
+      }
+      if(data.houseOwnerName != "NA") {
+        selectedPresentHouseOwner = data.houseOwnerName;
+      }
       // getPlace("district", selectedStateextraP!.code, "", "");
     });
   }
@@ -7368,9 +7372,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
       //   selectedLivingWithSpouse = data.fiIncomeExpenses[0].inExLivingWithSpouse.toString();
       selectedEarningMembers =
           data.fiIncomeExpenses[0].inExEarningMemCount.toString();
-     // if(data.fiIncomeExpenses[0].inExYearsInBusiness.toString() != "NA"){
+      if(data.fiIncomeExpenses[0].inExOccupation.toLowerCase() == "self employeed"){
         selectedBusinessExperience =data.fiIncomeExpenses[0].inExYearsInBusiness.toString();
-   //   }
+      }
 
       _future_IncomeController.text =
           data.fiIncomeExpenses[0].inExFutureIncome.toString();

@@ -1981,6 +1981,9 @@ class _ApiService implements ApiService {
     String BusinessVerification,
     double Latitude,
     double Longitude,
+    String HomeRoofType,
+    String ToiletType,
+    bool LivingwithSpouse,
     String EmpCode,
     String Address,
     File Picture,
@@ -2280,6 +2283,18 @@ class _ApiService implements ApiService {
     _data.fields.add(MapEntry(
       'Longitude',
       Longitude.toString(),
+    ));
+    _data.fields.add(MapEntry(
+      'HomeRoofType',
+      HomeRoofType,
+    ));
+    _data.fields.add(MapEntry(
+      'ToiletType',
+      ToiletType,
+    ));
+    _data.fields.add(MapEntry(
+      'LivingwithSpouse',
+      LivingwithSpouse.toString(),
     ));
     _data.fields.add(MapEntry(
       'EmpCode',
