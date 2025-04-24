@@ -186,7 +186,7 @@ abstract class ApiService {
       @Part( name:"P_City") String currentCity,
       @Part( name:"P_Pincode") String currentPincode,
       @Part( name:"P_State") String currentState,
-      @Part( name:"IsMarried") bool isMarried,
+      @Part( name:"IsMarried") String isMarried,
       @Part( name:"GroupCode") String groupCode,
       @Part( name:"BranchCode") String branchCode,
       @Part( name:"Relation_with_Borrower") String relation_with_Borrower,

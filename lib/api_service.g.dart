@@ -532,7 +532,7 @@ class _ApiService implements ApiService {
     String currentCity,
     String currentPincode,
     String currentState,
-    bool isMarried,
+    String isMarried,
     String groupCode,
     String branchCode,
     String relation_with_Borrower,
@@ -679,7 +679,7 @@ class _ApiService implements ApiService {
     ));
     _data.fields.add(MapEntry(
       'IsMarried',
-      isMarried.toString(),
+      isMarried,
     ));
     _data.fields.add(MapEntry(
       'GroupCode',
