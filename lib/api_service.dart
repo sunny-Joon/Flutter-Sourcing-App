@@ -443,6 +443,9 @@ abstract class ApiService {
       @Part(name: "BusinessVerification") String BusinessVerification,
       @Part(name: "Latitude") double Latitude,
       @Part(name: "Longitude") double Longitude,
+      @Part(name: "HomeRoofType") String HomeRoofType,
+      @Part(name: "ToiletType") String ToiletType,
+      @Part(name: "LivingwithSpouse") bool LivingwithSpouse,
       @Part(name: "EmpCode") String EmpCode,
       @Part(name: "Address") String Address,
       @Part(name: "Image") File Picture);
