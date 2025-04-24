@@ -2554,10 +2554,9 @@ class _KYCPageState extends State<KYCPage> {
                         _panNoController.text.length != 10) {
                       showToast_Error(AppLocalizations.of(context)!
                           .pleaseentercorrectpanno);
-                    } else if(panVerified){
+                    } else if (panVerified) {
                       showToast_Error("Already Verified");
-
-                    }else {
+                    } else {
                       docVerifyIDC("pancard", _panNoController.text, "", "");
                     }
                   },
@@ -2611,10 +2610,9 @@ class _KYCPageState extends State<KYCPage> {
                         _drivingLicenseController.text.length < 10) {
                       showToast_Error(AppLocalizations.of(context)!
                           .pleaseentercorrectdrivinglicense);
-                    } else if(dlVerified){
+                    } else if (dlVerified) {
                       showToast_Error("Already Verified");
-
-                    }else {
+                    } else {
                       dlVerifyByProtean(GlobalClass.EmpId,
                           _drivingLicenseController.text, dobForProtien!);
                     }
@@ -2665,10 +2663,11 @@ class _KYCPageState extends State<KYCPage> {
                     if (_voterIdController.text.isEmpty) {
                       showToast_Error(
                           AppLocalizations.of(context)!.pleaseentervoterno);
-                    } else if(voterVerified){
+                    } else if (voterVerified) {
                       showToast_Error("Already Verified");
-                    }else {
-                      voterVerifyByProtean(GlobalClass.EmpId, _voterIdController.text);
+                    } else {
+                      voterVerifyByProtean(
+                          GlobalClass.EmpId, _voterIdController.text);
                     }
                   },
                   child: Container(
@@ -3171,9 +3170,12 @@ class _KYCPageState extends State<KYCPage> {
 
   bool checkIdMendate() {
     print("voterCardHolderName $voterCardHolderName");
-    if (voterVerified || voterCardHolderName != null) {
+    if ((voterVerified) ||
+        voterCardHolderName!.toLowerCase().contains("not verified")) {
       return true;
-    } else if (panVerified && dlVerified) {
+    } else if ((panVerified && dlVerified) ||
+        (panCardHolderName!.toLowerCase().contains("not verified") ||
+            dlCardHolderName!.toLowerCase().contains("not verified"))) {
       return true;
     } else {
       return false;
@@ -4986,25 +4988,20 @@ class _KYCPageState extends State<KYCPage> {
         !_mobileNoController.text.contains(RegExp(r'^[0-9]{10}$'))) {
       showToast_Error(AppLocalizations.of(context)!.pleaseentermobilenumber);
       return false;
-    }
-    else if(!otpVerified){
+    } else if (!otpVerified) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseverifymobilenumberwithotp);
       return false;
-    }
-    else if (mobileController.text.isEmpty ||
-        mobileController.text.length != 10  ||
+    } else if (mobileController.text.isEmpty ||
+        mobileController.text.length != 10 ||
         !mobileController.text.contains(RegExp(r'^[0-9]{10}$'))) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseentermobilenoalternate);
       return false;
-    }
-
-    else if(mobileController.text == _mobileNoController.text){
+    } else if (mobileController.text == _mobileNoController.text) {
       showToast_Error(AppLocalizations.of(context)!.samemobileno);
       return false;
-    }
-    else if (_dobController.text.isEmpty) {
+    } else if (_dobController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterdateofbirth);
       return false;
     } else if (_fatherFirstNameController.text.isEmpty) {
@@ -5034,12 +5031,10 @@ class _KYCPageState extends State<KYCPage> {
     double? income = double.tryParse(_incomeController.text);
     double? expense = double.tryParse(_expenceController.text);
 
-
     if (expense! <= income! * 0.5) {
       showToast_Error(AppLocalizations.of(context)!.morethanexpence);
       return false;
-    }
-    else if (selectedLoanReason == null) {
+    } else if (selectedLoanReason == null) {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectloanreason);
       return false;
     } else if (selectedloanDuration == null ||
@@ -5136,8 +5131,8 @@ class _KYCPageState extends State<KYCPage> {
       String spouseL = _spouseLastNameController.text.toString();
       lati = _latitudeController.text;
       longi = _longitudeController.text;
-      int Expense = 0;
-      int Income = 0;
+      int Expense = int.parse(_incomeController.text);
+      int Income = int.parse(_expenceController.text);
       double latitude =
           (lati != null && lati.isNotEmpty) ? double.parse(lati) : 0.0;
       double longitude =
@@ -5337,31 +5332,25 @@ class _KYCPageState extends State<KYCPage> {
       bool matched = true, matched1 = true, matched2 = true;
       print(aadhaarName + "bb");
 
-      if (panName.isEmpty ||
-          (panName != 'Data not Verified' && !panName.contains(aadhaarName))) {
+      if (!panName.toLowerCase().contains("not verified") && !panName.contains(aadhaarName)) {
         print("bb1");
 
         matched = false;
       }
 
-      if (voterName.isNotEmpty ||
-          (voterName.toLowerCase() == 'data not verified' &&
-              !voterName.contains(aadhaarName) &&
-              voterName.toLowerCase() != 'voter no. is not verified')) {
+      if (!voterName.toLowerCase().contains("not verified") && !voterName.contains(aadhaarName)) {
         matched1 = false;
         print(aadhaarName + "bb2");
       }
 
-      if (dlName.isNotEmpty ||
-          (!dlName.toLowerCase().contains("data not verified") &&
-              !dlName.contains(aadhaarName))) {
+      if  (!dlName.toLowerCase().contains("not verified") && !dlName.contains(aadhaarName)) {
         matched2 = false;
         print(aadhaarName + "bb3");
       }
 
-      if (!matched && !matched1 && !matched2) {
-        showToast_Error(
-            'Please enter correct ID: PAN, DL, or Voter name should match Aadhaar name.');
+      if ((!matched || !matched2) && !matched1) {
+      //if (!matched && !matched1 && !matched2) {
+        showToast_Error('Please enter correct ID: PAN, DL, or Voter name should match Aadhaar name.');
         return false;
       }
     } else {
