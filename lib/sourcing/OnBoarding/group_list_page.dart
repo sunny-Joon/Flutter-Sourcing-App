@@ -42,7 +42,7 @@ class _GroupListPageState extends State<GroupListPage> {
   }
 
   Future<void> _fetchGroupList() async {
-    //EasyLoading.show(status: 'Loading...',);
+  //  EasyLoading.show(status: 'Loading...',);
 
     final apiService = Provider.of<ApiService>(context, listen: false);
 
@@ -58,7 +58,7 @@ class _GroupListPageState extends State<GroupListPage> {
         setState(() {
           _items = response.data; // Store the response data
           _isLoading = false;
-          EasyLoading.dismiss();
+        //  EasyLoading.dismiss();
 
         });
         print('Group List retrieved successfully');
@@ -67,14 +67,14 @@ class _GroupListPageState extends State<GroupListPage> {
 
         setState(() {
           _isLoading = false;
-          EasyLoading.dismiss();
+       //   EasyLoading.dismiss();
         });
       }else {
         GlobalClass.showUnsuccessfulAlert(context, "Not able to fetch Group List", 2);
 
         setState(() {
           _isLoading = false;
-          EasyLoading.dismiss();
+      //    EasyLoading.dismiss();
         });
       }
     } catch (e) {
@@ -82,7 +82,7 @@ class _GroupListPageState extends State<GroupListPage> {
       GlobalClass.showErrorAlert(context,"Server Side Error",2);
       setState(() {
         _isLoading = false;
-        EasyLoading.dismiss();
+    //    EasyLoading.dismiss();
       });
     }
   }

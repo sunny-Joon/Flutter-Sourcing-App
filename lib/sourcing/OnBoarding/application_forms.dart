@@ -2184,217 +2184,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.hometype,
-                    style:
-                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                    textAlign: TextAlign.left,
-                  ),
-                  Container(
-                    height: 55,
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<String>(
-                      value: selectedHomeType,
-                      isExpanded: true,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.black,
-                          fontSize: 13),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.transparent,
-                      ),
-                      onChanged: FiIncomeEditable
-                          ? (String? newValue) {
-                              setState(() {
-                                selectedHomeType = newValue!;
-                              });
-                            }
-                          : null,
-                      items: houseType.map<DropdownMenuItem<String>>(
-                          (RangeCategoryDataModel state) {
-                        return DropdownMenuItem<String>(
-                          value: state.code,
-                          child: Text(state.descriptionEn),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          children: [
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.rooftype,
-                    style:
-                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                    textAlign: TextAlign.left,
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<String>(
-                      value: selectedRoofType,
-                      isExpanded: true,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.black,
-                          fontSize: 13),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.transparent,
-                      ),
-                      onChanged: FiIncomeEditable
-                          ? (String? newValue) {
-                              setState(() {
-                                selectedRoofType = newValue!;
-                              });
-                            }
-                          : null,
-                      items: roofType.map<DropdownMenuItem<String>>(
-                          (RangeCategoryDataModel state) {
-                        return DropdownMenuItem<String>(
-                          value: state.code,
-                          child: Text(state.descriptionEn),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 10), // Spacing between the two columns
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.toilettype,
-                    style:
-                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                    textAlign: TextAlign.left,
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<String>(
-                      value: selectedToiletType,
-                      isExpanded: true,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.black,
-                          fontSize: 13),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.transparent,
-                      ),
-                      onChanged: FiIncomeEditable
-                          ? (String? newValue) {
-                              setState(() {
-                                selectedToiletType = newValue!;
-                              });
-                            }
-                          : null,
-                      items: toiletType.map<DropdownMenuItem<String>>(
-                          (RangeCategoryDataModel state) {
-                        return DropdownMenuItem<String>(
-                          value: state.code,
-                          child: Text(state.descriptionEn),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          children: [
-            BorrowerInfo[0].maritaLStatus.toString().toLowerCase() == "married"? Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.leavewithspouse,
-                    style:
-                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
-                    textAlign: TextAlign.left,
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: DropdownButton<String>(
-                      value: selectedLivingWithSpouse,
-                      isExpanded: true,
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: Colors.black,
-                          fontSize: 13),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.transparent,
-                      ),
-                      onChanged: FiIncomeEditable
-                          ? (String? newValue) {
-                              setState(() {
-                                selectedLivingWithSpouse = newValue!;
-                              });
-                            }
-                          : null,
-                      items: trueFalse.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ):SizedBox(),
-            SizedBox(width: 10), // Spacing between the two columns
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
                     AppLocalizations.of(context)!.earningmember,
                     style:
-                        TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
+                    TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
                     textAlign: TextAlign.left,
                   ),
                   Container(
@@ -2418,10 +2210,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                       ),
                       onChanged: FiIncomeEditable
                           ? (String? newValue) {
-                              setState(() {
-                                selectedEarningMembers = newValue!;
-                              });
-                            }
+                        setState(() {
+                          selectedEarningMembers = newValue!;
+                        });
+                      }
                           : null,
                       items: onetonine.map((String value) {
                         return DropdownMenuItem<String>(
@@ -2434,8 +2226,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 ],
               ),
             ),
+
           ],
         ),
+
         SizedBox(
           height: 10,
         ),
@@ -6273,15 +6067,15 @@ class _ApplicationPageState extends State<ApplicationPage> {
     String fi_ID = FIID.toString();
     String occupation = selectedOccupation.toString();
     String business_Detail = "";
-    int years_in_business  = 0;
+    String years_in_business  = "0";
 
     setState(() {
       if(selectedOccupation != "Self Employeed"){
         business_Detail = "NA";
-        years_in_business = 0;
+        years_in_business = "0";
       }else{
         business_Detail = selectedBusiness.toString();
-        years_in_business = int.parse(selectedBusinessExperience.toString());
+        years_in_business = selectedBusinessExperience.toString();
       }
 
       if(BorrowerInfo[0].maritaLStatus.toString().toLowerCase() == "married"){
@@ -6345,26 +6139,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       "travelling": travelling,
       "entertainment": entertainment,
       "others": others,
-      "homeType": homeType,
-      "homeRoofType": homeRoofType,
-      "toiletType": toiletType,
-      "livingwithSpouse": livingSpouse,
-      "docs_path": docs_path,
-      "income": future_Income +
-          agriculture_income +
-          other_Income +
-          annuaL_INCOME +
-          pensionIncome +
-          otheR_THAN_AGRICULTURAL_INCOME +
-          any_RentalIncome,
-      "expense": others +
-          entertainment +
-          travelling +
-          health +
-          education +
-          fooding +
-          rent +
-          spendOnChildren
+
     };
 
     return await api.AddFiIncomeAndExpense(
@@ -7578,7 +7353,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
       verifyFlag = false;
 
       selectedOccupation = data.fiIncomeExpenses[0].inExOccupation;
-      selectedBusiness = data.fiIncomeExpenses[0].inExBusinessDetail;
+      if(data.fiIncomeExpenses[0].inExBusinessDetail != "NA"){
+        selectedBusiness = data.fiIncomeExpenses[0].inExBusinessDetail;
+
+      }
       _currentEMIController.text =
           data.fiIncomeExpenses[0].inExAnyCurrentEmi.toString();
       selectedHomeType = data.fiIncomeExpenses[0].inExHomeType;
@@ -7590,8 +7368,10 @@ class _ApplicationPageState extends State<ApplicationPage> {
       //   selectedLivingWithSpouse = data.fiIncomeExpenses[0].inExLivingWithSpouse.toString();
       selectedEarningMembers =
           data.fiIncomeExpenses[0].inExEarningMemCount.toString();
-      selectedBusinessExperience =
-          data.fiIncomeExpenses[0].inExYearsInBusiness.toString();
+     // if(data.fiIncomeExpenses[0].inExYearsInBusiness.toString() != "NA"){
+        selectedBusinessExperience =data.fiIncomeExpenses[0].inExYearsInBusiness.toString();
+   //   }
+
       _future_IncomeController.text =
           data.fiIncomeExpenses[0].inExFutureIncome.toString();
       _agriculture_incomeController.text =

@@ -388,7 +388,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
   void initState() {
     super.initState();
     _apiServiceForESign = ApiService.create(baseUrl: ApiConfig.baseUrl11);
-    _apiServiceForESignemudra = ApiService.create(baseUrl: ApiConfig.baseUrl10);
+    _apiServiceForESignemudra = ApiService.create(baseUrl: ApiConfig.baseUrl11);
     _dialogAdharController.text = widget.borrowerAdharNumber;
     initTTS();
 
@@ -947,24 +947,30 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     );
 
     try {
-      final xmlResponse =
-          await _apiServiceForESignemudra.saveAgreements(
+      return await _apiServiceForESignemudra.saveAgreements(
             widget.selectedBorrower.fiCode.toString(),
             widget.selectedBorrower.creator,
             consentRawText,
             authType == "Biometric" ? "2" : "1",
             widget.selectedBorrower.id.toString(),
-            widget.signType!,);
-      EasyLoading.dismiss();
+            widget.signType!,
+            "M").then((onValue) async {
 
-      if (xmlResponse != null) {
-        if (xmlResponse.responseCode != null &&
-            xmlResponse.responseCode.isNotEmpty) {
-          callJavaMethodEMUDRA(xmlResponse.txnref);
-        } else {
-          GlobalClass.showErrorAlert(
-              context, xmlResponse.message ?? "Unexpected response", 1);
-        }
+        if (onValue.statuscode == 200) {
+          EasyLoading.dismiss();
+
+          if(onValue.data.message.isNotEmpty ){
+            print("Call123 ${onValue.data.txnRef}");
+
+            if (onValue.data.txnRef != null && onValue.data.txnRef.isNotEmpty) {
+              callJavaMethodEMUDRA(onValue.data.txnRef);
+            } else {
+              print("Call123");
+
+              GlobalClass.showErrorAlert( context, onValue.data.message ?? "Unexpected response", 1);
+            }
+          }
+
       } else {
         print("Call1");
 
@@ -972,6 +978,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
        /* GlobalClass.showErrorAlert(
             context, "Failed to fetch response. Please try again.", 1);*/
       }
+        });
     } on DioError catch (e) {
       EasyLoading.dismiss();
       print("Call2");
@@ -997,7 +1004,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       // Handle any other unexpected errors
       /*GlobalClass.showErrorAlert(
           context, "An unexpected error occurred: ${e.toString()}", 1);*/
-      print("Call3");
+      print("Call3" + e.toString());
 
       hitSaveAgreementsAPIProtien(authType);
     }

@@ -37,7 +37,7 @@ import 'Models/common_string_model2.dart';
 import 'Models/creator_list_model.dart';
 import 'Models/crifmodel.dart';
 import 'Models/csorankmodel.dart';
-import 'Models/emudramodel.dart';
+import 'Models/emudradatamodel.dart';
 import 'Models/global_model.dart';
 import 'Models/global_model2.dart';
 import 'Models/ocrdocscanningresponce.dart';
@@ -585,13 +585,14 @@ abstract class ApiService {
 //emudra
   @MultiPart()
   @POST("ESign/SaveAgreements")
-  Future<emudramodel> saveAgreements(
+  Future<Emudramodel> saveAgreements(
     @Part(name: "Ficode") String ficode,
     @Part(name: "Creator") String creator,
     @Part(name: "ConsentText") String consentText,
     @Part(name: "authMode") String authMode,
     @Part(name: "F_Id") String fId,
     @Part(name: "SignType") String signType,
+    @Part(name: "device") String device,
   );
 
   @MultiPart()

@@ -3138,13 +3138,14 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<emudramodel> saveAgreements(
+  Future<Emudramodel> saveAgreements(
     String ficode,
     String creator,
     String consentText,
     String authMode,
     String fId,
     String signType,
+    String device,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -3174,7 +3175,11 @@ class _ApiService implements ApiService {
       'SignType',
       signType,
     ));
-    final _options = _setStreamType<emudramodel>(Options(
+    _data.fields.add(MapEntry(
+      'device',
+      device,
+    ));
+    final _options = _setStreamType<Emudramodel>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -3192,9 +3197,9 @@ class _ApiService implements ApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late emudramodel _value;
+    late Emudramodel _value;
     try {
-      _value = emudramodel.fromJson(_result.data!);
+      _value = Emudramodel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

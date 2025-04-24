@@ -2459,7 +2459,10 @@ class _KYCPageState extends State<KYCPage> {
                         _panNoController.text.length != 10) {
                       showToast_Error(AppLocalizations.of(context)!
                           .pleaseentercorrectpanno);
-                    } else {
+                    } else if(panVerified){
+                      showToast_Error("Already Verified");
+
+                    }else {
                       docVerifyIDC("pancard", _panNoController.text, "", "");
                     }
                   },
@@ -2513,7 +2516,10 @@ class _KYCPageState extends State<KYCPage> {
                         _drivingLicenseController.text.length < 10) {
                       showToast_Error(AppLocalizations.of(context)!
                           .pleaseentercorrectdrivinglicense);
-                    } else {
+                    } else if(dlVerified){
+                      showToast_Error("Already Verified");
+
+                    }else {
                       dlVerifyByProtean(GlobalClass.EmpId,
                           _drivingLicenseController.text, dobForProtien!);
                     }
@@ -2569,9 +2575,10 @@ class _KYCPageState extends State<KYCPage> {
                     if (_voterIdController.text.isEmpty) {
                       showToast_Error(
                           AppLocalizations.of(context)!.pleaseentervoterno);
-                    } else {
-                      voterVerifyByProtean(
-                          GlobalClass.EmpId, _voterIdController.text);
+                    } else if(voterVerified){
+                      showToast_Error("Already Verified");
+                    }else {
+                      voterVerifyByProtean(GlobalClass.EmpId, _voterIdController.text);
                     }
                   },
                   child: Container(
