@@ -266,7 +266,7 @@ class _GroupListPageState extends State<GroupListPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.red,
+          backgroundColor:  Color(0xFFD42D3F),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
