@@ -5283,8 +5283,7 @@ class _KYCPageState extends State<KYCPage> {
       return false;
     }
 
-    if (_drivingLicenseController.text.trim().isNotEmpty &&
-        dlCardHolderName.toString().isEmpty) {
+    if (_drivingLicenseController.text.trim().isNotEmpty) {
       if (!dlVerified) {
         showToast_Error(
             AppLocalizations.of(context)!.pleaseverifydrivinglicense);
