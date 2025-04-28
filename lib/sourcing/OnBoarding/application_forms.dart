@@ -2041,8 +2041,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           ? (String? newValue) {
                               if (newValue != null) {
                                 setState(() {
-                                  selectedOccupation =
-                                      newValue; // Update the selected value
+                                  selectedOccupation = newValue; // Update the selected value
                                   print(
                                       "SSSSS${selectedOccupation.toString()}");
                                 });
@@ -5455,7 +5454,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseentercurrentemisamount);
       return false;
-    } else if (selectedHomeType == null ||
+    }/* else if (selectedHomeType == null ||
         selectedHomeType!.isEmpty ||
         selectedHomeType!.toLowerCase() == 'select') {
       showToast_Error(AppLocalizations.of(context)!.pleaseselecthometype);
@@ -5473,7 +5472,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
     } else if (BorrowerInfo[0].maritaLStatus.toString().toLowerCase() == "married" && (selectedLivingWithSpouse == null ||selectedLivingWithSpouse!.isEmpty ||selectedLivingWithSpouse!.toLowerCase() == 'select')) {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectlivingwithspouse);
       return false;
-    } else if (selectedEarningMembers == null ||
+    } */else if (selectedEarningMembers == null ||
         selectedEarningMembers!.isEmpty ||
         selectedEarningMembers!.toLowerCase() == 'select') {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectearningmembers);
@@ -7192,6 +7191,8 @@ class _ApplicationPageState extends State<ApplicationPage> {
           loadUi = true;
           expenseindication = value.data[0].hvTotalmonthlyhouseholdexpenses.toString();
           incomeIndication = "Entered monthly income:${value.data[0].hvMonthlyIncome}";
+
+          _IncomeController.text = BorrowerInfo[0].hvNetmonthlyincomeotherfamilymembers.toString();
           print("objectobject$expenseindication");
           print("objectobject$incomeIndication");
         });
@@ -7208,9 +7209,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
           personalInfo(value.data[0]);
         }
 
-        if (value.data[0].fiIncomeExpenses.length != 0 &&
-            value.data[0].fiIncomeExpenses[0].inExHomeType.isNotEmpty) {
+        if (value.data[0].fiIncomeExpenses[0].inExOccupation != "" ) {
           print("getAllDataApi333");
+          print("getAllDataApi333${value.data[0].fiIncomeExpenses[0].inExOccupation.toString()}");
 
           fiIncomeExpenses(value.data[0]);
           setState(() {

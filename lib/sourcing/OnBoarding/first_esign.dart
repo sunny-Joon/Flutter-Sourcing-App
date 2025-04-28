@@ -563,8 +563,8 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
                       ignoring: !_isChecked,
                       child: InkWell(
                         onTap: () {
-                        //  hitSaveAgreementsAPIEmudra(authModeType);
-                          hitSaveAgreementsAPIProtien(authModeType);
+                          hitSaveAgreementsAPIEmudra(authModeType);
+                       //   hitSaveAgreementsAPIProtien(authModeType);
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(

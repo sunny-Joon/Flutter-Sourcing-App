@@ -692,8 +692,8 @@ class FiIncomeExpense {
   });
 
   factory FiIncomeExpense.fromJson(Map<String, dynamic> json) => FiIncomeExpense(
-    inExOccupation: (json["inEx_Occupation"]?.isEmpty ?? true) ? "Self Employeed" : json["inEx_Occupation"],
-    inExBusinessDetail: json["inEx_BusinessDetail"]??"Self Employeed",
+    inExOccupation: json["inEx_Occupation"]??"",
+    inExBusinessDetail: json["inEx_BusinessDetail"]??"",
     inExAnyCurrentEmi: json["inEx_AnyCurrentEMI"]??"",
     inExFutureIncome: json["inEx_FutureIncome"]??0,
     inExAgricultureIncome: json["inEx_AgricultureIncome"]??0,
