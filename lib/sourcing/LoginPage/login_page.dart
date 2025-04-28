@@ -541,7 +541,24 @@ print("_loginCalled$_loginCalled");
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+
+                  Center(
+                    child: TextButton(
+                      onPressed: () async {
+                        _launchprivacypolicy();
+                      },
+                      child: Text(
+                        'Privacy policy',
+                        style: TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          color: customColor,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+
+
                   Center(
                     child: _showBiometricIcon
                         ? IconButton(
@@ -1278,6 +1295,15 @@ print("_loginCalled$_loginCalled");
       },
     );
   }
+
+
+    Future<void> _launchprivacypolicy() async {
+      final Uri _url = Uri.parse("https://paisalo.in/Home/aadhaarconsentpolicy");
+      if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
+        throw Exception('Could not launch $_url');
+      }
+    }
+
 
 
 //securityquestion
