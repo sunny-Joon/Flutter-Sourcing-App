@@ -51,9 +51,12 @@ class _FirstEsignState extends State<FirstEsign> {
   void initState() {
     super.initState();
     signType = widget.type.toString();
-    signType=="1"? fetchFirstESignPDF(widget.selectedData):fetchSecondESignPDF(widget.selectedData);
+    signType == "1"
+        ? fetchFirstESignPDF(widget.selectedData)
+        : fetchSecondESignPDF(widget.selectedData);
     //print("https://predeptest.paisalo.in:8084${widget.selectedData.eSignDoc.replaceAll("D:", "").replaceAll("\\", "/")}");
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,7 +113,6 @@ class _FirstEsignState extends State<FirstEsign> {
                   : PDFView(
                       autoSpacing: true,
                       filePath: localPath,
-
                       swipeHorizontal: true,
                     ),
             ),
@@ -231,10 +233,10 @@ class _FirstEsignState extends State<FirstEsign> {
                       onTap: () {
                         print("object ${widget.selectedData.aadharNo}");
 
-                        if(isLoading){
+                        if (isLoading) {
                           GlobalClass.showToast_Error(
                               "Wait for pdf to get download");
-                        }else {
+                        } else {
                           if (widget.selectedData.aadharNo.isNotEmpty) {
                             showFullPageDialog(context);
                           } else {
@@ -295,12 +297,13 @@ class _FirstEsignState extends State<FirstEsign> {
     );
   }
 
-   //Get DOcument
+  //Get DOcument
   Future<void> fetchFirstESignPDF(BorrowerListDataModel selectedData) async {
     print("signType $signType");
 
     try {
-      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl12).getDocument1(selectedData.id);
+      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl12)
+          .getDocument1(selectedData.id);
       if (response.statuscode == 200 || response.data.isNotEmpty) {
         print(response.data);
         _loadPdf(response.data);
@@ -313,11 +316,12 @@ class _FirstEsignState extends State<FirstEsign> {
     }
   }
 
-  Future<void> fetchSecondESignPDF(BorrowerListDataModel selectedData)async {
+  Future<void> fetchSecondESignPDF(BorrowerListDataModel selectedData) async {
     print("signType $signType");
 
     try {
-      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl12).getDocument2(selectedData.id);
+      final response = await ApiService.create(baseUrl: ApiConfig.baseUrl12)
+          .getDocument2(selectedData.id);
       if (response.statuscode == 200 || response.data.fileUrl.isNotEmpty) {
         print(response.data);
         _loadPdf(response.data.fileUrl);
@@ -326,10 +330,10 @@ class _FirstEsignState extends State<FirstEsign> {
             context, "Pdf Not Found\nContact to Administrator", 2);
       }
     } catch (error) {
-      GlobalClass.showErrorAlert(context, "Document Not Fetched ${error.toString()}", 2);
+      GlobalClass.showErrorAlert(
+          context, "Document Not Fetched ${error.toString()}", 2);
     }
   }
-
 
   Future<void> _loadPdf(String url) async {
     final file = await _downloadPdf(url);
@@ -355,7 +359,6 @@ class _FirstEsignState extends State<FirstEsign> {
     }
     return null;
   }
-
 }
 
 class DialogContent extends StatefulWidget {
@@ -373,7 +376,8 @@ class DialogContent extends StatefulWidget {
   _DialogContentState createState() => _DialogContentState();
 }
 
-class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveClientMixin {
+class _DialogContentState extends State<DialogContent>
+    with AutomaticKeepAliveClientMixin {
   TextEditingController _dialogAdharController = TextEditingController();
   bool _isChecked = false;
   late ApiService _apiServiceForESign, _apiServiceForESignemudra;
@@ -399,6 +403,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     });
     // Set up the handler to receive the result from MainActivity
   }
+
   void initTTS() async {
     await flutterTts.setVolume(1.0);
     await flutterTts.setPitch(1.0);
@@ -409,6 +414,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     flutterTts.stop();
     super.dispose();
   }
+
   Future<void> _speakConsentText() async {
     await flutterTts.setSpeechRate(0.5);
     await flutterTts.setPitch(1.0);
@@ -417,7 +423,6 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     String desiredLocale = 'en-IN';
 
     if (RegExp(r'[\u0900-\u097F]').hasMatch(consentRawTextmain)) {
-
       desiredLocale = consentRawTextmain.contains('मी ') ? 'mr-IN' : 'hi-IN';
     } else if (RegExp(r'[\u0980-\u09FF]').hasMatch(consentRawTextmain)) {
       desiredLocale = 'bn-IN';
@@ -425,8 +430,8 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
 
     List<dynamic> voices = await flutterTts.getVoices;
     final selectedVoice = voices.firstWhere(
-          (voice) =>
-      voice['locale'] == desiredLocale &&
+      (voice) =>
+          voice['locale'] == desiredLocale &&
           !(voice['features']?.toString().contains('notInstalled') ?? false),
       orElse: () => null,
     );
@@ -437,9 +442,11 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
         'name': selectedVoice['name'],
         'locale': selectedVoice['locale'],
       });
-      print("✅ Using voice: ${selectedVoice['name']} for locale: ${selectedVoice['locale']}");
+      print(
+          "✅ Using voice: ${selectedVoice['name']} for locale: ${selectedVoice['locale']}");
     } else {
-      print("❌ Voice for locale $desiredLocale not available or not installed.");
+      print(
+          "❌ Voice for locale $desiredLocale not available or not installed.");
       return;
     }
 
@@ -563,8 +570,8 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
                       ignoring: !_isChecked,
                       child: InkWell(
                         onTap: () {
-                          hitSaveAgreementsAPIEmudra(authModeType);
-                       //   hitSaveAgreementsAPIProtien(authModeType);
+                          //   hitSaveAgreementsAPIEmudra(authModeType);
+                          hitSaveAgreementsAPIProtien(authModeType);
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(
@@ -599,7 +606,13 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     );
   }
 
-  Widget _buildLabeledDropdownField<T>(String labelText, String label, List<T> items, T? selectedValue, ValueChanged<T?>? onChanged, Type objName) {
+  Widget _buildLabeledDropdownField<T>(
+      String labelText,
+      String label,
+      List<T> items,
+      T? selectedValue,
+      ValueChanged<T?>? onChanged,
+      Type objName) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
@@ -647,16 +660,17 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     );
   }
 
-  static const platform = MethodChannel('com.example.intent'); // The same channel name used in MainActivity
+  static const platform = MethodChannel(
+      'com.example.intent'); // The same channel name used in MainActivity
 
   Future<void> callJavaMethodEMUDRA(String xml) async {
     try {
       final String result =
-      await platform.invokeMethod('callJavaFunctionM', xml);
+          await platform.invokeMethod('callJavaFunctionM', xml);
       print("object541 $result");
       if (result != null) {
         sendXMlToServerEmudra(result);
-      }else{
+      } else {
         GlobalClass.showUnsuccessfulAlert(context, "Something went wrong", 1);
       }
       //  if (result != null) {
@@ -676,7 +690,6 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       //  } else {
       //    GlobalClass.showSnackBar(context, result);
       //  }
-
     } on PlatformException catch (e) {
       print("Failed to invoke Java function: ${e.message}");
     }
@@ -720,12 +733,12 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
   }
 
   //protean 2nd api
-    void sendXMlToServerProtien(String result) {
+  void sendXMlToServerProtien(String result) {
     EasyLoading.show(status: "Data sending to server...");
     try {
       _apiServiceForESign.sendXMLtoServerProtien(result).then((value) {
         if (value.responseMessage.statusCode == 200) {
-          if(widget.signType == "1"){
+          if (widget.signType == "1") {
             LiveTrackRepository()
                 .saveLivetrackData("", "ESign", widget.selectedBorrower.id);
             GlobalClass.showSuccessAlert(context, "ESign Has been done", 3);
@@ -740,10 +753,15 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
                     LoanEligibilityPage(ficode: widget.selectedBorrower.fiCode),
               ),
             );
-          }else{
+          } else {
             EasyLoading.dismiss();
-            LiveTrackRepository().saveLivetrackData("", "2_ESign", widget.selectedBorrower.id);
-            GlobalClass.showSuccessAlertclose(context, "2nd ESign Has been done !!", 1, destinationPage: OnBoarding(),
+            LiveTrackRepository()
+                .saveLivetrackData("", "2_ESign", widget.selectedBorrower.id);
+            GlobalClass.showSuccessAlertclose(
+              context,
+              "2nd ESign Has been done !!",
+              1,
+              destinationPage: OnBoarding(),
             );
           }
 
@@ -791,19 +809,25 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
 
         if (statusCode == 200) {
           if (widget.signType == "1") {
-            LiveTrackRepository().saveLivetrackData("", "1_ESign", widget.selectedBorrower.id);
+            LiveTrackRepository()
+                .saveLivetrackData("", "1_ESign", widget.selectedBorrower.id);
             GlobalClass.showSuccessAlert(context, "1st ESign Has been done", 3);
             EasyLoading.dismiss();
 
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => LoanEligibilityPage(ficode: widget.selectedBorrower.fiCode),
+                builder: (context) =>
+                    LoanEligibilityPage(ficode: widget.selectedBorrower.fiCode),
               ),
             );
           } else {
-            LiveTrackRepository().saveLivetrackData(GlobalClass.smcode, "2_ESign", widget.selectedBorrower.id);
-            GlobalClass.showSuccessAlertclose(context, "2nd ESign Has been done !!", 1,
+            LiveTrackRepository().saveLivetrackData(
+                GlobalClass.smcode, "2_ESign", widget.selectedBorrower.id);
+            GlobalClass.showSuccessAlertclose(
+              context,
+              "2nd ESign Has been done !!",
+              1,
               destinationPage: OnBoarding(),
             );
           }
@@ -827,41 +851,61 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     );
 
     try {
+      /*  return await _apiServiceForESignemudra.saveAgreements(
+          widget.selectedBorrower.fiCode.toString(),
+          widget.selectedBorrower.creator,
+          consentRawText,
+          authType == "Biometric" ? "2" : "1",
+          widget.selectedBorrower.id.toString(),
+          widget.signType!,
+          "M").then((onValue) async {*/
       // API call
-      final xmlResponse = await _apiServiceForESign.saveAgreementsProtien(
-        widget.selectedBorrower.fiCode.toString(), // Ficode
-        widget.selectedBorrower.creator, // Creator
-        consentRawText,
-        authType == "Biometric" ? "2" : "1",
-        widget.selectedBorrower.id.toString(), // F_Id
-        widget.signType!,
-        "M"// SignType
-      );
-      EasyLoading.dismiss();
-      if (xmlResponse is Map<String, dynamic>) {
-        String responseData = xmlResponse["content"];
-
-        if (GlobalClass.isXml(responseData)) {
-          callJavaMethodProtien(responseData);
-        } else {
-          GlobalClass.showErrorAlert(context, responseData, 1);
-        }
+      return await _apiServiceForESign
+          .saveAgreementsProtien(
+              widget.selectedBorrower.fiCode.toString(), // Ficode
+              widget.selectedBorrower.creator, // Creator
+              consentRawText,
+              authType == "Biometric" ? "2" : "1",
+              widget.selectedBorrower.id.toString(), // F_Id
+              widget.signType!,
+              "M" // SignType
+              )
+          .then((onValue) async {
         EasyLoading.dismiss();
-      } else if (xmlResponse is String) {
-        if (GlobalClass.isXml(xmlResponse)) {
-          callJavaMethodProtien(xmlResponse);
-        } else {
-          GlobalClass.showErrorAlert(context, xmlResponse, 1);
-          String A = xmlResponse;
-          print("Sunny$A");
-        }
-      } else {
-        GlobalClass.showErrorAlert(context, "Invalid data format", 1);
-      }
+        print("Sunny234");
 
+        if (onValue.toString().contains("xml")) {
+          final xmlResponse = onValue;
+
+          if (xmlResponse is Map<String, dynamic>) {
+            String responseData = xmlResponse["content"];
+            print("Sunny234");
+
+            if (GlobalClass.isXml(responseData)) {
+              callJavaMethodProtien(responseData);
+            } else {
+              GlobalClass.showErrorAlert(context, responseData, 1);
+            }
+            EasyLoading.dismiss();
+          } else if (xmlResponse is String) {
+            print("Sunny");
+
+            if (GlobalClass.isXml(xmlResponse)) {
+              callJavaMethodProtien(xmlResponse);
+            } else {
+              GlobalClass.showErrorAlert(context, xmlResponse, 1);
+              String A = xmlResponse;
+              print("Sunny$A");
+            }
+          }
+        } else {
+          GlobalClass.showErrorAlert(context, "Invalid data format", 1);
+        }
+      });
       // await intent.launch();
     } on DioError catch (e) {
       EasyLoading.dismiss();
+      print("Error: File not found22.");
 
       GlobalClass.showToast_Error(e.toString());
 
@@ -870,6 +914,11 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
         // Handle 404 Not Found
         GlobalClass.showErrorAlert(context, e.response!.data!, 1);
         print("Error: File not found.");
+        // Show message to user
+      } else if (statusCode == 400) {
+        // Handle 404 Not Found
+        GlobalClass.showErrorAlert(context, e.response!.data!, 1);
+        print("Spmething went wrong.");
         // Show message to user
       } else {
         // Handle other status codes
@@ -939,7 +988,6 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     }
   }*/
 
-
   //emudra 1nd api
   Future<void> hitSaveAgreementsAPIEmudra(String authType) async {
     EasyLoading.show(
@@ -947,19 +995,20 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     );
 
     try {
-      return await _apiServiceForESignemudra.saveAgreements(
-            widget.selectedBorrower.fiCode.toString(),
-            widget.selectedBorrower.creator,
-            consentRawText,
-            authType == "Biometric" ? "2" : "1",
-            widget.selectedBorrower.id.toString(),
-            widget.signType!,
-            "M").then((onValue) async {
-
+      return await _apiServiceForESignemudra
+          .saveAgreements(
+              widget.selectedBorrower.fiCode.toString(),
+              widget.selectedBorrower.creator,
+              consentRawText,
+              authType == "Biometric" ? "2" : "1",
+              widget.selectedBorrower.id.toString(),
+              widget.signType!,
+              "M")
+          .then((onValue) async {
         if (onValue.statuscode == 200) {
           EasyLoading.dismiss();
 
-          if(onValue.data.message.isNotEmpty ){
+          if (onValue.data.message.isNotEmpty) {
             print("Call123 ${onValue.data.txnRef}");
 
             if (onValue.data.txnRef != null && onValue.data.txnRef.isNotEmpty) {
@@ -967,18 +1016,18 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
             } else {
               print("Call123");
 
-              GlobalClass.showErrorAlert( context, onValue.data.message ?? "Unexpected response", 1);
+              GlobalClass.showErrorAlert(
+                  context, onValue.data.message ?? "Unexpected response", 1);
             }
           }
+        } else {
+          print("Call1");
 
-      } else {
-        print("Call1");
-
-        hitSaveAgreementsAPIProtien(authType);
-       /* GlobalClass.showErrorAlert(
+          hitSaveAgreementsAPIProtien(authType);
+          /* GlobalClass.showErrorAlert(
             context, "Failed to fetch response. Please try again.", 1);*/
-      }
-        });
+        }
+      });
     } on DioError catch (e) {
       EasyLoading.dismiss();
       print("Call2");
@@ -1010,7 +1059,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
     }
   }
 
- /* Widget consentText() {
+  /* Widget consentText() {
     return RichText(
       text: TextSpan(
         style: TextStyle(fontSize: 9.5, color: Colors.black),
@@ -1039,7 +1088,7 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       ),
     );
   }*/
- Widget consentText() {
+  Widget consentText() {
     return RichText(
       text: TextSpan(
         style: TextStyle(fontSize: 9.5, color: Colors.black),
@@ -1061,11 +1110,10 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
             text: AppLocalizations.of(context)!.esigntext44,
           ),
           TextSpan(
-            text:AppLocalizations.of(context)!.esigntext55
-            ,
-          ), TextSpan(
-            text:AppLocalizations.of(context)!.esigntext66
-            ,
+            text: AppLocalizations.of(context)!.esigntext55,
+          ),
+          TextSpan(
+            text: AppLocalizations.of(context)!.esigntext66,
           ),
         ],
       ),
@@ -1097,7 +1145,8 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
       final responseData = error.response?.data;
       if (responseData != null && responseData.containsKey("responseMessage")) {
         final responseMessage = responseData["responseMessage"];
-        if (responseMessage != null && responseMessage.containsKey("statusCode")) {
+        if (responseMessage != null &&
+            responseMessage.containsKey("statusCode")) {
           int statusCode = responseMessage["statusCode"];
           if (statusCode == 400) {
             errorMessage = responseData["validationMessage"] ??
@@ -1107,9 +1156,9 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
           }
         }
       }
-    }
-    else if (error is Map) {
-      if (error.containsKey("responseMessage") && error["responseMessage"].containsKey("statusCode")) {
+    } else if (error is Map) {
+      if (error.containsKey("responseMessage") &&
+          error["responseMessage"].containsKey("statusCode")) {
         int statusCode = error["responseMessage"]["statusCode"];
         print("esign5 statusCode: $statusCode");
 
@@ -1117,11 +1166,9 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
           errorMessage = error["validationMessage"] ?? "Invalid request.";
         }
       }
-    }
-    else {
+    } else {
       print("Unknown error format.");
     }
     GlobalClass.showUnsuccessfulAlert(context, errorMessage, 2);
   }
-
 }

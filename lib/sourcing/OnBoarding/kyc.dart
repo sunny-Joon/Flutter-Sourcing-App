@@ -3170,14 +3170,18 @@ class _KYCPageState extends State<KYCPage> {
 
   bool checkIdMendate() {
     print("voterCardHolderName $voterCardHolderName");
-    if ((voterVerified) ||
-        voterCardHolderName!.toLowerCase().contains("not verified")) {
+    if ((voterVerified) ||(voterCardHolderName != null && voterCardHolderName.toString().toLowerCase().contains("not verified"))) {
+      print("VVVVV1");
       return true;
     } else if ((panVerified && dlVerified) ||
         (panCardHolderName!.toLowerCase().contains("not verified") ||
             dlCardHolderName!.toLowerCase().contains("not verified"))) {
+      print("VVVVV2");
+
       return true;
     } else {
+      print("VVVVV3");
+
       return false;
     }
   }
@@ -3672,7 +3676,7 @@ class _KYCPageState extends State<KYCPage> {
                 smNameFlag = true;
                 slNameFlag = true;
                 _gurNameController.text = replaceCharFromName(dataList[5]);
-
+                maritalFlag = true;
                 List<String> guarNameParts =
                     replaceCharFromName(dataList[5]).split(" ");
                 if (guarNameParts.length == 1) {
@@ -5271,28 +5275,25 @@ class _KYCPageState extends State<KYCPage> {
   }
 
   bool secondPageFieldValidate() {
-    if (_panNoController.text.trim().isNotEmpty &&
-        (panCardHolderName == null || panCardHolderName!.trim().isEmpty)) {
+    bool A = true,B = true,C = true;
+    if (_panNoController.text.trim().isNotEmpty &&(panCardHolderName == null || panCardHolderName!.trim().isEmpty)) {
       showToast_Error(AppLocalizations.of(context)!.pleaseverifypan);
       return false;
     }
 
-    if (_voterIdController.text.trim().isNotEmpty &&
-        (voterCardHolderName == null || voterCardHolderName!.trim().isEmpty)) {
+    if (_voterIdController.text.trim().isNotEmpty &&(voterCardHolderName == null || voterCardHolderName!.trim().isEmpty)) {
       showToast_Error(AppLocalizations.of(context)!.pleaseverifyvoterid);
       return false;
     }
 
     if (_drivingLicenseController.text.trim().isNotEmpty) {
       if (!dlVerified) {
-        showToast_Error(
-            AppLocalizations.of(context)!.pleaseverifydrivinglicense);
+        showToast_Error( AppLocalizations.of(context)!.pleaseverifydrivinglicense);
         return false;
       }
 
       if (_dlExpiryController.text.trim().isEmpty) {
-        showToast_Error(AppLocalizations.of(context)!
-            .pleaseenterexpirydateofdrivinglicense);
+        showToast_Error(AppLocalizations.of(context)!.pleaseenterexpirydateofdrivinglicense);
         return false;
       }
 
@@ -5328,32 +5329,45 @@ class _KYCPageState extends State<KYCPage> {
     print(panName + "bb" + voterName + "bb" + dlName + "bb");
 
     if (aadhaarName.isNotEmpty) {
-      bool matched = true, matched1 = true, matched2 = true;
-      print(aadhaarName + "bb");
-
-      if (!panName.toLowerCase().contains("not verified") && !panName.contains(aadhaarName)) {
-        print("bb1");
-
-        matched = false;
+      bool isPanMatched = true;
+      bool isDlMatched = true;
+      bool isVoterMatched = true;
+      List<String> aadhaarWords = aadhaarName.toLowerCase().split(' ').where((e) => e.isNotEmpty).toList();
+      if (!panName.toLowerCase().contains("not verified")) {
+        for (String word in aadhaarWords) {
+          if (!panName.toLowerCase().contains(word)) {
+            isPanMatched = false;
+            print('PAN name mismatch on word: $word');
+            break;
+          }
+        }
       }
-
-      if (!voterName.toLowerCase().contains("not verified") && !voterName.contains(aadhaarName)) {
-        matched1 = false;
-        print(aadhaarName + "bb2");
+      if (!dlName.toLowerCase().contains("not verified")) {
+        for (String word in aadhaarWords) {
+          if (!dlName.toLowerCase().contains(word)) {
+            isDlMatched = false;
+            print('DL name mismatch on word: $word');
+            break;
+          }
+        }
       }
-
-      if  (!dlName.toLowerCase().contains("not verified") && !dlName.contains(aadhaarName)) {
-        matched2 = false;
-        print(aadhaarName + "bb3");
+      if (!voterName.toLowerCase().contains("not verified")) {
+        for (String word in aadhaarWords) {
+          if (!voterName.toLowerCase().contains(word)) {
+            isVoterMatched = false;
+            print('Voter name mismatch on word: $word');
+            break;
+          }
+        }
       }
-
-      if ((!matched || !matched2) && !matched1) {
-      //if (!matched && !matched1 && !matched2) {
-        showToast_Error('Please enter correct ID: PAN, DL, or Voter name should match Aadhaar name.');
+      // Now your validation
+      if (!((isPanMatched && isDlMatched) || isVoterMatched)) {
+        showToast_Error('Either both PAN and DL must match Aadhaar name (word-by-word), or Voter must match.');
         return false;
       }
     } else {
       showToast_Error('Aadhaar name not fetched');
+      return false;
     }
 
     if (selectedCityCode == null) {
