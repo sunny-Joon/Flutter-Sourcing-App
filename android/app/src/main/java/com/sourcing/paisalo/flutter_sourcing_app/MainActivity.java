@@ -104,10 +104,16 @@ public class MainActivity extends FlutterFragmentActivity implements AUAResultIm
     AUAResultImp auaResultImp = new AUAResultImp() {
         @Override
         public void setResult(int i, String s) {
-            Log.d("TAG", "DATA12345: "+s.toString());
-            Log.e("DATA1234",s);
+            Log.d("TAG", "DATA12345: " + s);
+            Log.e("DATA1234", s);
+
+            if (result_global != null) {
+                result_global.success(s);
+                result_global = null;
+            }
         }
     };
+
 
     private void openQRActivity() {
         Log.d("TAGGG", "Open Qr method Run");
