@@ -377,10 +377,10 @@ class _DialogContentState extends State<DialogContent> with AutomaticKeepAliveCl
   TextEditingController _dialogAdharController = TextEditingController();
   bool _isChecked = false;
   late ApiService _apiServiceForESign, _apiServiceForESignemudra;
-  List<String> authModeTypeList = ["Biometric"];
+//  List<String> authModeTypeList = ["Biometric"];
   final FlutterTts flutterTts = FlutterTts();
   late String consentRawTextmain;
-  //List<String> authModeTypeList = ["Biometric","OTP"];
+  List<String> authModeTypeList = ["Biometric","OTP"];
 
   String authModeType = "Biometric";
 
