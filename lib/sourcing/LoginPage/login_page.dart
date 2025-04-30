@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,8 +40,8 @@ class _LoginPageState extends State<LoginPage> {
 
   final LocalAuthentication auth = LocalAuthentication();
   bool _showBiometricIcon = false;
-  bool isAvailable=false;
-  bool isDeviceSupported=false;
+  bool isAvailable = false;
+  bool isDeviceSupported = false;
   bool _loginCalled = false;
   /* bool _isExpanded = false;
   late AnimationController _controller;
@@ -58,14 +60,21 @@ class _LoginPageState extends State<LoginPage> {
     'What was your first pet\'s name?',
     'What is your favorite food?'
   ];*/
+
+  final TextEditingController captchaController = TextEditingController();
+  String captchaCode = '';
+  bool captchaEnable = true;
+  MaterialColor  captchaColor= Colors.grey;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getAppVersion();
     _checkBiometricAvailability();
-    mobileControllerlogin.text="GRST002064";
-    passwordControllerlogin.text="Admin@12";
+    mobileControllerlogin.text = "GRST002064";
+    passwordControllerlogin.text = "Admin@12";
+    _generateCaptcha();
   }
 
   @override
@@ -150,12 +159,12 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 10),
+                //  SizedBox(height: 10),
                   Image.asset(
                     'assets/Images/paisa_logo.png', // Adjust the image path
                     width: double.infinity,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 0),
                   Center(
                     child: Text(
                       'Ver: $appVersion',
@@ -190,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),*/
 
-                  SizedBox(height: 20),
+                  SizedBox(height: 0),
                   Text(
                     AppLocalizations.of(context)!.user,
                     style: TextStyle(
@@ -294,9 +303,66 @@ class _LoginPageState extends State<LoginPage> {
                       fontSize: 12,
                     ),
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 10),
+
+                  Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width-130,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.black, width: 1),
+                               // borderRadius: BorderRadius.circular(8),
+                                color: Colors.white,
+                              ),
+                              child: CustomPaint(
+                                painter: CaptchaPainter(captchaCode),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.refresh, color: Colors.black),
+                              tooltip: 'Refresh CAPTCHA',
+                              onPressed: _generateCaptcha,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                         Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  enabled: captchaEnable,
+                                  controller: captchaController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Enter CAPTCHA',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              IconButton(
+                                onPressed: _checkCaptcha,
+                                icon: Icon(Icons.check_circle,
+                                    color: captchaColor),
+                                tooltip: 'Submit',
+                                iconSize: 32,
+                              ),
+                            ],
+                          ),
+
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
+
 //securityquestion
-                /*  DropdownButtonFormField<String>(
+                  /*  DropdownButtonFormField<String>(
                     decoration: InputDecoration(
                       labelText: 'Select Security Question',
                       border: OutlineInputBorder(
@@ -337,7 +403,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text("Save Security Info"),
                   ),*/
 
-                /*  Align(
+                  /*  Align(
                     alignment: Alignment.centerRight,
 
                     child:TextButton(
@@ -371,13 +437,19 @@ class _LoginPageState extends State<LoginPage> {
                   ElevatedButton(
                     onPressed: () async {
 
-                      if (validateIdPassword(
-                          context,
-                          mobileControllerlogin.text,
-                          passwordControllerlogin.text)) {
-                        _getLogin(mobileControllerlogin.text,
-                            passwordControllerlogin.text, context);
+                      if(captchaColor==Colors.blue){
+                        if (validateIdPassword(
+                            context,
+                            mobileControllerlogin.text,
+                            passwordControllerlogin.text)) {
+                          _getLogin(mobileControllerlogin.text,
+                              passwordControllerlogin.text, context);
+                        }
+                      }else{
+                        GlobalClass.showUnsuccessfulAlert(context, "Fill captcha first", 1);
+
                       }
+
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
@@ -396,7 +468,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text(AppLocalizations.of(context)!.login),
                   ),
 
-                /*  ElevatedButton(
+                  /*  ElevatedButton(
                     onPressed: () async {
 
 print("_loginCalled$_loginCalled");
@@ -542,21 +614,6 @@ print("_loginCalled$_loginCalled");
                     ],
                   ),
 
-                  Center(
-                    child: TextButton(
-                      onPressed: () async {
-                        _launchprivacypolicy();
-                      },
-                      child: Text(
-                        'Privacy policy',
-                        style: TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          color: customColor,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ),
 
 
                   Center(
@@ -739,14 +796,16 @@ print("_loginCalled$_loginCalled");
 
     Map<String, dynamic> requestBody = {
       "userName": userName,
-    //  "password": userPassword,
-       "password": EncryptionUtils.encrypt(userPassword),
+      //  "password": userPassword,
+      "password": EncryptionUtils.encrypt(userPassword),
       "GsmId": "SSTST002064"
     };
     // 0646498585477244 DeviceID grst002064
     // 2234514145687247 DeviceID grst003057
     // String? DeviceID = await generateDeviceId(userName) as String?;
-    return await api.getLogins("0646498585477244", GlobalClass.dbName, requestBody).then((value) async {
+    return await api
+        .getLogins("0646498585477244", GlobalClass.dbName, requestBody)
+        .then((value) async {
       try {
         if (value.statuscode == 200) {
           _loginCalled = true;
@@ -754,7 +813,7 @@ print("_loginCalled$_loginCalled");
           refToken = value.data.tokenDetails.token.toString();
           if (value.message == 'Login Successfully !!') {
             GlobalClass.showSuccessAlert(context, value.message, 1);
-           // GlobalClass.showErrorAlert(context, "Your session has expired. Please log in again to continue.", 2);
+            // GlobalClass.showErrorAlert(context, "Your session has expired. Please log in again to continue.", 2);
             // Assign values to GlobalClass static members
             /*    if (value.data.foImei.isEmpty) {
                   EasyLoading.dismiss();
@@ -778,7 +837,7 @@ print("_loginCalled$_loginCalled");
               GlobalClass.userName = value.data.foImei[0].name;
               GlobalClass.designation = value.data.foImei[0].designation;
               //  GlobalClass.creator = value.data.foImei[0].creator;
-            //  GlobalClass.userType ='Dealer';
+                GlobalClass.userType ='Dealer';
 
               for (var foImeiItem in value.data.foImei) {
                 if (foImeiItem.creator != null) {
@@ -1144,8 +1203,8 @@ print("_loginCalled$_loginCalled");
     final LocalAuthentication auth = LocalAuthentication();
 
     try {
-       isAvailable = await auth.canCheckBiometrics;
-       isDeviceSupported = await auth.isDeviceSupported();
+      isAvailable = await auth.canCheckBiometrics;
+      isDeviceSupported = await auth.isDeviceSupported();
 
       if (!isAvailable || !isDeviceSupported) {
         GlobalClass.showErrorAlert(
@@ -1190,8 +1249,8 @@ print("_loginCalled$_loginCalled");
   Future<void> _checkBiometricAvailability() async {
     final LocalAuthentication auth = LocalAuthentication();
 
-     isAvailable = await auth.canCheckBiometrics;
-     isDeviceSupported = await auth.isDeviceSupported();
+    isAvailable = await auth.canCheckBiometrics;
+    isDeviceSupported = await auth.isDeviceSupported();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString('user_id');
@@ -1297,14 +1356,16 @@ print("_loginCalled$_loginCalled");
   }
 
 
-    Future<void> _launchprivacypolicy() async {
-      final Uri _url = Uri.parse("https://paisalo.in/Home/aadhaarconsentpolicy");
-      if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
-        throw Exception('Could not launch $_url');
-      }
-    }
-
-
+  void _generateCaptcha() {
+    // Generate a new captcha code here (e.g., 5 random letters/numbers)
+    setState(() {
+      captchaCode = List.generate(
+          5, (index) => String.fromCharCode(65 + Random().nextInt(26))).join();
+      captchaController.text = "";
+      captchaEnable = true;
+      captchaColor= Colors.grey;
+    });
+  }
 
 //securityquestion
 /*  void saveSecurityQuestionAndAnswer() {
@@ -1326,4 +1387,72 @@ print("_loginCalled$_loginCalled");
       );
     }
   }*/
+
+  void _checkCaptcha() {
+    if (captchaController.text == captchaCode) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Correct!')));
+      setState(() {
+        captchaEnable = false;
+        captchaColor= Colors.blue;
+      });
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Wrong! Try again.')));
+      _generateCaptcha(); // Only regenerate on failure
+      captchaController.clear();
+    }
+  }
+}
+
+class CaptchaPainter extends CustomPainter {
+  final String code;
+  final List<Color> charColors;
+  final List<double> fontSizes;
+  final List<Offset> charOffsets;
+  final Offset lineStart;
+  final Offset lineEnd;
+  CaptchaPainter(this.code)
+      : charColors = List.generate(code.length, (_) => _randomColor()),
+        fontSizes = List.generate(code.length, (_) => 24.0 + Random().nextInt(12)),
+        charOffsets = List.generate(code.length, (_) => Offset.zero),
+        lineStart = Offset(0, Random().nextDouble() * 60),
+        lineEnd = Offset(220, Random().nextDouble() * 60) {
+    // Generate offsets for each character based on their index
+    final rand = Random();
+    for (int i = 0; i < code.length; i++) {
+      final x = i * (220 / code.length) + rand.nextDouble() * 4 - 2;
+      final y = rand.nextDouble() * (60 - fontSizes[i]);
+      charOffsets[i] = Offset(x, y);
+    }
+  }
+  static Color _randomColor() {
+    const colors = [Colors.green, Colors.blue, Colors.grey, Colors.purple];
+    return colors[Random().nextInt(colors.length)];
+  }
+  @override
+  void paint(Canvas canvas, Size size) {
+    final bgPaint = Paint()..color = Colors.white;
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), bgPaint);
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
+    for (int i = 0; i < code.length; i++) {
+      final textSpan = TextSpan(
+        text: code[i],
+        style: TextStyle(
+          color: charColors[i],
+          fontSize: fontSizes[i],
+          fontWeight: FontWeight.bold,
+        ),
+      );
+      textPainter.text = textSpan;
+      textPainter.layout();
+      textPainter.paint(canvas, charOffsets[i]);
+    }
+    final linePaint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 1.5;
+    canvas.drawLine(lineStart, lineEnd, linePaint);
+  }
+  @override
+  bool shouldRepaint(CaptchaPainter oldDelegate) => code != oldDelegate.code;
 }

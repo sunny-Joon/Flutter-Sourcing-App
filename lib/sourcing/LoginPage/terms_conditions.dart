@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class TermsConditions extends StatelessWidget {
@@ -10,6 +11,7 @@ class TermsConditions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String termsText =  AppLocalizations.of(context)!.termandcondition;
+    const Color customColor = Color(0xFFD42D3F);
     return Scaffold(
         backgroundColor: Color(0xFFD42D3F),
         body: Column(
@@ -68,8 +70,31 @@ class TermsConditions extends StatelessWidget {
             ),
           ),
         ),
+          Center(
+            child: TextButton(
+              onPressed: () async {
+                _launchprivacypolicy();
+              },
+              child: Text(
+                'Privacy Policy',
+                style: TextStyle(
+                  fontFamily: "Poppins-Regular",
+                  color: Colors.blue,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
       ],)
 
     );
   }
+
+  Future<void> _launchprivacypolicy() async {
+    final Uri _url = Uri.parse("https://paisalo.in/Home/aadhaarconsentpolicy");
+    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
 }
