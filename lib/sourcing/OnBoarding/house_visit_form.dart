@@ -149,6 +149,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   late currentLocation _locationService;
   double? totalDistance;
   late String value;
+  String? estimatedTime;
 
   @override
   void initState() {
@@ -179,8 +180,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
 
   Future<void> _initLocationAndDistance() async {
     try {
-      Map<String, dynamic> locationData = await _locationService
-          .getCurrentLocation();
+      Map<String, dynamic> locationData = await _locationService.getCurrentLocation();
 
       _latitude = locationData['latitude'];
       _longitude = locationData['longitude'];
@@ -190,27 +190,47 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
       print("_longitude $_longitude");
       print("_aadress $_aadress");
 
-      //double lat1 = 28.541909899980464;
-      //double lon1 = 77.23837911402565;
-      double lat1 = double.tryParse(
-          widget.GroupData.latitude?.toString() ?? '') ?? 0.0;
-      double lon1 = double.tryParse(
-          widget.GroupData.longitude?.toString() ?? '') ?? 0.0;
+      double lat1 = double.tryParse(widget.GroupData.latitude?.toString() ?? '') ?? 0.0;
+      double lon1 = double.tryParse(widget.GroupData.longitude?.toString() ?? '') ?? 0.0;
 
       print("lat1 $lat1");
       print("lon1 $lon1");
 
-
       double distance = calculateDistance(lat1, lon1, _latitude, _longitude);
       totalDistance = double.parse(distance.toStringAsFixed(2));
-      print('Distance is: $totalDistance');
-      print('Distance is: ${distance.toStringAsFixed(2)} km');
+      print('Distance is: $totalDistance km');
+
+       estimatedTime = getEstimatedTime(totalDistance!);
+      print('Estimated Travel Time: $estimatedTime');
 
       setState(() {
-
       });
     } catch (e) {
       print("Error getting current location: $e");
+    }
+  }
+
+  String getEstimatedTime(double distance) {
+    if (distance <= 1) {
+      return "5 minutes";
+    } else if (distance <= 3) {
+      return "10 minutes";
+    } else if (distance <= 5) {
+      return "15 minutes";
+    } else if (distance <= 10) {
+      return "25 minutes";
+    } else if (distance <= 20) {
+      return "40 minutes";
+    } else if (distance <= 30) {
+      return "60 minutes";
+    } else if (distance <= 40) {
+      return "80 minutes";
+    }else if (distance <= 50) {
+      return "100 minutes";
+    } else if (distance <= 60) {
+      return "120 minutes";
+    } else {
+      return "120+ minutes";
     }
   }
 
@@ -350,9 +370,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                               _AgeofInterviewedController, TextInputType.number,
                               amountReg),
                           // _buildTextField2(AppLocalizations.of(context)!.distancetobranch, _DistancetobranchController, TextInputType.number,amountReg),
-                          _buildTextField2(AppLocalizations.of(context)!
-                              .timetoreachbranch, _TimetoreachbranchController,
-                              TextInputType.number, amountReg),
+                         // _buildTextField2(AppLocalizations.of(context)!.timetoreachbranch, _TimetoreachbranchController, TextInputType.number, amountReg),
                           _buildTextField2(AppLocalizations.of(context)!
                               .totalmonthlyexpenses,
                               _TotalmonthlyexpensesofoccupationController,
@@ -943,7 +961,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     String NameofInterviewed = _NameofInterviewedController.text.toString();
     String AgeofInterviewed = _AgeofInterviewedController.text.toString();
     //String Distancetobranch=_DistancetobranchController.text.toString();
-    String Timetoreachbranch = _TimetoreachbranchController.text.toString();
+   // String Timetoreachbranch = _TimetoreachbranchController.text.toString();
     int Totalmonthlyexpensesofoccupation = int.parse(
         _TotalmonthlyexpensesofoccupationController.text.toString());
     int Netmonthlyincome_afterproposedloan = int.parse(
@@ -1039,7 +1057,7 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
         Residence_Type,
         Residential_Stability,
         totalDistance!,
-        Timetoreachbranch,
+        estimatedTime!,
         TotalExperienceOccupation,
         Totalmonthlyexpensesofoccupation,
         Netmonthlyincome_afterproposedloan,
