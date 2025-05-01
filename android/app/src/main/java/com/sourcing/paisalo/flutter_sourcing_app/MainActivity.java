@@ -104,10 +104,16 @@ public class MainActivity extends FlutterFragmentActivity implements AUAResultIm
     AUAResultImp auaResultImp = new AUAResultImp() {
         @Override
         public void setResult(int i, String s) {
-            Log.d("TAG", "DATA12345: "+s.toString());
-            Log.e("DATA1234",s);
+            Log.d("TAG", "DATA12345: " + s);
+            Log.e("DATA1234", s);
+
+            if (result_global != null) {
+                result_global.success(s);
+                result_global = null;
+            }
         }
     };
+
 
     private void openQRActivity() {
         Log.d("TAGGG", "Open Qr method Run");
@@ -135,8 +141,8 @@ public class MainActivity extends FlutterFragmentActivity implements AUAResultIm
             jsonRequestDataObj.put("Device_Details",devicedetails);
             jsonRequestDataObj.put("AUA_Key", getResources().getString(R.string.AUA_Key));
             jsonRequestDataObj.put("Client ID","SSVCL12085");
-          //  jsonRequestDataObj.put("UID",aadhaarNumber);
-            jsonRequestDataObj.put("UID","541516386793");
+            jsonRequestDataObj.put("UID",aadhaarNumber);
+          //  jsonRequestDataObj.put("UID","541516386793");
             jsonRequestDataObj.put("Auth_txn","3234500"+randomnumber);
             Log.e("Request",jsonRequestDataObj.toString()+"   ------   "+ BuildConfig.APPLICATION_ID);
             Log.d("TAG", "getRequest: "+jsonRequestDataObj.toString()+"   ------   "+ BuildConfig.APPLICATION_ID);
