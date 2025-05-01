@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../Models/branch_model.dart';
+import '../../Models/branch_model.dart';
 
 class DealerBranchListItem extends StatelessWidget {
   final BranchDataModel item;

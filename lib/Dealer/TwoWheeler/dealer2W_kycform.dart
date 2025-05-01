@@ -17,11 +17,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
-import '../DATABASE/database_helper.dart';
-import '../Models/range_category_model.dart';
-import '../api_service.dart';
-import '../sourcing/global_class.dart';
-import 'dealerCrif.dart';
+import '../../DATABASE/database_helper.dart';
+import '../../Models/range_category_model.dart';
+import '../../api_service.dart';
+import '../../sourcing/global_class.dart';
+import '../dealerCrif.dart';
 
 class DealerKYCPage2W extends StatefulWidget {
   final result;

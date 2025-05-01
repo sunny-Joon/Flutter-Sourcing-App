@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sourcing_app/Dealer/dealer_group_list_item.dart';
-import '../Models/branch_model.dart';
-import '../Models/group_model.dart';
-import '../sourcing/global_class.dart';
+import 'package:flutter_sourcing_app/Dealer/HomePage/dealer_group_list_item.dart';
+import '../../Models/branch_model.dart';
+import '../../Models/group_model.dart';
+import '../../sourcing/global_class.dart';
 import 'dealer_borrower_list.dart';
 
 

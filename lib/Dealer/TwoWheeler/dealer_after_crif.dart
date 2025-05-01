@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import '../DATABASE/database_helper.dart';
-import '../Models/range_category_model.dart';
-import 'dealer_homepage.dart';
+import '../../DATABASE/database_helper.dart';
+import '../../Models/range_category_model.dart';
+import '../HomePage/dealer_homepage.dart';
 import 'dealer_quotations.dart';
 import 'dealer_upload_docs.dart';
 

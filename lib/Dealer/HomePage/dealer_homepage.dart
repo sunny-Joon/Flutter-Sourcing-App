@@ -2,9 +2,9 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-import 'KycFormDealer.dart';
+import '../VSourcing/KycFormDealer.dart';
 import 'dealer_branch_list.dart';
-import 'dealer2W_kycform2.dart';
+import '../TwoWheeler/dealer2W_kycform2.dart';
 
 class DealerHomePage extends StatefulWidget {
 

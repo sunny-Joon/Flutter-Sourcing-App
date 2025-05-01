@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sourcing_app/Models/branch_model.dart';
-import '../Models/borrower_list_model.dart';
-import '../Models/group_model.dart';
-import '../sourcing/global_class.dart';
+import '../../Models/borrower_list_model.dart';
+import '../../Models/group_model.dart';
+import '../../sourcing/global_class.dart';
 import 'dealer_after_crif.dart';
 import 'dealer_brrower_list_item.dart';
 import 'dealer_esign.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_sourcing_app/Models/SecondEsignModel.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
-import '../Models/group_model.dart';
+import '../../Models/group_model.dart';
 
 class DealerGroupListItem extends StatelessWidget {
   final GroupDataModel item;
