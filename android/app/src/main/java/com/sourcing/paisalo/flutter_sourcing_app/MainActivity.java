@@ -141,8 +141,8 @@ public class MainActivity extends FlutterFragmentActivity implements AUAResultIm
             jsonRequestDataObj.put("Device_Details",devicedetails);
             jsonRequestDataObj.put("AUA_Key", getResources().getString(R.string.AUA_Key));
             jsonRequestDataObj.put("Client ID","SSVCL12085");
-          //  jsonRequestDataObj.put("UID",aadhaarNumber);
-            jsonRequestDataObj.put("UID","541516386793");
+            jsonRequestDataObj.put("UID",aadhaarNumber);
+          //  jsonRequestDataObj.put("UID","541516386793");
             jsonRequestDataObj.put("Auth_txn","3234500"+randomnumber);
             Log.e("Request",jsonRequestDataObj.toString()+"   ------   "+ BuildConfig.APPLICATION_ID);
             Log.d("TAG", "getRequest: "+jsonRequestDataObj.toString()+"   ------   "+ BuildConfig.APPLICATION_ID);

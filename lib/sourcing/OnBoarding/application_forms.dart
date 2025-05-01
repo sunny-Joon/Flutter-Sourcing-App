@@ -6413,7 +6413,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 saveIDsMethod(context);
               } else {
                 EasyLoading.dismiss();
-                bankAccHolder = "Account no. is Not Verified!!";
+                bankAccHolder = "Bank Not Verified";
+                banknameverified = false;
+                saveIDsMethod(context);
               }
             });
           } else if (type == "pancard") {
@@ -6448,6 +6450,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
               EasyLoading.dismiss();
               panCardHolderName = "PAN no is not verified";
               panVerified = false;
+            });
+          } else if (type == "bankaccount") {
+            setState(() {
+              EasyLoading.dismiss();
+              bankAccHolder = "Bank Not Verified";
+              banknameverified = false;
+              saveIDsMethod(context);
             });
           } else if (type == "drivinglicense") {
             setState(() {
@@ -6487,6 +6496,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
         setState(() {
           dlCardHolderName = "Driving License is not verified";
           dlVerified = false;
+        });
+      }else if (type == "bankaccount") {
+        setState(() {
+          EasyLoading.dismiss();
+          bankAccHolder = "Bank Not Verified";
+          banknameverified = false;
+          saveIDsMethod(context);
         });
       } else if (type == "voterid") {
         setState(() {

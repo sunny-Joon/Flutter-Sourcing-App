@@ -2297,8 +2297,10 @@ class _KYCPageState extends State<KYCPage> {
             }).toList(),
           ),
         ),
-        // Conditionally show the spouse fields only when isMarried is true
-        if (selectedMarritalStatus.toString() == 'Married')
+        if (selectedMarritalStatus == 'Married' ||
+            selectedMarritalStatus == 'Widdower' ||
+            selectedMarritalStatus == 'Widdow' ||
+            selectedMarritalStatus == 'Divorced')
           Column(
             children: [
               _buildTextField2(
@@ -2331,28 +2333,12 @@ class _KYCPageState extends State<KYCPage> {
                   ),
                 ],
               ),
-            ],
-          ),
-        SizedBox(
-          height: 10,
-        ),
-
-        if (selectedMarritalStatus.toString() != 'Unmarried' &&
-            selectedMarritalStatus.toString() != 'Widdower' &&
-            selectedMarritalStatus.toString() != 'Widdow' &&
-            selectedMarritalStatus.toString() != "" &&
-            selectedMarritalStatus.toString() == 'Divorced' &&
-            selectedMarritalStatus.toString() != "Select")
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+              SizedBox(height: 10),
               Text(
                 AppLocalizations.of(context)!.noofchildren,
                 style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
               ),
-              SizedBox(
-                height: 1,
-              ),
+              SizedBox(height: 1),
               Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(horizontal: 12),
@@ -2369,11 +2355,7 @@ class _KYCPageState extends State<KYCPage> {
                       fontFamily: "Poppins-Regular",
                       color: Colors.black,
                       fontSize: 13),
-                  underline: Container(
-                    height: 2,
-                    color: Colors
-                        .transparent, // Set to transparent to remove default underline
-                  ),
+                  underline: Container(height: 2, color: Colors.transparent),
                   onChanged: (String? newValue) {
                     setState(() {
                       selectednumOfChildren = newValue!;
@@ -2387,16 +2369,12 @@ class _KYCPageState extends State<KYCPage> {
                   }).toList(),
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               Text(
                 AppLocalizations.of(context)!.schoolgoingchildren,
                 style: TextStyle(fontFamily: "Poppins-Regular", fontSize: 13),
               ),
-              SizedBox(
-                height: 1,
-              ),
+              SizedBox(height: 1),
               Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(horizontal: 12),
@@ -2413,11 +2391,7 @@ class _KYCPageState extends State<KYCPage> {
                       fontFamily: "Poppins-Regular",
                       color: Colors.black,
                       fontSize: 13),
-                  underline: Container(
-                    height: 2,
-                    color: Colors
-                        .transparent, // Set to transparent to remove default underline
-                  ),
+                  underline: Container(height: 2, color: Colors.transparent),
                   onChanged: (String? newValue) {
                     setState(() {
                       selectedschoolingChildren = newValue!;
@@ -2433,6 +2407,7 @@ class _KYCPageState extends State<KYCPage> {
               ),
             ],
           ),
+
 
         SizedBox(
           height: 10,
@@ -3098,6 +3073,13 @@ class _KYCPageState extends State<KYCPage> {
         onPressed: () {
           if (_currentStep == 0) {
             if (FiType == "NEW") {
+              if (selectedMarritalStatus.toString() == "Unmarried" ||
+                  selectedMarritalStatus.toString() == "divorced" ||
+                  selectedMarritalStatus.toString() == "widdow" ||
+                  selectedMarritalStatus.toString() == "widdower") {
+                selectedschoolingChildren = "0";
+                selectednumOfChildren = "0";
+              }
               if (firstPageFieldValidate()) {
                 setState(() {
                   if (genderFlag ||
@@ -3116,10 +3098,8 @@ class _KYCPageState extends State<KYCPage> {
                       titleFlag) {
                     kycType = "M";
                   }
-                  if (selectedMarritalStatus.toString() == "Unmarried") {
-                    selectedschoolingChildren = "0";
-                    selectednumOfChildren = "0";
-                  }
+
+
                 });
 
                 saveFiMethod(context);
@@ -3185,6 +3165,10 @@ class _KYCPageState extends State<KYCPage> {
       return false;
     }
   }
+
+
+
+
 
   Future<void> verifyDocs(BuildContext context, String idNoController,
       String type, String ifsc, String dob) async {
@@ -4560,8 +4544,7 @@ class _KYCPageState extends State<KYCPage> {
 
                                   Navigator.of(context).pop();
                                   try {
-                                    final resultrd = await callJavaMethodRd(
-                                        _aadharIdController.text);
+                                    final resultrd = await callJavaMethodRd(_aadharIdController.text);
                                     print("callJavaMethodRd 11");
 
                                     if (resultrd != null) {
@@ -5005,10 +4988,21 @@ class _KYCPageState extends State<KYCPage> {
     } else if (mobileController.text == _mobileNoController.text) {
       showToast_Error(AppLocalizations.of(context)!.samemobileno);
       return false;
-    } else if (_dobController.text.isEmpty) {
+    }
+   else if (_dobController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterdateofbirth);
       return false;
-    } else if (_fatherFirstNameController.text.isEmpty) {
+    }
+
+    int? age = int.tryParse(_ageController.text.trim());
+   print("age $age");
+     if (age == null || age < 21 || age > 57) {
+      showToast_Error('Age must be between 21 and 57');
+      return false;
+    }
+
+
+    else if (_fatherFirstNameController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterfatherfirstname);
       return false;
     }
@@ -5057,18 +5051,18 @@ class _KYCPageState extends State<KYCPage> {
         _spouseFirstNameController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterspousefirstname);
       return false;
-    } else if (selectedMarritalStatus!.toLowerCase() != "unmarried" &&
-        selectednumOfChildren.toLowerCase() == 'select') {
+    }
+    else if (selectedMarritalStatus!.toLowerCase() != "unmarried" && selectedMarritalStatus!.toLowerCase() != "divorced" &&  selectedMarritalStatus!.toLowerCase() != "widdow" && selectedMarritalStatus!.toLowerCase() != "widdower"  && (selectedschoolingChildren.isEmpty || selectedschoolingChildren.toLowerCase() == 'select')) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseselectnumberofchildren);
       return false;
-    } else if (selectedMarritalStatus!.toLowerCase() != "unmarried" &&
-        (selectedschoolingChildren.isEmpty ||
-            selectedschoolingChildren.toLowerCase() == 'select')) {
+    }
+    else if (selectedMarritalStatus!.toLowerCase() != "unmarried" && selectedMarritalStatus!.toLowerCase() != "divorced" &&  selectedMarritalStatus!.toLowerCase() != "widdow" && selectedMarritalStatus!.toLowerCase() != "widdower" && (selectedschoolingChildren.isEmpty || selectedschoolingChildren.toLowerCase() == 'select')) {
       showToast_Error(
           AppLocalizations.of(context)!.pleaseselectschoolgoingchildren);
       return false;
-    } else if (_address1Controller.text.isEmpty) {
+    }
+    else if (_address1Controller.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenteraddress);
       return false;
     } else if (_cityController.text.isEmpty) {
@@ -5312,7 +5306,7 @@ class _KYCPageState extends State<KYCPage> {
 
     String aadhaarName = "";
 
-    if (_nameController.text != null && _nameController.text != "") {
+  /*  if (_nameController.text != null && _nameController.text != "") {
       String address = [
         _nameController.text.trim(),
         _nameMController.text.trim(),
@@ -5360,7 +5354,7 @@ class _KYCPageState extends State<KYCPage> {
           }
         }
       }
-      // Now your validation
+
       if (!((isPanMatched && isDlMatched) || isVoterMatched)) {
         showToast_Error('Either both PAN and DL must match Aadhaar name (word-by-word), or Voter must match.');
         return false;
@@ -5369,6 +5363,72 @@ class _KYCPageState extends State<KYCPage> {
       showToast_Error('Aadhaar name not fetched');
       return false;
     }
+*/
+
+
+
+    if (_nameController.text != null && _nameController.text != "") {
+      String address = [
+        _nameController.text.trim(),
+        _nameMController.text.trim(),
+        _nameLController.text.trim(),
+      ].where((e) => e != null && e!.trim().isNotEmpty).join(' ');
+      aadhaarName = address.trim().toLowerCase();
+    } else {
+      aadhaarName = adhaardata.customerName?.trim().toLowerCase() ?? '';
+    }
+
+    String panName = panCardHolderName?.trim().toLowerCase() ?? '';
+    String voterName = voterCardHolderName?.trim().toLowerCase() ?? '';
+    String dlName = dlCardHolderName?.trim().toLowerCase() ?? '';
+
+    if (aadhaarName.isNotEmpty) {
+      List<String> aadhaarWords = aadhaarName.split(' ').where((e) => e.isNotEmpty).toList();
+
+      bool isPanVerified = panName.isNotEmpty && !panName.contains("not verified");
+      bool isDlVerified = dlName.isNotEmpty && !dlName.contains("not verified");
+      bool isVoterVerified = voterName.isNotEmpty && !voterName.contains("not verified");
+
+
+      bool isPanMatched = true;
+      bool isDlMatched = true;
+      bool isVoterMatched = true;
+
+      if (isPanVerified && !panName.contains("not verified")) {
+        isPanMatched = aadhaarWords.every((word) => panName.contains(word));
+        if (!isPanMatched) {
+          showToast_Error("PAN name doesn't match Aadhaar name");
+          return false;
+        }
+      }
+
+      if (isDlVerified && !dlName.contains("not verified")) {
+        isDlMatched = aadhaarWords.every((word) => dlName.contains(word));
+        if (!isDlMatched) {
+          showToast_Error("DL name doesn't match Aadhaar name");
+          return false;
+        }
+      }
+
+      if (isVoterVerified && !voterName.contains("not verified")) {
+        isVoterMatched = aadhaarWords.every((word) => voterName.contains(word));
+        if (!isVoterMatched) {
+          showToast_Error("Voter name doesn't match Aadhaar name");
+          return false;
+        }
+      }
+
+      if (!(isPanMatched && isDlMatched)) {
+          showToast_Error('Either both PAN and DL must match Aadhaar name (word-by-word), or Voter must match.');
+          return false;
+        }
+
+    } else {
+      showToast_Error('Aadhaar name not fetched');
+      return false;
+    }
+
+
 
     if (selectedCityCode == null) {
       showToast_Error(AppLocalizations.of(context)!.pleaseselectcity);
