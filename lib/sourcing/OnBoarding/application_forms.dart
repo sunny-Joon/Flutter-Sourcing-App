@@ -4353,6 +4353,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 print("GestureDetector3");
                 bool OSVVerified = false;
                 if (pickedImage != null) {
+                  print("pickedImage $pickedImage");
                   print("_selectedImage $_selectedImage");
                   print("GestureDetector2");
                   switch (id) {
@@ -4562,8 +4563,11 @@ class _ApplicationPageState extends State<ApplicationPage> {
                     setState(() {
                       isPathCleared = true;
                       isSubmitEnabled = false;
-                      borrowerDocsUploded = false;
-                      coBorrowerDocsUploaded = false;
+                      if(subType == "borrower"){
+                        borrowerDocsUploded = false;
+                      }else {
+                        coBorrowerDocsUploaded = false;
+                      }
                       print("isSubmitEnabled $isSubmitEnabled");
                       _selectedImage = null;
                     });
@@ -5534,11 +5538,30 @@ class _ApplicationPageState extends State<ApplicationPage> {
     } else if (_othersController.text.isEmpty) {
       showToast_Error(AppLocalizations.of(context)!.pleaseenterotherexpenses);
       return false;
-    } /*else if ((int.parse(_expenseController.text) <=
-        ((int.parse(_incomeController.text)) * 0.5))) {
-      showToast_Error(AppLocalizations.of(context)!.expenseshouldbegreaterthan50ofincome);
+    } else if (
+    (int.tryParse(_rentController.text.trim()) ?? 0) +
+        (int.tryParse(_foodingController.text.trim()) ?? 0) +
+        (int.tryParse(_educationController.text.trim()) ?? 0) +
+        (int.tryParse(_healthController.text.trim()) ?? 0) +
+        (int.tryParse(_travellingController.text.trim()) ?? 0) +
+        (int.tryParse(_entertainmentController.text.trim()) ?? 0) +
+        (int.tryParse(_spendOnChildrenController.text.trim()) ?? 0) +
+        (int.tryParse(_othersController.text.trim()) ?? 0) >= BorrowerInfo[0].expenses
+    ) {
+      showToast_Error("Total expense must be less than ₹${ BorrowerInfo[0].expenses}");
       return false;
-    }*/
+    }else if (
+    (int.tryParse(_future_IncomeController.text.trim()) ?? 0) +
+        (int.tryParse(_agriculture_incomeController.text.trim()) ?? 0) +
+        (int.tryParse(_other_IncomeController.text.trim()) ?? 0) +
+        (int.tryParse(_annuaL_INCOMEController.text.trim()) ?? 0) +
+        (int.tryParse(_otheR_THAN_AGRICULTURAL_INCOMEController.text.trim()) ?? 0) +
+        (int.tryParse(_pensionIncomeController.text.trim()) ?? 0) +
+        (int.tryParse(_any_RentalIncomeController.text.trim()) ?? 0) >= BorrowerInfo[0].income
+    ) {
+      showToast_Error("Total income must be less than ₹${ BorrowerInfo[0].income}");
+      return false;
+    }
     return true;
   }
 
@@ -7207,6 +7230,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           loadUi = true;
           expenseindication = value.data[0].hvTotalmonthlyhouseholdexpenses.toString();
           incomeIndication = "Entered monthly income:${value.data[0].hvMonthlyIncome}";
+          femselectedRelationWithBorrower = value.data[0].hvRelationearningmember.toString();
 
           _IncomeController.text = BorrowerInfo[0].hvNetmonthlyincomeotherfamilymembers.toString();
           print("objectobject$expenseindication");
@@ -8176,6 +8200,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
         GurNum == "0" ? passbook : null,
       ).then((value) async {
         if (value.statuscode == 200) {
+          isSubmitEnabled = false;
+          coBorrowerDocsUploaded = false;
+
           GetDocs(context);
           EasyLoading.dismiss();
           if (GurNum != "0") {
