@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sourcing_app/Models/SecondEsignModel.dart';
-import 'package:flutter_sourcing_app/Dealer/dealer_group_list_page.dart';
-import '../Models/branch_model.dart';
-import '../sourcing/global_class.dart';
+import 'package:flutter_sourcing_app/Dealer/TwoWheeler/dealer_group_list_page.dart';
+import '../../Models/branch_model.dart';
+import '../../sourcing/global_class.dart';
 import 'dealer_branch_list_item.dart';
 
 

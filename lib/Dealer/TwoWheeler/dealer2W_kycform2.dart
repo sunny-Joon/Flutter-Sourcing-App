@@ -9,11 +9,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import '../Models/range_category_model.dart';
-import '../api_service.dart';
-import '../sourcing/ProfilePage/qr_scan_page.dart';
-import '../sourcing/global_class.dart';
-import 'dealerCrif.dart';
+import '../../Models/range_category_model.dart';
+import '../../api_service.dart';
+import '../../sourcing/ProfilePage/qr_scan_page.dart';
+import '../../sourcing/global_class.dart';
+import '../dealerCrif.dart';
 import 'dealer2W_kycform.dart';
 
 class DealerKYCPage2W2 extends StatefulWidget {

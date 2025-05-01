@@ -12,13 +12,13 @@ import 'package:intl/intl.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../DATABASE/database_helper.dart';
-import '../../Models/adhaar_model.dart';
-import '../../Models/bank_names_model.dart';
-import '../../Models/place_codes_model.dart';
-import '../../Models/range_category_model.dart';
-import '../../api_service.dart';
-import '../sourcing/global_class.dart';
+import '../../../DATABASE/database_helper.dart';
+import '../../../Models/adhaar_model.dart';
+import '../../../Models/bank_names_model.dart';
+import '../../../Models/place_codes_model.dart';
+import '../../../Models/range_category_model.dart';
+import '../../../api_service.dart';
+import '../../sourcing/global_class.dart';
 
 
 class KYCFormDealerPage extends StatefulWidget {
@@ -351,224 +351,220 @@ class _KYCFormDealerPageState extends State<KYCFormDealerPage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-        canPop: false,
-        onPopInvoked: (bool value) {
-          _onWillPop();
-        },
-        child: Scaffold(
-          backgroundColor: Color(0xFFD42D3F),
-          body: SingleChildScrollView(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 50,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          InkWell(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                    width: 1, color: Colors.grey.shade300),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
-                              ),
-                              height: 40,
-                              width: 40,
-                              alignment: Alignment.center,
-                              child: Center(
-                                child:
-                                Icon(Icons.arrow_back_ios_sharp, size: 16),
-                              ),
+      canPop: false,
+      onPopInvoked: (bool value) {
+        _onWillPop();
+      },
+      child: Scaffold(
+        backgroundColor: Color(0xFFD42D3F),
+        body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  SizedBox(height: 50),
+                  Padding(
+                    padding: EdgeInsets.all(0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        InkWell(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                  width: 1, color: Colors.grey.shade300),
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(5)),
                             ),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          Center(
-                            child: Image.asset(
-                              'assets/Images/logo_white.png',
-                              // Replace with your logo asset path
-                              height: 30,
-                            ),
-                          ),
-                          Container(
                             height: 40,
                             width: 40,
                             alignment: Alignment.center,
+                            child: Center(
+                              child: Icon(Icons.arrow_back_ios_sharp, size: 16),
+                            ),
                           ),
-                        ],
-                      ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        Center(
+                          child: Image.asset(
+                            'assets/Images/logo_white.png',
+                            height: 30,
+                          ),
+                        ),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          alignment: Alignment.center,
+                        ),
+                      ],
                     ),
-                    Column(
-                      children: [
-                        SizedBox(height: 30),
-                        _pageloading
-                            ? CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                            : Column(
-                          children: [
-                            Container(
-                              height: MediaQuery.of(context).size.height -
-                                  244,
-                              child: Stack(
-                                clipBehavior: Clip.none,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(20),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius:
-                                      BorderRadius.circular(16),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black,
-                                          blurRadius: 7,
-                                        ),
-                                      ],
+                  ),
+                  Column(
+                    children: [
+                      SizedBox(height: 30),
+                      _pageloading
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Column(
+                        children: [
+                          LayoutBuilder(
+                            builder: (context, constraints) {
+                              return ConstrainedBox(
+                                constraints: BoxConstraints(
+                                    minHeight: constraints.maxHeight),
+                                child: Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                        BorderRadius.circular(16),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black,
+                                            blurRadius: 7,
+                                          ),
+                                        ],
+                                      ),
+                                      child: Form(
+                                        key: _formKey,
+                                        child: _buildStepOne(context),
+                                      ),
                                     ),
-                                    child: Form(
-                                      key: _formKey,
-                                      child: _buildStepOne(context),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top:
-                                    -35, // Adjust the position as needed
-                                    left: 0,
-                                    right: 0,
-                                    child: Center(
-                                      child: InkWell(
-                                        onTap: () async {
-                                          if (_currentStep == 0) {
-                                            File? pickedFile =
-                                            await GlobalClass()
-                                                .pickImage();
-                                            setState(() {
-                                              _imageFile = pickedFile;
-                                            });
-                                          }
-                                        },
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            ClipOval(
-                                              child: Container(
-                                                width: 70,
-                                                height: 70,
-                                                color:
-                                                Colors.grey.shade300,
-                                                child: _imageFile == null
-                                                    ? Icon(
-                                                  Icons.person,
-                                                  size: 50.0,
-                                                  color:
-                                                  Colors.white,
-                                                )
-                                                    : Image.file(
-                                                  File(_imageFile!
-                                                      .path),
+                                    Positioned(
+                                      top: -35,
+                                      left: 0,
+                                      right: 0,
+                                      child: Center(
+                                        child: InkWell(
+                                          onTap: () async {
+                                            if (_currentStep == 0) {
+                                              File? pickedFile =
+                                              await GlobalClass()
+                                                  .pickImage();
+                                              setState(() {
+                                                _imageFile = pickedFile;
+                                              });
+                                            }
+                                          },
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              ClipOval(
+                                                child: Container(
                                                   width: 70,
                                                   height: 70,
-                                                  fit: BoxFit.cover,
+                                                  color: Colors
+                                                      .grey.shade300,
+                                                  child: _imageFile == null
+                                                      ? Icon(
+                                                    Icons.person,
+                                                    size: 50.0,
+                                                    color:
+                                                    Colors.white,
+                                                  )
+                                                      : Image.file(
+                                                    File(_imageFile!
+                                                        .path),
+                                                    width: 70,
+                                                    height: 70,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            (_currentStep == 0)
-                                                ? Positioned(
-                                              bottom: 0,
-                                              right: 0,
-                                              child: Container(
-                                                decoration:
-                                                BoxDecoration(
-                                                  color:
-                                                  Colors.blue,
-                                                  shape: BoxShape
-                                                      .circle,
+                                              (_currentStep == 0)
+                                                  ? Positioned(
+                                                bottom: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  decoration:
+                                                  BoxDecoration(
+                                                    color:
+                                                    Colors.blue,
+                                                    shape: BoxShape
+                                                        .circle,
+                                                  ),
+                                                  padding:
+                                                  EdgeInsets.all(
+                                                      5),
+                                                  child: Icon(
+                                                    Icons.edit,
+                                                    size: 16,
+                                                    color:
+                                                    Colors.white,
+                                                  ),
                                                 ),
-                                                padding:
-                                                EdgeInsets.all(
-                                                    5),
-                                                child: Icon(
-                                                  Icons.edit,
-                                                  size: 16,
-                                                  color:
-                                                  Colors.white,
-                                                ),
-                                              ),
-                                            )
-                                                : SizedBox(),
-                                          ],
+                                              )
+                                                  : SizedBox(),
+                                            ],
+                                          ),
                                         ),
                                       ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_on_outlined,
+                                    color: Colors.white,
+                                  ),
+                                  Text(
+                                    "$_locationMessage",
+                                    style: TextStyle(
+                                      fontFamily: "Poppins-Regular",
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on_outlined,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      "${_locationMessage}",
-                                      style: TextStyle(
-                                          fontFamily: "Poppins-Regular",
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    geolocator(context);
-                                  },
-                                  child: Card(
-                                    elevation: 5,
-                                    shape: CircleBorder(),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(3),
-                                      child: Icon(
-                                        Icons.refresh,
-                                        size: 30,
-                                        color: Color(0xffb41d2d),
-                                      ),
+                              InkWell(
+                                onTap: () {
+                                  geolocator(context);
+                                },
+                                child: Card(
+                                  elevation: 5,
+                                  shape: CircleBorder(),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(3),
+                                    child: Icon(
+                                      Icons.refresh,
+                                      size: 30,
+                                      color: Color(0xffb41d2d),
                                     ),
                                   ),
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            _buildNextButton(context),
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                ),
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          _buildNextButton(context),
+                        ],
+                      )
+                    ],
+                  )
+                ],
               ),
             ),
-          ),
-        ));
+        ),
+      ),
+    );
   }
+
 
   int calculateAgeFromString(String dateString,
       {String format = "yyyy-MM-dd"}) {
@@ -710,8 +706,10 @@ class _KYCFormDealerPageState extends State<KYCFormDealerPage> {
       String state = stateselected!.code.toString();
       bool ismarried = selectedMarritalStatus.toString() == 'Married';
       print("married $ismarried");
-      *//*String gCode = widget.GroupData.groupCode;
-      String bCode = widget.data.branchCode.toString();*//*
+      */
+  /*String gCode = widget.GroupData.groupCode;
+      String bCode = widget.data.branchCode.toString();*/
+  /*
 
       String relation_with_Borrower = relationwithBorrowerselected;
       String bank_name = bankselected!.toString();

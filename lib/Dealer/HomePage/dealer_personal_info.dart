@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dealer_quotations.dart';
-import 'dealer_upload_docs.dart';
+import '../TwoWheeler/dealer_quotations.dart';
+import '../TwoWheeler/dealer_upload_docs.dart';
 
 class PersonalInfo extends StatefulWidget {
   const PersonalInfo({super.key});

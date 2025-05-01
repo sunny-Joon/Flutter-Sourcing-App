@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/Dealer/dealer_homepage.dart';
+import 'package:flutter_sourcing_app/Dealer/HomePage/dealer_homepage.dart';
 import 'dart:math';
 import '../Models/bank_names_model.dart';
-import 'dealer_after_crif.dart';
+import 'TwoWheeler/dealer_after_crif.dart';
 
 
 class DealerCrif extends StatefulWidget {

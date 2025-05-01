@@ -4,7 +4,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_sourcing_app/Dealer/dealer_homepage.dart';
+import 'package:flutter_sourcing_app/Dealer/HomePage/dealer_homepage.dart';
 import 'package:flutter_sourcing_app/sourcing/Collection/collectionbranchlist.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
