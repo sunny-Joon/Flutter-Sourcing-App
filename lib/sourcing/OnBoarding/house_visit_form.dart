@@ -211,28 +211,31 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
   }
 
   String getEstimatedTime(double distance) {
-    if (distance <= 1) {
-      return "5 minutes";
+    if (distance == 0) {
+      return "0";
+    } else if (distance <= 1) {
+      return "5";
     } else if (distance <= 3) {
-      return "10 minutes";
+      return "10";
     } else if (distance <= 5) {
-      return "15 minutes";
+      return "15";
     } else if (distance <= 10) {
-      return "25 minutes";
+      return "25";
     } else if (distance <= 20) {
-      return "40 minutes";
+      return "40";
     } else if (distance <= 30) {
-      return "60 minutes";
+      return "60";
     } else if (distance <= 40) {
-      return "80 minutes";
-    }else if (distance <= 50) {
-      return "100 minutes";
+      return "80";
+    } else if (distance <= 50) {
+      return "100";
     } else if (distance <= 60) {
-      return "120 minutes";
+      return "120";
     } else {
-      return "120+ minutes";
+      return "120+";
     }
   }
+
 
 
   Future getImage() async {
@@ -1332,7 +1335,38 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
             ),
           ),
           SizedBox(height: 8),
+
           Container(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: Colors.grey),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: items.isEmpty
+                    ? null
+                    : (selectedItem.isEmpty ? items.first.code : selectedItem),
+                onChanged: items.isEmpty
+                    ? null
+                    : (String? newValue) {
+                  onChanged(newValue ?? '');
+                },
+                isExpanded: true,
+                alignment: Alignment.centerLeft,
+                hint: Text("Select an option"), // optional: default hint
+                items: items.map<DropdownMenuItem<String>>((item) {
+                  return DropdownMenuItem<String>(
+                    value: item.code,
+                    child: Text(item.descriptionEn),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+
+          /*  Container(
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -1357,13 +1391,48 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
                 }).toList(),
               ),
             ),
-          ),
+          ),*/
         ],
       ),
     );
   }
 
   bool validate() {
+
+    if (_Mobilereferenceperson1Controller.text.length != 10 ||
+        !RegExp(r'^[0-9]{10}$').hasMatch(
+            _Mobilereferenceperson1Controller.text)) {
+      showToast_Error(
+          AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
+      return false;
+    }
+
+
+    if (_Mobilereferenceperson1Controller.text == widget.selectedData.pPhone ||
+        _Mobilereferenceperson1Controller.text == widget.selectedData.currentPhone) {
+      showToast_Error("The mobile number is not same as borrower's ");
+      return false;
+    }
+
+    if (_Mobilereferenceperson2Controller.text.length != 10 ||
+        !RegExp(r'^[0-9]{10}$').hasMatch(
+            _Mobilereferenceperson2Controller.text)) {
+      showToast_Error(AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
+      return false;
+    }
+
+    if (_Mobilereferenceperson2Controller.text == widget.selectedData.pPhone ||
+        _Mobilereferenceperson2Controller.text == widget.selectedData.currentPhone) {
+      showToast_Error("The mobile number is same not as borrower's ");
+      return false;
+    }
+    if (_Mobilereferenceperson1Controller.text== _Mobilereferenceperson2Controller.text) {
+      showToast_Error("Both mobile numbers are same");
+      return false;
+    }
+
+
+
     if (selected_applicant == null ||
         selected_applicant!.isEmpty ||
         selected_applicant!.toLowerCase() == 'select') {
@@ -1437,40 +1506,14 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     }
 
 
+
+
+
+
     if (_image == null) {
       showToast_Error(AppLocalizations.of(context)!.pleaseclickhousepicture);
       return false;
     }
-    if (_Mobilereferenceperson1Controller.text.length != 10 ||
-        !RegExp(r'^[0-9]{10}$').hasMatch(
-            _Mobilereferenceperson1Controller.text)) {
-      showToast_Error(
-          AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
-      return false;
-    } else
-    if (_Mobilereferenceperson1Controller.text == widget.selectedData.pPhone ||
-        _Mobilereferenceperson1Controller.text ==
-            widget.selectedData.currentPhone) {
-      showToast_Error(
-          "The mobile number is same as borrower's ");
-      return false;
-    }
-    if (_Mobilereferenceperson2Controller.text.length != 10 ||
-        !RegExp(r'^[0-9]{10}$').hasMatch(
-            _Mobilereferenceperson2Controller.text)) {
-      showToast_Error(
-          AppLocalizations.of(context)!.pleaseenteravalid10digitmobilenumber);
-      return false;
-    } else
-    if (_Mobilereferenceperson2Controller.text == widget.selectedData.pPhone ||
-        _Mobilereferenceperson1Controller.text ==
-            widget.selectedData.currentPhone) {
-      showToast_Error(
-          "The mobile number is same as borrower's ");
-      return false;
-    }
-
-
     /*  String value = _DistancetobranchController.text;
 
     if (value.isNotEmpty && totalDistance != null) {
@@ -1602,6 +1645,33 @@ class _HouseVisitFormState extends State<HouseVisitForm> {
     super.initState();
     roofType = await DatabaseHelper().selectRangeCatData("house-roof-type");
     toiletType = await DatabaseHelper().selectRangeCatData("toilet-type");
+    setState(() {
+
+
+
+      toiletType.insert(
+          0,
+          RangeCategoryDataModel(
+              catKey: 'Select',
+              groupDescriptionEn: 'select',
+              groupDescriptionHi: 'select',
+              descriptionEn: 'Select',
+              descriptionHi: 'select',
+              sortOrder: 0,
+              code: 'select'));
+
+      roofType.insert(
+          0,
+          RangeCategoryDataModel(
+              catKey: 'Select',
+              groupDescriptionEn: 'select',
+              groupDescriptionHi: 'select',
+              descriptionEn: 'Select',
+              descriptionHi: 'select',
+              sortOrder: 0,
+              code: 'select'));
+    });
+
   }
 
 
